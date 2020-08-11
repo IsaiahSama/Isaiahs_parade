@@ -52,6 +52,8 @@ class Special(commands.Cog):
         embed.set_thumbnail(url=self.bot.user.avatar_url)
         embed.add_field(name="Battle", value="Changes", inline=False)
         embed.add_field(name="<>search", value="Searches for Fellow Paraders in your tier who are available for fighting", inline=False)
+        embed.add_field(name="Social", value="Additions", inline=False)
+        embed.add_field(name="<>feed", value="Used to feed your pet", inline=False)
 
         
         for server in self.bot.guilds:

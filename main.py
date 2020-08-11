@@ -265,6 +265,7 @@ async def help(ctx, *, category=None):
     socials.add_field(name="<>getpet", value="Used to get your first pet.", inline=False)
     socials.add_field(name="<>delpet", value="Used to get rid of your pet... You won't be forgived")
     socials.add_field(name="<>play", value="Play with your pet", inline=False)
+    socials.add_field(name="<>feed", value="Feed your pet", inline=False)
     socials.add_field(name="<>updatesocial", value="Used to Update your current/main guild/name", inline=False)
 
 

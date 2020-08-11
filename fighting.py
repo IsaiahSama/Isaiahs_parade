@@ -1091,7 +1091,7 @@ Stat names are the names that you see in the above embed, with the exception of 
     async def search(self, ctx):
         if await self.ismember(ctx.author):
             user = await self.getmember(ctx.author)
-            usertier = await user.getTier()
+            usertier = user.getTier()
             fmem = [x for x in ctx.guild.members if await self.ismember(x)]
             ffmem = [await self.getmember(x) for x in fmem]
             sametier = [x for x in ffmem if x.getTier() == usertier]

@@ -554,6 +554,13 @@ class FightMe(Fighter):
             self.weapon.damage += 30
             msg = "Increased crit chance by 100. Increased weapon damage by 30"
 
+        elif self.armour.name == "Vampiric Cloak":
+            self.health += 200
+            self.weapon.healplus += 5
+            self.armour.regen += 2
+            self.weapon.damage += 40
+            msg = "Increased Health by 200, lifesteal on ENC Vamp Knives by 5%, damage on ENC Vamp Knives by 40 and regen on Vamp Cloak by 2%"
+
         
         else:
             return "Something went wrong"
@@ -813,7 +820,7 @@ uksniper = BeastFight("Unknown Sniper", 10032, 5000, 700, 900, 32000, 38000, "Yo
 4000, 5, 3, critstrike, sharpeye, "snipes", srifle, sranger)
 sfass = BeastFight("Shadow Flame Assassin", 10033, 6000, 900, 1000, 40000, 44000, "You glimpse a shadow following you",
 3500, 25, 10, critstrike, dodge, "slashes at", sfknife, shadowflame)
-kdono = BeastFight("Kevin-dono", 10034, 8000, 1000, 1200, 58000, 64000, "KEVIN!!!", 5000, 5, 20, uheal, regeneration,
+kdono = BeastFight("Kevin not Kevin", 10034, 8000, 1000, 1200, 58000, 64000, "KEVIN!!!", 5000, 5, 20, uheal, regeneration,
 "menacingly approaches", hcard, vknight)
 tmaster = BeastFight("Tank Master", 10035, 9000, 1000, 1200, 58000, 64000, "have you ever seen a tank up close?", 5000, 5,3,
 blast, sharpeye, "Summons his tank, aims it, and fires", tsummon, artillery)

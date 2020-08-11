@@ -34,7 +34,7 @@ class Relamain(commands.Cog):
         for relaperson in tempuser:
             acc = relauser(relaperson[0], relaperson[1], relaperson[2], relaperson[3], relaperson[4],
             relaperson[5], relaperson[6], relaperson[7], relaperson[8], relaperson[9], relaperson[10], relaperson[11],
-            relaperson[12])
+            relaperson[12], relaperson[13], relaperson[14], relaperson[15], relaperson[16])
 
             loadedacc.append(acc)
 
@@ -141,17 +141,13 @@ class Relamain(commands.Cog):
 
         user1 = await self.getuser(ctx.author)
         user2 = await self.getuser(member)
-
-        try: 
-            user2.pendingfr
+        if user2.pendingfr != None:
             await ctx.send("User already has a pending request. You must WAIT! >:)")
             return
-        except AttributeError:
+        else:
+            await member.send(f"{user1.name} would like to be your friend. Accept with <>acceptfr or deny with <>denyfr")
             await ctx.send("Your request has been sent")
-
-        await member.send(f"{user1.name} would like to be your friend. Accept with <>acceptfr or deny with <>denyfr")
-
-        user2.pendingfr = user1
+            user2.pendingfr = user1.tag
 
 
     @commands.command()
@@ -159,27 +155,28 @@ class Relamain(commands.Cog):
         yes = await self.isuser(ctx.author)
         if yes:
             user = await self.getuser(ctx.author)
-            try:
-                user.pendingfr
-                await ctx.send(f"Accepting {user.pendingfr.name}'s friend request")
-                nf = user.pendingfr
-                nf.friendcount += 1
+            
+            if user.pendingfr != None:
+                sender = await self.reget(user.pendingfr)
+                await ctx.send(f"Accepting {sender.name}'s friend request")
+                sender.friendcount += 1
                 user.friendcount += 1
-                del user.pendingfr
 
                 p1friendlist = list(user.friends)
-                p1friendlist.append(nf.tag)
-                p2friendlist = list(nf.friends)
+                p1friendlist.append(sender.tag)
+                p2friendlist = list(sender.friends)
                 p2friendlist.append(user.tag)
                 user.friends = p1friendlist
-                nf.friends = p2friendlist
+                sender.friends = p2friendlist
 
                 await ctx.send(f"Successful")
-                nfuser = self.bot.get_user(nf.tag)
-                await nfuser.send(f"{nf.name}. {user.name} has accepted your Friend Request")
+                nfuser = self.bot.get_user(sender.tag)
+                await nfuser.send(f"{sender.name}. {user.name} has accepted your Friend Request")
+                user.pendingfr = None
 
-            except AttributeError:
+            else:
                 await ctx.send("You don't have a pending friend request")
+        
         else:
             await ctx.send("You Aren't a user. Become one with <>createsocial")
 
@@ -188,14 +185,14 @@ class Relamain(commands.Cog):
         yes = await self.isuser(ctx.author)
         if yes:
             user = await self.getuser(ctx.author)
-            try:
-                x = user.pendingfr
-                await ctx.send(f"{user.pendingfr.name}'s friend request has been rejected")
-                xuser = self.bot.get_user(x.tag)
-                await xuser.send(f"{user.name} has rejected your friend request")
-                del user.pendingfr
+            if user.pendingfr != None:
+                x = await self.reget(user.pendingfr)
+                await ctx.send(f"{x.name}'s friend request has been rejected")
+                sender = self.bot.get_user(x.tag)
+                await sender.send(f"{user.name} has rejected your friend request")
+                user.pendingfr = None
 
-            except AttributeError:
+            else:
                 await ctx.send("You don't have any pending friend requests")
 
         else:
@@ -222,52 +219,58 @@ class Relamain(commands.Cog):
 
     @commands.command()
     async def addlove(self, ctx, member:discord.Member=None):
-        """if ctx.author == member:
+        if ctx.author == member:
             await ctx.send("I'm glad to see you love yourself")
-            return"""
+            return
 
         if await self.isuser(ctx.author):
             if not await self.isuser(member):
                 await ctx.send(f"{member.name} does not have a Social Profile")
                 return
 
-            await member.send(f"{ctx.author.name} would like to form a <3 relationship with you. Type <>acceptlove or <>denylove")
-            await ctx.send("Your love request has been sent. :thumbsup:")
             target = await self.getuser(member)
+            if target.pendinglove != None:
+                await ctx.send("They already have a love request pending")
+                return
+
+            await member.send(f"{ctx.author.name} would like to form a <3 relationship with you. Type <>acceptlove [@mention] or <>denylove[@mention]")
+            await ctx.send("Your love request has been sent. :thumbsup:")
             user = await self.getuser(ctx.author)
 
-            target.loverq = user.tag
-            print(target.name)
-            print(target.loverq)
+            target.pendinglove = user.tag
+
 
         else:
             await ctx.send("Do <>createsocial first before jumping into such deep things")
 
     
     @commands.command()
-    async def acceptlove(self, ctx):
+    async def acceptlove(self, ctx, member: discord.Member):
         if await self.isuser(ctx.author):
             user = await self.getuser(ctx.author)
-            try:
-                x = user.loverq
 
-                print(user.name)
-                print(x)
+            if await self.isuser(member):
 
-                user2 = await self.reget(x)
-                user.pname = user2.tag
-                user2.pname = user.tag
+                if user.pendinglove != None:
+                    sender = self.reget(user.pendinglove)
 
-                mainuser = self.bot.get_user(user.tag)
-                await mainuser.send(f"Congratualions. You are now {user2.name}'s lover")
-                mainuser.rela = True
-                mainuser2 = self.bot.get_user(user2.tag)
-                await mainuser2.send(f"Congratualions. You are now {user.name}'s lover")
-                mainuser2.rela = True
-                del user.loverq
+                    user.pname = sender.tag
+                    sender.pname = user.tag
 
-            except AttributeError:
-                await ctx.send("You don't have any incoming love requests")
+                    mainuser = self.bot.get_user(user.tag)
+                    await mainuser.send(f"Congratualions. You are now {sender.name}'s lover")
+                    mainuser.rela = True
+                    mainuser2 = self.bot.get_user(sender.tag)
+                    await mainuser2.send(f"Congratualions. You are now {user.name}'s lover")
+                    mainuser2.rela = True
+
+                    user.pendinglove = None
+
+                else:
+                    await ctx.send("You don't have any incoming love requests")
+            
+            else:
+                await ctx.send("This person does not have a profile")
 
         else:
             await ctx.send("Missing a few steps. Create a Social Profile first with <>createsocial")
@@ -276,11 +279,11 @@ class Relamain(commands.Cog):
     async def denylove(self, ctx):
         if await self.isuser(ctx.author):
             user = await self.getuser(ctx.author)
-            try:
-                del user.loverq
+            if user.pendinglove != None:
+                user.pendinglove = None
                 await ctx.send("Rejected")
 
-            except AttributeError:
+            else:
                 await ctx.send("You don't have any incoming love requests")
 
         else:
@@ -292,11 +295,12 @@ class Relamain(commands.Cog):
         if ctx.author == member:
             await ctx.send("I'm glad to see you love yourself")
             return
+        
         if await self.isuser(ctx.author) and await self.isuser(member):
             u1 = await self.getuser(ctx.author)
             u2 = await self.getuser(member)
 
-            u2.pendingbf = u1
+            u2.pendingbf = u1.tag
             await member.send(f"{ctx.author.name} would like to be your best friend")
             await member.send(f"Accept with <>acceptbff or <>denybff to deny")
             await ctx.send("Your Best Friend Request has been sent :thumbsup:")
@@ -308,19 +312,20 @@ class Relamain(commands.Cog):
     async def acceptbff(self, ctx):
         if await self.isuser(ctx.author):
             user = await self.getuser(ctx.author)
-            try:
-                x = user.pendingbf
-                temp2 = self.bot.get_user(x.tag)
+            if user.pendingbf != None:
+                sender = user.pendingbf
+                temp2 = self.bot.get_user(sender.tag)
                 await ctx.send("Congratulations")
                 await temp2.send(f"{user.name} Accepted your best friend request")
 
-                user.bfid = x.tag
-                x.bfid = user.tag
+                user.bfid = sender.tag
+                sender.bfid = user.tag
                 user.hasbff = True
-                x.hasbff = True
-                del user.pendingbf
+                sender.hasbff = True
+                
+                user.pendingbf = None
             
-            except AttributeError:
+            else:
                 await ctx.send("No one has sent you a best friend request")
             
         else:
@@ -330,12 +335,12 @@ class Relamain(commands.Cog):
     async def denybff(self, ctx):
         if await self.isuser(ctx.author):
             user = await self.getuser(ctx.author)
-            try:
-                del user.pendingbf
+            if user.pendingbf != None:
+                user.pendingbf = None
                 
                 await ctx.send("Rejected")
             
-            except AttributeError:
+            else:
                 await ctx.send("No one has sent you a best friend request")
             
         else:
@@ -344,25 +349,25 @@ class Relamain(commands.Cog):
     @commands.command()
     async def newchild(self, ctx, member: discord.Member):
         if ctx.author == member:
-            await ctx.send("I'm glad to see you love yourself")
+            await ctx.send("Uh... what?")
             return
+
         if await self.isuser(ctx.author) and await self.isuser(member):
             user = await self.getuser(ctx.author)
             user2 = await self.getuser(member)
-            try:
-                user2.pendingpar
+            
+            if user2.pendingpar != None:
+
                 await ctx.send("This person already has a parent request")
                 return
-            except AttributeError:
-                pass
 
-            if len(user2.parents) > 1:
+            if len(user2.parents) == 2:
                 await ctx.send(f"Sorry to say but, {user2.name} already has 2 parents")
                 return
 
             await member.send(f"Hey. {ctx.author} would like to be your parent. Do <>acceptparent or <>denyparent")
             await ctx.send("Your request has been sent")
-            user2.pendingpar = user
+            user2.pendingpar = user.tag
         else:
             await ctx.send("You or the person you mentioned, does not have a Social Profile")
 
@@ -370,22 +375,24 @@ class Relamain(commands.Cog):
     async def acceptparent(self, ctx):
         if await self.isuser(ctx.author):
             user = await self.getuser(ctx.author)
-            try:
-                x = user.pendingpar
-                temp2 = self.bot.get_user(x.tag)
+            if user.pendingpar != None:
+                sender = await self.reget(user.pendingpar)
+                temp2 = self.bot.get_user(sender.tag)
 
                 parlist = list(user.parents)
-                parlist.append(x.tag)
+                parlist.append(sender.tag)
                 user.parents = parlist
 
-                clist = list(x.children)
+                clist = list(sender.children)
                 clist.append(user.tag)
-                x.children = clist
+                sender.children = clist
 
-                await ctx.send(f"Successful. Congrats. You are now the child of {x.name}")
+                await ctx.send(f"Successful. Congrats. You are now the child of {sender.name}")
                 await temp2.send(f"Congratulations. You are now a parent of {user.name}")
 
-            except AttributeError:
+                user.pendingpar = None
+
+            else:
                 await ctx.send("You don't have any pending parent requests")
                 return
         else:
@@ -395,16 +402,17 @@ class Relamain(commands.Cog):
     async def denyparent(self, ctx):
         if await self.isuser(ctx.author):
             user = await self.getuser(ctx.author)
-            try:
-                x = user.pendingpar
+            
+            if user.pendingpar != None:
+                x = await self.reget(user.pendingpar)
                 temp1 = self.bot.get_user(x.tag)
 
                 await temp1.send("Your parent request has been denied")
-                del user.pendingpar
+                user.pendingpar = None
 
                 await ctx.send("Rejected Successfully")
             
-            except AttributeError:
+            else:
                 await ctx.send("You do not have any pending requests")
         
         else:
@@ -507,9 +515,26 @@ class Relamain(commands.Cog):
             await ctx.send("Not a member. Become one with <>createsocial")
 
     @commands.command()
+    @commands.cooldown(1, 120, commands.BucketType.user)
+    async def feed(self, ctx):
+        if await self.isuser(ctx.author):
+            user = await self.getuser(ctx.author)
+            if user.haspet():
+                pet = await self.getpetid(user.petid, ctx.channel)
+                await ctx.send(f"You feed {pet.name}")
+                await asyncio.sleep(2)
+                await ctx.send(f"{pet.name} {pet.feedmsg}")
+                user.petexp += 15
+            else:
+                await ctx.send("You don't have a pet to feed")
+        else:
+            await ctx.send("You are not a member. Become one with <>createsocial")
+
+    @commands.command()
     @commands.is_owner()
     async def save(self, ctx):
         self.updateusers.restart()
+        print("Updated profile")
         
 
     # Non Commands

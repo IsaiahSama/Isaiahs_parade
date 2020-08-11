@@ -107,9 +107,9 @@ class Moderator(commands.Cog):
     # Delete Messages
     @commands.command()
     @commands.has_permissions(manage_messages=True)
-    async def zahando(self, ctx, arg: int):
+    async def zahando(self, ctx, amount: int):
         await ctx.message.delete()
-        await ctx.channel.purge(limit=arg)
+        await ctx.channel.purge(limit=amount)
         await asyncio.sleep(0.5)
         file=discord.File("images/zahando.gif", filename="zahando.gif")
 
@@ -144,14 +144,14 @@ class Moderator(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(manage_messages=True)
-    async def kingcrimson(self, ctx, member: discord.Member, arg: int):
+    async def kingcrimson(self, ctx, member: discord.Member, amount: int):
         # def checking(m):
         #    return m.author == member
         # await ctx.channel.purge(limit=arg, check=checking)
         file = discord.File("images/kc.gif", filename="kc.gif")
         counter = 0
         for m in await ctx.channel.history().flatten():
-            if counter < arg:
+            if counter < amount:
                 if m.author == member:
                     await m.delete()
                     counter += 1
@@ -159,7 +159,7 @@ class Moderator(commands.Cog):
             title="KING CRIMSON NO NOURYOKU",
             description=f'''**It is only the results that remain in this world!
     All the actions you take in a world where time is erased are meaningless!**
-    ***{member.mention} is now free of {arg} crimes***''',
+    ***{member.mention} is now free of {amount} crimes***''',
             color=randint(0, 0xffffff)
         )
         embed.set_thumbnail(url=self.bot.user.avatar_url)
@@ -171,11 +171,11 @@ class Moderator(commands.Cog):
     # Enables Slowmode
     @commands.command()
     @commands.has_permissions(manage_channels=True)
-    async def freeze3(self, ctx, arg: int):
+    async def freeze3(self, ctx, second: int):
         file = discord.File("images/3_freeze.gif", filename="3_freeze.gif")
         embed = discord.Embed(
             title="3 FREEZE",
-            description=f"Messages have been slowed down to {arg} second intervals",
+            description=f"Messages have been slowed down to {second} second intervals",
             color=randint(0, 0xffffff)
         )
 
@@ -183,14 +183,14 @@ class Moderator(commands.Cog):
         embed.set_image(url="attachment://3_freeze.gif")
 
         await ctx.send(file=file, embed=embed)
-        await ctx.channel.edit(slowmode_delay=arg)
+        await ctx.channel.edit(slowmode_delay=second)
 
 
     # Overwrites channel permissions to stop @everyone from talking in chat
     @commands.command()
     @commands.has_permissions(manage_channels=True)
     @commands.has_permissions(manage_roles=True)
-    async def zawarudo(self, ctx, arg: int=10):
+    async def zawarudo(self, ctx, seconds: int=10):
         guild = ctx.guild
         new_role = await guild.create_role(name="The Silent Ones")
 
@@ -198,7 +198,7 @@ class Moderator(commands.Cog):
         embed = discord.Embed(
             title="ZA... WARUDO!",
             description=f"""TOKI WO TOMARE!! 
-    (Channel frozen) for {arg} seconds""",
+    (Channel frozen) for {seconds} seconds""",
             color=randint(0, 0xffffff)
         )
 
@@ -226,7 +226,7 @@ class Moderator(commands.Cog):
                         await member.add_roles(role)
                     except:
                         continue
-        await asyncio.sleep(arg)
+        await asyncio.sleep(seconds)
         await ctx.send("*Jikan desu... (Channel unfrozen)*")
         for role in guild.roles:
             if role.name == "The Silent Ones":
@@ -332,6 +332,10 @@ class Moderator(commands.Cog):
             await ctx.send(error)
 
         if isinstance(error, commands.NotOwner):
+            
+            await ctx.send(error)
+
+        if isinstance(error, commands.MissingRequiredArgument):
             
             await ctx.send(error)
 
