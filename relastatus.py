@@ -48,7 +48,7 @@ class Pet:
         
         if self.canevolve():
             msg = f"Congratulations, Your {self.name} evolved into {self.evolvesinto.name} view with <>pet"
-            return msg, x.tag
+            return msg, self.evolvesinto.tag
 
         else:
             return
