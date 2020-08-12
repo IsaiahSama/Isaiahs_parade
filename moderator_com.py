@@ -327,6 +327,23 @@ class Moderator(commands.Cog):
 
         await ctx.send("Notified")
 
+    @commands.command()
+    @commands.has_permissions(view_audit_log=True)
+    async def relog(self, ctx, amount=5):
+        channel = discord.utils.get(ctx.guild.text_channels, name="logs")
+        if channel == None:
+            channel = await ctx.guild.create_text_channel("logs")
+
+        async for entry in ctx.guild.audit_logs(limit=amount):
+            logbed = discord.Embed(
+                title=f"Log Entry",
+                description=f"{entry.user.name} did {entry.action}",
+                color=randint(0, 0xffffff)
+            )
+            
+            await channel.send(embed=logbed)
+            
+
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):

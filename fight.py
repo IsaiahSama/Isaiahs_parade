@@ -814,6 +814,8 @@ ut3 = BeastFight("Ender Dragon", 10027, 1000, 450, 480, 17000, 18050, "Uh, Somet
 ability=blast, attackmsg="Breathes on")
 ut4 = BeastFight("Moon Lord", 10028, 2000, 750, 800, 17000, 20000, "Impending Doom Approaches", 1000,10,20,
 critstrike, regeneration, "Summons a Phantasmal Deathray and blasts", armour=abyss)
+ut5 = BeastFight("Young Flame Handler", 10037, 1020, 500, 600, 17000, 19000, "His job... defeat you", 800, 5, 3, critstirke, attackmsg="strikes",
+weapon=sfknife, shadowflame)
 
 # Tier 5
 nme = BeastFight("NME", 10031, 7000, 1100, 1300, 42400, 52800, "NME is the enemy and he's come to prove that", 4000, 
@@ -828,16 +830,19 @@ kdono = BeastFight("Kevin not Kevin", 10034, 8000, 1000, 1200, 58000, 64000, "KE
 "menacingly approaches", hcard, vknight)
 tmaster = BeastFight("Tank Master", 10035, 9000, 1000, 1200, 58000, 64000, "have you ever seen a tank up close?", 5000, 5,3,
 blast, sharpeye, "Summons his tank, aims it, and fires", tsummon, artillery)
-
-
+rebdio = BeastFight("DIO Reborn", 10036, 10500, 1600, 1800, 64000, 670000, "It's like he never dies.", 6000, 20,5, uheal, regeneration,
+"flash freezes then drains", evampknife, vampcloak)
 
 
 # Lists
 
-enemy = [easy1, easy2, easy3, easy4, easy5, easy6, easy7, easy8, easy9, easy10, 
+enemy = [
+easy1, easy2, easy3, easy4, easy5, easy6, easy7, easy8, easy9, easy10, 
 mid1, mid2, mid3, mid4, mid5, mid6, mid7, mid8, mid9, mid10,
 hard1, hard2, hard3, hard4, hard5, hard6, hard7,
-ut1, ut2, ut3, ut4, isama, nme, uksniper, sfass, kdono, tmaster]
+ut1, ut2, ut3, ut4, ut5,
+isama, nme, uksniper, sfass, kdono, tmaster, rebdio
+]
 
 # def __init__(self, name, tag, health, mindmg, maxdmg, mincoin, maxcoin, entrymessage, minxp, 
 # critchance=5, healchance=3, ability=None, passive=None, attackmsg=None, weapon=fist, armour=linen, 
