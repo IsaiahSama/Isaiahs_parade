@@ -814,8 +814,8 @@ ut3 = BeastFight("Ender Dragon", 10027, 1000, 450, 480, 17000, 18050, "Uh, Somet
 ability=blast, attackmsg="Breathes on")
 ut4 = BeastFight("Moon Lord", 10028, 2000, 750, 800, 17000, 20000, "Impending Doom Approaches", 1000,10,20,
 critstrike, regeneration, "Summons a Phantasmal Deathray and blasts", armour=abyss)
-ut5 = BeastFight("Young Flame Handler", 10037, 1020, 500, 600, 17000, 19000, "His job... defeat you", 800, 5, 3, critstirke, attackmsg="strikes",
-weapon=sfknife, shadowflame)
+ut5 = BeastFight("Young Flame Handler", 10037, 1020, 500, 600, 17000, 19000, "His job... defeat you", 800, 5, 3, critstrike, attackmsg="strikes",
+weapon=sfknife, armour=shadowflame)
 
 # Tier 5
 nme = BeastFight("NME", 10031, 7000, 1100, 1300, 42400, 52800, "NME is the enemy and he's come to prove that", 4000, 
