@@ -95,7 +95,7 @@ class Relamain(commands.Cog):
             userbed.add_field(name="In Relationship:", value=f"{ruser.rela}")
             if ruser.rela:
                 x = await self.reget(ruser.pid)
-                userbed.add_field(name="Partner:", value=f"{x.name}")
+                userbed.add_field(name="Lover:", value=f"{x.name}")
             userbed.add_field(name="Number of Friends:", value=f"{ruser.friendcount}")
             if ruser.hasbff:
                 y = await self.reget(ruser.bfid)
@@ -252,17 +252,17 @@ class Relamain(commands.Cog):
             if await self.isuser(member):
 
                 if user.pendinglove != None:
-                    sender = self.reget(user.pendinglove)
+                    sender = await self.reget(user.pendinglove)
 
-                    user.pname = sender.tag
-                    sender.pname = user.tag
+                    user.pid = sender.tag
+                    sender.pid = user.tag
 
                     mainuser = self.bot.get_user(user.tag)
                     await mainuser.send(f"Congratualions. You are now {sender.name}'s lover")
-                    mainuser.rela = True
+                    user.rela = True
                     mainuser2 = self.bot.get_user(sender.tag)
                     await mainuser2.send(f"Congratualions. You are now {user.name}'s lover")
-                    mainuser2.rela = True
+                    sender.rela = True
 
                     user.pendinglove = None
 

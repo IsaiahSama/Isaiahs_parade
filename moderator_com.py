@@ -315,6 +315,17 @@ class Moderator(commands.Cog):
         await ctx.send(f"{member.mention}. You have been Unmuted. Do your best to not have to be muted again")
         await member.remove_roles(role)
 
+    @commands.command()
+    @commands.is_owner()
+    async def rnotif(self, ctx, *, msg):
+        for server in self.bot.guilds:
+            role = discord.utils.get(server.roles, name="Parader")
+            channel = discord.utils.get(server.text_channels, name="parade-room")
+            if role == None or channel == None:
+                continue
+            await channel.send(f"Attention {role.mention}. {msg}")
+
+        await ctx.send("Notified")
 
 
     @commands.Cog.listener()

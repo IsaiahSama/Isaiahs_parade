@@ -90,7 +90,7 @@ meagle = Pet("Chick", "It's power is growing at a rapid rate, Likes wild meat", 
 "occassionally nips your finger in it's haste")
 tstig = Pet("Transforming Cub", "Changes shape from time to time while playing with you", 20017, "Mammal",
 3, 800, 2, tstiger, "transforms into various creatures in it's excitement and circles you.", "devours")
-tree = Pet("The Tree", "A large tree with facial features not needing water. It's leaves look fun to ride on", 20020, "Plant",
+tree = Pet("Groot", "A large tree with facial features not needing water. It's leaves look fun to ride on", 20020, "Plant",
 2, 0, 2, playmessage="Picks you up, places you on it's powerful large leaves, and walks around", 
 feedmsg="Extends it's leaves covering you and takes in light")
 lizard = Pet("Lizard", "It's become fairly large and... these scales feel so nice?", 20022, "Reptile", 3, 1100, 2, dragon, "Roars and rubs against you",

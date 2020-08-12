@@ -122,10 +122,6 @@ class FullFight(commands.Cog):
             if target.weapon.name == "Plague Doctors Scepter":
                 target.weapon.damage = math.floor(target.maxdmg * 0.5)
 
-        if target.tag == 347513030516539393:
-            await ctx.send("Congratualtions Trxsh. You have received your mod armor")
-            target.armour = "Vibe Master"
-
         if target.tag == 493839592835907594:
             if target.level < 250:
                 await ctx.send("Your armour is Ready Kevin. Just reach level 250 to claim it")
@@ -196,7 +192,7 @@ class FullFight(commands.Cog):
         channel = self.bot.get_channel(739266609264328786)
         if user in self.users:
             await ctx.send("You already have a profile. View with <>profile")
-            await ctx.send("Did you mean <>createuser to create a Social Profile?")
+            await ctx.send("Did you mean <>createsocial to create a Social Profile?")
             return
         else:
             acc = Fighter(ctx.author.name, ctx.author.id, 0, 0, 170, 10, 20, 0, 0, 100)

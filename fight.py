@@ -31,7 +31,7 @@ class Ability:
 
 
     def use(self):
-        return self.power, self.powertick, self.health, self.lodmg, self.hidmg, 
+        return self.power, self.powertick, self.health, self.lodmg, self.hidmg, self.perhealth
 
 class Passive(Ability):
     def use(self):
@@ -580,12 +580,14 @@ class FightMe(Fighter):
     
 
     def abiluse(self, power):
-        powerinc, powerticinc, healthinc, lodmginc, hidmginc = self.ability.use()
+        powerinc, powerticinc, healthinc, lodmginc, hidmginc, perhealth = self.ability.use()
         power *= powerinc
         power += powerticinc
         self.health += healthinc
         self.mindmg += lodmginc
         self.maxdmg += hidmginc
+        perhealth = math.ceil((perhealth/ 100) * self.health)
+        self.health += perhealth
 
         return power
 
@@ -647,12 +649,14 @@ class FightingBeast(BeastFight):
         self.health = self.health - dmg
 
     def abiluse(self, power):
-        powerinc, tickpow, healthinc, lodmginc, hidmginc = self.ability.use()
+        powerinc, tickpow, healthinc, lodmginc, hidmginc, perhealth= self.ability.use()
         power *= powerinc
         power += tickpow
         self.health += healthinc
         self.mindmg += lodmginc
         self.maxdmg += hidmginc
+        perhealth = math.ceil((perhealth/ 100) * self.health)
+        self.health += perhealth
 
         return power
 
