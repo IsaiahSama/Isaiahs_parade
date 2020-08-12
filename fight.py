@@ -167,15 +167,17 @@ sfknife = Weapons("Shadow Flame Knife", "Crafted from sorcery", "stabs and burns
 srifle = Weapons("Sniper Rifle", "Never miss a shot", "Snipes", 300, 40, 4, cost=300000, tierz=4)
 
 # Tier 5
-evampknife = Weapons("Enchanted Vamp Knife", "An upgrade to those flimsy Vamp Knives", "drains the blood of", 600, 7, 20, 1000000, 5)
+evampknife = Weapons("Enchanted Vamp Knife", "Vampire knife, but enchanted with the blood of many", "drains the blood of", 600, 7, 20, 1000000, 5)
+dreamsword = Weapons("Dream Sword", "Crafted from the essence of the light side of sleep", "steals the dreams of", 700, 15, 2, 1000000, 5)
+yin = Weapons("Yin Blade", "The physical manifestation of darkness, destruction and negative energy", "alters the existence of", 1800, 20, 5, 5300000, 5)
 
 weaponlist = [fist, katana, bow, pistol, sword, dagger, slime, fishrod, axe, fpan, vampknives, miracles, 
 blaster, dsword, bomb, crossbow, bsuckler, sancspear, stormbreaker, hcard, vibechk, seruption, tsummon, sfknife, srifle,
-evampknife]
+evampknife, dreamsword, yin]
 
 # Unique
 pds = Weapons("Plague Doctors Scepter", "Soulbound to ...?", "infects", 0, 10, 15, 0, 5)
-parblade = Weapons("Staff of the Parade", "The Chosen weapon of the Parade Creator", "moderates", 1370, 20, 25, 99999999999, 5)
+parblade = Weapons("Staff of the Parade", "The Chosen weapon of the Parade Creator", "moderates", 3370, 20, 25, 99999999999, 5)
 
 allweapons = [pds, parblade]
 for weapon in weaponlist:
@@ -233,17 +235,19 @@ shadowflame = Armour("Shadow Flame",
 510, 200, 500000, 5, sfknife, 4)
 artillery = Armour("Master General", "mhm yes. Tank uniform. Gains set bonus with Tank Summon", 660, 150, 500000, 0, tsummon, 4)
 sranger = Armour("Tundra Ranger", "Gained from surviving the depth of the Tundra. Gains set bonus with Sniper Rifle", 570, 160, 500000, 4, srifle, 4)
-
 # Tier 5
-vampcloak = Armour("Vampiric Cloak", "Drains blood easily. Pairs well with Enchanted Vamp Knives", 800, 300, 1100000, 18, evampknife, 5)
+vampcloak = Armour("Vampiric Cloak", "Makes it easier to drain blood. Pairs well with Enchanted Vamp Knives", 800, 300, 1100000, 18, evampknife, 5)
+nightmare = Armour("Nightmare", "Woven together from the essence of the dark side of sleep. Gains set bonus with Dream Sword",
+800, 420, 1100000, 0, dreamsword )
+yang = Armour("Yang", "The physical manifestation of creation, light and positive energy", 1500, 1000, 5000000, 30, yin, 5)
 # unique
-paraders = Armour("Parade Creators Outfit", "Identifies the creator of the Parade", 900, 370, 99999999, 10, parblade, 5)
-pdr = Armour("True Plague Doctors Uniform", "Identifies ...? as a Parade Leader", 1050, 300, 9999999999, 25, pds, 5)
-vmaster = Armour("Vibe Master", "Identifies Trxsh as a Parade Leader", 700, 250, 99999999999, 6, vibechk, 5)
+paraders = Armour("Parade Creators Outfit", "Identifies the creator of the Parade", 5900, 1370, 99999999, 10, parblade, 5)
+pdr = Armour("True Plague Doctors Uniform", "Identifies ...? as a Parade Leader", 4050, 900, 9999999999, 25, pds, 5)
+vmaster = Armour("Vibe Master", "Identifies Trxsh as a Parade Leader", 2700, 1000, 99999999999, 6, vibechk, 5)
 
 
 armorlist = [linen, chain, hunters, iron, gold, slimearm, assas, valkryie, diamond, saiyanguc, abyss, paladium, cranger,
-solarflare, elitist, wood, haki, plaguearm, vknight, shadowflame, artillery, sranger, vampcloak]
+solarflare, elitist, wood, haki, plaguearm, vknight, shadowflame, artillery, sranger, vampcloak, nightmare, yang]
 
 allarmor = [paraders, pdr, vmaster]
 for thing in armorlist:
@@ -539,15 +543,15 @@ class FightMe(Fighter):
         
         elif self.armour.name == "Master General":
             self.health += 220
-            self.weapon.damage += 10
-            msg = "Increased health by 220. Increased weapon damage by 10"
+            self.weapon.damage += 20
+            msg = "Increased health by 220. Increased weapon damage by 20"
 
         elif self.armour.name == "Tundra Ranger":
             self.health += 150
-            self.critchance += 10
-            self.weapon.damage += 10
+            self.critchance += 15
+            self.weapon.damage += 15
             self.weapon.healplus += 3
-            msg = "Increased health by 150. Increased Critchance and weapon damage by 10. Increased weapon lifesteal by 3%"
+            msg = "Increased health by 150. Increased Critchance and weapon damage by 15. Increased weapon lifesteal by 3%"
         
         elif self.armour.name == "Vibe Master":
             self.critchance += 100
@@ -561,6 +565,22 @@ class FightMe(Fighter):
             self.weapon.damage += 40
             msg = "Increased Health by 200, lifesteal on ENC Vamp Knives by 5%, damage on ENC Vamp Knives by 40 and regen on Vamp Cloak by 2%"
 
+        elif self.armour.name == "Nightmare":
+            self.health += 120
+            self.weapon.damage += 120
+            self.attackmsg = "Sealed the dreams of"
+            return "Increased health and weapon damage by 120"
+
+        elif self.armour.name == "Yang":
+            self.health += 500
+            self.weapon.damage += 400
+            self.weapon.healplus += 4
+            self.armour.regen += 4
+            self.critchance += 10
+            self.mindmg += 50
+            self.maxdmg += 50
+            self.attackmsg = "manipulates the mind and soul of"
+            return "Perfect balanced has been achieved. Increased health by 500, Damage of Yin Blade by 400, increased lifesteal on both Yang and Yin by 4%,increased crit chance by 10% and increased min and max damage by 50"
         
         else:
             return "Something went wrong"
@@ -744,6 +764,36 @@ class FightingBeast(BeastFight):
             self.weapon.damage += 10
             self.weapon.healplus += 3
             msg = "Increased health by 150. Increased Critchance and weapon damage by 10. Increased weapon lifesteal by 3%"
+        
+        elif self.armour.name == "Vibe Master":
+            self.critchance += 100
+            self.weapon.damage += 30
+            msg = "Increased crit chance by 100. Increased weapon damage by 30"
+
+        elif self.armour.name == "Vampiric Cloak":
+            self.health += 200
+            self.weapon.healplus += 5
+            self.armour.regen += 2
+            self.weapon.damage += 40
+            msg = "Increased Health by 200, lifesteal on ENC Vamp Knives by 5%, damage on ENC Vamp Knives by 40 and regen on Vamp Cloak by 2%"
+
+        elif self.armour.name == "Nightmare":
+            self.health += 120
+            self.weapon.damage += 120
+            self.attackmsg = "Sealed the dreams of"
+            return "Increased health and weapon damage by 120"
+
+        elif self.armour.name == "Yang":
+            self.health += 500
+            self.weapon.damage += 400
+            self.weapon.healplus += 4
+            self.armour.regen += 4
+            self.critchance += 10
+            self.mindmg += 50
+            self.maxdmg += 50
+            self.attackmsg = "manipulates the mind and soul of"
+            return "Perfect balanced has been achieved. Increased health by 500, Damage of Yin Blade by 400, increased lifesteal on both Yang and Yin by 4%,increased crit chance by 10% and increased min and max damage by 50"
+        
         else:
             return "Something went wrong"
 
@@ -833,7 +883,6 @@ blast, sharpeye, "Summons his tank, aims it, and fires", tsummon, artillery)
 rebdio = BeastFight("DIO Reborn", 10036, 10500, 1600, 1800, 64000, 670000, "It's like he never dies.", 6000, 20,5, uheal, regeneration,
 "flash freezes then drains", evampknife, vampcloak)
 
-
 # Lists
 
 enemy = [
@@ -869,9 +918,12 @@ plaguearm)
 slimeraid = BeastFight("Prince Slime", 90007, 30000, 400, 500, 25000, 29000, "Prince Slime has awoken", 2000,
 attackmsg="Bounces on", weapon=slime, armour=slimearm)
 
+loc = BeastFight("Lord Of Creation and Destruction", 90008, 100000, 6000, 8000, 100000, 400000, "1 force descends from heaven, the other from the underworld. Now... they are one",
+10000, 40, 30, None, critblock, "manipulates the existence of", yin, yang)
 
 
-raidingmonster = [giggeng, biggums, slimeraid, bebebe, oogabooga, anansi, pdoctor]
+
+raidingmonster = [bebebe, giggeng, biggums, oogabooga, anansi, pdoctor, slimeraid, loc]
 
 # Quest Prompts
 

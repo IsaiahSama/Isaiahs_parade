@@ -1032,6 +1032,9 @@ Stat names are the names that you see in the above embed, with the exception of 
             return
 
         uwep, uarm = user.getgear()
+        if uwep not in weaponlist or uarm not in armorlist:
+            await ctx.send("You can not sell a weapon that does not exist in the shop")
+            return
 
         if selly and arg == None:
             await ctx.send(f"Do <>sell True armour or <>sell True weapon to sell your armour or weapon resepectively")
@@ -1114,7 +1117,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             pass
         currole = discord.utils.get(guild.roles, name="Parader")
         
-        await channel.send(f"Attention {currole.name}. A Raid Boss is on it's way to you. Join the raid with <>raid. We only have 2 minutes")
+        await channel.send(f"Attention {currole.mention}. A Raid Boss is on it's way to you. Join the raid with <>raid. We only have 2 minutes")
 
         await asyncio.sleep(90)
         await channel.send("We have info on the beast. 30 seconds remain")

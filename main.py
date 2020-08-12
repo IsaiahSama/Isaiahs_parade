@@ -86,7 +86,7 @@ async def on_guild_join(guild):
 
     role = discord.utils.get(guild.roles, name="Parader")
     if role == None:
-        await guild.create_role(name="Parader")
+        role = await guild.create_role(name="Parader")
 
     mchan = bot.get_channel(740414745252986970)
     await mchan.send(f"I have been invited to {guild.name}. {role.name} and {channel.name} Have been created successfully")
@@ -156,7 +156,8 @@ async def help(ctx, *, category=None):
     moderator.add_field(name='<>relax', value="mutes all members in the channel for 5 seconds. (A)", inline=False)
     moderator.add_field(name='<>killerqueen {@mention} [time: Default 2 minutes]', value="Strips the mentioned user of their roles for the mentioned amount of minutes. Roles are restored 1 by 1 in 2 minute intervals (A)", inline=False)
     moderator.add_field(name="<>mute {@mention} [time (default 5 minutes)] [reason (optional)", value="Used to mute a user", inline=False)
-    
+    moderator.add_field(name="<>relog {amount default=5}", value="Shows the audit log up to the given amount.", inline=False)
+
     actions = discord.Embed(
             title="Action Commands",
             description="Use these to do some stuff",
@@ -231,7 +232,7 @@ async def help(ctx, *, category=None):
     inline=False)
     battle.add_field(name="<>upgrade", value="Shows the upgrade area, where you can upgrade yourself", inline=False)
     battle.add_field(name="<>raid", value="Joins a Boss Raid Battle", inline=False)
-    battle.add_field(name="<>prepraid", value="Stars a boss raid. Must be Level 20", inline=False)
+    battle.add_field(name="<>paraid", value="Stars a boss raid. Must be Level 40", inline=False)
     battle.add_field(name="<>readd", value="Gives you back Parader role if you ever lose it", inline=False)
     battle.add_field(name="<>shop", value="Opens the shop", inline=False)
     battle.add_field(name="<>togglefight", value="Toggles your pvp fight state", inline=False)

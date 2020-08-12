@@ -50,8 +50,8 @@ class Special(commands.Cog):
             color=randint(0, 0xffffff)
         )
         embed.set_thumbnail(url=self.bot.user.avatar_url)
-        embed.add_field(name="Battle", value="Changes", inline=False)
-        embed.add_field(name="<>search", value="Searches for Fellow Paraders in your tier who are available for fighting", inline=False)
+        embed.add_field(name="Moderator", value="Additions", inline=False)
+        embed.add_field(name="<>relog {amount default=5}", value="Shows the audit log up to the given amount.", inline=False)
         
         for server in self.bot.guilds:
             channel = discord.utils.get(server.text_channels, name="parade-room")
@@ -183,6 +183,7 @@ class Special(commands.Cog):
             )
 
             embed.set_thumbnail(url=guild.icon_url)
+            embed.add_field(name="Guild Id:", value=f"{guild.id}")
             embed.add_field(name="Guild Number", value=f"{guild_index}")
             embed.add_field(name="Guild Name", value=guild.name)
             embed.add_field(name="Guild Owner", value=guild.owner)

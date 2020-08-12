@@ -337,7 +337,7 @@ class Moderator(commands.Cog):
         async for entry in ctx.guild.audit_logs(limit=amount):
             logbed = discord.Embed(
                 title=f"Log Entry",
-                description=f"{entry.user.name} did {entry.action}",
+                description=f"{entry.action.name}: Done by {entry.user}\nTime: {entry.created_at.strftime('%b %a %H %M')}",
                 color=randint(0, 0xffffff)
             )
             
