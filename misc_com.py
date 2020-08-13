@@ -362,35 +362,7 @@ class GCallMisc(commands.Cog):
                 else:
                     for tchan in self.calledChannels:
                         await tchan.send(embed=msgembed2)
-
-
-class ProfanFilter(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-    
-    badword = ["fuck", "shit", "bitch", "cum", "nigger"]
-
-    async def regulate(self, msg):
-        msg = msg.replace("fuck", "fack")
-        msg = msg.replace("shit", "shiz")
-        msg = msg.replace("bitch", "beech")
-        msg = msg.replace("cum", "excrete my sexual fluid")
-        msg = msg.replace("nigger", "black friend")
-        return msg
-        
-
-    @commands.Cog.listener()
-    async def on_message(self, message):
-        if message.author == self.bot.user:
-            return
-
-        for sword in self.badword:
-            if sword in message.content.lower():
-                newmsg = await self.regulate(message.content.lower())
-                await message.channel.send(f"{message.author.display_name}: {newmsg}")
-                await message.delete()
-                return
-        
+       
 
 
 
@@ -399,4 +371,3 @@ def setup(bot):
     bot.add_cog(CallMisc(bot))
     bot.add_cog(GCallMisc(bot))
     bot.add_cog(getmentioned(bot))
-    bot.add_cog(ProfanFilter(bot))

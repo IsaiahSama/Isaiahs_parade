@@ -372,7 +372,35 @@ class Moderator(commands.Cog):
             channel = self.bot.get_channel(740337325971603537)
             await channel.send(f"{ctx.author.name}: {error}")
             print(error)
-                
+
+
+class ProfanFilter(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+    
+    badword = ["fuck", "shit", "bitch", "cum", "nigger"]
+
+    async def regulate(self, msg):
+        msg = msg.replace("fuck", "fack")
+        msg = msg.replace("shit", "shiz")
+        msg = msg.replace("bitch", "beech")
+        msg = msg.replace("cum", "excrete my sexual fluid")
+        msg = msg.replace("nigger", "black friend")
+        return msg
+        
+
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if message.author == self.bot.user:
+            return
+
+        for sword in self.badword:
+            if sword in message.content.lower():
+                newmsg = await self.regulate(message.content.lower())
+                await message.channel.send(f"{message.author.display_name}: {newmsg}")
+                await message.delete()
+                return        
 
 def setup(bot):
     bot.add_cog(Moderator(bot))
+    bot.add_cog(ProfanFilter(bot))
