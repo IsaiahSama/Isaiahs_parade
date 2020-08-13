@@ -42,6 +42,13 @@ class Special(commands.Cog):
 
     @commands.command()
     @commands.is_owner()
+    async def completed(self, ctx, msgid):
+        # Gets message by ID, and then reacts with check mark
+        self.bot.http.add_reaction(ctx.channel.id, msgid, "\U00002705")
+        await ctx.send("Completed suggestion")
+
+    @commands.command()
+    @commands.is_owner()
     async def updatelog(self, ctx):
         await ctx.message.delete()
         embed = discord.Embed(
