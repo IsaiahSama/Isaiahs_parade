@@ -485,6 +485,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         if self.aboutupdate:
             await ctx.send("Cannot Do a Quest/Fight Right now as bot is about to go offine")
             return
+        
         user1 = None
         user2 = None
 
@@ -648,6 +649,15 @@ Stat names are the names that you see in the above embed, with the exception of 
                         await ctx.send(f"New mindamage is {attacker.mindmg}")
                         await ctx.send(f"New Max Damage is {attacker.maxdmg}")
                         battlebed.add_field(name=f"{attacker.name}", value=f"{attacker.passive.usename}: {attacker.passive.effect}")
+
+            if attacker.health >= 65000:
+                attacker.weapon.healplus = 0
+                attacker.armour.regen = 0
+                if attacker.passive.name == "Regeneration":
+                    attacker.passive.name = None
+                if attacker.ability.name == "Ultra Heal":
+                    attacker.ability.name = None
+                await ctx.send("All regen has been Disabled")
 
         
             power = randint(attacker.mindmg, attacker.maxdmg)

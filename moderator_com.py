@@ -377,6 +377,18 @@ class Moderator(commands.Cog):
 class ProfanFilter(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+
+    exempt = []
+
+    @commands.command()
+    @commands.has_permissions(manage_channels=True)
+    async def profane(self, ctx):
+        if ctx.guild in self.exempt:
+            self.exempt.remove(ctx.guild)
+            await ctx.send("Profanity is no longer being moderated")
+        else:
+            self.exempt.append(ctx.guild)
+            await ctx.send("Profanity is being moderated")
     
     badword = ["fuck", "shit", "bitch", "cum", "nigger"]
 
@@ -385,7 +397,7 @@ class ProfanFilter(commands.Cog):
         msg = msg.replace("shit", "shiz")
         msg = msg.replace("bitch", "beech")
         msg = msg.replace("cum", "excrete my sexual fluid")
-        msg = msg.replace("nigger", "black friend")
+        msg = msg.replace("nigger", "handsome black person")
         return msg
         
 
@@ -394,12 +406,15 @@ class ProfanFilter(commands.Cog):
         if message.author == self.bot.user:
             return
 
-        for sword in self.badword:
-            if sword in message.content.lower():
-                newmsg = await self.regulate(message.content.lower())
-                await message.channel.send(f"{message.author.display_name}: {newmsg}")
-                await message.delete()
-                return        
+        if message.guild in self.exempt:
+            return
+        else:
+            for sword in self.badword:
+                if sword in message.content.lower():
+                    newmsg = await self.regulate(message.content.lower())
+                    await message.channel.send(f"{message.author.display_name}: {newmsg}")
+                    await message.delete()
+                    return        
 
 def setup(bot):
     bot.add_cog(Moderator(bot))

@@ -10,6 +10,16 @@ class Action(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @commands.command()
+    async def clown(self, ctx):
+        clownbed = discord.Embed(
+            title="Worthy of this clown award",
+            color=randint(0, 0xffffff)
+        )
+
+        clownbed.set_image(url="https://pics.me.me/you-dropped-this-2-clowns-license-hey-55698957.png")
+
+        await ctx.send(embed=clownbed)
     # Pose       
 
     @commands.command()

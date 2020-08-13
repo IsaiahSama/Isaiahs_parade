@@ -13,9 +13,9 @@ class Ability:
     health: int
     lodmg: int
     hidmg: int
-    abilcd: int
-    tempcd: int
-    perhealth: int
+    abilcd: int = 4
+    tempcd: abilcd = 4
+    perhealth: int = 0
 
     def oncd(self):
         if self.abilcd == self.tempcd:
@@ -129,7 +129,7 @@ class Weapons:
     name: str
     desc: str
     effect: str
-    damage: int
+    damage: int= 0
     critplus: int=0
     healplus: int=0
     cost: int=0
@@ -472,7 +472,7 @@ class FightMe(Fighter):
         weapon = [w for w in allweapons if w.name == self.weapon]
         armor = [t for t in allarmor if t.name == self.armour]
 
-        self.weapon, self.armour = weapon[0], armor[0]
+        self.weapon, self.armour = copy.copy(weapon[0]), copy.copy(armor[0])
 
         
         self.buffup()
@@ -626,27 +626,26 @@ class FightMe(Fighter):
 
         return power
 
-
-@dataclass
 class BeastFight:
-    name: str
-    tag: int
-    health: int
-    mindmg: int
-    maxdmg: int
-    mincoin: int
-    maxcoin: int
-    entrymessage:str
-    minxp: int
-    maxxp: minxp + 25
-    critchance: int=5
-    healchance: int=3
-    ability: object=None
-    passive: object=None
-    attackmsg: str=None    
-    weapon: object=fist
-    armour: object=linen
-    typeobj: str="npc"
+    def __init__(self, name, tag, health, mindmg, maxdmg, mincoin, maxcoin, entrymessage, minxp, critchance=5, healchance=3, ability=None, passive=None, attackmsg=None, weapon=fist, armour=linen, typeobj="npc"):
+        self.name = name
+        self.tag = tag
+        self.health = health
+        self.mindmg = mindmg 
+        self.maxdmg = maxdmg
+        self.mincoin = mincoin
+        self.maxcoin = maxcoin
+        self.entrymessage = entrymessage
+        self.minxp = minxp
+        self.maxxp = minxp + 25
+        self.critchance = critchance
+        self.healchance = healchance
+        self.ability = ability
+        self.passive = passive
+        self.attackmsg = attackmsg
+        self.weapon = copy.copy(weapon)
+        self.armour = copy.copy(armour)
+        self.typeobj = typeobj
 
     def hasPassive(self):
         if self.passive == None:

@@ -51,7 +51,8 @@ class Special(commands.Cog):
         )
         embed.set_thumbnail(url=self.bot.user.avatar_url)
         embed.add_field(name="Battle", value="Changes", inline=False)
-        embed.add_field(name="<>shop/<>buy", value="Fixed the stats on Tank Summon and Sniper Rifle.", inline=False)
+        embed.add_field(name="<>paraid/<>raid", value="Entire fight is now shown in Raid-Alerts in main server", inline=False)
+
         
         for server in self.bot.guilds:
             channel = discord.utils.get(server.text_channels, name="parade-room")

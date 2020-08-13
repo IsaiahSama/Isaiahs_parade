@@ -3,6 +3,8 @@ from discord.ext import commands
 import asyncio
 from random import randint
 import random
+from gameclass import wordgame
+import os
 
 
 class Gaming(commands.Cog):
@@ -12,116 +14,66 @@ class Gaming(commands.Cog):
 
     isaiah = 493839592835907594
 
-    # Story Making
-    message_list = []
-    storytelling = False
-    currentchannel = None
+    if os.path.exists("hangwords.txt"):
+        with open("hangwords.txt") as w:
+            x = w.read()
+            word_list = x.split(',')
+
+    else:
+        word_list = []
 
     banana_count = 0
-    annoy_count = 0
 
-    # Hangman
-    word_list = []
-    hangingchannel = None
-    hanging = False
-    trycount = 0
-    hiddenword = ""
-    word = ""
 
-    # Gaming
-    # Story
+    channels = []
 
     @commands.command()
     async def startstory(self, ctx):
-        self.message_list.clear()
-        if not self.hanging and not self.storytelling and ctx.channel is not self.hangingchannel:
-            self.storytelling = True
-            self.currentchannel = ctx.channel
+        
+        if await self.chancheck(ctx.channel.id):
+            await ctx.send("A story is already being told here or hangman is being played here")
+            return
 
-            await ctx.send("""Story mode has been activated. Get your friends and tell a story one word at a time.
+        storygame = wordgame(ctx.channel.id, "story")
+        self.channels.append(storygame)
+        
+        await ctx.send("""Story mode has been activated. Get your friends and tell a story one word at a time.
         Use <>endstory to exit story mode and see the full story
         BEGIN!""")
-        elif self.hanging and ctx.channel.id == self.hangingchannel.id:
-            await ctx.send("A hangman game is currently currently in Progress... Please wait or go elsewhere")
-        
-        elif self.storytelling:
-            await ctx.send("A story is in progress elsewhere :eyes:")
-
-        else:
-            await ctx.send("Doesn't seem you can make a story right now")
-
 
 
     @commands.command()
     async def endstory(self, ctx):
-        guild = ctx.guild
-
-        if len(self.message_list) == 0:
+        if not await self.chancheck(ctx.channel.id):
             await ctx.send("You haven't started a story as yet. Do so with <>startstory")
-            return False
+            return
 
-        if ctx.channel.id == self.currentchannel.id:
-            self.currentchannel = None
-            self.storytelling = False
+        else:
+            wordstory = await self.getobj(ctx.channel.id)
+            if wordstory.mode != "story":
+                await ctx.send("There was never a story being told here :face_with_monocle:")
+                return
 
             await ctx.send("Behold your story")
 
-            tale = " ".join(self.message_list)
-            tale = tale.strip("<>endstory")
-            print(len(tale))
+            tale = " ".join(wordstory.storywords)
 
-            t2 = False
-            t3 = False
-            if len(tale) >= 1024:
-                tale2 = tale[1020:]
-                tale = tale[:1020]
-                t2 = True
-
-            if t2:
-                if len(tale2) >= 1024:
-                    tale3 = tale2[1020:]
-                    tale2 = tale2[:1020]
-                    t3 = True
-
-            story = discord.Embed(
-                title="Listen Closely",
-                description=f"Here is the story that the awesome people in {guild} has created",
-                color=randint(0, 0xffffff)
-            )
-
-            story.set_thumbnail(url=guild.icon_url)
-            story.add_field(name="And it goes like", value=f"{tale}")
-
-            await ctx.send(embed=story)
-
-            if t2:
-                story2 = discord.Embed(
-                    title="Continuing",
-                    description=f"Here is the story that the awesome people in {guild} has created",
+            if len(tale) <= 1024:
+                story = discord.Embed(
+                    title="Listen Closely",
+                    description=f"Here is the story that the awesome people in {ctx.guild} has created",
                     color=randint(0, 0xffffff)
                 )
 
-                story2.set_thumbnail(url=guild.icon_url)
-                story2.add_field(name="And it goes like", value=f"{tale2}")
+                story.set_thumbnail(url=ctx.guild.icon_url)
+                story.add_field(name="And it goes like", value=f"{tale}")
 
-                await ctx.send(embed=story2)
+                await ctx.send(embed=story)
+            
+            else:
+                await ctx.send(f"**{tale}**")
 
-            if t3:
-                story3 = discord.Embed(
-                    title="Continuing",
-                    description=f"Here is the story that the awesome people in {guild} has created",
-                    color=randint(0, 0xffffff)
-                )
-
-                story3.set_thumbnail(url=guild.icon_url)
-                story3.add_field(name="And it goes like", value=f"{tale3}")
-
-                await ctx.send(embed=story3)
-                
-                self.message_list.clear()
-
-        else:
-            await ctx.send("A story is being told elsewhere. Please wait until it is done.")
+            self.channels.remove(wordstory)
 
 
     # Adds words for hangman
@@ -134,13 +86,17 @@ class Gaming(commands.Cog):
             else:
                 tempoword = tempword.lower()
                 self.word_list.append(tempoword)
+                with open("hangwords.txt", "w") as w:
+                    x = ', '.join(self.word_list)
+                    w.write(x)
 
         await ctx.send("Words have been added :thumbsup:")
 
 
     @commands.command()
     async def wordshow(self, ctx):
-        await ctx.send(self.word_list)
+        x = ', '.join(self.word_list)
+        await ctx.send(x)
 
 
     # Clears words from hangman
@@ -152,39 +108,51 @@ class Gaming(commands.Cog):
                 self.word_list.remove(word)
             else:
                 await ctx.send(f"{word} was not found in word list")
+                with open("hangwords.txt", "w") as w:
+                    x = ', '.join(self.word_list)
+                    w.write(x)
 
-        await ctx.send("Succesfully removed words")
+                await ctx.send("Succesfully removed words")
 
 
     # Start hang game
     @commands.command()
     async def startgame(self, ctx):
-        global hangingchannel, hanging, trycount, hiddenword, word
         if len(self.word_list) < 2:
-            await ctx.send("Not enough words. Add with <>wordadd")
+            await ctx.send("Not enough words. Add with <>wordadd {words}")
             return
-        trycount = 0
-        hangingchannel = ctx.channel
-        if not self.storytelling and self.hangingchannel is not self.currentchannel:
-            hanging = True
+        
+        if await self.chancheck(ctx.channel.id):
+            await ctx.send("Either a hangman game is in progress, or a story is being told. Please go elsewhere")
+            return
+        
+        else:
             word = random.choice(self.word_list)
             word = word.rstrip()
-            hiddenword = self.hide_word()
-            await asyncio.sleep(2)
-            await ctx.send(f"The word is {hiddenword}. Now. Carefully, Solve it :smiling_imp:")
-        else:
-            await ctx.send("A story is being told... Shhh, not now")
+            hanggame = wordgame(ctx.channel.id, "hang", hangword=word, trycount=0)
+            hanggame.hiddenword = await self.hide_word(hanggame)
+            await ctx.send(f"The word is {hanggame.hiddenword}. Now. Carefully, Solve it :smiling_imp:")
+            self.channels.append(hanggame)
+
 
 
     @commands.command()
     async def endgame(self, ctx):
-        global hangingchannel, hanging, word
-        hanging = False
-        hangingchannel = None
-        await ctx.send(f"Aww... Game is over.The word was {word}. Maybe Next time")
+        if await self.chancheck(ctx.channel.id):
+            hangobj = await self.getobj(ctx.channel.id)
+            if hangobj.mode != "hang":
+                await ctx.send("No one was playing hangman here")
+                return
+
+            await ctx.send(f"Aww... Game is over. The word was {hangobj.hangword}. Maybe Next time")
+            self.channels.remove(hangobj)
+        
+        else:
+            await ctx.send("Start a game wtih <>startgame before ending it :bowing:")
 
     
-    def hide_word(self):
+    async def hide_word(self, hangobject):
+        word = hangobject.hangword
         hidden_word = []
         for letter in word:
             if letter == " ":
@@ -192,8 +160,21 @@ class Gaming(commands.Cog):
             else:
                 hidden_word.append("-")
 
-            hidden_word = "".join(hidden_word)
-            return hidden_word
+        hidden_word = "".join(hidden_word)
+        return hidden_word
+
+    async def chancheck(self, idtochk):
+        for chan in self.channels:
+            if idtochk == chan.chanid:
+                return True
+
+        else:
+            return False
+
+    async def getobj(self, idtoget):
+        for chan in self.channels:
+            if idtoget == chan.chanid:
+                return chan
 
 
     @commands.Cog.listener()
@@ -203,30 +184,14 @@ class Gaming(commands.Cog):
         if message.author == self.bot.user:
             # Makes sure that bot messages are ignored
             return
-        if not self.storytelling or not self.hanging:
+
+        if message.content.startswith("<>"):
+            return
+        
+        if not await self.chancheck(message.channel.id):
 
             if self.bot.user in message.mentions:
                 await message.channel.send(":sunglasses:To view my commands use <>help")            
-
-            
-            """# Greeting
-            for greeting in ["hello", "sup", "herro", "hey"]:
-                if message.content.lower() == greeting:
-                    await asyncio.sleep(2)
-                    await message.channel.send(f"Hello {message.author.mention} I hope this day finds you well?")
-
-            for greeting in ["gm", "morning", "good morning"]:
-                if message.content.lower() == greeting:
-                    await message.channel.send(f"Good morning... I hope you had a nice rest {message.author.mention}")
-
-            # dismissing
-            for leaving in ["bye", "cya", "ttyl", "bai"]:
-                if message.content.lower() == leaving:
-                    await message.channel.send(f"Bye, have a good time :yum: {message.author.mention}")"""
-
-            for leaving in ["gn", "nite", "good night"]:
-                if message.content.lower() == leaving:
-                    await message.channel.send(f"sweet dreams to you {message.author.mention}")
 
             if "banana" in message.content.lower():
                 self.banana_count += 1
@@ -264,70 +229,70 @@ class Gaming(commands.Cog):
             if message.content == "?":
                 if message.author.id == self.isaiah:
                     await message.channel.send("What??")
+            
+           
 
-        if self.storytelling and message.channel == self.currentchannel:
-            self.message_list.append(message.content)
-
-        if self.hanging and message.channel == self.hangingchannel:
-            game_done = self.endchk()
-            # Sets Message.content To X
-            x = message.content.lower()
-            # Checks to make sure that team has Tries left
-            if self.trycount < 15:
-                # Checks to see if the message's content is the same as the selected word
-                word = "".join(word)
-                if x == word:
-                    hiddenword = word
-                    game_done = self.endchk()
-                # Checks to see if the message's content is in the word, and that the length of the message is less than 1
-                elif x in word and len(x) <= 1:
-                    # Loops through each letter in the word
-                    for chance in range(len(word)):
-                        # if the message's content is the same as a letter in the word
-                        if x == list(word)[chance]:
-                            # Turn Hidden word into a list.
-                            hiddenword = list(hiddenword)
-                            # Using the same index, set the character at that index to the message's content
-                            hiddenword[chance] = x
-                            # Turns the hidden word into a string again
-                            hiddenword = "".join(hiddenword)
-                # If message's content is in the word... and the length of the message is more than 1
-                elif x in word:
-                    # Sets a variable index_of, to the position of where the first instance of x is found
-                    index_of = word.find(x)
-                    # Turns hidden word into a list
-                    hiddenword = list(hiddenword)
-                    # Sets a value letter index to 0.
-                    letterindex = 0
-                    # For i in range index_of to the length of x + index_of
-                    for i in range(index_of, len(x) + index_of):
-                        # Sets the character at that position, to be equal to the letter in x it's position
-                        hiddenword[i] = x[letterindex]
-                        letterindex += 1
-                    # turns hidden word into a string
-                    hiddenword = "".join(hiddenword)
-
-                else:
-                    self.trycount += 1
-                    await message.channel.send(
-                        f"""That is not in the word. Remember, You can only have a maximum of 15 incorrect attempts.
-    You are currently at {self.trycount}""")
-
-            game_done = self.endchk()
-            if game_done:
-                await message.channel.send(f"Game over. The word is {word}")
+        else:
+            chanobj = await self.getobj(message.channel.id)
+            if chanobj.mode == "story":
+                chanobj.storywords.append(f" {message.content}")
+                print(chanobj.storywords)
             else:
-                await message.channel.send(f"The word is {self.hiddenword}. Now. Carefully, Solve it :smiling_imp:")
-                await message.channel.send("Keep at it")
+                game_done = await self.endchk(chanobj)
+                # Sets Message.content To X
+                x = message.content.lower()
+                # Checks to make sure that team has Tries left
+                if chanobj.trycount < 15:
+                    # Checks to see if the message's content is the same as the selected word
+                    word = "".join(chanobj.hangword)
+                    if x == word:
+                        chanobj.hiddenword = word
+                        game_done = await self.endchk(chanobj)
+                    # Checks to see if the message's content is in the word, and that the length of the message is 1
+                    elif x in word and len(x) == 1:
+                        # Loops through each letter in the word
+                        for chance in range(len(word)):
+                            # if the message's content is the same as a letter in the word
+                            if x == list(word)[chance]:
+                                # Turn Hidden word into a list.
+                                hiddenword = list(chanobj.hiddenword)
+                                # Using the same index, set the character at that index to the message's content
+                                hiddenword[chance] = x
+                                # Turns the hidden word into a string again
+                                chanobj.hiddenword = "".join(hiddenword)
+                    # If message's content is in the word... and the length of the message is more than 1
+                    elif x in word:
+                        # Sets a variable index_of, to the position of where the first instance of x is found
+                        index_of = word.find(x)
+                        # Turns hidden word into a list
+                        hiddenword = list(chanobj.hiddenword)
+                        # Sets a variable letter index to 0.
+                        letterindex = 0
+                        # For i in range index_of to the length of x + index_of
+                        for i in range(index_of, len(x) + index_of):
+                            # Sets the character at that position, to be equal to the letter in x it's position
+                            hiddenword[i] = x[letterindex]
+                            letterindex += 1
+                        # turns hidden word into a string
+                        chanobj.hiddenword = "".join(hiddenword)
 
-        # Category Get For truth seeking orbs
+                    else:
+                        chanobj.trycount += 1
+                        await message.channel.send(
+                            f"""That is not in the word. Remember, You can only have a maximum of 15 incorrect attempts.
+        You are currently at {chanobj.trycount}""")
+
+                game_done = await self.endchk(chanobj)
+                if game_done:
+                    await message.channel.send(f"Game over. The word is {word}")
+                    self.channels.remove(chanobj)
+                else:
+                    await message.channel.send(f"The word is {chanobj.hiddenword}. Now. Carefully, Solve it :smiling_imp:")
+                    await message.channel.send("Keep at it")
     
 
-    def endchk(self):
-        if "-" not in self.hiddenword or self.trycount >= 15:
-            self.hangingchannel = None
-            self.hanging = False
-            self.trycount = 0
+    async def endchk(self, obj):
+        if "-" not in obj.hiddenword or obj.trycount >= 15:
             return True
         else:
             return False
