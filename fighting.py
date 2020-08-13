@@ -475,11 +475,18 @@ Stat names are the names that you see in the above embed, with the exception of 
             await self.denied(ctx.channel, ctx.author)
             return
 
-        role = discord.utils.get(ctx.guild.roles, name="Parader")
+        yes = discord.utils.get(ctx.author.roles, name="Parader")
+        if yes == None:
+            role = discord.utils.get(ctx.guild.roles, name="Parader")
 
-        await ctx.author.add_roles(role)
+            await ctx.author.add_roles(role)
 
-        await ctx.send(f"{ctx.author.display_name} now has back their Parader role")
+            await ctx.send(f"{ctx.author.display_name} now has back their Parader role")
+        
+        else:
+            await ctx.author.remove_roles(yes)
+
+            await ctx.send(f"Removed Parader role from {ctx.author.name}. Do this command again to get it back")
 
     # Main
     infight = []

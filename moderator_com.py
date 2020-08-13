@@ -385,10 +385,10 @@ class ProfanFilter(commands.Cog):
     async def profane(self, ctx):
         if ctx.guild in self.exempt:
             self.exempt.remove(ctx.guild)
-            await ctx.send("Profanity is no longer being moderated")
+            await ctx.send("Profanity is being moderated")
         else:
             self.exempt.append(ctx.guild)
-            await ctx.send("Profanity is being moderated")
+            await ctx.send("Profanity is no longer being moderated")
     
     badword = ["fuck", "shit", "bitch", "cum", "nigger"]
 

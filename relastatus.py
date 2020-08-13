@@ -78,6 +78,8 @@ tstiger = Pet("Transforming Tiger", "It's sleek black fur feels extremely nice a
 20018, "Mammal", 3, 0, 3, playmessage="Transforms, knocks you down, and licks you", feedmsg="feeds slowly, savouring the taste")
 dragon = Pet("Dodongo", "It's powerful, you can ride on it, it's cool, what else could you want?", 20023, "Reptile",
 3, 0, 3, playmessage="Puts you on it's back and runs at amazing speeds", feedmsg="inhales all of it")
+nymph = Pet("Earth Nymph", "Are known to be quite the tricksters.",
+20028, "Spirit", 3, 0, 3, playmessage="( ͡° ͜ʖ ͡°)", feedmsg="absorbs some of the earth's energy.")
 
 # Tier 2 Pets
 bbdino = Pet("Bigger Dinosaur", "It has quite the apetite", 20002, "Reptillian", 3, 1200, 2, trex, "roars and lifts you up with its head", "roars and devours it whole")
@@ -97,6 +99,8 @@ lizard = Pet("Lizard", "It's become fairly large and... these scales feel so nic
 "quickly swallows it")
 monkey = Pet("Monkey de mimicry", "Likes to mimic you", 20025, "Mammal", 2, 0, 2, playmessage="claps it's hands and begins to mimic you",
 feedmsg="splits it and gives you 1/3")
+elmnt = Pet("Earth Elemental", "Known to frequent forests and converse with the wildlife.", 20027, "Spirit", 3,
+ 1000, 2, nymph, "builds a magnificent rock sculpture.", "eats some rocks.")
 
 # Tier 1 Pets
 bdino = Pet("Baby Dinosaur", "I'm the baby, gotta love me", 20001, "Reptilian", 3, 350, 2, bbdino, "bites your hand and smiles, but it doesn't have teeth", "devours it")
@@ -112,6 +116,7 @@ bblizard = Pet("Baby Lizard", "It's little legs scuttle around so quickly over y
 400, 1, lizard, "excitedly runs around in circles", "eats small bites")
 bbmonkey = Pet("Little Monkey","Such an appetite for one so small", 20024, "Mammal", 2, 800, 1, monkey, "smiles and dances", 
 "tries to eat it whole then ask for more")
+wisp = Pet("Wisp", "An energetic little ball of energy", 20026, "Spirit", 3, 300, 1, elmnt, "makes a little mud doll. How cute.", "absorbs mud.")
 
 # Egg
 egg = Pet("Egg", "The origin pet. No one knows what will emerge until it does", 20000, "Unknown", 1, 100, playmessage="shakes. It might hatch soon", 
@@ -120,7 +125,7 @@ feedmsg="Remains unmoving. Maybe it appreciated the thought tho")
 
 allpets = [egg, monkey, lizard, tree, tstig, meagle, seye, luxio, lilraven, bbdino, dragon,
 tstiger, eagle, sbeast, luxray, raven, trex]
-petlist = [bdino, bird, shinx, speceye, bbeag, tcub, sapling, bblizard, bbmonkey]
+petlist = [bdino, bird, shinx, speceye, bbeag, tcub, sapling, bblizard, bbmonkey, wisp]
 
 for animal in petlist:
     allpets.append(animal)

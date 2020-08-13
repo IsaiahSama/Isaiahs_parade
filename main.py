@@ -149,14 +149,14 @@ async def help(ctx, *, category=None):
     moderator.add_field(name='<>ger', value="Disables effects from freeze3 and za warudo (MC)(MR)", inline=False)
     moderator.add_field(name='<>shadowrealm {@mention}', value="Bans a target (B)", inline=False)
     moderator.add_field(name='<>impactrevive {user id}', value="Unbans a target (B)", inline=False)
-    moderator.add_field(name='<>deathnote {@mention}',
-                            value="Kicks the mentioned person from the server in 1 minute (K)", inline=False)
+    moderator.add_field(name='<>deathnote {@mention}', value="Kicks the mentioned person from the server in 1 minute (K)", inline=False)
     moderator.add_field(name="<>ger_rtz {@Mention}", value="Golden Experience Requiem, Return to zero. Strips the mentioned of all of their roles (MR)", inline=False)
     moderator.add_field(name="<>wipe [amount (optional)] {phrase}", value="Delete the specified number of messages that contain the specified phrase or word.(MM)", inline=False)
     moderator.add_field(name='<>relax', value="mutes all members in the channel for 5 seconds. (A)", inline=False)
     moderator.add_field(name='<>killerqueen {@mention} [time: Default 2 minutes]', value="Strips the mentioned user of their roles for the mentioned amount of minutes. Roles are restored 1 by 1 in 2 minute intervals (A)", inline=False)
     moderator.add_field(name="<>mute {@mention} [time (default 5 minutes)] [reason (optional)", value="Used to mute a user", inline=False)
     moderator.add_field(name="<>relog {amount default=5}", value="Shows the audit log up to the given amount.", inline=False)
+    moderator.add_field(name="<>profane", value="enables and disables the profanity filter for a guild")
 
     actions = discord.Embed(
             title="Action Commands",
@@ -233,7 +233,7 @@ async def help(ctx, *, category=None):
     battle.add_field(name="<>upgrade", value="Shows the upgrade area, where you can upgrade yourself", inline=False)
     battle.add_field(name="<>raid", value="Joins a Boss Raid Battle", inline=False)
     battle.add_field(name="<>paraid", value="Stars a boss raid. Must be Level 40", inline=False)
-    battle.add_field(name="<>readd", value="Gives you back Parader role if you ever lose it", inline=False)
+    battle.add_field(name="<>readd", value="Gives you back Parader role if you ever lose it. Can also be used to get rid of it if you have it", inline=False)
     battle.add_field(name="<>shop", value="Opens the shop", inline=False)
     battle.add_field(name="<>togglefight", value="Toggles your pvp fight state", inline=False)
     battle.add_field(name="<>gear", value="Displays your current loadout", inline=False)
