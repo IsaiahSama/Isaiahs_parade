@@ -241,7 +241,7 @@ sranger = Armour("Tundra Ranger", "Gained from surviving the depth of the Tundra
 # Tier 5
 vampcloak = Armour("Vampiric Cloak", "Makes it easier to drain blood. Pairs well with Enchanted Vamp Knives", 800, 300, 1100000, 18, evampknife, 5)
 nightmare = Armour("Nightmare", "Woven together from the essence of the dark side of sleep. Gains set bonus with Dream Sword",
-800, 420, 1100000, 0, dreamsword )
+800, 420, 1100000, 0, dreamsword, 5)
 yang = Armour("Yang", "The physical manifestation of creation, light and positive energy", 1500, 1000, 5000000, 30, yin, 5)
 # unique
 paraders = Armour("Parade Creators Outfit", "Identifies the creator of the Parade", 5900, 1370, 99999999, 10, parblade, 5)
