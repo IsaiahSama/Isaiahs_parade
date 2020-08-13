@@ -257,7 +257,7 @@ class Namegen(commands.Cog):
     async def namegen(self, ctx, length: int):
         if length <= 1:
             length = 2
-        elif length >= 12:
+        elif length > 11:
             length = 11
         else:
             pass
@@ -296,6 +296,9 @@ class Namegen(commands.Cog):
                     if prevletter == "h":
                         while letter == "h":
                             letter = random.choice(self.vowels)
+                    
+                    if prevletter == "q":
+                        letter = "u"
                 else:
                     pass
 

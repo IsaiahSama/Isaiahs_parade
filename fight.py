@@ -1,18 +1,21 @@
 import math
+from dataclasses import dataclass
+import copy
+
+@dataclass
 class Ability:
-    def __init__(self, name, desc, usename, effect, power, powertick, health, lodmg, hidmg, perhealth=0, abilcd=4):
-        self.name = name
-        self.desc = desc
-        self.usename = usename
-        self.effect = effect
-        self.power = power
-        self.powertick = powertick
-        self.health = health
-        self.lodmg = lodmg
-        self.hidmg = hidmg
-        self.abilcd = abilcd
-        self.tempcd = abilcd
-        self.perhealth = perhealth
+    name: str
+    desc: str
+    usename: str
+    effect: str
+    power: int
+    powertick: int
+    health: int
+    lodmg: int
+    hidmg: int
+    abilcd: int
+    tempcd: int
+    perhealth: int
 
     def oncd(self):
         if self.abilcd == self.tempcd:
@@ -121,17 +124,17 @@ for thing in abilities:
 passives = [dodge, counter, regeneration, rage, sharpeye, sboost, critblock]
 
 # Weapons
+@dataclass
 class Weapons:
-    def __init__(self, name, desc, effect, damage=0, critplus=0, healplus=0, cost=0, tierz=1, type="Weapon"):
-        self.name = name
-        self.desc = desc
-        self.effect = effect
-        self.damage = damage
-        self.critplus = critplus
-        self.healplus = healplus
-        self.cost = cost
-        self.tierz = tierz
-        self.type = type
+    name: str
+    desc: str
+    effect: str
+    damage: int
+    critplus: int=0
+    healplus: int=0
+    cost: int=0
+    tierz: int=1
+    typeobj: str="Weapon"
 
     def islifesteal(self):
         if self.healplus >= 1:
@@ -186,17 +189,17 @@ for weapon in weaponlist:
 
 
 # Armour
+@dataclass
 class Armour:
-    def __init__(self, name, desc, hpup=0, pup=0, cost=0, regen=0, pairs=None, tierz=1, type="Armour"):
-        self.name = name
-        self.desc = desc
-        self.hpup = hpup
-        self.pup = pup
-        self.cost = cost
-        self.regen = regen
-        self.pairs = pairs
-        self.tierz = tierz
-        self.type = type
+    name: str
+    desc: str
+    hpup: int=0
+    pup: int=0
+    cost: int=0
+    regen: int=0
+    pairs: object=None
+    tierz: int=1
+    typeobj: str="Armour"
 
     def hasregen(self):
         if self.regen == 0:
@@ -265,27 +268,27 @@ for item in weaponlist:
 for item in armorlist:
     lilgear.append(item)
 
+@dataclass
 class Fighter:
-    def __init__(self, name, tag, level, curxp, health, mindmg, maxdmg, wins, losses, pcoin, critchance=5, healchance=3, ability=None, passive=None, weapon="Fist", armour="Linen", xpthresh=50, type="player", canfight=True):
-        self.name = name
-        self.tag = tag
-        self.level = level
-        self.curxp = curxp
-        self.health = health
-        self.mindmg = mindmg
-        self.maxdmg = maxdmg
-        self.wins = wins
-        self.losses = losses
-        self.pcoin = pcoin
-        self.critchance = critchance
-        self.healchance = healchance
-        self.ability = ability
-        self.passive = passive
-        self.weapon = weapon
-        self.armour = armour
-        self.xpthresh = xpthresh
-        self.type = type
-        self.canfight = canfight
+    name: str
+    tag: int
+    level: int
+    curxp: int
+    health: int
+    mindmg: int
+    maxdmg: int
+    wins: int
+    losses: int
+    pcoin: int
+    critchance: int=5
+    healchance: int=3
+    ability: object=None
+    passive: object=None
+    weapon: str="Fist"
+    armour: str="Linen"
+    xpthresh: int=50
+    typeobj: str="player"
+    canfight: bool=True
 
     def addcoin(self, coin):
         self.pcoin += coin
@@ -624,26 +627,26 @@ class FightMe(Fighter):
         return power
 
 
+@dataclass
 class BeastFight:
-    def __init__(self, name, tag, health, mindmg, maxdmg, mincoin, maxcoin, entrymessage, minxp, critchance=5, healchance=3, ability=None, passive=None, attackmsg=None, weapon=fist, armour=linen, type="npc"):
-        self.name = name
-        self.tag = tag
-        self.health = health
-        self.mindmg = mindmg
-        self.maxdmg = maxdmg
-        self.mincoin = mincoin
-        self.maxcoin = maxcoin
-        self.entrymessage = entrymessage
-        self.minxp = minxp
-        self.maxxp = minxp + 25
-        self.ability = ability
-        self.passive = passive
-        self.attackmsg = attackmsg
-        self.critchance = critchance
-        self.healchance = healchance
-        self.weapon = weapon
-        self.armour = armour
-        self.type = type
+    name: str
+    tag: int
+    health: int
+    mindmg: int
+    maxdmg: int
+    mincoin: int
+    maxcoin: int
+    entrymessage:str
+    minxp: int
+    maxxp: minxp + 25
+    critchance: int=5
+    healchance: int=3
+    ability: object=None
+    passive: object=None
+    attackmsg: str=None    
+    weapon: object=fist
+    armour: object=linen
+    typeobj: str="npc"
 
     def hasPassive(self):
         if self.passive == None:
@@ -895,7 +898,7 @@ isama, nme, uksniper, sfass, kdono, tmaster, rebdio
 
 # def __init__(self, name, tag, health, mindmg, maxdmg, mincoin, maxcoin, entrymessage, minxp, 
 # critchance=5, healchance=3, ability=None, passive=None, attackmsg=None, weapon=fist, armour=linen, 
-# type="npc"):
+# typeobj="npc"):
 
 # Raid Monster
 bebebe = BeastFight("Giant King Be Be Be", 90001, 6000, 200, 300, 8000, 10000, "Giant King Be Be Be has been awoken... and is very angry",1000,

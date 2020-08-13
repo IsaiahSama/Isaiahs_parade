@@ -50,8 +50,8 @@ class Special(commands.Cog):
             color=randint(0, 0xffffff)
         )
         embed.set_thumbnail(url=self.bot.user.avatar_url)
-        embed.add_field(name="Moderator", value="Additions", inline=False)
-        embed.add_field(name="<>relog {amount default=5}", value="Shows the audit log up to the given amount.", inline=False)
+        embed.add_field(name="Battle", value="Changes", inline=False)
+        embed.add_field(name="<>shop/<>buy", value="Fixed the stats on Tank Summon and Sniper Rifle.", inline=False)
         
         for server in self.bot.guilds:
             channel = discord.utils.get(server.text_channels, name="parade-room")

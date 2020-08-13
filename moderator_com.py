@@ -333,6 +333,7 @@ class Moderator(commands.Cog):
         channel = discord.utils.get(ctx.guild.text_channels, name="logs")
         if channel == None:
             channel = await ctx.guild.create_text_channel("logs")
+            await channel.send("An error occured and could not set channel perms. Please change them as you see fit")
 
         async for entry in ctx.guild.audit_logs(limit=amount):
             logbed = discord.Embed(

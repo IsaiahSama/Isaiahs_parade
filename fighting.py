@@ -32,10 +32,10 @@ class FullFight(commands.Cog):
         # def __init__(self, name, tag, level, health, mindmg, maxdmg, wins, losses, pcoin, critchance=5, healchance=3, 
         # ability=None, passive=None, weapon=fist, armour=linen):
         # def __init__(self, name, tag, level, curxp, health, mindmg, maxdmg, wins, losses, pcoin, critchance=5, healchance=3, 
-        # ability=None, passive=None, weapon=fist, armour=linen, xpthresh=50, type="player"):
+        # ability=None, passive=None, weapon=fist, armour=linen, xpthresh=50, typeobj="player"):
         # def __init__(self, name, tag, level, curxp, health, mindmg, maxdmg, wins, losses, pcoin, 
         # critchance=5, healchance=3, ability=None, passive=None, weapon="Fist", armour="Linen", 
-        # xpthresh=50, type="player", canfight=True):
+        # xpthresh=50, typeobj="player", canfight=True):
         
         
         for fightmaster in tempuser:
@@ -794,7 +794,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             attacker.ability.reset()
         if defender.hasActive():
             defender.ability.reset()
-        if attacker.type == "player":
+        if attacker.typeobj == "player":
             lvl = await self.expgain(attacker, defender)
             if lvl == True:
                 irl = await self.getirl(attacker)
@@ -802,7 +802,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             else:
                 await ctx.send(f"{lvl}")
 
-        if attacker.type == "player" and defender.type == "player":
+        if attacker.typeobj == "player" and defender.typeobj == "player":
             attacker = await self.getmain(attacker)
             defender = await self.getmain(defender)
             coin = randint(math.floor(defender.pcoin / 10), math.floor(defender.pcoin / 3))
@@ -810,14 +810,14 @@ Stat names are the names that you see in the above embed, with the exception of 
             attacker.addcoin(coin)
             defender.takecoin(coin)
 
-        if attacker.type == "player" and defender.type == "npc":
+        if attacker.typeobj == "player" and defender.typeobj == "npc":
             attacker = await self.getmain(attacker)
             coin = randint(defender.mincoin, defender.maxcoin)
             attacker.addcoin(coin)
             await ctx.send(f"{attacker.name}: You have received {coin} Parade Coins for defeating {defender.name}")
 
                 
-        if defender.type == "player":
+        if defender.typeobj == "player":
             defender = await self.getmain(defender)
             await self.lost(defender)
             mula = math.ceil(defender.health / 7)
@@ -921,7 +921,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         if shield.haspair():
             fuser = await self.fightuser(user)
             thing.add_field(name=f"{shield.name} pairs well with {shield.pairs.name}", value=f"{fuser.buff()}", inline=False)
-            del fuser
+            
 
         await ctx.send(embed=thing)
 
@@ -936,7 +936,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             await ctx.send("Not a part of my stock")
             return
         
-        if item.type == "Weapon":
+        if item.typeobj == "Weapon":
             weaponbed = discord.Embed(
             title="Here is the info you requested",
             color=randint(0, 0xffffff)
@@ -953,7 +953,7 @@ Stat names are the names that you see in the above embed, with the exception of 
 
             msg = await ctx.send(embed=weaponbed)
         
-        elif item.type == "Armour":
+        elif item.typeobj == "Armour":
             armorbed = discord.Embed(
             title="Here is the info you requested",
             color=randint(0, 0xffffff)
@@ -1107,7 +1107,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         else:
             await ctx.send("You do not have a fight profile. Do <>createprofile")
     
-    # Functions
+    # Functions90
     async def startRaid(self, guild=None, channel=None):
 
         if guild == None and channel == None:
@@ -1117,9 +1117,9 @@ Stat names are the names that you see in the above embed, with the exception of 
             pass
         currole = discord.utils.get(guild.roles, name="Parader")
         
-        await channel.send(f"Attention {currole.mention}. A Raid Boss is on it's way to you. Join the raid with <>raid. We only have 2 minutes")
+        await channel.send(f"Attention {currole.mention}. A Raid Boss is on it's way to you. Join the raid with <>raid. We have 3 minutes until it starts")
 
-        await asyncio.sleep(90)
+        await asyncio.sleep(150)
         await channel.send("We have info on the beast. 30 seconds remain")
         await self.spawnraid()
         beastembed = discord.Embed(
@@ -1432,7 +1432,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         power = math.floor(power)
         target.attack(power)
         if target.health <= 0:
-            await channel.send(f"{target.name} has passed been slain")
+            await channel.send(f"{target.name} has been slain")
             self.raiders.remove(target)
 
         if target.hasPassive():
@@ -1470,7 +1470,7 @@ Stat names are the names that you see in the above embed, with the exception of 
 
     async def expgain(self, winner, loser):
         winner = await self.getmain(winner)
-        if loser.type == "npc":
+        if loser.typeobj == "npc":
             exp = randint(loser.minxp, loser.maxxp)
             winner.curxp += exp
         else:
@@ -1546,7 +1546,7 @@ Stat names are the names that you see in the above embed, with the exception of 
 
         villain = FightingBeast(villain.name, villain.tag, villain.health, villain.mindmg, villain.maxdmg, 
         villain.mincoin, villain.maxcoin, villain.entrymessage, villain.minxp, villain.critchance, villain.healchance,
-        villain.ability, villain.passive, villain.attackmsg, villain.weapon, villain.armour, villain.type)
+        villain.ability, villain.passive, villain.attackmsg, villain.weapon, villain.armour, villain.typeobj)
         
         return villain
 
@@ -1732,7 +1732,7 @@ Stat names are the names that you see in the above embed, with the exception of 
     async def fightuser(self, account):
         person = FightMe(account.name, account.tag, account.level, account.curxp, account.health, account.mindmg, account.maxdmg, 
         account.wins, account.losses, account.pcoin, account.critchance, account.healchance, account.ability,
-        account.passive, account.weapon, account.armour, account.xpthresh, account.type, account.canfight)
+        account.passive, account.weapon, account.armour, account.xpthresh, account.typeobj, account.canfight)
         person.instantize()
         return person
         
@@ -1825,7 +1825,7 @@ Stat names are the names that you see in the above embed, with the exception of 
 
         if user.pcoin >= arg.cost:
             user.pcoin -= arg.cost
-            if arg.type.lower() == "weapon":
+            if arg.typeobj.lower() == "weapon":
                 user.weapon = arg.name
             else:
                 user.armour = arg.name
