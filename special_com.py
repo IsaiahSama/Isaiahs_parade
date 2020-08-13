@@ -52,6 +52,7 @@ class Special(commands.Cog):
         embed.set_thumbnail(url=self.bot.user.avatar_url)
         embed.add_field(name="Battle", value="Changes", inline=False)
         embed.add_field(name="<>paraid/<>raid", value="Entire fight is now shown in Raid-Alerts in main server", inline=False)
+        embed.add_field(name="<>paraid/<>raid", value="Being tanky, Raid Beasts now have a 3 in 5 chance of attacking you as the person with the highest base health", inline=False)
 
         
         for server in self.bot.guilds:

@@ -53,6 +53,12 @@ class FullFight(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.updlist.start()
+        bot.loop.create_task(self.async_init())
+
+    async def async_init(self):
+        await self.bot.wait_until_ready()
+        self.homeguild = self.bot.get_guild(739229902921793637)
+
 
     # Commands
 
@@ -410,9 +416,8 @@ Stat names are the names that you see in the above embed, with the exception of 
 
     @commands.command()
     async def raid(self, ctx):
-        
-        guild = self.bot.get_guild(739229902921793637)
-        channel = guild.get_channel(740764507655110666)
+
+        channel = self.homeguild.get_channel(740764507655110666)
 
         user = await self.getmember(ctx.author)
         for raider in self.raiders:
@@ -847,16 +852,18 @@ Stat names are the names that you see in the above embed, with the exception of 
         if self.raidon:
             await ctx.send("A raid is already in progress")
             return
-
-        await ctx.message.delete()
                 
         ismem = await self.ismember(ctx.author)
         if ismem:
             user = await self.getmember(ctx.author)
             if user.level >= 40:
                 self.raidon = True
-                if ctx.guild == self.bot.get_guild(739229902921793637):
+                if ctx.guild == self.homeguild:
                     ctx.channel = ctx.guild.get_channel(740764507655110666)
+                else:
+                    rmention = discord.utils.get(self.homeguild.roles, name="Parader")
+                    channel = self.bot.get_channel(740764507655110666)
+                    await channel.send(f"Attention {rmention.mention}: {ctx.author.name} from {ctx.guild.name} has started a raid. Come let us raid their raid. We only have 3 minutes")
                 
                 await ctx.channel.send(f"{ctx.author.name} has started a raid.")
                 await self.startRaid(ctx.guild, ctx.channel)
@@ -1124,13 +1131,19 @@ Stat names are the names that you see in the above embed, with the exception of 
             guild = self.bot.get_guild(739229902921793637)
             channel = guild.get_channel(740764507655110666)
         else:
-            pass
+            guild2 = self.bot.get_guild(739229902921793637)
+            channel2 = self.homeguild.get_channel(740764507655110666)
+        
         currole = discord.utils.get(guild.roles, name="Parader")
         
         await channel.send(f"Attention {currole.mention}. A Raid Boss is on it's way to you. Join the raid with <>raid. We have 3 minutes until it starts")
 
         await asyncio.sleep(150)
         await channel.send("We have info on the beast. 30 seconds remain")
+        if channel != channel2:
+            currole2 = discord.utils.get(guild2.roles, name="Parader")
+            await channel2.send(f"{currole2.mention} 30 Seconds remain and we have our info")
+        
         await self.spawnraid()
         beastembed = discord.Embed(
             title=f"{self.raidbeast.name}",
@@ -1140,11 +1153,13 @@ Stat names are the names that you see in the above embed, with the exception of 
         await self.rembed(beastembed, channel)
 
         await asyncio.sleep(20)
-        msg = f"{currole.name}, 10 Seconds Remain. The field of Empowerment is activated. Now you will always be doing max damage"
+        msg = f"{currole.mention}, 10 Seconds Remain. The field of Empowerment is activated. Now you will always be doing max damage"
         await channel.send(msg)
 
         await asyncio.sleep(10)
         await channel.send("And so it began")
+        if channel != channel2:
+            await channel2.send("It has begun")
 
         if len(self.raiders) >= 1:
             self.raidon = False
@@ -1152,7 +1167,9 @@ Stat names are the names that you see in the above embed, with the exception of 
             for player in self.raiders:
                 if player.hasActive():
                     player.ability.reset()
-                    player.oghealth = player.health
+                player.oghealth = player.health
+
+            self.raidbeast.oghealth = self.raidbeast.health
             await self.raidStart(channel)
         
         else:
@@ -1161,7 +1178,11 @@ Stat names are the names that you see in the above embed, with the exception of 
             return
 
     async def raidStart(self, channel):
+        channel2 = self.homeguild.get_channel(740764507655110666)
         await channel.send(f"{self.raidbeast.entrymessage}")
+        if channel != channel2:
+            await channel2.send(f"{self.raidbeast.entrymessage}")
+
         await self.battlestart(channel)
         await self.resetraid()
 
@@ -1203,8 +1224,7 @@ Stat names are the names that you see in the above embed, with the exception of 
 
             
         if self.winner == "players":
-            guild = self.bot.get_guild(739229902921793637)
-            channel2 = guild.get_channel(740764507655110666)
+            channel2 = self.homeguild.get_channel(740764507655110666)
             if channel == channel2:
                 pass
             else:
@@ -1228,7 +1248,9 @@ Stat names are the names that you see in the above embed, with the exception of 
                 showoff.append(raider.name)
 
             showoff = ", ".join(showoff)
-            await channel.send(f"Rewards are finished being distributed. The surviving players were {showoff}. I look forward to seeing you all again")
+            await channel.send(f"Rewards are finished being distributed. The surviving players were {showoff}. Thank you my brave heroes")
+            if channel != channel2:
+                await channel2.send(f"Rewards are finished being distributed. The surviving players were {showoff}. Thank you my brave heroes")
         else:
             await channel.send(f"Unfortunately, {self.raidbeast.name} wiped the floor with the young heroes.")
 
@@ -1377,6 +1399,19 @@ Stat names are the names that you see in the above embed, with the exception of 
             await asyncio.sleep(3)
 
 
+    async def highhealth(self):
+        hihp = 0
+        victim = None
+        for player in self.raiders:
+            if player.health > hihp:
+                victim = player
+                hihp = player.health
+            else:
+                continue
+
+        return victim
+
+
     async def turngo2(self, channel):
         raidbed = discord.Embed(
             title=f"Raid battle against {self.raidbeast.name}",
@@ -1389,7 +1424,11 @@ Stat names are the names that you see in the above embed, with the exception of 
 
         power += self.raidbeast.weapon.damage
 
-        target = random.choice(self.raiders)
+        num = randint(0, 6)
+        if num in [1, 3, 4]:
+            target = await self.highhealth()
+        else:
+            target = random.choice(self.raiders)
 
         if self.raidbeast.hasActive():
             if self.raidbeast.ability.oncd():
@@ -1622,7 +1661,12 @@ Stat names are the names that you see in the above embed, with the exception of 
 
 
     async def rembed(self, embed, channel):
-        await channel.send(embed=embed)
+        channel2 = self.bot.get_channel(740764507655110666)
+        if channel == channel2:
+            await channel.send(embed=embed)
+        else:
+            await channel.send(embed=embed)
+            await channel2.send(embed=embed)
 
 
     async def ismember(self, x):
