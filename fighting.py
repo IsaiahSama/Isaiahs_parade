@@ -148,9 +148,19 @@ class FullFight(commands.Cog):
             profileEmbed.set_thumbnail(url=ctx.author.avatar_url)
         else:
              profileEmbed.set_thumbnail(url=member.avatar_url)
+        
+        if ctx.guild == self.homeguild:
+            role = [x for x in ctx.author.roles if x.name == f"Tier{target.getTier()}"]
+            if role:
+                pass
+            else:
+                role = discord.utils.get(ctx.guild.roles, name=f"Tier{target.getTier()}")
+                await ctx.author.add_roles(role)
+                await ctx.send(f"You have received your ranking role of {role.name}")
 
         profileEmbed.add_field(name="Name:", value=f"{target.name}")
         profileEmbed.add_field(name="Level:", value=f"{target.level}")
+        profileEmbed.add_field(name="Tier:", value=f"{target.getTier()}")
         profileEmbed.add_field(name="Exp:", value=f"{target.curxp}/{target.xpthresh}")
         profileEmbed.add_field(name="Health:", value=f"{target.health}")
         profileEmbed.add_field(name="Min Damage:", value=f"{target.mindmg}")
@@ -261,6 +271,7 @@ class FullFight(commands.Cog):
                 color=randint(0, 0xffffff)
             )
 
+            statembed.add_field(name="Tier:", value=f"{user.getTier()}")
             statembed.add_field(name="Level:", value=f"{user.level}", inline=False)
             statembed.add_field(name=f"Health: {user.health}", value=f"+20 = {user.healthprice()} Parade Coins", inline=False)
             statembed.add_field(name=f"Min_Dmg: {user.mindmg}", value=f"+5 = {user.mindmgprice()} Parade Coins", inline=False)
@@ -532,7 +543,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                 else:
                     await ctx.send(f"{member.name} does not have an account. Create one with <>createprofile")
                     return
-
+ 
         if user1 == None:
             await ctx.send(f"You need to create a profile with <>createprofile first {ctx.author.mention}")
             return False
@@ -570,7 +581,10 @@ Stat names are the names that you see in the above embed, with the exception of 
             temp = await self.getmain(user1)
             tier = temp.getTier()
             user2 = await self.get_enemy(tier)
-
+            
+            rannum = randint(temp.level - 50, temp.level + 50)
+            user2.level = rannum
+            
 
             questembed = discord.Embed(
                 title=f"Fighting {user2.name}",
@@ -579,6 +593,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             )
 
             questembed.add_field(name="Health", value=f"{user2.health}")
+            questembed.add_field(name="Level", value=f"{user2.level}")
             questembed.add_field(name="Damage Range", value=f"{user2.mindmg} - {user2.maxdmg}")
             questembed.add_field(name="Coin Range", value=f"{user2.mincoin} - {user2.maxcoin}")
             questembed.add_field(name="XP range", value=f"{user2.minxp} - {user2.maxxp}")
@@ -635,14 +650,14 @@ Stat names are the names that you see in the above embed, with the exception of 
                     attacker, defender = defender, attacker
                     await ctx.send(f"{attacker.name} attacks first because of speed boost")
 
-        if user2.tag == 493839592835907594 and user1.tag in [315619611724742656, 347513030516539393, 315632232666759168]:
+        """if user2.tag == 493839592835907594 and user1.tag in [315619611724742656, 347513030516539393, 315632232666759168]:
             user1.health = -999999
             await ctx.send(f"{user2.name} shut down {user1.name}'s attempt at betryal")
 
 
             if user1.health <= 0:
                 attacker, defender = defender, attacker
-                fighting = False
+                fighting = False"""
             
         psned = []
         turns = 0
@@ -651,6 +666,10 @@ Stat names are the names that you see in the above embed, with the exception of 
                 title=f"FIGHT... Turn {turns}",
                 color=randint(0, 0xffffff)
             )
+        
+        slagged = False
+        psn = False
+        ts = False
 
         while fighting:            
             
@@ -677,6 +696,17 @@ Stat names are the names that you see in the above embed, with the exception of 
             critnum = randint(0, 100)
             healnum = randint(0, 100)
 
+            if slagged:
+                if attacker.ability.name == "Slag":
+                    if defender.slag == 0:
+                        battlebed.add_field(name=f"{attacker.ability.usename}", value=f"{defender.name} has been freed of Slag")
+                        del defender.slag
+                        slagged = False
+                    else:
+                        defender.slag -= 1
+                        power *= 1.5
+                        battlebed.add_field(name=f"{attacker.ability.usename}", value=f"{defender.name} {attacker.ability.effect} {defender.slag} turns")
+
             power += attacker.weapon.damage
 
             if turns == 1:
@@ -686,31 +716,55 @@ Stat names are the names that you see in the above embed, with the exception of 
                         
             if attacker.hasPassive():
                 if attacker.passive.name == "Haoshoku Haki":
-                    if attacker.armour.haspair():
-                        if attacker.armour.name == "Haki":
-                            power = await self.cantruehaki(defender, attacker, power, battlebed)
-                    
+                    if attacker.armour.name == "Haki":
+                        if attacker.armour.haspair():
+                            if attacker.weapon.name == attacker.armour.pairs.name:
+                                power = await self.cantruehaki(defender, attacker, power, battlebed)
+                        
                     elif attacker.weapon.name == "Conqueror Haki":
                         power = await self.canhaki(defender, attacker, power, battlebed)
+                    
+                    else:
+                        pass
 
                 if attacker.passive.name == "Pride of Balance":
                     if attacker.armour.haspair():
                         if attacker.armour.name == "Yang":
                             power = await self.canbalance(defender, attacker, power, battlebed)
 
-            psn = False
-            ts = False
+            if defender.hasPassive():
+                if defender.passive.name == "Haoshoku Haki":
+                    if attacker.armour.name == "Haki":
+                        if defender.armour.haspair():
+                            if defender.weapon.name == defender.armour.pairs.name:
+                                power = await self.cantruehaki(attacker, defender, power, battlebed)
+                    
+                    elif defender.weapon.name == "Conqueror Haki":
+                        power = await self.canhaki(attacker, defender, power, battlebed)
+                    
+                    else:
+                        pass
+
+            
             if attacker.hasActive():
                 if attacker.ability.oncd():
                     attacker.ability.cdreduce()
                 else:
-                    power, abilname = await self.canability(defender, attacker, power, battlebed)
-                    if abilname == "Stop Time":
-                        ts = True
-                    if abilname == "The Plague":
-                        psned.append(defender)
-                        psn = True
-                        psndmg = 100          
+                    if attacker.ability.name == "Slag":
+                        num = randint(1,6)
+                        if num == 3:
+                            slagged = True
+                            defender.slag = 2
+                            battlebed.add_field(name=f"{attacker.ability.usename}", value=f"{defender.name} {attacker.ability.effect} {defender.slag} turns")
+                   
+                    else:
+                        power, abilname = await self.canability(defender, attacker, power, battlebed)
+                        if abilname == "Stop Time":
+                            ts = True
+                        if abilname == "The Plague":
+                            psned.append(defender)
+                            psn = True
+                            psndmg = 100          
 
             if ts:
                 defender.attack(power)       
@@ -884,7 +938,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                 else:
                     rmention = discord.utils.get(self.homeguild.roles, name="Parader")
                     channel = self.bot.get_channel(740764507655110666)
-                    await channel.send(f"Attention {rmention.mention}: {ctx.author.name} from {ctx.guild.name} has started a raid. Come let us raid their raid. We only have 3 minutes")
+                    await channel.send(f"Attention {rmention.name}: {ctx.author.name} from {ctx.guild.name} has started a raid. Come let us raid their raid. We only have 3 minutes")
                 
                 await ctx.channel.send(f"{ctx.author.name} has started a raid.")
                 await self.startRaid(ctx.guild, ctx.channel)
@@ -1144,6 +1198,7 @@ Stat names are the names that you see in the above embed, with the exception of 
 
         else:
             await ctx.send("You do not have a fight profile. Do <>createprofile")
+
     
     # Functions90
     async def startRaid(self, guild=None, channel=None):
@@ -1158,13 +1213,13 @@ Stat names are the names that you see in the above embed, with the exception of 
         
         currole = discord.utils.get(guild.roles, name="Parader")
         
-        await channel.send(f"Attention {currole.mention}. A Raid Boss is on it's way to you. Join the raid with <>raid. We have 3 minutes until it starts")
+        await channel.send(f"Attention {currole.name}. A Raid Boss is on it's way to you. Join the raid with <>raid. We have 3 minutes until it starts")
 
         await asyncio.sleep(150)
         await channel.send("We have info on the beast. 30 seconds remain")
         if channel != channel2:
             currole2 = discord.utils.get(guild2.roles, name="Parader")
-            await channel2.send(f"{currole2.mention} 30 Seconds remain and we have our info")
+            await channel2.send(f"{currole2.name} 30 Seconds remain and we have our info")
         
         await self.spawnraid()
         beastembed = discord.Embed(
@@ -1304,6 +1359,7 @@ Stat names are the names that you see in the above embed, with the exception of 
     rpsn = False
     rts = False
     rpsndm = 100
+    rslagged = False
 
     async def turngo(self, channel):
         for player in self.raiders:
@@ -1330,19 +1386,38 @@ Stat names are the names that you see in the above embed, with the exception of 
             critnum = randint(0, 100)
             healnum = randint(0, 100)
 
+            if self.rslagged:
+                if player.ability.name == "Slag":
+                    if self.raidbeast.slag == 0:
+                        raidbed.add_field(name=f"{player.ability.usename}", value=f"{self.raidbeast.name} has been freed of Slag")
+                        del self.raidbeast.slag
+                        self.rslagged = False
+                    else:
+                        self.raidbeast.slag -= 1
+                        power *= 1.5
+                        raidbed.add_field(name=f"{player.ability.usename}", value=f"{self.raidbeast.name} {player.ability.effect} {self.raidbeast.slag} turns")
+
+
             power += player.weapon.damage
 
             if player.hasActive():
                 if player.ability.oncd():
                     player.ability.cdreduce()
                 else:
-                    power, abilname = await self.canability(self.raidbeast, player, power, raidbed)
-                    if abilname == "Stop Time":
-                        self.rts = True
-                    if abilname == "The Plague":
-                            self.rpsned.append(self.raidbeast)
-                            self.rpsn = True
-                            self.rpsndmg = 100
+                    if player.ability.name == "Slag":
+                        num = randint(1,6)
+                        if num == 3:
+                            self.rslagged = True
+                            self.raidbeast.slag = 2
+                            raidbed.add_field(name=f"{player.ability.usename}", value=f"{self.raidbeast.name} {player.ability.effect} {self.raidbeast.slag} turns")
+                    else:
+                        power, abilname = await self.canability(self.raidbeast, player, power, raidbed)
+                        if abilname == "Stop Time":
+                            self.rts = True
+                        if abilname == "The Plague":
+                                self.rpsned.append(self.raidbeast)
+                                self.rpsn = True
+                                self.rpsndmg = 100
 
             if player.hasPassive():
                 if player.passive.name == "Sharp Eye":
@@ -1568,13 +1643,15 @@ Stat names are the names that you see in the above embed, with the exception of 
 
     async def didlevel(self, x):
         if x.curxp >= x.xpthresh:
-            x.curxp -= x.xpthresh
-            x.xpthresh += 50
-            x.level += 1
-            x.health += randint(3, 8)
-            x.mindmg += randint(1, 4)
-            x.maxdmg += randint(3, 8)
-            x.addcoin(20 * x.level)
+            while x.curxp >= x.xpthresh:
+                x.curxp -= x.xpthresh
+                x.xpthresh += 50
+                x.level += 1
+                x.health += randint(3, 8)
+                x.mindmg += randint(1, 4)
+                x.maxdmg += randint(3, 8)
+                x.addcoin(20 * x.level)
+            
             return True
 
         else:

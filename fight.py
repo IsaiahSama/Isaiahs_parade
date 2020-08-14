@@ -72,6 +72,9 @@ jajanken = Ability("Jajanken", "After 5 months of training with Gon, you have no
 uheal = Ability("Ultra Heal", "A sacred technique used to heal for 10% of your max health", "The gods have blessed me", "regains 10% of their max health and didn't attack",
 1, 0, 0, 0, 0, 10)
 
+slag = Ability("Slag", "Has a 1 in 6 chance of applying Slag to the target, causing them to take 1.5x damage for 2 turns",
+"You... have been slagged", "now takes 1.5x damage for the next", 1.5, 0, 0, 0, 0)
+
 
 # Passives
 
@@ -96,7 +99,7 @@ haohaki = Passive("Haoshoku Haki", "Conqueror's Haki: Increases min and max dama
 , "Know the power of one who is worthy", "Increases min and max damage by 50", 1, 0, 0, 50, 50)
 
 balancepride = Passive("Pride of Balance", "Requires: Yin Blade and Yang Armour set. Increases power of attack by 100 (100 True Damage) and heals for 100 hp on user's turn. Otherwise: No Effect"
-,"The emodiment of Balance I am", "Increases power by 100. Heals for 100", 1, 100, 100, 0, 0)
+,"The emodiment of Balance I am", "Increases power by 100. Heals for 200", 1, 100, 200, 0, 0)
 
 # Unique
 plague = Ability("The Plague", "Poisons the victim. Has a base damage of 100 increases by 100, Unique to ...?", "wishes death upon You",
@@ -124,7 +127,7 @@ bellybump = Ability("Belly Belly Bounce", "Massive user dashes at an immense spe
 nmareterror = Ability("Nightmare Terror", "Places the target into a sleep, causing them to miss a turn, and dealing massive damage", 
 "Know the terror of nightmares", "Casts a sleep spell then causes nightmares to", 1.4, 20, 0, 0, 0)
 
-abilities = [theworld, swarm, blast, deadlygrasp, critstrike, pickelize, sonic, jajanken, uheal]
+abilities = [theworld, swarm, blast, deadlygrasp, critstrike, pickelize, sonic, jajanken, uheal, slag]
 allabilities = [plague]
 for thing in abilities:
     allabilities.append(thing)
