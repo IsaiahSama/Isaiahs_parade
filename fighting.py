@@ -129,8 +129,8 @@ class FullFight(commands.Cog):
                 target.weapon.damage = math.floor(target.maxdmg * 0.5)
 
         if target.tag == 493839592835907594:
-            if target.level < 250:
-                await ctx.send("Your armour is Ready Kevin. Just reach level 250 to claim it")
+            if target.level < 300:
+                await ctx.send("Your armour is Ready Kevin. Just reach level 300 to claim it")
             else:
                 await ctx.send("Now my creator, embrace your true power")
                 target.armour = "Parade Creators Outfit"
@@ -662,6 +662,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                         await ctx.send(f"New Max Damage is {attacker.maxdmg}")
                         battlebed.add_field(name=f"{attacker.name}", value=f"{attacker.passive.usename}: {attacker.passive.effect}")
 
+
             if attacker.health >= 65000:
                 attacker.weapon.healplus = 0
                 attacker.armour.regen = 0
@@ -683,6 +684,19 @@ Stat names are the names that you see in the above embed, with the exception of 
                     if attacker.passive.name == "Speed Boost":
                         power *= 1.5
                         
+            if attacker.hasPassive():
+                if attacker.passive.name == "Haoshoku Haki":
+                    if attacker.armour.haspair():
+                        if attacker.armour.name == "Haki":
+                            power = await self.cantruehaki(defender, attacker, power, battlebed)
+                    
+                    elif attacker.weapon.name == "Conqueror Haki":
+                        power = await self.canhaki(defender, attacker, power, battlebed)
+
+                if attacker.passive.name == "Pride of Balance":
+                    if attacker.armour.haspair():
+                        if attacker.armour.name == "Yang":
+                            power = await self.canbalance(defender, attacker, power, battlebed)
 
             psn = False
             ts = False
@@ -1137,9 +1151,10 @@ Stat names are the names that you see in the above embed, with the exception of 
         if guild == None and channel == None:
             guild = self.bot.get_guild(739229902921793637)
             channel = guild.get_channel(740764507655110666)
-        else:
-            guild2 = self.bot.get_guild(739229902921793637)
-            channel2 = self.homeguild.get_channel(740764507655110666)
+        
+        guild2 = self.bot.get_guild(739229902921793637)
+        
+        channel2 = self.homeguild.get_channel(740764507655110666)
         
         currole = discord.utils.get(guild.roles, name="Parader")
         
@@ -1160,7 +1175,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         await self.rembed(beastembed, channel)
 
         await asyncio.sleep(20)
-        msg = f"{currole.mention}, 10 Seconds Remain. The field of Empowerment is activated. Now you will always be doing max damage"
+        msg = f"{currole.name}, 10 Seconds Remain. The field of Empowerment is activated. Now you will always be doing max damage"
         await channel.send(msg)
 
         await asyncio.sleep(10)
@@ -1736,6 +1751,9 @@ Stat names are the names that you see in the above embed, with the exception of 
         self.users.append(ParadeMaster)
         await ctx.send(f"Successfully Created Profile for {bott.display_name}")
 
+    
+
+
     async def canability(self, defender, attacker, power, embed):
         useabil = randint(0, 100)
         if useabil >= 25 and useabil <= 50:
@@ -1751,6 +1769,27 @@ Stat names are the names that you see in the above embed, with the exception of 
 
         return power, None
         
+    async def canhaki(self, defender, attacker, power, embed):
+        attacker.mindmg += 50
+        attacker.maxdmg += 50
+        embed.add_field(name=f"{attacker.passive.usename}:", value=f"{attacker.name} {attacker.passive.effect}")
+        return power
+
+    async def cantruehaki(self, defender, attacker, power, embed):
+        attacker.mindmg += 50
+        attacker.maxdmg += 50
+        embed.add_field(name=f"{attacker.passive.usename}:", value=f"{attacker.name} {attacker.passive.effect}")
+        if defender.level <= attacker.level - 30:
+            defender.health -= 100
+            embed.add_field(name=f"{attacker.passive.usename}:", value=f"{defender.name} lost 100 health to {attacker.passive.usename}")
+        
+        return power
+
+    async def canbalance(self, defender, attacker, power, embed):
+        power += 100
+        attacker.health += 100
+        embed.add_field(name=f"{attacker.passive.usename}:", value=f"{attacker.name} {attacker.passive.effect}")
+        return power
 
     async def candodge(self, defender, attacker, power, embed):
         usedodge = randint(0, 100)

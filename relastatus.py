@@ -124,7 +124,7 @@ feedmsg="Remains unmoving. Maybe it appreciated the thought tho")
 
 
 allpets = [egg, monkey, lizard, tree, tstig, meagle, seye, luxio, lilraven, bbdino, dragon,
-tstiger, eagle, sbeast, luxray, raven, trex]
+tstiger, eagle, sbeast, luxray, raven, trex, elmnt, nymph]
 petlist = [bdino, bird, shinx, speceye, bbeag, tcub, sapling, bblizard, bbmonkey, wisp]
 
 for animal in petlist:

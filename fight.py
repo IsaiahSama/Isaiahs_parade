@@ -72,6 +72,7 @@ jajanken = Ability("Jajanken", "After 5 months of training with Gon, you have no
 uheal = Ability("Ultra Heal", "A sacred technique used to heal for 10% of your max health", "The gods have blessed me", "regains 10% of their max health and didn't attack",
 1, 0, 0, 0, 0, 10)
 
+
 # Passives
 
 dodge = Passive("Dodge", "Has a 25% chance to dodge the attack of an enemy.", "You didn't miss me... I dodged it", "dodged",
@@ -90,6 +91,12 @@ sharpeye = Passive("Sharp Eye", "25% Proc Chance. Deals a critical hit for x1.2 
 sboost = Passive("Speed Boost", "Goes First and deals 1.2x dmg on first hit", "Speed Boost", "Attacks first and deals bonus dmg to", 1, 0, 0, 0, 0)
 
 critblock = Passive("Critical Guard", "All critical hits against you deal x0.75 instead of x1.5. 2 in 3 chance of occuring", "Critical Guard","Reduces your critical damage to only 0.75x the original", 0.75,0,0,0,0)
+
+haohaki = Passive("Haoshoku Haki", "Conqueror's Haki: Increases min and max damage by 40 for each passing turn.\nSet Bonus: Anyone below 30 levels of the user loses 100 hp every turn\nOtherwise. No effect"
+, "Know the power of one who is worthy", "Increases min and max damage by 50", 1, 0, 0, 50, 50)
+
+balancepride = Passive("Pride of Balance", "Requires: Yin Blade and Yang Armour set. Increases power of attack by 100 (100 True Damage) and heals for 100 hp on user's turn. Otherwise: No Effect"
+,"The emodiment of Balance I am", "Increases power by 100. Heals for 100", 1, 100, 100, 0, 0)
 
 # Unique
 plague = Ability("The Plague", "Poisons the victim. Has a base damage of 100 increases by 100, Unique to ...?", "wishes death upon You",
@@ -121,7 +128,8 @@ abilities = [theworld, swarm, blast, deadlygrasp, critstrike, pickelize, sonic, 
 allabilities = [plague]
 for thing in abilities:
     allabilities.append(thing)
-passives = [dodge, counter, regeneration, rage, sharpeye, sboost, critblock]
+
+passives = [dodge, counter, regeneration, rage, sharpeye, sboost, critblock, haohaki, balancepride]
 
 # Weapons
 @dataclass
@@ -172,11 +180,13 @@ srifle = Weapons("Sniper Rifle", "Never miss a shot", "Snipes", 300, 40, 4, cost
 # Tier 5
 evampknife = Weapons("Enchanted Vamp Knife", "Vampire knife, but enchanted with the blood of many", "drains the blood of", 600, 7, 20, 1000000, 5)
 dreamsword = Weapons("Dream Sword", "Crafted from the essence of the light side of sleep", "steals the dreams of", 700, 15, 2, 1000000, 5)
+cqhaki = Weapons("Conqueror Haki", "A physical manifestation of the ability. Allows the user to use the ability Haoshoku Haki.",
+"controls", 2000, 16, 5, 5400000, 5)
 yin = Weapons("Yin Blade", "The physical manifestation of darkness, destruction and negative energy", "alters the existence of", 1800, 20, 5, 5300000, 5)
 
 weaponlist = [fist, katana, bow, pistol, sword, dagger, slime, fishrod, axe, fpan, vampknives, miracles, 
 blaster, dsword, bomb, crossbow, bsuckler, sancspear, stormbreaker, hcard, vibechk, seruption, tsummon, sfknife, srifle,
-evampknife, dreamsword, yin]
+evampknife, dreamsword, cqhaki, yin]
 
 # Unique
 pds = Weapons("Plague Doctors Scepter", "Soulbound to ...?", "infects", 0, 10, 15, 0, 5)
@@ -230,7 +240,7 @@ cranger = Armour("Charged Ranger", "An upgrade to Ranger. Shocking I know", 90, 
 solarflare = Armour("Solar Flare", "Made from Solar Fragments and Luminite Ore. Gains set bonus with Solar Eruption", 120, 35, 8000, pairs=seruption, tierz=2)
 elitist = Armour("Elitist", "Said to be made for the elites", 150, 40, 10000, tierz=3)
 wood = Armour("Wooden", "Pfft, you *wood* n't get it. Gains set bonus with The Vibe Check", 160, 45, 30000, 7, vibechk, 3)
-haki = Armour("Haki", "Hard", 200, 50, 50000, 10, tierz=3)
+hierro = Armour("Hierro", "Hard", 200, 50, 50000, 10, tierz=3)
 plaguearm = Armour("Plague Doctors Uniform", "A copy of the original owned by ...?", 200, 50, 50000, 4, tierz=3)
 vknight = Armour("Valhalla Knight", "Again, Don't ask where I got this from", 100, 30, 500000, 25, tierz=4)
 shadowflame = Armour("Shadow Flame", 
@@ -242,7 +252,10 @@ sranger = Armour("Tundra Ranger", "Gained from surviving the depth of the Tundra
 vampcloak = Armour("Vampiric Cloak", "Makes it easier to drain blood. Pairs well with Enchanted Vamp Knives", 800, 300, 1100000, 18, evampknife, 5)
 nightmare = Armour("Nightmare", "Woven together from the essence of the dark side of sleep. Gains set bonus with Dream Sword",
 800, 420, 1100000, 0, dreamsword, 5)
+haki = Armour("Haki", "Makes it easier to absorb this mysterious energy. Gains set bonus with Conqueror Haki",
+1200, 1200, 5000000, 5, cqhaki, 5)
 yang = Armour("Yang", "The physical manifestation of creation, light and positive energy", 1500, 1000, 5000000, 30, yin, 5)
+
 # unique
 paraders = Armour("Parade Creators Outfit", "Identifies the creator of the Parade", 5900, 1370, 99999999, 10, parblade, 5)
 pdr = Armour("True Plague Doctors Uniform", "Identifies ...? as a Parade Leader", 4050, 900, 9999999999, 25, pds, 5)
@@ -250,7 +263,7 @@ vmaster = Armour("Vibe Master", "Identifies Trxsh as a Parade Leader", 2700, 100
 
 
 armorlist = [linen, chain, hunters, iron, gold, slimearm, assas, valkryie, diamond, saiyanguc, abyss, paladium, cranger,
-solarflare, elitist, wood, haki, plaguearm, vknight, shadowflame, artillery, sranger, vampcloak, nightmare, yang]
+solarflare, elitist, wood, hierro, plaguearm, vknight, shadowflame, artillery, sranger, vampcloak, nightmare, haki, yang]
 
 allarmor = [paraders, pdr, vmaster]
 for thing in armorlist:
@@ -574,6 +587,17 @@ class FightMe(Fighter):
             self.attackmsg = "Sealed the dreams of"
             return "Increased health and weapon damage by 120"
 
+        elif self.armour.name == "Haoshoku Haki":
+            self.health += 500
+            self.weapon.damage += 400
+            self.weapon.healplus += 4
+            self.armour.regen += 4
+            self.critchance += 10
+            self.mindmg += 20
+            self.maxdmg += 20
+            self.attackmsg = "manipulates the existence of"
+            return "This is your birthrite. Increased health by 500, Damage of Conquerors by 400, increased lifesteal on both Haki and Conquerors Haki by 4%,increased crit chance by 10% and increased min and max damage by 20. Able to use Haoshoku Haki passive"
+
         elif self.armour.name == "Yang":
             self.health += 500
             self.weapon.damage += 400
@@ -583,7 +607,7 @@ class FightMe(Fighter):
             self.mindmg += 50
             self.maxdmg += 50
             self.attackmsg = "manipulates the mind and soul of"
-            return "Perfect balanced has been achieved. Increased health by 500, Damage of Yin Blade by 400, increased lifesteal on both Yang and Yin by 4%,increased crit chance by 10% and increased min and max damage by 50"
+            return "Perfect balanced has been achieved. Increased health by 500, Damage of Yin Blade by 400, increased lifesteal on both Yang and Yin by 4%,increased crit chance by 10% and increased min and max damage by 50. Able to use Pride of Balance Passive"
         
         else:
             return "Something went wrong"

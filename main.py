@@ -200,7 +200,9 @@ async def help(ctx, *, category=None):
     misc.add_field(name="<>fdeathnote {@mention}", value="Similar to <>deathnote, but for everyone to use. (Does not kick, obviously)", inline=False)
     misc.add_field(name="<>emoji {emojiname}", value="Heaven knows when you'd want to use this but hey", inline=False)
     misc.add_field(name="<>mentioned", value="Finds a message that you were mentioned in within the last 200 messages and shows it to you. Misc Command", inline=False)
+    misc.add_field(name="<>ping", value="Used to get the bot's ping", inline=False)
     
+
     gaming = discord.Embed(
             title="Game Commands",
             description="Below are a list of my 'Gaming' commands.",
