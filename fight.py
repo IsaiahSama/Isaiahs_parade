@@ -245,7 +245,7 @@ elitist = Armour("Elitist", "Said to be made for the elites", 150, 40, 10000, ti
 wood = Armour("Wooden", "Pfft, you *wood* n't get it. Gains set bonus with The Vibe Check", 160, 45, 30000, 7, vibechk, 3)
 hierro = Armour("Hierro", "Hard", 200, 50, 50000, 10, tierz=3)
 plaguearm = Armour("Plague Doctors Uniform", "A copy of the original owned by ...?", 200, 50, 50000, 4, tierz=3)
-vknight = Armour("Valhalla Knight", "Again, Don't ask where I got this from", 100, 30, 500000, 25, tierz=4)
+vknight = Armour("Valhalla Knight", "Again, Don't ask where I got this from", 100, 30, 500000, 18, tierz=4)
 shadowflame = Armour("Shadow Flame", 
 "A sorcerer's creation created by shadows and flames of darkness. Gains set bonus with Shadow Flame Knife",
 510, 200, 500000, 5, sfknife, 4)
