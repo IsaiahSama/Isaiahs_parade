@@ -312,6 +312,7 @@ class Fighter:
 
     def takecoin(self, coin):
         self.pcoin -= coin
+        
     def hasPassive(self):
         if self.passive == None:
             return False

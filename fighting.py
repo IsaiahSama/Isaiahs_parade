@@ -2069,9 +2069,11 @@ Stat names are the names that you see in the above embed, with the exception of 
         if yes.lower() == "success":
                 jobbed.add_field(name="Here is your payment", value=f"You received {reward} parade coins")
                 jobbed.add_field(name="Woop woop", value=f"{random.choice(jobs.responses)}")
+                user.addcoin(reward)
         else:
             jobbed.add_field(name="How unfortunate", value=f"You had to pay {loss} parade coins for your failure")
             jobbed.add_field(name="Sigh", value=f"{random.choice(jobs.badresp)}")
+            user.takecoin(loss)
 
 
     @commands.command()
