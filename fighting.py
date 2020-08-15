@@ -1339,6 +1339,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         rbeast.ability, rbeast.passive, rbeast.attackmsg, rbeast.weapon, rbeast.armour)
         
         self.raidbeast = rbeast
+        self.raidbeast.slag = 0
 
         return True
 
@@ -1387,15 +1388,16 @@ Stat names are the names that you see in the above embed, with the exception of 
             healnum = randint(0, 100)
 
             if self.rslagged:
-                if player.ability.name == "Slag":
-                    if self.raidbeast.slag == 0:
-                        raidbed.add_field(name=f"{player.ability.usename}", value=f"{self.raidbeast.name} has been freed of Slag")
-                        del self.raidbeast.slag
-                        self.rslagged = False
-                    else:
-                        self.raidbeast.slag -= 1
-                        power *= 1.5
-                        raidbed.add_field(name=f"{player.ability.usename}", value=f"{self.raidbeast.name} {player.ability.effect} {self.raidbeast.slag} turns")
+                if player.hasActive():
+                    if player.ability.name == "Slag":
+                        if self.raidbeast.slag == 0:
+                            raidbed.add_field(name=f"{player.ability.usename}", value=f"{self.raidbeast.name} has been freed of Slag")
+                            del self.raidbeast.slag
+                            self.rslagged = False
+                        else:
+                            self.raidbeast.slag -= 1
+                            power *= 1.5
+                            raidbed.add_field(name=f"{player.ability.usename}", value=f"{self.raidbeast.name} {player.ability.effect} {self.raidbeast.slag} turns")
 
 
             power += player.weapon.damage
