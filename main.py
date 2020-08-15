@@ -24,6 +24,7 @@ bot.load_extension("special_com")
 bot.load_extension("fighting")
 # bot.load_extension("music_com")
 bot.load_extension("relacom")
+bot.load_extension("calling")
 
 # Events
 # Creating On_ready event
