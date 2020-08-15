@@ -138,35 +138,6 @@ class General(commands.Cog):
         await ctx.send(f"{chosen.display_name}")
 
 
-    delmsg = []
-    @commands.Cog.listener()
-    async def on_message_delete(self, message):
-        istnce = delemsg(message.channel, message)
-        print(f"{message.author}: {message.content}")
-        self.delmsg.append(istnce)
-        await asyncio.sleep(90)
-        self.delmsg.remove(istnce)
-
-    @commands.command()
-    async def nohide(self, ctx):
-        
-        for dething in self.delmsg:
-            if dething.chan == ctx.channel:
-                msg = dething.getobj()
-                embed = discord.Embed(
-                    title=f"{msg.author.name} thought they could hide from me",
-                    description=f"{msg.content}",
-                    color=randint(0, 0xffffff)
-                )
-
-                obj = await ctx.send(embed=embed)
-                await asyncio.sleep(30)
-                await obj.delete()
-                return
-
-        await ctx.send("No messages for me to reveal")
-
-
     @commands.command()
     async def divide(self, ctx, arg1, arg2):
         try:
@@ -213,15 +184,6 @@ class General(commands.Cog):
 
         await ctx.send(round(arg1 - arg2))
 
-
-
-class delemsg:
-    def __init__(self, chan, msgobj):
-        self.chan = chan
-        self.msgobj = msgobj
-
-    def getobj(self):
-        return self.msgobj
 
 class Namegen(commands.Cog):
 

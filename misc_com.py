@@ -5,10 +5,46 @@ import random
 from random import randint
 from isaiahball import responses
 
+class delemsg:
+    def __init__(self, chan, msgobj):
+        self.chan = chan
+        self.msgobj = msgobj
+
+    def getobj(self):
+        return self.msgobj
 
 class Miscgen(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+
+
+    delmsg = []
+    @commands.Cog.listener()
+    async def on_message_delete(self, message):
+        istnce = delemsg(message.channel, message)
+        print(f"{message.author}: {message.content}")
+        self.delmsg.append(istnce)
+        await asyncio.sleep(90)
+        self.delmsg.remove(istnce)
+
+    @commands.command()
+    async def nohide(self, ctx):
+        
+        for dething in self.delmsg:
+            if dething.chan == ctx.channel:
+                msg = dething.getobj()
+                embed = discord.Embed(
+                    title=f"{msg.author.name} thought they could hide from me",
+                    description=f"{msg.content}",
+                    color=randint(0, 0xffffff)
+                )
+
+                obj = await ctx.send(embed=embed)
+                await asyncio.sleep(30)
+                await obj.delete()
+                return
+
+        await ctx.send("No messages for me to reveal")
 
 
     # Secret messages
@@ -49,6 +85,20 @@ class Miscgen(commands.Cog):
     async def emoji(self, ctx, arg):
         await ctx.message.delete()
         await ctx.send(f"{ctx.author.display_name}: :{arg}:")
+
+    @commands.command()
+    async def mentioned(self, ctx):
+        msgcount = 0
+        for m in await ctx.channel.history().flatten():
+            if msgcount < 700:
+                if ctx.author in m.mentions:
+                    if m.author == self.bot.user:
+                        continue
+                    await ctx.send(f"{m.author}: ***{m.content}***")
+                    return True
+                msgcount += 1
+
+        await ctx.send("You weren't recently mentioned")
 
     isaiah = 493839592835907594
     def revealcategory(self):
@@ -100,21 +150,8 @@ class getmentioned(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
-    async def mentioned(self, ctx):
-        msgcount = 0
-        for m in await ctx.channel.history().flatten():
-            if msgcount < 700:
-                if ctx.author in m.mentions:
-                    if m.author == self.bot.user:
-                        continue
-                    await ctx.send(f"{m.author}: ***{m.content}***")
-                    return True
-                msgcount += 1
-
-        await ctx.send("You weren't recently mentioned")
+    
 
 
 def setup(bot):
     bot.add_cog(Miscgen(bot))
-    bot.add_cog(getmentioned(bot))
