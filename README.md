@@ -1,7 +1,7 @@
 # Isaiah's Parade, a multi-purpose Discord bot
 
 ## Description
-Isaiah's Parade is a Discord Bot created by me, Isaiah Carrington, to be a bot made specifically for Moderation using the Discord API<br>However, there has been alot of progression since then, and he is now capable of soo much more, from having you able to engage in "fights", doing quests, doing raids with friends from other servers, having a pet, and so much more.
+Isaiah's Parade is a Discord Bot created by me, Isaiah Carrington, to be a bot made initially for Moderation using the Discord API<br> Since the beginning, we have gone beyond, expanding our scope to cover some word games, quests, raids with people from other servers, social profiles and more.
 
 <br>
 Currently, there are 7 categories for you as a Discord user to choose from.
