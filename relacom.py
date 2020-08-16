@@ -32,9 +32,7 @@ class Relamain(commands.Cog):
        
         
         for relaperson in tempuser:
-            acc = relauser(relaperson[0], relaperson[1], relaperson[2], relaperson[3], relaperson[4],
-            relaperson[5], relaperson[6], relaperson[7], relaperson[8], relaperson[9], relaperson[10], relaperson[11],
-            relaperson[12], relaperson[13], relaperson[14], relaperson[15], relaperson[16])
+            acc = relauser(*relaperson[0:17])
 
             loadedacc.append(acc)
 
@@ -242,6 +240,25 @@ class Relamain(commands.Cog):
 
         else:
             await ctx.send("Do <>createsocial first before jumping into such deep things")
+
+    @commands.command()
+    async def dump(self, ctx):
+        if await self.isuser(ctx.author):
+            user = await self.getuser(ctx.author)
+            if user.rela:
+                user2 = await self.reget(user.pid)
+                user.pid = None
+                user2.pid = None
+                user.rela = False
+                user2.rela = False
+                user2main = self.bot.get_user(user2.tag)
+
+                await ctx.author.send(f"Broke up with {user2main.name}")
+                await user2main.send(f"{ctx.author.name} has dumped you")
+            
+            else:
+                await ctx.send("You are not in a relationship to leave")
+
 
     
     @commands.command()
