@@ -9,6 +9,7 @@ from fight import FightMe, Fighter, questpro, enemy, FightingBeast, abilities, a
 import json
 import math
 import jobs
+from teams import Team
 
 emojiz = ["🤔", "🤫", "🤨", "🤯", "😎", "😓", "🤡", "💣", "🧛", "🧟‍♂️", "🏋️‍♂️", "⛹", "🏂"]
 
@@ -39,9 +40,7 @@ class FullFight(commands.Cog):
         
         
         for fightmaster in tempuser:
-            acc = Fighter(fightmaster[0], fightmaster[1], fightmaster[2], fightmaster[3], fightmaster[4], fightmaster[5], 
-            fightmaster[6], fightmaster[7], fightmaster[8], fightmaster[9], fightmaster[10], fightmaster[11], fightmaster[12],
-            fightmaster[13], fightmaster[14], fightmaster[15], fightmaster[16], fightmaster[17], fightmaster[18])
+            acc = Fighter(*fightmaster[0:20])
             
             loadedacc.append(acc)
 
@@ -49,6 +48,8 @@ class FullFight(commands.Cog):
 
     else:
         users = []
+
+    
 
     def __init__(self, bot):
         self.bot = bot
@@ -58,7 +59,6 @@ class FullFight(commands.Cog):
     async def async_init(self):
         await self.bot.wait_until_ready()
         self.homeguild = self.bot.get_guild(739229902921793637)
-
 
     # Commands
 
@@ -1199,8 +1199,207 @@ Stat names are the names that you see in the above embed, with the exception of 
         else:
             await ctx.send("You do not have a fight profile. Do <>createprofile")
 
+    teamlist = []
+
+    @commands.command()
+    async def teams(self, ctx):
+        serverteams = [x for x in self.teamlist if x.guildid == ctx.guild.id]
+        if serverteams:
+            teambed = discord.Embed(
+                title="Team list",
+                description=f"List of teams in {ctx.guild}",
+                color=randint(0, 0xffffff)
+            )
+
+            if len(serverteams) > 25:
+                await ctx.send(', '.join(serverteams))
+            else:
+                for item in serverteams:
+                    leader = self.bot.get_user(item.leaderid)
+                    teambed.add_field(name=f"{item.teamname}", value=f"Lead by {leader.name}", inline=False)
+
+                await ctx.send(embed=teambed) 
+        else:
+            await ctx.send("Your server has no teams currently registered.")
+
     
-    # Functions90
+    @commands.command()
+    # @commands.cooldown(1, 300, commands.BucketType.user)
+    async def register(self, ctx, *, teamname):
+        if await self.ismember(ctx.author):
+            user = await self.getmember(ctx.author)
+            if not user.inteam:
+                if len(teamname.strip()) <= 2:
+                    await ctx.send("You cannot have a team name with less than 3 letters")
+                    return
+
+                curteams = [x for x in self.teamlist if x.guildid == ctx.guild.id and x.teamname.lower() == teamname.lower()]
+                
+                if not curteams:
+                    await ctx.send("Making your team now")
+                    nteam = Team(teamname, ctx.guild.id, user.tag, f"{user.tag}5")
+                    self.teamlist.append(nteam)
+                    user.inteam = True
+                    await ctx.send("Completed. View it with <>myteam")
+                    return
+                else:
+                    await ctx.send("There is already a team with this name. Please select a new one")
+                    return
+
+            else:
+                await ctx.send("You are already part of a team. Please leave this one before creating a new one")
+        else:
+            await self.denied(ctx.channel, ctx.author)
+            return
+
+
+    @commands.command()
+    async def myteam(self, ctx):
+        if await self.ismember(ctx.author):
+            user = await self.getmember(ctx.author)
+            if user.inteam:
+                userteam = [x for x in self.teamlist if ctx.author.id in x.teammates or x.leaderid == ctx.author.id]
+                userteam = userteam[0]
+                teamguild = self.bot.get_guild(userteam.guildid)
+                teambed = discord.Embed(
+                    title=userteam.teamname,
+                    description=f"Showing team {userteam.teamname} of {teamguild.name}",
+                    color=randint(0, 0xffffff)
+                )
+                tleader = self.bot.get_user(userteam.leaderid)
+                teambed.set_thumbnail(url=tleader.avatar_url)
+                tleader = await self.getmember(tleader)
+                teambed.add_field(name="Lead by", value=f"{tleader.name}, Tier {tleader.getTier()}")
+                teambed.add_field(name="Member Count", value=len(userteam.teammates))
+
+                await ctx.send(embed=teambed)
+            else:
+                await ctx.send("You are not part of a team")
+        else:
+            await ctx.send("You do not have an account. Create one with <>createprofile")
+
+    @commands.command()
+    async def adventure(self, ctx):
+        pass
+
+    @commands.command()
+    async def invite(self, ctx, member: discord.Member):
+        if await self.ismember(ctx.author) and await self.ismember(member):
+            user = await self.getmember(ctx.author)
+            target = await self.getmember(member)
+            if target.inteam:
+                await ctx.send("The person you wish to invite is already in a team")
+                return
+
+            if not user.inteam:
+                await ctx.send("You are not in a team, and therefore cannot invite anyone as yet")
+                return
+
+            userteam = [x for x in self.teamlist if ctx.author.id == x.leaderid]
+
+            if not userteam:
+                await ctx.send("Only the leader can invite a member to the team")
+                return
+            
+            userteam = userteam[0]
+
+            target.invitation = userteam.teamname
+
+            await member.send(f"You have been invited to {userteam.teamname} by {user.name}")
+        else:
+            await ctx.send("Either you or the person you mentioned do not have a profile. Make one with <>createprofile")
+
+    @commands.command()
+    async def accept(self, ctx, *, teamname):
+        if await self.ismember(ctx.author):
+            user = await self.getmember(ctx.author)
+            if user.invitation:
+                targetguild = [x for x in self.teamlist if user.invitation == x.teamname]
+                targetguild = targetguild[0]
+                targetguild.teammates.append(user.tag)
+                user.inteam = True
+                await ctx.send(f"Joined {targetguild.name}")
+                user.invitation = None
+
+            else:
+                await ctx.send("You have no current invitation")
+        else:
+            await ctx.send("No. Do <>createprofile")
+
+    @commands.command()
+    async def deny(self, ctx, *, teamname):
+        if await self.ismember(ctx.author):
+            user = await self.getmember(ctx.author)
+            if user.invitation:
+                user.invitation = None
+                await ctx.send("You have rejected your invitation")
+
+            else:
+                await ctx.send("You have no current invitation")
+        else:
+            await ctx.send("No. Do <>createprofile")
+
+    @commands.command()
+    async def leaveteam(self, ctx):
+        if await self.ismember(ctx.author):
+            user = await self.getmember(ctx.author)
+            if user.inteam:
+                userteam = [x for x in self.teamlist if user.tag in x.teammates or user.tag == x.leaderid]
+
+                userteam = userteam[0]
+
+                await ctx.send(f"Leaving {userteam.teamname}")
+                if user.tag == userteam.leaderid:
+                    if len(userteam.teammates) == 0:
+                        self.teamlist.remove(userteam)
+                        await ctx.send("As you are the leader leaving with no one else. Your team has been deleted")
+                        
+                    else:
+                        victim = random.choice(userteam.teammates)
+                        userteam.leaderid = victim
+                        victimain = self.bot.get_user(victim)
+                        await victimain.send(f"You are now the leader of {userteam.teamname}")
+                        await ctx.send("Completed")
+
+                else:
+                    userteam.teammates.remove(user.tag)
+                    user.inteam = False
+                    await ctx.send(f"Successfully left {userteam.teamname}")
+
+                user.inteam = False
+
+        else:
+            await self.denied(ctx.channel, ctx.author)
+            return
+
+    @commands.command()
+    async def kickmember(self, ctx, member: discord.Member, confirm=False):
+        if await self.ismember(ctx.author) and await self.ismember(member):
+            user1 = await self.getmember(ctx.author)
+            user2 = await self.getmember(member)
+            if user1.inteam and user2.inteam:
+                userteam = [x for x in self.teamlist if x.leaderid == ctx.author.id]
+                if not userteam1:
+                    await ctx.send("Only the leader can kick someone from a team")
+                    return
+                else:
+                    if user2.tag not in userteam.teammates:
+                        await ctx.send(f"{member.name} is not a part of your team '-'")
+                        return
+                    
+                    else:
+                        userteam.teammates.remove(user2.tag)
+                        user2.inteam = False
+                        await ctx.send(f"Successfully removed {member.name} from {userteam.teamname}")
+                        return
+            else:
+                await ctx.send("You or the person you mentioned is not in a team")
+                return
+        else:
+            await ctx.send("Either you, or the person you mentioned does not have profile. Make one with <>createprofile")
+
+
+    # Functions
     async def startRaid(self, guild=None, channel=None):
 
         if guild == None and channel == None:
@@ -1807,13 +2006,13 @@ Stat names are the names that you see in the above embed, with the exception of 
 
     @tasks.loop(minutes=5.0)
     async def updlist(self):
-        dumped = []
+        """dumped = []
         for fighter in self.users:
 
             dumped.append(fighter.__dict__)
 
         with open("fightdata.json", "w") as f:
-            json.dump(dumped, f, indent=4)
+            json.dump(dumped, f, indent=4)"""
 
         print("Updated")
 
