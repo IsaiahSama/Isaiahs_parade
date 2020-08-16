@@ -305,6 +305,9 @@ class Fighter:
     xpthresh: int=50
     typeobj: str="player"
     canfight: bool=True
+    inteam: bool=False
+    invation: int= None
+    
 
     def addcoin(self, coin):
         self.pcoin += coin
@@ -867,10 +870,6 @@ mid9 = BeastFight("Slivial", 10021, 325, 50, 76, 120, 250, "Straight from Slimen
 "Shoots some ammo from his cannon at", weapon=miracles)
 
 mid10 = BeastFight("Sanic", 10022, 340, 60, 90, 125, 150, "Gotta go fast", 430, 15, ability=sonic, attackmsg="zooms around then hits")
-
-
-
-
 
 
 # High Level between 300 and 950 hp
