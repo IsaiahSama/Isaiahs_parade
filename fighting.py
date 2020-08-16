@@ -1379,7 +1379,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             user2 = await self.getmember(member)
             if user1.inteam and user2.inteam:
                 userteam = [x for x in self.teamlist if x.leaderid == ctx.author.id]
-                if not userteam1:
+                if not userteam:
                     await ctx.send("Only the leader can kick someone from a team")
                     return
                 else:
