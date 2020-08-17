@@ -9,7 +9,7 @@ from fight import FightMe, Fighter, questpro, enemy, FightingBeast, abilities, a
 import json
 import math
 import jobs
-from teams import Team
+from teams import Team, ToAdv
 
 emojiz = ["🤔", "🤫", "🤨", "🤯", "😎", "😓", "🤡", "💣", "🧛", "🧟‍♂️", "🏋️‍♂️", "⛹", "🏂"]
 
@@ -51,6 +51,7 @@ class FullFight(commands.Cog):
 
     if os.path.exists("Teams.json"):
         with open("Teams.json") as t:
+
             data = json.load(t)
 
         buildingteam = []
@@ -1305,6 +1306,8 @@ Stat names are the names that you see in the above embed, with the exception of 
                 tleader = await self.getmember(tleader)
                 teambed.add_field(name="Lead by", value=f"{tleader.name}, Tier {tleader.getTier()}")
                 teambed.add_field(name="Member Count", value=len(userteam.teammates))
+                names = [self.bot.get_user(x).name for x in userteam.teammates]
+                teambed.add_field(name="Members", value=', '.join(names), inline=False)
 
                 await ctx.send(embed=teambed)
             else:
@@ -1312,9 +1315,53 @@ Stat names are the names that you see in the above embed, with the exception of 
         else:
             await ctx.send("You do not have an account. Create one with <>createprofile")
 
+    inadventure = []
     @commands.command()
     async def adventure(self, ctx):
-        pass
+        if await self.ismember(ctx.author):
+            user = await self.getmember(ctx.author)
+            await self.doublecheck(user)
+            if user.inteam:
+                userteam = [x for x in self.teamlist if user.tag in x.teammates or user.tag == x.leaderid]
+                userteam = userteam[0]
+                canjoin = [x for x in self.inadventure if x.teamid == userteam.teamid]
+                if len(userteam.teammates) < 1:
+                    await ctx.send("You need at least 1 other teammate in order to start an adventure")
+                    return
+                
+                if canjoin:
+                    canjoin = canjoin[0]
+                    if user.tag in canjoin.inadv:
+                        await ctx.send("You are already part of this adventure")
+                        return
+
+                    canjoin.inadv.append(user.tag)
+                    await ctx.send("Joined the adventure. Waiting for it to begin")
+                    leader = self.bot.get_user(userteam.leaderid)
+                    await leader.send(f"{ctx.author.name} has joined the adventure")
+                    return
+                else:
+                    if user.tag == userteam.leaderid:
+                        await ctx.send("Inviting your members")
+                        for mate in userteam.teammates:
+                            target = self.bot.get_user(mate)
+                            await target.send(f"{user.name} is preparing to go on an adventure. Join with <>adventure")
+                        
+                        pendingadv = ToAdv(userteam.teamid, True)
+                        pendingadv.inadv.append(user.tag)
+                        self.inadventure.append(pendingadv)
+                        await ctx.send("You have 5 minutes before it begins. Make sure you have at least 1 other member by then")
+                        await asyncio.sleep(60 * 5)
+                        await self.prepadv(ctx, pendingadv)
+                    else:
+                        await ctx.send("For now, only the leader can start adventures.")
+                        return                   
+                    
+            else:
+                await ctx.send("You are not in a team")
+        else:
+            await self.denied(ctx.channel, ctx.author)
+            return
 
     @commands.command()
     async def invite(self, ctx, member: discord.Member):
@@ -1354,6 +1401,8 @@ Stat names are the names that you see in the above embed, with the exception of 
                 targetguild.teammates.append(user.tag)
                 user.inteam = True
                 await ctx.send(f"Joined {targetguild.name}")
+                leader = self.bot.get_user(targetguild.leaderid)
+                await leader.send(f"{ctx.author.name} has joined your team")
                 user.invitation = None
                 await self.updateteam()
 
@@ -2025,6 +2074,48 @@ Stat names are the names that you see in the above embed, with the exception of 
 
         return False
 
+    # Adventure
+    async def prepadv(self, ctx, squad):
+        if len(squad.inadv) > 1:
+            await self.teammsg(squad, "Member requirement has been met. Setting out for adventure now")
+            squad.pending = False
+            await self.startadv(squad)
+        else:
+            await ctx.send("Not enough Members to start an adventure")
+            self.inadventure.remove(squad)
+            return
+
+    async def startadv(self, squad):
+        timetocomplete = randint(1, 5)
+        await self.teammsg(squad, f"Seems like adventure will take around {timetocomplete} minutes to complete")
+        await asyncio.sleep(timetocomplete * 60)
+        suceeded = randint(1, 10)
+        if suceeded >= 2 and suceeded <= 7:
+            await self.teammsg(squad, "Congratulationsss, You have passed. You will now receive your rewards")
+            for person in squad.inadv:
+                nperson = self.bot.get_user(person)
+                uperson = await self.getmember(nperson)
+                xptoget, cashtoget = await self.advreward(uperson)
+                uperson.curxp += xptoget
+                uperson.pcoin += cashtoget
+                await nperson.send(f"You have received {xptoget} xp and {cashtoget} parade coins")
+        else:
+            await self.teammsg(squad, "You have failed")
+
+        self.inadventure.remove(squad)
+
+    async def teammsg(self, team, msg):
+        for user in team.inadv:
+            target = self.bot.get_user(user)
+            await target.send(f"{msg}")
+            return
+
+    async def advreward(self, toreward):
+        rewardxp = (toreward.xpthresh / 3)
+        rewardcash = (toreward.pcoin / 5)
+        return rewardxp, rewardcash
+
+        
     @commands.command()
     @commands.is_owner()
     async def meadd(self, ctx):
@@ -2067,17 +2158,16 @@ Stat names are the names that you see in the above embed, with the exception of 
 
     async def updateteam(self):
         dumped = []
-        for team in self.teamlist:
-            dumped.append(team.__dict__)
+        if self.teamlist:
+            for team in self.teamlist:
+                dumped.append(team.__dict__)
 
-        with open("Teams.json", "w") as t:
-            json.dump(dumped, t, indent=4)
+            with open("Teams.json", "w") as t:
+                json.dump(dumped, t, indent=4)
+        else:
+            os.remove("Teams.json")
 
     
-
-
-
-
     @commands.command()
     @commands.is_owner()
     async def createbot(self, ctx):
@@ -2085,9 +2175,6 @@ Stat names are the names that you see in the above embed, with the exception of 
         ParadeMaster = Fighter(bott.display_name, bott.id, 0, 0, 200, 12, 30, 0, 0, 60)
         self.users.append(ParadeMaster)
         await ctx.send(f"Successfully Created Profile for {bott.display_name}")
-
-    
-
 
     async def canability(self, defender, attacker, power, embed):
         useabil = randint(0, 100)
@@ -2348,7 +2435,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             print(len(self.raiders))
             print(len(self.inquest))
             counter += 1
-            await asyncio.sleep(10)
+            await asyncio.sleep(30)
 
         self.updlist.restart()
         

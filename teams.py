@@ -8,3 +8,10 @@ class Team:
     teamid: int
     teammates: list=field(default_factory=list)
 
+@dataclass()
+class ToAdv:
+    teamid: int
+    pending: bool
+    inadv: list=field(default_factory=list)
+
+
