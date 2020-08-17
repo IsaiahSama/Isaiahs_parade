@@ -102,7 +102,7 @@ balancepride = Passive("Pride of Balance", "Requires: Yin Blade and Yang Armour 
 ,"The emodiment of Balance I am", "Increases power by 100. Heals for 200", 1, 100, 200, 0, 0)
 
 # Unique
-plague = Ability("The Plague", "Poisons the victim. Has a base damage of 100 increases by 100, Unique to ...?", "wishes death upon You",
+plague = Ability("The Plague", "Poisons the victim. Has a base damage of 100 increases by 50 for 3 turns, Unique to ...?", "wishes death upon You",
 "Summons The Plague and infects",1, 100, 0, 0, 0)
 
 # Raid Enemies

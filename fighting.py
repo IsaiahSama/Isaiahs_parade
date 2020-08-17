@@ -49,6 +49,30 @@ class FullFight(commands.Cog):
     else:
         users = []
 
+    if os.path.exists("Teams.json"):
+        with open("Teams.json") as t:
+            data = json.load(t)
+
+        buildingteam = []
+        
+        for dictobj in data:
+            templist = []
+            for v in dictobj.values():
+                templist.append(v)
+            buildingteam.append(templist)
+
+        loadedteam = []
+
+        for team in buildingteam:
+            acc = Team(*team[0:5])
+            
+            loadedteam.append(acc)
+
+        teamlist = loadedteam
+
+    else:
+        teamlist = []
+
     
 
     def __init__(self, bot):
@@ -1199,7 +1223,6 @@ Stat names are the names that you see in the above embed, with the exception of 
         else:
             await ctx.send("You do not have a fight profile. Do <>createprofile")
 
-    teamlist = []
 
     @commands.command()
     async def teams(self, ctx):
@@ -1216,7 +1239,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             else:
                 for item in serverteams:
                     leader = self.bot.get_user(item.leaderid)
-                    teambed.add_field(name=f"{item.teamname}", value=f"Lead by {leader.name}", inline=False)
+                    teambed.add_field(name=f"{item.name}", value=f"Lead by {leader.name}", inline=False)
 
                 await ctx.send(embed=teambed) 
         else:
@@ -1233,14 +1256,15 @@ Stat names are the names that you see in the above embed, with the exception of 
                     await ctx.send("You cannot have a team name with less than 3 letters")
                     return
 
-                curteams = [x for x in self.teamlist if x.guildid == ctx.guild.id and x.teamname.lower() == teamname.lower()]
+                curteams = [x for x in self.teamlist if x.guildid == ctx.guild.id and x.name.lower() == teamname.lower()]
                 
                 if not curteams:
                     await ctx.send("Making your team now")
-                    nteam = Team(teamname, ctx.guild.id, user.tag, f"{user.tag}5")
+                    nteam = Team(teamname, ctx.guild.id, user.tag, f"*{user.tag}5")
                     self.teamlist.append(nteam)
                     user.inteam = True
                     await ctx.send("Completed. View it with <>myteam")
+                    await self.updateteam()
                     return
                 else:
                     await ctx.send("There is already a team with this name. Please select a new one")
@@ -1258,12 +1282,13 @@ Stat names are the names that you see in the above embed, with the exception of 
         if await self.ismember(ctx.author):
             user = await self.getmember(ctx.author)
             if user.inteam:
-                userteam = [x for x in self.teamlist if ctx.author.id in x.teammates or x.leaderid == ctx.author.id]
+                
+                userteam = [x for x in self.teamlist if ctx.author.id in x.teammates or ctx.author.id == x.leaderid]
                 userteam = userteam[0]
                 teamguild = self.bot.get_guild(userteam.guildid)
                 teambed = discord.Embed(
-                    title=userteam.teamname,
-                    description=f"Showing team {userteam.teamname} of {teamguild.name}",
+                    title=userteam.name,
+                    description=f"Showing team {userteam.name} of {teamguild.name}",
                     color=randint(0, 0xffffff)
                 )
                 tleader = self.bot.get_user(userteam.leaderid)
@@ -1303,9 +1328,10 @@ Stat names are the names that you see in the above embed, with the exception of 
             
             userteam = userteam[0]
 
-            target.invitation = userteam.teamname
+            target.invitation = userteam.teamid
+            await ctx.send("Your invitation has been sent")
 
-            await member.send(f"You have been invited to {userteam.teamname} by {user.name}")
+            await member.send(f"You have been invited to {userteam.name} by {user.name}. Do <>accept {userteam.name} to accept")
         else:
             await ctx.send("Either you or the person you mentioned do not have a profile. Make one with <>createprofile")
 
@@ -1314,12 +1340,13 @@ Stat names are the names that you see in the above embed, with the exception of 
         if await self.ismember(ctx.author):
             user = await self.getmember(ctx.author)
             if user.invitation:
-                targetguild = [x for x in self.teamlist if user.invitation == x.teamname]
+                targetguild = [x for x in self.teamlist if user.invitation == x.teamid]
                 targetguild = targetguild[0]
                 targetguild.teammates.append(user.tag)
                 user.inteam = True
                 await ctx.send(f"Joined {targetguild.name}")
                 user.invitation = None
+                await self.updateteam()
 
             else:
                 await ctx.send("You have no current invitation")
@@ -1348,7 +1375,7 @@ Stat names are the names that you see in the above embed, with the exception of 
 
                 userteam = userteam[0]
 
-                await ctx.send(f"Leaving {userteam.teamname}")
+                await ctx.send(f"Leaving {userteam.name}")
                 if user.tag == userteam.leaderid:
                     if len(userteam.teammates) == 0:
                         self.teamlist.remove(userteam)
@@ -1358,15 +1385,17 @@ Stat names are the names that you see in the above embed, with the exception of 
                         victim = random.choice(userteam.teammates)
                         userteam.leaderid = victim
                         victimain = self.bot.get_user(victim)
-                        await victimain.send(f"You are now the leader of {userteam.teamname}")
+                        await victimain.send(f"You are now the leader of {userteam.name}")
                         await ctx.send("Completed")
 
                 else:
                     userteam.teammates.remove(user.tag)
                     user.inteam = False
-                    await ctx.send(f"Successfully left {userteam.teamname}")
+                    await ctx.send(f"Successfully left {userteam.name}")
 
                 user.inteam = False
+                await self.updateteam()
+
 
         else:
             await self.denied(ctx.channel, ctx.author)
@@ -1383,6 +1412,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                     await ctx.send("Only the leader can kick someone from a team")
                     return
                 else:
+                    userteam = userteam[0]
                     if user2.tag not in userteam.teammates:
                         await ctx.send(f"{member.name} is not a part of your team '-'")
                         return
@@ -1390,7 +1420,8 @@ Stat names are the names that you see in the above embed, with the exception of 
                     else:
                         userteam.teammates.remove(user2.tag)
                         user2.inteam = False
-                        await ctx.send(f"Successfully removed {member.name} from {userteam.teamname}")
+                        await ctx.send(f"Successfully removed {member.name} from {userteam.name}")
+                        await self.updateteam()
                         return
             else:
                 await ctx.send("You or the person you mentioned is not in a team")
@@ -1400,6 +1431,8 @@ Stat names are the names that you see in the above embed, with the exception of 
 
 
     # Functions
+    
+
     async def startRaid(self, guild=None, channel=None):
 
         if guild == None and channel == None:
@@ -2006,15 +2039,23 @@ Stat names are the names that you see in the above embed, with the exception of 
 
     @tasks.loop(minutes=5.0)
     async def updlist(self):
-        """dumped = []
+        dumped = []
         for fighter in self.users:
 
             dumped.append(fighter.__dict__)
 
         with open("fightdata.json", "w") as f:
-            json.dump(dumped, f, indent=4)"""
+            json.dump(dumped, f, indent=4)
 
         print("Updated")
+
+    async def updateteam(self):
+        dumped = []
+        for team in self.teamlist:
+            dumped.append(team.__dict__)
+
+        with open("Teams.json", "w") as t:
+            json.dump(dumped, t, indent=4)
 
     
 
