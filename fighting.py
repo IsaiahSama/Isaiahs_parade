@@ -1256,6 +1256,14 @@ Stat names are the names that you see in the above embed, with the exception of 
                     await ctx.send("You cannot have a team name with less than 3 letters")
                     return
 
+                if " " in teamname:
+                    await ctx.send("Your team name cannot contain spaces. Use dashes or underscores instead")
+                    return
+
+                if len(teamname) > 20:
+                    await ctx.send("Your team name cannot be more than 20 characters")
+                    return
+
                 curteams = [x for x in self.teamlist if x.guildid == ctx.guild.id and x.name.lower() == teamname.lower()]
                 
                 if not curteams:
@@ -1281,6 +1289,7 @@ Stat names are the names that you see in the above embed, with the exception of 
     async def myteam(self, ctx):
         if await self.ismember(ctx.author):
             user = await self.getmember(ctx.author)
+            await self.doublecheck(user)
             if user.inteam:
                 
                 userteam = [x for x in self.teamlist if ctx.author.id in x.teammates or ctx.author.id == x.leaderid]
@@ -1432,6 +1441,13 @@ Stat names are the names that you see in the above embed, with the exception of 
 
     # Functions
     
+    async def doublecheck(self, user):
+        userteam = [x for x in self.teamlist if user.tag in x.teammates or user.tag == x.leaderid]
+        if userteam:
+            user.inteam = True
+        else:
+            user.inteam = False
+
 
     async def startRaid(self, guild=None, channel=None):
 
