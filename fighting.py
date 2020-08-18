@@ -1544,7 +1544,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             await self.raidStart(channel)
         
         else:
-            await channel.send("Not enough members for the Assault... The giant beast turned around and vanished... We need at least 3 players")
+            await channel.send("Not enough members for the Assault... The giant beast turned around and vanished... We need at least 1 brave hero")
             await self.resetraid()
             return
 
