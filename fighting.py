@@ -282,7 +282,7 @@ class FullFight(commands.Cog):
         await ctx.send("Reset All Quests")  
 
     @commands.command()
-    async def upgrade(self, ctx, arg=None):
+    async def upgrade(self, ctx, arg=None, narg=None):
         user = await self.getmember(ctx.author)
         
         if user == None:
@@ -324,11 +324,11 @@ Stat names are the names that you see in the above embed, with the exception of 
         arg = arg.lower()
 
         if arg == "health":
-            msg = user.uphealth()
+            msg = user.uphealth(narg)
         elif arg == "min_dmg":
-            msg = user.upmin()
+            msg = user.upmin(narg)
         elif arg == "max_dmg":
-            msg = user.upmax()
+            msg = user.upmax(narg)
         elif arg == "crit_chance":
             msg = user.upcrit()
         elif arg == "heal_chance":
@@ -452,6 +452,9 @@ Stat names are the names that you see in the above embed, with the exception of 
 
     @commands.command()
     async def raid(self, ctx):
+        if ctx.guild == None:
+            await ctx.send("You can't do that here :facepalm:")
+            return
 
         channel = self.homeguild.get_channel(740764507655110666)
 
@@ -757,19 +760,6 @@ Stat names are the names that you see in the above embed, with the exception of 
                         if attacker.armour.name == "Yang":
                             power = await self.canbalance(defender, attacker, power, battlebed)
 
-            if defender.hasPassive():
-                if defender.passive.name == "Haoshoku Haki":
-                    if attacker.armour.name == "Haki":
-                        if defender.armour.haspair():
-                            if defender.weapon.name == defender.armour.pairs.name:
-                                power = await self.cantruehaki(attacker, defender, power, battlebed)
-                    
-                    elif defender.weapon.name == "Conqueror Haki":
-                        power = await self.canhaki(attacker, defender, power, battlebed)
-                    
-                    else:
-                        pass
-
             
             if attacker.hasActive():
                 if attacker.ability.oncd():
@@ -951,6 +941,10 @@ Stat names are the names that you see in the above embed, with the exception of 
     async def paraid(self, ctx):
         if self.raidon:
             await ctx.send("A raid is already in progress")
+            return
+
+        if ctx.guild == None:
+            await ctx.send("You can't use that command here")
             return
                 
         ismem = await self.ismember(ctx.author)
@@ -1318,6 +1312,9 @@ Stat names are the names that you see in the above embed, with the exception of 
     inadventure = []
     @commands.command()
     async def adventure(self, ctx):
+        if self.aboutupdate:
+            await ctx.send("Cannot start an adventure now. Going offline soon")
+            return
         if await self.ismember(ctx.author):
             user = await self.getmember(ctx.author)
             await self.doublecheck(user)
@@ -2090,7 +2087,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         await self.teammsg(squad, f"Seems like adventure will take around {timetocomplete} minutes to complete")
         await asyncio.sleep(timetocomplete * 60)
         suceeded = randint(1, 10)
-        if suceeded >= 2 and suceeded <= 7:
+        if suceeded >= 2 and suceeded <= 4:
             await self.teammsg(squad, "Congratulationsss, You have passed. You will now receive your rewards")
             for person in squad.inadv:
                 nperson = self.bot.get_user(person)
@@ -2111,8 +2108,8 @@ Stat names are the names that you see in the above embed, with the exception of 
             return
 
     async def advreward(self, toreward):
-        rewardxp = (toreward.xpthresh / 3)
-        rewardcash = (toreward.pcoin / 5)
+        rewardxp = (toreward.xpthresh / 5)
+        rewardcash = (toreward.pcoin / 10)
         return rewardxp, rewardcash
 
         
@@ -2192,14 +2189,14 @@ Stat names are the names that you see in the above embed, with the exception of 
         return power, None
         
     async def canhaki(self, defender, attacker, power, embed):
-        attacker.mindmg += 50
-        attacker.maxdmg += 50
+        attacker.mindmg += 20
+        attacker.maxdmg += 20
         embed.add_field(name=f"{attacker.passive.usename}:", value=f"{attacker.name} {attacker.passive.effect}")
         return power
 
     async def cantruehaki(self, defender, attacker, power, embed):
-        attacker.mindmg += 50
-        attacker.maxdmg += 50
+        attacker.mindmg += 30
+        attacker.maxdmg += 30
         embed.add_field(name=f"{attacker.passive.usename}:", value=f"{attacker.name} {attacker.passive.effect}")
         if defender.level <= attacker.level - 30:
             defender.health -= 100
@@ -2430,12 +2427,13 @@ Stat names are the names that you see in the above embed, with the exception of 
 
         counter = 0
 
-        while len(self.infight) > 0 or len(self.raiders) > 0 or len(self.inquest) > 0:
+        while len(self.infight) > 0 or len(self.raiders) > 0 or len(self.inquest) > 0 or len(self.inadventure) > 0:
             print(len(self.infight))
             print(len(self.raiders))
             print(len(self.inquest))
+            print(len(self.inadventure))
             counter += 1
-            await asyncio.sleep(30)
+            await asyncio.sleep(15)
 
         self.updlist.restart()
         

@@ -95,8 +95,8 @@ sboost = Passive("Speed Boost", "Goes First and deals 1.2x dmg on first hit", "S
 
 critblock = Passive("Critical Guard", "All critical hits against you deal x0.75 instead of x1.5. 2 in 3 chance of occuring", "Critical Guard","Reduces your critical damage to only 0.75x the original", 0.75,0,0,0,0)
 
-haohaki = Passive("Haoshoku Haki", "Conqueror's Haki: Increases min and max damage by 40 for each passing turn.\nSet Bonus: Anyone below 30 levels of the user loses 100 hp every turn\nOtherwise. No effect"
-, "Know the power of one who is worthy", "Increases min and max damage by 50", 1, 0, 0, 50, 50)
+haohaki = Passive("Haoshoku Haki", "Needs: Conqueror's Haki: Increases min and max damage by 20 (30 with set bonus) for each passing turn.\nSet Bonus: Anyone below 30 levels of the user loses 100 hp every turn\nOtherwise. No effect"
+, "Know the power of one who is worthy", "Increases min and max damage by 20(30 with set bonus)", 1, 0, 0, 50, 50)
 
 balancepride = Passive("Pride of Balance", "Requires: Yin Blade and Yang Armour set. Increases power of attack by 100 (100 True Damage) and heals for 100 hp on user's turn. Otherwise: No Effect"
 ,"The emodiment of Balance I am", "Increases power by 100. Heals for 200", 1, 100, 200, 0, 0)
@@ -357,9 +357,17 @@ class Fighter:
         cost = 500 + (self.level * 3)
         return cost
 
-    def uphealth(self):
+    def uphealth(self, narg):
         cost = self.healthprice()
         cando = self.cashchk(cost)
+        if narg.lower() == "all":
+            while cando:
+                cost = self.healthprice()
+                cando = self.cashchk(cost)
+                self.health += 20
+                self.health = math.ceil(self.health)
+            return "You traded all of your cash for upgrades in health"
+        
         if cando:
             self.health += 20
             self.health = math.ceil(self.health)
@@ -367,11 +375,19 @@ class Fighter:
         else:
             return "You do not have enough Funds"
 
-    def upmin(self):
+    def upmin(self, narg):
         cost = self.mindmgprice()
         cando = self.cashchk(cost)
-        if self.mindmg + 5 > 1100 and self.getTier() < 5:
+        if self.mindmg + 5 > 1500 and self.getTier() < 5:
             return "Reach Tier 5 in order to upgrade your min damage some more"
+        if narg.lower() == "all":
+            while cando:
+                cost = self.mindmgprice()
+                cando = self.cashchk(cost)
+                self.mindmg += 5
+                self.mindmg = math.ceil(self.mindmg)
+            return "You traded all of your cash for upgrades in min damage"
+        
         if cando:
             self.mindmg += 5
             self.mindmg = math.ceil(self.mindmg)
@@ -380,11 +396,20 @@ class Fighter:
         else:
             return "You do not have enough Funds"
     
-    def upmax(self):
+    def upmax(self, narg):
         cost = self.maxdmgprice()
         cando = self.cashchk(cost)
-        if self.maxdmg + 5 > 1100 and self.getTier() < 5:
+        if self.maxdmg + 5 > 1600 and self.getTier() < 5:
             return "Reach Tier 5 in order to upgrade your max damage some more"
+
+        if narg.lower() == "all":
+            while cando:
+                cost = self.maxdmgprice()
+                cando = self.cashchk(cost)
+                self.maxdmg += 5
+                self.maxdmg = math.ceil(self.maxdmg)
+            return "You traded all of your cash for upgrades in max damage"
+
         if cando:
             self.maxdmg += 5
             self.maxdmg = math.ceil(self.maxdmg)
