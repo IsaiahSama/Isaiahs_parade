@@ -428,8 +428,7 @@ class Fighter:
 
     def upcrit(self):
         cost = self.critchanceprice()
-        weapon = self.getweapon()
-        if self.critchance - weapon.critplus >= 65:
+        if self.critchance >= 65:
             return "You already have your crit maxed"
         
         cando = self.cashchk(cost)

@@ -282,7 +282,7 @@ class FullFight(commands.Cog):
         await ctx.send("Reset All Quests")  
 
     @commands.command()
-    async def upgrade(self, ctx, arg=None, narg=None):
+    async def upgrade(self, ctx, arg=None, narg="yes"):
         user = await self.getmember(ctx.author)
         
         if user == None:
@@ -2097,7 +2097,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                 uperson.pcoin += cashtoget
                 await nperson.send(f"You have received {xptoget} xp and {cashtoget} parade coins")
         else:
-            await self.teammsg(squad, "You have failed")
+            await self.teammsg(squad, "You have failed the adventure")
 
         self.inadventure.remove(squad)
 
@@ -2105,7 +2105,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         for user in team.inadv:
             target = self.bot.get_user(user)
             await target.send(f"{msg}")
-            return
+            
 
     async def advreward(self, toreward):
         rewardxp = (toreward.xpthresh / 5)
@@ -2152,6 +2152,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             json.dump(dumped, f, indent=4)
 
         print("Updated")
+        # print("Save is off")
 
     async def updateteam(self):
         dumped = []
