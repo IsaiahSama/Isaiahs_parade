@@ -933,7 +933,7 @@ kdono = BeastFight("Kevin not Kevin", 10034, 8000, 1000, 1200, 58000, 64000, "KE
 "menacingly approaches", hcard, vknight)
 tmaster = BeastFight("Tank Master", 10035, 9000, 1000, 1200, 58000, 64000, "have you ever seen a tank up close?", 5000, 5,3,
 blast, sharpeye, "Summons his tank, aims it, and fires", tsummon, artillery)
-rebdio = BeastFight("DIO Reborn", 10036, 10500, 1600, 1800, 64000, 670000, "It's like he never dies.", 6000, 20,5, uheal, regeneration,
+rebdio = BeastFight("DIO Reborn", 10036, 10500, 1600, 1800, 64000, 67000, "It's like he never dies.", 6000, 20,5, uheal, regeneration,
 "flash freezes then drains", evampknife, vampcloak)
 
 # Lists
