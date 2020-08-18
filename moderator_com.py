@@ -378,16 +378,16 @@ class ProfanFilter(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    exempt = []
+    noprofane = []
 
     @commands.command()
     @commands.has_permissions(manage_channels=True)
     async def profane(self, ctx):
-        if ctx.guild in self.exempt:
-            self.exempt.remove(ctx.guild)
+        if ctx.guild not in self.noprofane:
+            self.noprofane.append(ctx.guild)
             await ctx.send("Profanity is being moderated")
         else:
-            self.exempt.append(ctx.guild)
+            self.noprofane.remove(ctx.guild)
             await ctx.send("Profanity is no longer being moderated")
     
     badword = ["fuck", "shit", "bitch", "cum", "nigger"]
@@ -406,7 +406,7 @@ class ProfanFilter(commands.Cog):
         if message.author == self.bot.user:
             return
 
-        if message.guild in self.exempt:
+        if message.guild not in self.noprofane:
             return
         else:
             for sword in self.badword:
