@@ -1191,7 +1191,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         
         tierbed.add_field(name="How they work", 
         value="""Your tier is determined based on the amount of health you have. If your health is less than 250, You are tier 1. 
-        Tier 2 is 250 to 350. Tier 3 is 351 to 950. Tier 4 is everthing 950-2999. And tier 5 is 3000+""")
+        Tier 2 is 250 to 500. Tier 3 is 501 to 950. Tier 4 is everthing 950-2999. And tier 5 is 3000+""")
         tierbed.add_field(name="Weapons and Armour", 
         value="Weapons and Armours also have tiers. Because of this, when you open the shop, you will only see items at your tier and lower. Tier 5's get a different Shop with tier 5 and 4 only")
 
@@ -2374,7 +2374,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             
         elif tier == 3:
             jobdesc = random.choice(jobs.jtier3)
-            reward = randint(250, 360)  
+            reward = randint(2000, 2300)  
             loss = randint(80, 160)
             
         elif tier == 4:

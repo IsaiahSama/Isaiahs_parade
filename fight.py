@@ -169,7 +169,7 @@ dsword = Weapons("Diamond Sword", "Has a pixelated edge for bonus damage", "slas
 bomb = Weapons("Buh-Bomb", "A souvenir from those Buh-Bombs I had you fight", "explodes on",
 85, 8, cost=1400, tierz=2)
 crossbow = Weapons("Charged Crossbow", "Not your average Cross bow", "shocks and shoots", 88, 6, cost=1450, tierz=2)
-bsuckler = Weapons("Blood Suckler", "A strange creature known for draining the blood of enemies", "sucks the blood of", 70, 3, 20, 4000, tierz=3)
+bsuckler = Weapons("Blood Suckler", "A strange creature known for draining the blood of enemies", "sucks the blood of", 70, 3, 20, 14000, tierz=3)
 sancspear = Weapons("Sanctum Spear", "Sanctum spear go boom", "pierces", 80, 25, 12, 15000, tierz=3)
 stormbreaker = Weapons("Stormbreaker", "A gift from Thor himself. A replica at best", "slashes and zaps", 100, 25, cost=20000, tierz=3)
 hcard = Weapons("Playing Cards", "Wait... aren't these Hisoka's?", "slices", 120, 15, 0, 23000, tierz=3)
@@ -487,9 +487,9 @@ class Fighter:
     def getTier(self):
         if self.health <= 249:
             return 1
-        elif self.health >= 250 and self.health <= 350:
+        elif self.health >= 250 and self.health <= 500:
             return 2
-        elif self.health >= 351 and self.health <= 950:
+        elif self.health >= 501 and self.health <= 950:
             return 3
         elif self.health >= 951 and self.health <= 2999:
             return 4
@@ -896,17 +896,17 @@ mid9 = BeastFight("Slivial", 10021, 325, 50, 76, 120, 250, "Straight from Slimen
 mid10 = BeastFight("Sanic", 10022, 340, 60, 90, 125, 150, "Gotta go fast", 430, 15, ability=sonic, attackmsg="zooms around then hits")
 
 
-# High Level between 300 and 950 hp
-hard1 = BeastFight("DRAGON!",10001, 400, 70, 110, 220, 400, "Dragon goes rawr but no 'XD'",500, ability=blast, attackmsg="Breathes on", armour=iron)
-hard2 = BeastFight("Dio",10004, 449, 90, 160, 350, 600, "Oh no... It's dio... Quick, take him out. (Not on a date mind you)",700, ability=theworld, passive=regeneration,
+# High Level between 500 and 950 hp
+hard1 = BeastFight("DRAGON!",10001, 900, 270, 310, 2220, 2400, "Dragon goes rawr but no 'XD'",500, ability=blast, attackmsg="Breathes on", armour=iron)
+hard2 = BeastFight("Dio",10004, 700, 250, 360, 2350, 2600, "Oh no... It's dio... Quick, take him out. (Not on a date mind you)",700, ability=theworld, passive=regeneration,
 weapon=vampknives,armour=gold, attackmsg="Barrages on")
-hard3 = BeastFight("Red Paladins", 10006, 510, 115, 300, 250, 300, "The Red Paladins have arrived.",450, ability=swarm, weapon=axe, attackmsg="Gather and attack")
-hard4 = BeastFight("Queen Bee", 10025, 545, 180, 290, 300, 370, "Queen Bee has Awoken", 430, ability=swarm, attackmsg="Rams into") 
-hard5 = BeastFight("Kairo", 10026, 449, 200, 230, 250, 320, "Out of the trash, the Racoon has emerged", 450, ability=swarm,
+hard3 = BeastFight("Red Paladins", 10006, 650, 215, 300, 1800, 2300, "The Red Paladins have arrived.",450, ability=swarm, weapon=axe, attackmsg="Gather and attack")
+hard4 = BeastFight("Queen Bee", 10025, 900, 380, 490, 2000, 2370, "Queen Bee has Awoken", 430, ability=swarm, attackmsg="Rams into") 
+hard5 = BeastFight("Kairo", 10026, 600, 200, 230, 2000, 3200, "Out of the trash, the Racoon has emerged", 450, ability=swarm,
 attackmsg="bites")
-hard6 = BeastFight("Money Tree", 10029, 700, 270, 320, 1000, 1200, "Who said money doesn't grow on trees.",
+hard6 = BeastFight("Money Tree", 10029, 800, 270, 320, 5000, 6200, "Who said money doesn't grow on trees.",
 500, attackmsg="Blows money on")
-hard7 = BeastFight("The Story Teller", 10031, 650, 330, 470, 1100, 1300, "The story Teller is angry you slept through his story",
+hard7 = BeastFight("The Story Teller", 10031, 700, 530, 670, 4100, 5300, "The story Teller is angry you slept through his story",
 450, attackmsg="Reads to", passive=dodge)
 
 # tier 4 mofos
