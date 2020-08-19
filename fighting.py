@@ -174,7 +174,7 @@ class FullFight(commands.Cog):
         else:
              profileEmbed.set_thumbnail(url=member.avatar_url)
         
-        if ctx.guild == self.homeguild:
+        if ctx.guild == self.homeguild and not powpof:
             role = [x for x in ctx.author.roles if x.name == f"Tier{target.getTier()}"]
             if role:
                 pass
