@@ -183,13 +183,14 @@ srifle = Weapons("Sniper Rifle", "Never miss a shot", "Snipes", 300, 40, 4, cost
 # Tier 5
 evampknife = Weapons("Enchanted Vamp Knife", "Vampire knife, but enchanted with the blood of many", "drains the blood of", 600, 7, 20, 1000000, 5)
 dreamsword = Weapons("Dream Sword", "Crafted from the essence of the light side of sleep", "steals the dreams of", 700, 15, 2, 1000000, 5)
+herorian = Weapons("The Herorian", "The prized Spinning Top of the legendary Herorian from Heroria", "spins into", 800, 3, 1, 1000500, 5)
 cqhaki = Weapons("Conqueror Haki", "A physical manifestation of the ability. Allows the user to use the ability Haoshoku Haki.",
 "controls", 2000, 16, 5, 5400000, 5)
 yin = Weapons("Yin Blade", "The physical manifestation of darkness, destruction and negative energy", "alters the existence of", 1800, 20, 5, 5300000, 5)
 
 weaponlist = [fist, katana, bow, pistol, sword, dagger, slime, fishrod, axe, fpan, vampknives, miracles, 
 blaster, dsword, bomb, crossbow, bsuckler, sancspear, stormbreaker, hcard, vibechk, seruption, tsummon, sfknife, srifle,
-evampknife, dreamsword, cqhaki, yin]
+evampknife, dreamsword, herorian, cqhaki, yin]
 
 # Unique
 pds = Weapons("Plague Doctors Scepter", "Soulbound to ...?", "infects", 0, 10, 15, 0, 5)
@@ -917,21 +918,29 @@ ut3 = BeastFight("Ender Dragon", 10027, 1000, 450, 480, 17000, 18050, "Uh, Somet
 ability=blast, attackmsg="Breathes on")
 ut4 = BeastFight("Moon Lord", 10028, 2000, 750, 800, 17000, 20000, "Impending Doom Approaches", 1000,10,20,
 critstrike, regeneration, "Summons a Phantasmal Deathray and blasts", armour=abyss)
-ut5 = BeastFight("Young Flame Handler", 10037, 1020, 500, 600, 17000, 19000, "His job... defeat you", 800, 5, 3, critstrike, attackmsg="strikes",
+ut5 = BeastFight("Young Flame Handler", 10037, 2020, 1700, 1800, 17000, 19000, "His job... defeat you", 800, 5, 3, critstrike, attackmsg="strikes",
 weapon=sfknife, armour=shadowflame)
+ut6 = BeastFight("Young General", 10038, 2400, 1500, 1700, 17000, 18000, "You are simply practice for this rising star", 850, 10, 3, blast, None,
+"Aims and shoots at", tsummon, artillery)
+ut7 = BeastFight("Young Marksman", 10039, 2100, 1200, 1300, 15000, 16000, "ready... aim...", 750, 30, 3, critstrike, None, "sets up and quickly snipes",
+srifle, sranger)
+
 
 # Tier 5
 nme = BeastFight("NME", 10031, 7000, 1100, 1300, 42400, 52800, "NME is the enemy and he's come to prove that", 4000, 
 20, 25, nmareterror, sboost, "devours the nightmares of", sfknife, shadowflame)
-isama = BeastFight("Isaiah-Sama", 10030, 5500, 600, 800, 31400, 35600, "Isaiah has Arrived, but is nerfed", 1200, 15,20, theworld, regeneration,
+isama = BeastFight("Isaiah-Sama", 10030, 5500, 1600, 1800, 31400, 35600, "Isaiah has Arrived, but is nerfed", 1200, 15,20, theworld, regeneration,
  "fires at", seruption, solarflare)
-uksniper = BeastFight("Unknown Sniper", 10032, 5000, 700, 900, 32000, 38000, "You feel someone watching you", 
+uksniper = BeastFight("Unknown Sniper", 10032, 5000, 1000, 1100, 32000, 38000, "You feel someone watching you", 
 4000, 5, 3, critstrike, sharpeye, "snipes", srifle, sranger)
-sfass = BeastFight("Shadow Flame Assassin", 10033, 6000, 900, 1000, 40000, 44000, "You glimpse a shadow following you",
+sfass = BeastFight("Shadow Flame Assassin", 10033, 6000, 1300, 1400, 40000, 44000, "You glimpse a shadow following you",
 3500, 25, 10, critstrike, dodge, "slashes at", sfknife, shadowflame)
 kdono = BeastFight("Kevin not Kevin", 10034, 8000, 1000, 1200, 58000, 64000, "KEVIN!!!", 5000, 5, 20, uheal, regeneration,
 "menacingly approaches", hcard, vknight)
-tmaster = BeastFight("Tank Master", 10035, 9000, 1000, 1200, 58000, 64000, "have you ever seen a tank up close?", 5000, 5,3,
+# Last id
+herian = BeastFight("The Herorian", 10040, 7000, 1600, 1900, 20000, 21000, "The Herorian from Heroria?", 900,
+20, 10, slag, dodge, "expertly spins his top and throws it at", herorian, vknight)
+tmaster = BeastFight("Tank Master", 10035, 9300, 1000, 1200, 58000, 64000, "have you ever seen a tank up close?", 5000, 5,3,
 blast, sharpeye, "Summons his tank, aims it, and fires", tsummon, artillery)
 rebdio = BeastFight("DIO Reborn", 10036, 10500, 1600, 1800, 64000, 67000, "It's like he never dies.", 6000, 20,5, uheal, regeneration,
 "flash freezes then drains", evampknife, vampcloak)
@@ -942,8 +951,8 @@ enemy = [
 easy1, easy2, easy3, easy4, easy5, easy6, easy7, easy8, easy9, easy10, 
 mid1, mid2, mid3, mid4, mid5, mid6, mid7, mid8, mid9, mid10,
 hard1, hard2, hard3, hard4, hard5, hard6, hard7,
-ut1, ut2, ut3, ut4, ut5,
-isama, nme, uksniper, sfass, kdono, tmaster, rebdio
+ut1, ut2, ut3, ut4, ut5, ut6, ut7,
+isama, nme, uksniper, sfass, kdono, tmaster, rebdio, herian
 ]
 
 # def __init__(self, name, tag, health, mindmg, maxdmg, mincoin, maxcoin, entrymessage, minxp, 
@@ -970,6 +979,9 @@ plaguearm)
 
 slimeraid = BeastFight("Prince Slime", 90007, 30000, 400, 500, 25000, 29000, "Prince Slime has awoken", 2000,
 attackmsg="Bounces on", weapon=slime, armour=slimearm)
+
+dizawarudo = BeastFight("DIO ZA WARUDO", 90008, 35000, 1700, 2000, 60000, 70000, "What... He's just that good",
+5000, 10, 20, theworld, regeneration, "strikes", evampknife, vampcloak)
 
 loc = BeastFight("Lord Of Creation and Destruction", 90008, 100000, 6000, 8000, 100000, 400000, "1 force descends from heaven, the other from the underworld. Now... they are one",
 10000, 40, 30, None, critblock, "manipulates the existence of", yin, yang)
