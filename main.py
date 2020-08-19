@@ -12,7 +12,7 @@ load_dotenv()
 
 # Set Client
 bot = commands.Bot(command_prefix='<>', case_insensitive=True)
-bot.help_command = None
+# bot.help_command = None
 
 
 bot.load_extension("general_com")
@@ -25,6 +25,7 @@ bot.load_extension("fighting")
 # bot.load_extension("music_com")
 bot.load_extension("relacom")
 bot.load_extension("calling")
+bot.load_extension("bothelp")
 
 # Events
 # Creating On_ready event
@@ -109,7 +110,7 @@ async def on_guild_join(guild):
 
 
 @bot.command()
-async def help(ctx, *, category=None):
+async def help2(ctx, *, category=None):
     general = discord.Embed(
             title="General",
             description="Below are a list of my General commands.",
