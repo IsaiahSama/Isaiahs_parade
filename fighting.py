@@ -719,8 +719,11 @@ Stat names are the names that you see in the above embed, with the exception of 
                     attacker.ability.name = None
                 await ctx.send("All regen has been Disabled")
 
-        
-            power = randint(attacker.mindmg, attacker.maxdmg)
+            try:
+                power = randint(attacker.mindmg, attacker.maxdmg)
+            except ValueError:
+                power = randint(400, 600)
+                await ctx.send("Something went wrong with your damage values. So I have applied a fix. Let Kevin-Dono know at your earliest convenience")
             critnum = randint(0, 100)
             healnum = randint(0, 100)
 
@@ -1301,7 +1304,8 @@ Stat names are the names that you see in the above embed, with the exception of 
                 teambed.add_field(name="Lead by", value=f"{tleader.name}, Tier {tleader.getTier()}")
                 teambed.add_field(name="Member Count", value=len(userteam.teammates))
                 names = [self.bot.get_user(x).name for x in userteam.teammates]
-                teambed.add_field(name="Members", value=', '.join(names), inline=False)
+                if names:
+                    teambed.add_field(name="Members", value=', '.join(names), inline=False)
 
                 await ctx.send(embed=teambed)
             else:
