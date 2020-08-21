@@ -731,7 +731,6 @@ Stat names are the names that you see in the above embed, with the exception of 
                 if attacker.ability.name == "Slag":
                     if defender.slag == 0:
                         battlebed.add_field(name=f"{attacker.ability.usename}", value=f"{defender.name} has been freed of Slag")
-                        del defender.slag
                         slagged = False
                     else:
                         defender.slag -= 1
