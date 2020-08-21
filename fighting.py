@@ -5,7 +5,7 @@ import random
 import os
 from random import randint
 from images import hugs, punches, kisses, slaps, knock, poses, flexes
-from fight import FightMe, Fighter, questpro, enemy, FightingBeast, abilities, allabilities, passives, raidingmonster, weaponlist, armorlist, gear, lilgear
+from fight import FightMe, Fighter, questpro, enemy, FightingBeast, abilities, allabilities, passives, raidingmonster, weaponlist, armorlist, gear, lilgear, allarmor, allweapons
 import json
 import math
 import jobs
@@ -40,7 +40,7 @@ class FullFight(commands.Cog):
         
         
         for fightmaster in tempuser:
-            acc = Fighter(*fightmaster[0:20])
+            acc = Fighter(*fightmaster[0:22])
             
             loadedacc.append(acc)
 
@@ -78,12 +78,17 @@ class FullFight(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.updlist.start()
         bot.loop.create_task(self.async_init())
 
     async def async_init(self):
         await self.bot.wait_until_ready()
         self.homeguild = self.bot.get_guild(739229902921793637)
+        self.updlist.start()
+        """for person in self.users:
+            x = [w.tag for w in allweapons if w.name == person.weapon]
+            y = [a.tag for a in allarmor if a.name == person.armour]
+            x, y = x[0], y[0]
+            person.weapon, person.armour = x, y"""
 
     # Commands
 
@@ -152,14 +157,19 @@ class FullFight(commands.Cog):
             target = await self.fightuser(target)
             if target.weapon.name == "Plague Doctors Scepter":
                 target.weapon.damage = math.floor(target.maxdmg * 0.5)
-
-        if target.tag == 493839592835907594:
-            if target.level < 300:
-                await ctx.send("Your armour is Ready Kevin. Just reach level 300 to claim it")
-            else:
-                await ctx.send("Now my creator, embrace your true power")
-                target.armour = "Parade Creators Outfit"
-                target.weapon = "Staff of the Parade"
+        
+        if not powpof:
+            if ctx.author.id == 347513030516539393:
+                if target.tag == ctx.author.id:
+                    if target.armour == "Unusual Loincloth":
+                        pass
+                    else:
+                        if target.level < 300:
+                            await ctx.send("Hello Trxsh. Reach level 300 to achieve your True Power")
+                        else:
+                            target.weapon = "『Unravel the Heavens』"
+                            target.armour = "Unusual Loincloth"
+                            await ctx.send("Now... Embrace your true power")
 
         if target.mindmg > target.maxdmg:
             target.mindmg, target.maxdmg = target.maxdmg, target.mindmg
@@ -1487,6 +1497,14 @@ Stat names are the names that you see in the above embed, with the exception of 
         else:
             await ctx.send("Either you, or the person you mentioned does not have profile. Make one with <>createprofile")
 
+    @commands.command()
+    async def switch(self, ctx):
+        if await self.ismember(ctx.author):
+            user = await self.getmember(ctx.author)
+            user.weapon, user.armour = user.weapon2, user.armour2
+            await ctx.send("Successfully switched your gear")
+        else:
+            await self.denied(ctx.channel, ctx.author)
 
     # Functions
     
@@ -1980,9 +1998,17 @@ Stat names are the names that you see in the above embed, with the exception of 
             min = 700
             max = 2999
 
-        else:
+        elif tier == 5:
             min = 3000
-            max = 999999999
+            max = 10000
+        
+        elif tier == 6:
+            min = 10001
+            max = 300000
+        
+        else:
+            min = 0
+            max = 200
 
         for vanillian in enemy:
             if vanillian.health >= min and vanillian.health <= max:
@@ -1991,7 +2017,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         villain = random.choice(yes)
 
 
-        villain = FightingBeast(villain.name, villain.tag, villain.health, villain.mindmg, villain.maxdmg, 
+        villain = FightingBeast(villain.name, villain.health, villain.mindmg, villain.maxdmg, 
         villain.mincoin, villain.maxcoin, villain.entrymessage, villain.minxp, villain.critchance, villain.healchance,
         villain.ability, villain.passive, villain.attackmsg, villain.weapon, villain.armour, villain.typeobj)
         

@@ -72,6 +72,12 @@ jajanken = Ability("Jajanken", "After 5 months of training with Gon, you have no
 uheal = Ability("Ultra Heal", "A sacred technique used to heal for 10% of your max health", "The gods have blessed me", "regains 10% of their max health and didn't attack",
 1, 0, 0, 0, 0, 10)
 
+ssuck = Ability("Soul Sucker", "A powerful move which sucks the soul of the enemy dealing 2x dmg and healing for 15hp", "SOUL SUCKER!",
+"sucks the soul of", 2, 0, 15, 0, 0)
+
+nmareterror = Ability("Nightmare Terror", "Finds the targets worse nightmare and strikes them with it dealing massive damage", 
+"Know the terror of nightmares", "Casts a sleep spell then causes nightmares to", 1.6, 20, 0, 0, 0)
+
 slag = Ability("Slag", "Has a 1 in 6 chance of applying Slag to the target, causing them to take 1.5x damage for 2 turns",
 "You... have been slagged", "now takes 1.5x damage for the next", 1.5, 0, 0, 0, 0)
 
@@ -95,6 +101,12 @@ sboost = Passive("Speed Boost", "Goes First and deals 1.2x dmg on first hit", "S
 
 critblock = Passive("Critical Guard", "All critical hits against you deal x0.75 instead of x1.5. 2 in 3 chance of occuring", "Critical Guard","Reduces your critical damage to only 0.75x the original", 0.75,0,0,0,0)
 
+chubz = Passive("Chubby", "Chub absorption", "CHUB ABSORPTION", "large size acts as a shock absorber, and enemy attacks do -50 damage",
+1, -50, 0, 0, 0)
+
+nlove = Passive("Nightmare Lover", "Feeds off of the memories of your nightmares and heals itself. Increases it's max damage by 5 each time",
+"Lover of Nightmares", "gets energies from nightmares within", 1, 0, 10, 5, 5, 0)
+
 haohaki = Passive("Haoshoku Haki", "Needs: Conqueror's Haki: Increases min and max damage by 20 (30 with set bonus) for each passing turn.\nSet Bonus: Anyone below 30 levels of the user loses 100 hp every turn\nOtherwise. No effect"
 , "Know the power of one who is worthy", "Increases min and max damage by 20(30 with set bonus)", 1, 0, 0, 50, 50)
 
@@ -109,35 +121,22 @@ plague = Ability("The Plague", "Poisons the victim. Has a base damage of 100 inc
 bebebeslam = Ability("BBB slam!", "Giant King B B B, belly flops dealing 1.3x dmg and hitting 3 people", "BE BE BE... SLAM!", 
 "belly flops dealing 1.3x dmg, healing for 10hp and hitting up to 3 people. Them being:", 1.3, 0, 10, 0, 0)
 
-harder = Passive("Chubby", "Chub absorption", "CHUB ABSORPTION", "large size acts as a shock absorber, and your attacks do -10 damage",
-1, -10, 0, 0, 0)
-
-# Gargen
-ssuck = Ability("Soul Sucker", "A powerful move which sucks the soul of the enemy dealing 2x dmg and healing for 15hp", "SOUL SUCKER!",
-"sucks the soul of", 2, 0, 15, 0, 0)
-
-nlove = Passive("Nightmare Lover", "Feeds off of the memories of your nightmares and heals itself. Increases it's max damage by 5 each time",
-"Lover of Nightmares", "gets energies from nightmares within", 1, 0, 10, 5, 5, 0)
-
 # Biggums
 bellybump = Ability("Belly Belly Bounce", "Massive user dashes at an immense speed and bounces the enemy", "Belly... Belly... BOUNCE!",
 "charges gaining x1.4 strength increasing min and max damage by 10, and then bounces", 1.4, 0, 0, 10, 10)
 
-# NME
-nmareterror = Ability("Nightmare Terror", "Places the target into a sleep, causing them to miss a turn, and dealing massive damage", 
-"Know the terror of nightmares", "Casts a sleep spell then causes nightmares to", 1.4, 20, 0, 0, 0)
-
-abilities = [theworld, swarm, blast, deadlygrasp, critstrike, pickelize, sonic, jajanken, uheal, slag]
+abilities = [theworld, swarm, blast, deadlygrasp, critstrike, pickelize, sonic, jajanken, uheal, slag, ssuck, nmareterror]
 allabilities = [plague]
 for thing in abilities:
     allabilities.append(thing)
 
-passives = [dodge, counter, regeneration, rage, sharpeye, sboost, critblock, haohaki, balancepride]
+passives = [dodge, counter, regeneration, rage, sharpeye, sboost, critblock, nlove, chubz, haohaki, balancepride]
 
 # Weapons
 @dataclass
 class Weapons:
     name: str
+    tag: int
     desc: str
     effect: str
     damage: int= 0
@@ -152,51 +151,56 @@ class Weapons:
             return True
         return False
 
-fist = Weapons("Fist","The original method of attacking (default)", "punches")
-katana = Weapons("Katana", "Then, they were katanas.", "slices", 5, 2, cost=250)
-bow = Weapons("Bow", "This one doesn't need arrows", "shoots", 6, 1, cost=255)
-pistol = Weapons("Pistol", "Pew pew", "shoots", 8, 3, cost=300)
-sword = Weapons("Sword", "Sword > Pistol", "slices", 10, 3, cost=320)
-dagger = Weapons("Dagger", "Dagger = Sword??", "stabs", 10, 3, cost=320)
-slime = Weapons("Baby Slime", "\"Summons a baby slime to fight for you\"", "bounces on", 9, 7, cost=320)
-vampknives = Weapons("Vampire Knives", "Blood Draining Knives just for you", "drains", 20, 5, 5, cost=700)
-fishrod = Weapons("Fishing Rod", "Gon has lent you his trusty Fishing Rod", "hooks and cuts", 35, 3, cost=450)
-axe = Weapons("Axe", "Axe goes schwing", "slashes", 45, 6, cost=650)
-fpan = Weapons("Frying Pan", "Not a drying pan", "bonks the head of", 27, 20, cost=660)
-miracles = Weapons("Miracle Sword", "Straight from Slimenia", "slashes", 50, 5, 7, 1600, tierz=2)
-blaster = Weapons("Blaster", "Pew Pew times 2", "blasts", 65, 4, cost=1100, tierz=2)
-dsword = Weapons("Diamond Sword", "Has a pixelated edge for bonus damage", "slashes", 67, 5, cost=1100, tierz=2)
-bomb = Weapons("Buh-Bomb", "A souvenir from those Buh-Bombs I had you fight", "explodes on",
+fist = Weapons("Fist", 1001, "The original method of attacking (default)", "punches")
+katana = Weapons("Katana",1002, "Then, they were katanas.", "slices", 5, 2, cost=250)
+bow = Weapons("Bow", 1003, "This one doesn't need arrows", "shoots", 6, 1, cost=255)
+pistol = Weapons("Pistol", 1004, "Pew pew", "shoots", 8, 3, cost=300)
+sword = Weapons("Sword", 1005, "Sword > Pistol", "slices", 10, 3, cost=320)
+dagger = Weapons("Dagger", 1006, "Dagger = Sword??", "stabs", 10, 3, cost=320)
+slime = Weapons("Baby Slime", 1007, "\"Summons a baby slime to fight for you\"", "bounces on", 9, 7, cost=320)
+vampknives = Weapons("Vampire Knives", 1008, "Blood Draining Knives just for you", "drains", 20, 5, 5, cost=700)
+fishrod = Weapons("Fishing Rod", 1009, "Gon has lent you his trusty Fishing Rod", "hooks and cuts", 35, 3, cost=450)
+axe = Weapons("Axe", 1010, "Axe goes schwing", "slashes", 45, 6, cost=650)
+fpan = Weapons("Frying Pan", 1011, "Not a drying pan", "bonks the head of", 27, 20, cost=660)
+miracles = Weapons("Miracle Sword", 1012, "Straight from Slimenia", "slashes", 50, 5, 7, 1600, tierz=2)
+blaster = Weapons("Blaster", 1013, "Pew Pew times 2", "blasts", 65, 4, cost=1100, tierz=2)
+dsword = Weapons("Diamond Sword", 1014, "Has a pixelated edge for bonus damage", "slashes", 67, 5, cost=1100, tierz=2)
+bomb = Weapons("Buh-Bomb", 1015, "A souvenir from those Buh-Bombs I had you fight", "explodes on",
 85, 8, cost=1400, tierz=2)
-crossbow = Weapons("Charged Crossbow", "Not your average Cross bow", "shocks and shoots", 88, 6, cost=1450, tierz=2)
-bsuckler = Weapons("Blood Suckler", "A strange creature known for draining the blood of enemies", "sucks the blood of", 70, 3, 20, 14000, tierz=3)
-sancspear = Weapons("Sanctum Spear", "Sanctum spear go boom", "pierces", 80, 25, 12, 15000, tierz=3)
-stormbreaker = Weapons("Stormbreaker", "A gift from Thor himself. A replica at best", "slashes and zaps", 100, 25, cost=20000, tierz=3)
-hcard = Weapons("Playing Cards", "Wait... aren't these Hisoka's?", "slices", 120, 15, 0, 23000, tierz=3)
-seruption = Weapons("Solar Eruption", "Made with 100% Solar Fragments", "pierces",
+crossbow = Weapons("Charged Crossbow", 1016, "Not your average Cross bow", "shocks and shoots", 88, 6, cost=1450, tierz=2)
+bsuckler = Weapons("Blood Suckler", 1017, "A strange creature known for draining the blood of enemies", "sucks the blood of", 70, 3, 20, 14000, tierz=3)
+sancspear = Weapons("Sanctum Spear", 1018, "Sanctum spear go boom", "pierces", 80, 25, 12, 15000, tierz=3)
+stormbreaker = Weapons("Stormbreaker", 1019, "A gift from Thor himself. A replica at best", "slashes and zaps", 100, 25, cost=20000, tierz=3)
+hcard = Weapons("Playing Cards", 1020, "Wait... aren't these Hisoka's?", "slices", 120, 15, 0, 23000, 3)
+seruption = Weapons("Solar Eruption", 1021, "Made with 100% Solar Fragments", "pierces",
 130, 10, cost=25000, tierz=3)
-vibechk = Weapons("The Vibe Check", "Yuh need to relax", "Checks the vibe on", 20, 70, 0, 40000, tierz=3)
-tsummon = Weapons("Tank Summon", "Wait... what?", "summons a tank which blasts", 370, 25, 0, 300000, tierz=4)
-sfknife = Weapons("Shadow Flame Knife", "Crafted from sorcery", "stabs and burns", 430, 15, 5, 300000, tierz=4)
-srifle = Weapons("Sniper Rifle", "Never miss a shot", "Snipes", 300, 40, 4, cost=300000, tierz=4)
+vibechk = Weapons("The Vibe Check", 1022, "Yuh need to relax", "Checks the vibe on", 350, 70, 0, 100000, tierz=4)
+tsummon = Weapons("Tank Summon", 1023, "Wait... what?", "summons a tank which blasts", 370, 25, 0, 300000, tierz=4)
+sfknife = Weapons("Shadow Flame Knife", 1024, "Crafted from sorcery", "stabs and burns", 430, 15, 5, 300000, tierz=4)
+srifle = Weapons("Sniper Rifle", 1025, "Never miss a shot", "Snipes", 300, 40, 4, cost=300000, tierz=4)
 
 # Tier 5
-evampknife = Weapons("Enchanted Vamp Knife", "Vampire knife, but enchanted with the blood of many", "drains the blood of", 600, 7, 20, 1000000, 5)
-dreamsword = Weapons("Dream Sword", "Crafted from the essence of the light side of sleep", "steals the dreams of", 700, 15, 2, 1000000, 5)
-herorian = Weapons("The Herorian", "The prized Spinning Top of the legendary Herorian from Heroria", "spins into", 800, 3, 1, 1000500, 5)
-cqhaki = Weapons("Conqueror Haki", "A physical manifestation of the ability. Allows the user to use the ability Haoshoku Haki.",
-"controls", 2000, 16, 5, 5400000, 5)
-yin = Weapons("Yin Blade", "The physical manifestation of darkness, destruction and negative energy", "alters the existence of", 1800, 20, 5, 5300000, 5)
+evampknife = Weapons("Enchanted Vamp Knife", 1026, "Vampire knife, but enchanted with the blood of many", "drains the blood of", 600, 7, 20, 1000000, 5)
+dreamsword = Weapons("Dream Sword", 1027, "Crafted from the essence of the light side of sleep", "steals the dreams of", 700, 15, 2, 1000000, 5)
+herorian = Weapons("The Herorian", 1028, "The prized Spinning Top of the legendary Herorian from Heroria", "spins into", 800, 3, 1, 1000500, 5)
+
+# Tier 6
+cqhaki = Weapons("Conqueror Haki", 1029, "A physical manifestation of the ability. Allows the user to use the ability Haoshoku Haki.",
+"controls", 2000, 16, 5, 5400000, 6)
+yin = Weapons("Yin Blade", 1030, "The physical manifestation of darkness, destruction and negative energy", "alters the existence of", 1800, 20, 5, 5300000, 6)
+mhand = Weapons("Master Hand", 1031, "A mysterious floating hand with seemingly immense power used for offense", "sways then strikes", 2000, 30, 10, 5400000, 6)
 
 weaponlist = [fist, katana, bow, pistol, sword, dagger, slime, fishrod, axe, fpan, vampknives, miracles, 
-blaster, dsword, bomb, crossbow, bsuckler, sancspear, stormbreaker, hcard, vibechk, seruption, tsummon, sfknife, srifle,
-evampknife, dreamsword, herorian, cqhaki, yin]
+blaster, dsword, bomb, crossbow, bsuckler, sancspear, stormbreaker, hcard, seruption, vibechk, tsummon, sfknife, 
+srifle, evampknife, dreamsword, herorian, cqhaki, yin, mhand]
 
 # Unique
-pds = Weapons("Plague Doctors Scepter", "Soulbound to ...?", "infects", 0, 10, 15, 0, 5)
-parblade = Weapons("Staff of the Parade", "The Chosen weapon of the Parade Creator", "moderates", 3370, 20, 25, 99999999999, 5)
+pds = Weapons("Plague Doctors Scepter", 3001, "Soulbound to ...?", "infects", 0, 10, 15, 0, 6)
+parblade = Weapons("Staff of the Parade", 3002, "The Chosen weapon of the Parade Creator", "moderates", 5000, 20, 25, 0, 6)
+uth = Weapons("『Unravel the Heavens』", 3003, "He's just standing there, menacingly, with the power of ∞ and ∅!", "shine barrages",
+4200, 0, 10, 0, 6)
 
-allweapons = [pds, parblade]
+allweapons = [pds, parblade, uth]
 for weapon in weaponlist:
     allweapons.append(weapon)
 
@@ -206,6 +210,7 @@ for weapon in weaponlist:
 @dataclass
 class Armour:
     name: str
+    tag: int
     desc: str
     hpup: int=0
     pup: int=0
@@ -228,48 +233,55 @@ class Armour:
             return True
 
 
-linen = Armour("Linen", "Some extremely basic and lightweight armour. (default)")
-chain = Armour("Chainmail", "The Typical first set to buy", 5, cost=140)
-hunters = Armour("Ranger", "Blends in with background. Gains set bonus with bow", 7, 2, cost=160)
-iron = Armour("Iron", "Often the go to in Minecraft Speedruns", 10, 2, 270)
-gold = Armour("Gold", "Is gold really better than iron though?", 15, 4, 400)
-slimearm = Armour("Slime", "It's almost like attacks slide right off. Gains set bonus with Baby Slime", 20, 4, 550, 4, slime)
-assas = Armour("Assassins", "Shh, Sneaky. Gains set bonus with Dagger", 20, 4, 550, 3, dagger)
-valkryie = Armour("Valkryie", "Straight from ValHalla. Don't ask. Gains set bonus with axe", 30, 6, 600, pairs=axe)
-diamond = Armour("Diamond", "What's a Diamond Sword, Without Diamond Armor. Gains set bonus with Diamond Sword", 40, 7, 720, 0, dsword)
-saiyanguc = Armour("Saiyan Gucchi", "Special Edition it would seem", 40, 10, 700)
-abyss = Armour("Abyss Walker", "Not from this world", 55, 15, 3000, tierz=2)
-paladium = Armour("Paladium", "Increases life regen", 60, 20, 5500, 15, tierz=2)
-cranger = Armour("Charged Ranger", "An upgrade to Ranger. Shocking I know", 90, 25, 7000, 0, crossbow, tierz=3)
-solarflare = Armour("Solar Flare", "Made from Solar Fragments and Luminite Ore. Gains set bonus with Solar Eruption", 120, 35, 8000, pairs=seruption, tierz=2)
-elitist = Armour("Elitist", "Said to be made for the elites", 150, 40, 10000, tierz=3)
-wood = Armour("Wooden", "Pfft, you *wood* n't get it. Gains set bonus with The Vibe Check", 160, 45, 30000, 7, vibechk, 3)
-hierro = Armour("Hierro", "Hard", 200, 50, 50000, 10, tierz=3)
-plaguearm = Armour("Plague Doctors Uniform", "A copy of the original owned by ...?", 200, 50, 50000, 4, tierz=3)
-vknight = Armour("Valhalla Knight", "Again, Don't ask where I got this from", 100, 30, 500000, 18, tierz=4)
-shadowflame = Armour("Shadow Flame", 
+linen = Armour("Linen", 2001, "Some extremely basic and lightweight armour. (default)")
+chain = Armour("Chainmail", 2002, "The Typical first set to buy", 5, cost=140)
+hunters = Armour("Ranger", 2003, "Blends in with background. Gains set bonus with bow", 7, 2, cost=160)
+iron = Armour("Iron", 2004, "Often the go to in Minecraft Speedruns", 10, 2, 270)
+gold = Armour("Gold", 2005, "Is gold really better than iron though?", 15, 4, 400)
+slimearm = Armour("Slime", 2006, "It's almost like attacks slide right off. Gains set bonus with Baby Slime", 20, 4, 550, 4, slime)
+assas = Armour("Assassins", 2007, "Shh, Sneaky. Gains set bonus with Dagger", 20, 4, 550, 3, dagger)
+valkryie = Armour("Valkryie", 2008, "Straight from ValHalla. Don't ask. Gains set bonus with axe", 30, 6, 600, pairs=axe)
+diamond = Armour("Diamond", 2009, "What's a Diamond Sword, Without Diamond Armor. Gains set bonus with Diamond Sword", 40, 7, 720, 0, dsword)
+saiyanguc = Armour("Saiyan Gucchi", 2010, "Special Edition it would seem", 40, 10, 700)
+abyss = Armour("Abyss Walker", 2011, "Not from this world", 55, 15, 3000, tierz=2)
+paladium = Armour("Paladium", 2012, "Increases life regen", 60, 20, 5500, 15, tierz=2)
+cranger = Armour("Charged Ranger", 2013, "An upgrade to Ranger. Shocking I know", 90, 25, 7000, 0, crossbow, tierz=3)
+solarflare = Armour("Solar Flare", 2014, "Made from Solar Fragments and Luminite Ore. Gains set bonus with Solar Eruption", 120, 35, 8000, pairs=seruption, tierz=2)
+elitist = Armour("Elitist", 2015, "Said to be made for the elites", 150, 40, 10000, tierz=3)
+hierro = Armour("Hierro", 2016, "Hard", 200, 50, 50000, 10, tierz=3)
+plaguearm = Armour("Plague Doctors Uniform", 2017, "A copy of the original owned by ...?", 200, 50, 50000, 4, tierz=3)
+wood = Armour("Wooden", 2018, "Pfft, you *wood* n't get it. Gains set bonus with The Vibe Check", 260, 45, 90000, 7, vibechk, 3)
+vknight = Armour("Valhalla Knight", 2019, "Again, Don't ask where I got this from", 100, 30, 500000, 18, tierz=4)
+shadowflame = Armour("Shadow Flame", 2020,
 "A sorcerer's creation created by shadows and flames of darkness. Gains set bonus with Shadow Flame Knife",
 510, 200, 500000, 5, sfknife, 4)
-artillery = Armour("Master General", "mhm yes. Tank uniform. Gains set bonus with Tank Summon", 660, 150, 500000, 0, tsummon, 4)
-sranger = Armour("Tundra Ranger", "Gained from surviving the depth of the Tundra. Gains set bonus with Sniper Rifle", 570, 160, 500000, 4, srifle, 4)
+artillery = Armour("Master General", 2021, "mhm yes. Tank uniform. Gains set bonus with Tank Summon", 660, 150, 500000, 0, tsummon, 4)
+sranger = Armour("Tundra Ranger", 2022, "Gained from surviving the depth of the Tundra. Gains set bonus with Sniper Rifle", 570, 160, 500000, 4, srifle, 4)
+
 # Tier 5
-vampcloak = Armour("Vampiric Cloak", "Makes it easier to drain blood. Pairs well with Enchanted Vamp Knives", 800, 300, 1100000, 18, evampknife, 5)
-nightmare = Armour("Nightmare", "Woven together from the essence of the dark side of sleep. Gains set bonus with Dream Sword",
+vampcloak = Armour("Vampiric Cloak", 2023, "Makes it easier to drain blood. Pairs well with Enchanted Vamp Knives", 800, 300, 1100000, 18, evampknife, 5)
+nightmare = Armour("Nightmare", 2024, "Woven together from the essence of the dark side of sleep. Gains set bonus with Dream Sword",
 800, 420, 1100000, 0, dreamsword, 5)
-haki = Armour("Haki", "Makes it easier to absorb this mysterious energy. Gains set bonus with Conqueror Haki",
-1200, 1200, 5000000, 5, cqhaki, 5)
-yang = Armour("Yang", "The physical manifestation of creation, light and positive energy", 1500, 1000, 5000000, 30, yin, 5)
+blastgear = Armour("Blasting", 2025, "Said to massively increase your power... Explosively. Gains set bonus with Tier 2 Buh-bomb", 700, 400, 1300000, 0, bomb, 5 )
+vmaster = Armour("Vibe Master", 2026, "An upgrade to the previous Wooden Armor. Gains set bonus with The Vibe Check", 700, 250, 1100000 , 10, vibechk, 5)
+
+# Tier 6 (God Tier)
+haki = Armour("Haki", 2027, "Makes it easier to absorb this mysterious energy. Gains set bonus with Conqueror Haki",
+1200, 1200, 5000000, 5, cqhaki, 6)
+yang = Armour("Yang", 2028, "The physical manifestation of creation, light and positive energy", 1500, 1000, 5000000, 30, yin, 6)
+chand = Armour("Crazy Hand", 2029, "A mysterious floating with seemingly immense power used to defend", 1400, 1300, 5000000, 10, mhand, 6)
+
 
 # unique
-paraders = Armour("Parade Creators Outfit", "Identifies the creator of the Parade", 5900, 1370, 99999999, 10, parblade, 5)
-pdr = Armour("True Plague Doctors Uniform", "Identifies ...? as a Parade Leader", 4050, 900, 9999999999, 25, pds, 5)
-vmaster = Armour("Vibe Master", "Identifies Trxsh as a Parade Leader", 2700, 1000, 99999999999, 6, vibechk, 5)
-
+paraders = Armour("Parade Creators Outfit", 4001, "Identifies the creator of the Parade", 5900, 3370, 0, 10, parblade, 6)
+pdr = Armour("True Plague Doctors Uniform", 4002, "Identifies ...? as a Parade Leader", 4050, 1900, 0, 25, pds, 6)
+loin = Armour("Unusual Loincloth", 4003, "Wait, is that a monkey tail?", 5000, 2000, 0, 4, uth, 6)
 
 armorlist = [linen, chain, hunters, iron, gold, slimearm, assas, valkryie, diamond, saiyanguc, abyss, paladium, cranger,
-solarflare, elitist, wood, hierro, plaguearm, vknight, shadowflame, artillery, sranger, vampcloak, nightmare, haki, yang]
+solarflare, elitist, wood, hierro, plaguearm, vknight, shadowflame, artillery, sranger, 
+vampcloak, nightmare, vmaster, haki, yang, chand]
 
-allarmor = [paraders, pdr, vmaster]
+allarmor = [paraders, pdr, loin]
 for thing in armorlist:
     allarmor.append(thing)
 
@@ -301,13 +313,15 @@ class Fighter:
     healchance: int=3
     ability: object=None
     passive: object=None
-    weapon: str="Fist"
-    armour: str="Linen"
+    weapon: int=1001
+    armour: int=2001
     xpthresh: int=50
     typeobj: str="player"
     canfight: bool=True
     inteam: bool=False
     invation: int= None
+    weapon2: int=1001
+    armour2: int=2001
     
 
     def addcoin(self, coin):
@@ -494,9 +508,131 @@ class Fighter:
             return 3
         elif self.health >= 951 and self.health <= 2999:
             return 4
-        else:
+        elif self.health >= 3000 and self.level < 300:
             return 5
+        elif self.health >= 10000 and self.level >= 300:
+            return 6
+        else:
+            print("Something went wrong with the tiers")
+            return False
 
+def buffing(tobuff):
+    if tobuff.armour.name == "Solar Flare":
+        tobuff.weapon.damage += 20
+        tobuff.health += 50
+        msg = "Increased damage of Solar Flare by 20 and health by 50"
+
+    elif tobuff.armour.name == "Shadow Flame":
+        tobuff.weapon.damage += 60
+        tobuff.health += 100
+        tobuff.mindmg += 15
+        msg = "Increased damage of Shadow Flame Knife by 60, Increased health by 100, and increased mindmg by 15"
+
+    elif tobuff.armour.name == "True Plague Doctors Uniform":
+        tobuff.health += 100
+        tobuff.weapon.damage += 45
+        tobuff.critchance += 5
+        tobuff.weapon.healplus += 6
+        msg = "Increased Damage of Plague Doctors Scepter by 45. Increased Health by 100. Increased Critchance by 5%. Increased lifesteal by 6%"
+
+    elif tobuff.armour.name == "Valkryie":
+        tobuff.health += 40
+        tobuff.weapon.damage += 5
+        msg = "Increased Damge of Axe by 5, and increased health by 40"
+
+    elif tobuff.armour.name == "Assassins":
+        tobuff.health += 10
+        tobuff.weapon.damage += 15
+        msg = "Increased Damage of Dagger by 15, added 3% lifesteal and +10 health"
+
+    elif tobuff.armour.name == "Charged Ranger":
+        tobuff.weapon.damage += 30
+        tobuff.armour.regen += 5
+        tobuff.mindmg += 10
+        msg = "Increased Weapon damage by 30, 5% regen and increase min damage by 10"       
+
+    elif tobuff.armour.name == "Diamond":
+        tobuff.health += 35
+        tobuff.weapon.damage += 15
+        msg = "Increased Weapon Damage by 15, and increased health by 35"     
+
+    elif tobuff.armour.name == "Wooden":
+        tobuff.health += 200
+        tobuff.weapon.critplus += 3
+        tobuff.weapon.damage += 15
+        msg = "Increased Health by 200, increased weapon damage by 15, and critchance by 3%"
+
+    elif tobuff.armour.name == "Slime":
+        tobuff.health += 20
+        tobuff.weapon.damage += 15
+        tobuff.weapon.critplus += 4
+        msg = "Increased Health by 20, increased Damage of Baby Slime by 15, and increased crit chance by 4"
+
+    elif tobuff.armour.name == "Parade Creators Outfit":
+        tobuff.health += 60
+        tobuff.weapon.damage += 40
+        tobuff.weapon.critplus += 2
+        tobuff.weapon.healplus += 2
+        tobuff.mindmg += 40
+        tobuff.maxdmg += 40
+        msg = "Increased Health by 60. Increased Min, max and weapon damage by 40. Increased Crit Chance and heal% by 2%"
+        
+    elif tobuff.armour.name == "Master General":
+        tobuff.health += 220
+        tobuff.weapon.damage += 20
+        msg = "Increased health by 220. Increased weapon damage by 20"
+
+    elif tobuff.armour.name == "Tundra Ranger":
+        tobuff.health += 150
+        tobuff.critchance += 15
+        tobuff.weapon.damage += 15
+        tobuff.weapon.healplus += 3
+        msg = "Increased health by 150. Increased Critchance and weapon damage by 15. Increased weapon lifesteal by 3%"
+        
+    elif tobuff.armour.name == "Vibe Master":
+        tobuff.critchance += 100
+        tobuff.weapon.damage += 30
+        msg = "Increased crit chance by 100. Increased weapon damage by 30"
+
+    elif tobuff.armour.name == "Vampiric Cloak":
+        tobuff.health += 200
+        tobuff.weapon.healplus += 5
+        tobuff.armour.regen += 2
+        tobuff.weapon.damage += 40
+        msg = "Increased Health by 200, lifesteal on ENC Vamp Knives by 5%, damage on ENC Vamp Knives by 40 and regen on Vamp Cloak by 2%"
+
+    elif tobuff.armour.name == "Nightmare":
+        tobuff.health += 120
+        tobuff.weapon.damage += 120
+        tobuff.attackmsg = "Sealed the dreams of"
+        msg = "Increased health and weapon damage by 120"
+
+    elif tobuff.armour.name == "Haoshoku Haki":
+        tobuff.health += 500
+        tobuff.weapon.damage += 400
+        tobuff.weapon.healplus += 4
+        tobuff.armour.regen += 4
+        tobuff.critchance += 10
+        tobuff.mindmg += 20
+        tobuff.maxdmg += 20
+        tobuff.attackmsg = "manipulates the existence of"
+        msg = "This is your birthrite. Increased health by 500, Damage of Conquerors by 400, increased lifesteal on both Haki and Conquerors Haki by 4%,increased crit chance by 10% and increased min and max damage by 20. Able to use Haoshoku Haki passive"
+
+    elif tobuff.armour.name == "Yang":
+        tobuff.health += 500
+        tobuff.weapon.damage += 400
+        tobuff.weapon.healplus += 4
+        tobuff.armour.regen += 4
+        tobuff.critchance += 10
+        tobuff.mindmg += 50
+        tobuff.maxdmg += 50
+        tobuff.attackmsg = "manipulates the mind and soul of"
+        msg = "Perfect balanced has been achieved. Increased health by 500, Damage of Yin Blade by 400, increased lifesteal on both Yang and Yin by 4%,increased crit chance by 10% and increased min and max damage by 50. Able to use Pride of Balance Passive"
+        
+    else:
+        msg = "Something went wrong"
+
+    return msg
 
 class FightMe(Fighter):
 
@@ -529,121 +665,8 @@ class FightMe(Fighter):
         self.critchance += self.weapon.critplus
 
     def buff(self):
-        if self.armour.name == "Solar Flare":
-            self.weapon.damage += 20
-            self.health += 50
-            msg = "Increased damage of Solar Flare by 20 and health by 50"
-
-        elif self.armour.name == "Shadow Flame":
-            self.weapon.damage += 60
-            self.health += 100
-            self.mindmg += 15
-            msg = "Increased damage of Shadow Flame Knife by 60, Increased health by 100, and increased mindmg by 15"
-
-        elif self.armour.name == "True Plague Doctors Uniform":
-            self.health += 100
-            self.weapon.damage += 45
-            self.critchance += 5
-            self.weapon.healplus += 6
-            msg = "Increased Damage of Plague Doctors Scepter by 45. Increased Health by 100. Increased Critchance by 5%. Increased lifesteal by 6%"
-
-        elif self.armour.name == "Valkryie":
-            self.health += 40
-            self.weapon.damage += 5
-            msg = "Increased Damge of Axe by 5, and increased health by 40"
-
-        elif self.armour.name == "Assassins":
-            self.health += 10
-            self.weapon.damage += 15
-            msg = "Increased Damage of Dagger by 15, added 3% lifesteal and +10 health"
-
-        elif self.armour.name == "Charged Ranger":
-            self.weapon.damage += 30
-            self.armour.regen += 5
-            self.mindmg += 10
-            msg = "Increased Weapon damage by 30, 5% regen and increase min damage by 10"       
-
-        elif self.armour.name == "Diamond":
-            self.health += 35
-            self.weapon.damage += 15
-            msg = "Increased Weapon Damage by 15, and increased health by 35"     
-
-        elif self.armour.name == "Wooden":
-            self.health += 200
-            self.weapon.critplus += 3
-            self.weapon.damage += 15
-            msg = "Increased Health by 200, increased weapon damage by 15, and critchance by 3%"
-
-        elif self.armour.name == "Slime":
-            self.health += 20
-            self.weapon.damage += 15
-            self.weapon.critplus += 4
-            msg = "Increased Health by 20, increased Damage of Baby Slime by 15, and increased crit chance by 4"
-
-        elif self.armour.name == "Parade Creators Outfit":
-            self.health += 60
-            self.weapon.damage += 40
-            self.weapon.critplus += 2
-            self.weapon.healplus += 2
-            self.mindmg += 40
-            self.maxdmg += 40
-            msg = "Increased Health by 60. Increased Min, max and weapon damage by 40. Increased Crit Chance and heal% by 2%"
-        
-        elif self.armour.name == "Master General":
-            self.health += 220
-            self.weapon.damage += 20
-            msg = "Increased health by 220. Increased weapon damage by 20"
-
-        elif self.armour.name == "Tundra Ranger":
-            self.health += 150
-            self.critchance += 15
-            self.weapon.damage += 15
-            self.weapon.healplus += 3
-            msg = "Increased health by 150. Increased Critchance and weapon damage by 15. Increased weapon lifesteal by 3%"
-        
-        elif self.armour.name == "Vibe Master":
-            self.critchance += 100
-            self.weapon.damage += 30
-            msg = "Increased crit chance by 100. Increased weapon damage by 30"
-
-        elif self.armour.name == "Vampiric Cloak":
-            self.health += 200
-            self.weapon.healplus += 5
-            self.armour.regen += 2
-            self.weapon.damage += 40
-            msg = "Increased Health by 200, lifesteal on ENC Vamp Knives by 5%, damage on ENC Vamp Knives by 40 and regen on Vamp Cloak by 2%"
-
-        elif self.armour.name == "Nightmare":
-            self.health += 120
-            self.weapon.damage += 120
-            self.attackmsg = "Sealed the dreams of"
-            return "Increased health and weapon damage by 120"
-
-        elif self.armour.name == "Haoshoku Haki":
-            self.health += 500
-            self.weapon.damage += 400
-            self.weapon.healplus += 4
-            self.armour.regen += 4
-            self.critchance += 10
-            self.mindmg += 20
-            self.maxdmg += 20
-            self.attackmsg = "manipulates the existence of"
-            return "This is your birthrite. Increased health by 500, Damage of Conquerors by 400, increased lifesteal on both Haki and Conquerors Haki by 4%,increased crit chance by 10% and increased min and max damage by 20. Able to use Haoshoku Haki passive"
-
-        elif self.armour.name == "Yang":
-            self.health += 500
-            self.weapon.damage += 400
-            self.weapon.healplus += 4
-            self.armour.regen += 4
-            self.critchance += 10
-            self.mindmg += 50
-            self.maxdmg += 50
-            self.attackmsg = "manipulates the mind and soul of"
-            return "Perfect balanced has been achieved. Increased health by 500, Damage of Yin Blade by 400, increased lifesteal on both Yang and Yin by 4%,increased crit chance by 10% and increased min and max damage by 50. Able to use Pride of Balance Passive"
-        
-        else:
-            return "Something went wrong"
-
+        x = self
+        msg = buffing(x)
         return msg
 
 
@@ -655,7 +678,6 @@ class FightMe(Fighter):
 
     def heal(self, amount):
         self.health += amount
-    
     
 
     def abiluse(self, power):
@@ -683,9 +705,8 @@ class FightMe(Fighter):
         return power
 
 class BeastFight:
-    def __init__(self, name, tag, health, mindmg, maxdmg, mincoin, maxcoin, entrymessage, minxp, critchance=5, healchance=3, ability=None, passive=None, attackmsg=None, weapon=fist, armour=linen, typeobj="npc"):
+    def __init__(self, name, health, mindmg, maxdmg, mincoin, maxcoin, entrymessage, minxp, critchance=5, healchance=3, ability=None, passive=None, attackmsg=None, weapon=fist, armour=linen, typeobj="npc"):
         self.name = name
-        self.tag = tag
         self.health = health
         self.mindmg = mindmg 
         self.maxdmg = maxdmg
@@ -751,208 +772,120 @@ class FightingBeast(BeastFight):
         return power
 
     def buff(self):
-        if self.armour.name == "Solar Flare":
-            self.weapon.damage += 20
-            self.health += 50
-            msg = "Increased damage of Solar Flare by 20 and health by 50"
-
-        elif self.armour.name == "Shadow Flame":
-            self.weapon.damage += 60
-            self.health += 100
-            self.mindmg += 15
-            msg = "Increased damage of Shadow Flame Knife by 60, Increased health by 100, and increased mindmg by 15"
-
-        elif self.armour.name == "Plague Doctors Uniform":
-            self.health += 25
-            self.weapon.damage += 15
-            self.critchance += 2
-            self.weapon.healplus += 4
-            msg = "Increased Damage of Plague Doctors Scepter by 15. Increased Health by 25. Increased Critchance by 2%. Increased lifesteal by 4%"
-
-        elif self.armour.name == "Valkryie":
-            self.health += 40
-            self.weapon.damage += 5
-            msg = "Increased Damge of Axe by 5, and increased health by 40"
-
-        elif self.armour.name == "Assassins":
-            self.health += 10
-            self.weapon.damage += 15
-            msg = "Increased Damage of Dagger by 15, added 3% lifesteal and +10 health"
-
-        elif self.armour.name == "Charged Ranger":
-            self.weapon.damage += 30
-            self.armour.regen += 5
-            self.mindmg += 10
-            msg = "Increased Weapon damage by 30, 5% regen and increase min damage by 10"       
-
-        elif self.armour.name == "Diamond":
-            self.health += 35
-            self.weapon.damage += 15
-            msg = "Increased Weapon Damage by 15, and increased health by 35"     
-
-        elif self.armour.name == "Wooden":
-            self.health += 200
-            self.weapon.critplus += 3
-            self.weapon.damage += 15
-            msg = "Increased Health by 200, increased weapon damage by 15, and critchance by 3%"
-
-        elif self.armour.name == "Slime":
-            self.health += 20
-            self.weapon.damage += 15
-            self.weapon.critplus += 4
-            msg = "Increased Health by 20, increased Damage of Baby Slime by 15, and increased crit chance by 4"
-
-        elif self.armour.name == "Parade Creators Outfit":
-            self.health += 60
-            self.weapon.damage += 5
-            self.weapon.critplus += 2
-            self.weapon.healplus += 2
-            self.mindmg += 5
-            self.maxdmg += 5
-            msg = "Increased Health by 60. Increased Min, max and weapon damage by 5. Increased Crit Chance and heal% by 2%"
-        
-        elif self.armour.name == "Master General":
-            self.health += 220
-            self.weapon.damage += 10
-            msg = "Increased health by 220. Increased weapon damage by 10"
-
-        elif self.armour.name == "Tundra Ranger":
-            self.health += 150
-            self.critchance += 10
-            self.weapon.damage += 10
-            self.weapon.healplus += 3
-            msg = "Increased health by 150. Increased Critchance and weapon damage by 10. Increased weapon lifesteal by 3%"
-        
-        elif self.armour.name == "Vibe Master":
-            self.critchance += 100
-            self.weapon.damage += 30
-            msg = "Increased crit chance by 100. Increased weapon damage by 30"
-
-        elif self.armour.name == "Vampiric Cloak":
-            self.health += 200
-            self.weapon.healplus += 5
-            self.armour.regen += 2
-            self.weapon.damage += 40
-            msg = "Increased Health by 200, lifesteal on ENC Vamp Knives by 5%, damage on ENC Vamp Knives by 40 and regen on Vamp Cloak by 2%"
-
-        elif self.armour.name == "Nightmare":
-            self.health += 120
-            self.weapon.damage += 120
-            self.attackmsg = "Sealed the dreams of"
-            return "Increased health and weapon damage by 120"
-
-        elif self.armour.name == "Yang":
-            self.health += 500
-            self.weapon.damage += 400
-            self.weapon.healplus += 4
-            self.armour.regen += 4
-            self.critchance += 10
-            self.mindmg += 50
-            self.maxdmg += 50
-            self.attackmsg = "manipulates the mind and soul of"
-            return "Perfect balanced has been achieved. Increased health by 500, Damage of Yin Blade by 400, increased lifesteal on both Yang and Yin by 4%,increased crit chance by 10% and increased min and max damage by 50"
-        
-        else:
-            return "Something went wrong"
-
+        x = self
+        buffing(x)
+        msg = buffing(x)
         return msg
 
         
 
 # Low Level below 200 hp and Magikarp
-easy1 = BeastFight("The Cat",10000, 40, 6, 30, 10, 15, "Uh... What harm could a harmless little... oh my...", 10, attackmsg="raises up and scratches")
-easy2 = BeastFight("ZombieMan",10002, 60, 5, 15, 15, 25, "Ah... the typical zombie is chasing you",15, attackmsg="tickles the brains of")
-easy3 = BeastFight("Magikarp",10003, 120, 1, 2, 2, 5, "No challenge... Let's make it quick",25, attackmsg="flops on")
-easy4 = BeastFight("Random Meme",10005, 45, 1, 20, 20, 40, "Some one has sent you a random powerful meme...", 60, attackmsg="memes on")
-easy5 = BeastFight("Robloxian Army", 10007, 60, 4, 13, 20, 60, "First their pets, now themeselves? sigh...",40, attackmsg="gangs up on")
-easy6 = BeastFight("Mr.Skeleton", 10008, 70, 7, 12, 10, 30, "Mr. Skeleton has spawned.", 15, attackmsg="aims their bow and shoots")
-easy7 = BeastFight("Goblin Tinkerer", 10009, 120, 10, 21, 50, 90, "Wait, I thought the Goblin Tinkerer was on our side?", 25,
+easy1 = BeastFight("The Cat", 40, 6, 30, 10, 15, "Uh... What harm could a harmless little... oh my...", 10, attackmsg="raises up and scratches")
+easy2 = BeastFight("ZombieMan", 60, 5, 15, 15, 25, "Ah... the typical zombie is chasing you",15, attackmsg="tickles the brains of")
+easy3 = BeastFight("Magikarp", 120, 1, 2, 2, 5, "No challenge... Let's make it quick",25, attackmsg="flops on")
+easy4 = BeastFight("Random Meme", 45, 1, 20, 20, 40, "Some one has sent you a random powerful meme...", 60, attackmsg="memes on")
+easy5 = BeastFight("Robloxian Army", 60, 4, 13, 20, 60, "First their pets, now themeselves? sigh...",40, attackmsg="gangs up on")
+easy6 = BeastFight("Mr.Skeleton", 70, 7, 12, 10, 30, "Mr. Skeleton has spawned.", 15, attackmsg="aims their bow and shoots")
+easy7 = BeastFight("Goblin Tinkerer", 120, 10, 21, 50, 90, "Wait, I thought the Goblin Tinkerer was on our side?", 25,
  attackmsg="throws spike balls at")
-easy8 = BeastFight("Annoying Discord Spammer", 10010, 120, 8, 15, 2, 10, 
+easy8 = BeastFight("Annoying Discord Spammer", 120, 8, 15, 2, 10, 
 "There's always that one person that loves to spam @mentions... Found him", 10, attackmsg="spams on")
 
-easy9 = BeastFight("Possessed Friend", 10011, 125, 12, 28, 20, 40, "I can't believe your friend got possessed... again", 70, attackmsg="slashes")
-easy10 = BeastFight("Baby Shark", 10012, 130, 10, 30, 30, 50, "Baby shark doo doo doo oops...",60, attackmsg="sings then bites")
+easy9 = BeastFight("Possessed Friend", 125, 12, 28, 20, 40, "I can't believe your friend got possessed... again", 70, attackmsg="slashes")
+easy10 = BeastFight("Baby Shark", 130, 10, 30, 30, 50, "Baby shark doo doo doo oops...",60, attackmsg="sings then bites")
 
 # Mid Level between 200 and 300 hp
-mid1 = BeastFight("Cherry Blossom", 10013, 260, 30, 50, 30, 60,"Sakur- Cherry Blossom? \"WHO YOU CALLING USELESS...\"", 360,
+mid1 = BeastFight("Cherry Blossom", 260, 30, 50, 30, 60,"Sakur- Cherry Blossom? \"WHO YOU CALLING USELESS...\"", 360,
 attackmsg="charges chakra then punches")
-mid2 = BeastFight("Buh-bomb", 10014, 330, 40, 80, 45, 90, "Look who came not from Mario's world", 340, weapon=bomb,
+mid2 = BeastFight("Buh-bomb", 330, 40, 80, 45, 90, "Look who came not from Mario's world", 340, weapon=bomb,
 attackmsg="says \"My main goal, is to blow up\" and explodes on")
-mid3 = BeastFight("Big Rock", 10015, 345, 10, 120, 60, 100, "*Smiles*", 350 , attackmsg="Jumps then lands on")
-mid4 = BeastFight("Isaiah's Parade", 10016, 324, 40, 70, 40, 70, "Parade?... no... Just a clone", 320, attackmsg="slashes")
-mid5 = BeastFight("Angel Statue", 10017, 300, 70, 115, 20, 50, "An Angel Statue feel from the sky... Nice?", 310, attackmsg="Pounds on")
-mid6 = BeastFight("Azoth", 10018, 320, 40, 80, 40, 70, "Straight from Valhalla, Azoth is here", 330, ability=deadlygrasp, weapon=axe,
+mid3 = BeastFight("Big Rock", 345, 10, 120, 60, 100, "*Smiles*", 350 , attackmsg="Jumps then lands on")
+mid4 = BeastFight("Isaiah's Parade", 324, 40, 70, 40, 70, "Parade?... no... Just a clone", 320, attackmsg="slashes")
+mid5 = BeastFight("Angel Statue", 300, 70, 115, 20, 50, "An Angel Statue feel from the sky... Nice?", 310, attackmsg="Pounds on")
+mid6 = BeastFight("Azoth", 320, 40, 80, 40, 70, "Straight from Valhalla, Azoth is here", 330, ability=deadlygrasp, weapon=axe,
 attackmsg="swings his axe at")
 
-mid7 = BeastFight("Valkryie", 10019, 330, 40, 70, 100, 120, "Uh... I think she found out we stole their armour", 440, 8, ability=critstrike, weapon=axe,
+mid7 = BeastFight("Valkryie", 330, 40, 70, 100, 120, "Uh... I think she found out we stole their armour", 440, 8, ability=critstrike, weapon=axe,
 armour=valkryie, attackmsg="swings her axes and slashes")
 
-mid8 = BeastFight("Rick Sanchez", 10020, 325, 45, 70, 80, 130,"Guess who just popped out of a portal ready to attack", 470,
+mid8 = BeastFight("Rick Sanchez", 325, 45, 70, 80, 130,"Guess who just popped out of a portal ready to attack", 470,
  ability=pickelize, attackmsg="blasts", weapon=blaster)
 
-mid9 = BeastFight("Slivial", 10021, 325, 50, 76, 120, 250, "Straight from Slimenia, He summons his tank", 500, 6, 5, blast, regeneration,
+mid9 = BeastFight("Slivial", 325, 50, 76, 120, 250, "Straight from Slimenia, He summons his tank", 500, 6, 5, blast, regeneration,
 "Shoots some ammo from his cannon at", weapon=miracles)
 
-mid10 = BeastFight("Sanic", 10022, 340, 60, 90, 125, 150, "Gotta go fast", 430, 15, ability=sonic, attackmsg="zooms around then hits")
+mid10 = BeastFight("Sanic", 340, 60, 90, 125, 150, "Gotta go fast", 430, 15, ability=sonic, attackmsg="zooms around then hits")
 
 
 # High Level between 500 and 950 hp
-hard1 = BeastFight("DRAGON!",10001, 900, 270, 310, 2220, 2400, "Dragon goes rawr but no 'XD'",500, ability=blast, attackmsg="Breathes on", armour=iron)
-hard2 = BeastFight("Dio",10004, 700, 250, 360, 2350, 2600, "Oh no... It's dio... Quick, take him out. (Not on a date mind you)",700, ability=theworld, passive=regeneration,
+hard1 = BeastFight("DRAGON!", 900, 270, 310, 2220, 2400, "Dragon goes rawr but no 'XD'",500, ability=blast, attackmsg="Breathes on", armour=iron)
+hard2 = BeastFight("Dio", 700, 250, 360, 2350, 2600, "Oh no... It's dio... Quick, take him out. (Not on a date mind you)",700, ability=theworld, passive=regeneration,
 weapon=vampknives,armour=gold, attackmsg="Barrages on")
-hard3 = BeastFight("Red Paladins", 10006, 650, 215, 300, 1800, 2300, "The Red Paladins have arrived.",450, ability=swarm, weapon=axe, attackmsg="Gather and attack")
-hard4 = BeastFight("Queen Bee", 10025, 900, 380, 490, 2000, 2370, "Queen Bee has Awoken", 430, ability=swarm, attackmsg="Rams into") 
-hard5 = BeastFight("Kairo", 10026, 600, 200, 230, 2000, 3200, "Out of the trash, the Racoon has emerged", 450, ability=swarm,
+hard3 = BeastFight("Red Paladins", 650, 215, 300, 1800, 2300, "The Red Paladins have arrived.",450, ability=swarm, weapon=axe, attackmsg="Gather and attack")
+hard4 = BeastFight("Queen Bee", 900, 380, 490, 2000, 2370, "Queen Bee has Awoken", 430, ability=swarm, attackmsg="Rams into") 
+hard5 = BeastFight("Kairo", 600, 200, 230, 2000, 3200, "Out of the trash, the Racoon has emerged", 450, ability=swarm,
 attackmsg="bites")
-hard6 = BeastFight("Money Tree", 10029, 800, 270, 320, 5000, 6200, "Who said money doesn't grow on trees.",
+hard6 = BeastFight("Money Tree", 800, 270, 320, 5000, 6200, "Who said money doesn't grow on trees.",
 500, attackmsg="Blows money on")
-hard7 = BeastFight("The Story Teller", 10031, 700, 530, 670, 4100, 5300, "The story Teller is angry you slept through his story",
+hard7 = BeastFight("The Story Teller", 700, 530, 670, 4100, 5300, "The story Teller is angry you slept through his story",
 450, attackmsg="Reads to", passive=dodge)
+hard8 = BeastFight("Max Steal", 949, 600, 650, 5500, 6000, "GO TURBO", 500, 20, 5, blast, sboost, "strikes", sancspear, elitist)
+hard9 = BeastFight("Thor not Thor", 900, 500, 600, 5000, 5500, "Something just came crashing down", 520, 6, 10, blast, critblock, "Zaps", stormbreaker, hierro)
+hard10 = BeastFight("Kid", 800, 600, 700, 6000, 6200, "Clearly not an ordinary kid", 500, 30, 5, passive=dodge,
+attackmsg="sorts his cards then attack", weapon=hcard, armour=plaguearm)
 
-# tier 4 mofos
-ut1 = BeastFight("DIO!", 10024, 1100, 400, 550, 19000, 20950, "Dio... no... it's DIO", 1000, 15, 60, theworld, regeneration,"Attacks", vampknives, gold)
-ut2 = BeastFight("Robloxian Lord", 10023, 940, 200, 250, 15050, 17000, "Uh oh... A big one", 540, ability=swarm, passive=dodge, attackmsg="Memes on",
+# tier 4 mofos. Between 951 and 3k hp
+ut1 = BeastFight("DIO!", 1100, 400, 550, 19000, 20950, "Dio... no... it's DIO", 1000, 15, 60, theworld, regeneration,"Attacks", vampknives, gold)
+ut2 = BeastFight("Robloxian Lord", 960, 200, 250, 15050, 17000, "Uh oh... A big one", 540, ability=swarm, passive=dodge, attackmsg="Memes on",
 weapon=blaster, armour=saiyanguc)
-ut3 = BeastFight("Ender Dragon", 10027, 1000, 450, 480, 17000, 18050, "Uh, Something was wrong with the respawn system, and now it's in your world", 500,
+ut9 = BeastFight("Drippler", 952, 500, 550, 15000, 16000, "What is this strange multi-eyed floating creature", 600, 10, 10,
+swarm, dodge, "drains the blood of", bsuckler, hierro)
+ut10 = BeastFight("Magician", 980, 470, 600, 15000, 19000, "Come, let me show you a trick you won't forget", 600, 5, 3,
+uheal, dodge, "shuffles cards then attacks", hcard, vknight)
+ut3 = BeastFight("Ender Dragon", 1000, 450, 480, 17000, 18050, "Uh, Something was wrong with the respawn system, and now it's in your world", 500,
 ability=blast, attackmsg="Breathes on")
-ut4 = BeastFight("Moon Lord", 10028, 2000, 750, 800, 17000, 20000, "Impending Doom Approaches", 1000,10,20,
+ut4 = BeastFight("Moon Lord", 2000, 750, 800, 17000, 20000, "Impending Doom Approaches", 1000,10,20,
 critstrike, regeneration, "Summons a Phantasmal Deathray and blasts", armour=abyss)
-ut5 = BeastFight("Young Flame Handler", 10037, 2020, 1700, 1800, 17000, 19000, "His job... defeat you", 800, 5, 3, critstrike, attackmsg="strikes",
+ut5 = BeastFight("Young Flame Handler", 2020, 1700, 1800, 17000, 19000, "His job... defeat you", 800, 5, 3, critstrike, attackmsg="strikes",
 weapon=sfknife, armour=shadowflame)
-ut6 = BeastFight("Young General", 10038, 2400, 1500, 1700, 17000, 18000, "You are simply practice for this rising star", 850, 10, 3, blast, None,
+ut6 = BeastFight("Young General", 2400, 1500, 1700, 17000, 18000, "You are simply practice for this rising star", 850, 10, 3, blast, None,
 "Aims and shoots at", tsummon, artillery)
-ut7 = BeastFight("Young Marksman", 10039, 2100, 1200, 1300, 15000, 16000, "ready... aim...", 750, 30, 3, critstrike, None, "sets up and quickly snipes",
+ut7 = BeastFight("Young Marksman", 2100, 1200, 1300, 15000, 16000, "ready... aim...", 750, 30, 3, critstrike, None, "sets up and quickly snipes",
 srifle, sranger)
+ut8 = BeastFight("Valhalla Knight", 2800, 800, 900, 16000, 19000, "This menacing warrior has arrived", 700, 10, 20, uheal, rage,
+"Swings his axe menacingly and then attacks", bsuckler, vknight)
 
 
-# Tier 5
-nme = BeastFight("NME", 10031, 7000, 1100, 1300, 42400, 52800, "NME is the enemy and he's come to prove that", 4000, 
+# Tier 5 Between 3k and 10k hp
+nme = BeastFight("NME", 6000, 1100, 1300, 42400, 52800, "NME is the enemy and he's come to prove that", 4000, 
 20, 25, nmareterror, sboost, "devours the nightmares of", sfknife, shadowflame)
-isama = BeastFight("Isaiah-Sama", 10030, 5500, 1600, 1800, 31400, 35600, "Isaiah has Arrived, but is nerfed", 1200, 15,20, theworld, regeneration,
+isama = BeastFight("Isaiah-Sama", 5500, 1600, 1800, 31400, 35600, "Isaiah has Arrived, but is nerfed", 1200, 15,20, theworld, regeneration,
  "fires at", seruption, solarflare)
-uksniper = BeastFight("Unknown Sniper", 10032, 5000, 1000, 1100, 32000, 38000, "You feel someone watching you", 
+uksniper = BeastFight("Unknown Sniper", 5000, 1000, 1100, 32000, 38000, "You feel someone watching you", 
 4000, 5, 3, critstrike, sharpeye, "snipes", srifle, sranger)
-sfass = BeastFight("Shadow Flame Assassin", 10033, 6000, 1300, 1400, 40000, 44000, "You glimpse a shadow following you",
+sfass = BeastFight("Shadow Flame Assassin", 6000, 1300, 1400, 40000, 44000, "You glimpse a shadow following you",
 3500, 25, 10, critstrike, dodge, "slashes at", sfknife, shadowflame)
-kdono = BeastFight("Kevin not Kevin", 10034, 8000, 1000, 1200, 58000, 64000, "KEVIN!!!", 5000, 5, 20, uheal, regeneration,
+kdono = BeastFight("Kevin not Kevin", 8000, 1000, 1200, 58000, 64000, "KEVIN!!!", 5000, 5, 20, uheal, regeneration,
 "menacingly approaches", hcard, vknight)
-# Last id
-herian = BeastFight("The Herorian", 10040, 7000, 1600, 1900, 20000, 21000, "The Herorian from Heroria?", 900,
+herian = BeastFight("The Herorian", 7000, 1600, 1900, 20000, 21000, "The Herorian from Heroria?", 900,
 20, 10, slag, dodge, "expertly spins his top and throws it at", herorian, vknight)
-tmaster = BeastFight("Tank Master", 10035, 9300, 1000, 1200, 58000, 64000, "have you ever seen a tank up close?", 5000, 5,3,
+tmaster = BeastFight("Tank Master", 9300, 1000, 1200, 58000, 64000, "have you ever seen a tank up close?", 5000, 5,3,
 blast, sharpeye, "Summons his tank, aims it, and fires", tsummon, artillery)
-rebdio = BeastFight("DIO Reborn", 10036, 10500, 1600, 1800, 64000, 67000, "It's like he never dies.", 6000, 20,5, uheal, regeneration,
+rebdio = BeastFight("DIO Reborn", 10000, 1600, 1800, 64000, 67000, "It's like he never dies.", 6000, 20,5, uheal, regeneration,
 "flash freezes then drains", evampknife, vampcloak)
+minmegu = BeastFight("Minmegu", 9600, 3000, 4000, 70000, 72000, "ECKS-PLOH-SHUN!!!", 8000, 10, 4, jajanken, counter, "EXPLOSION!!!",
+bomb, blastgear)
+dmaster = BeastFight("Dream Master", 8500, 3500, 4200, 68000, 72000, "Your worst nightmare??", 7500, 5, 3, nmareterror, nlove, "gathers nightmares and strikes",
+dreamsword, nightmare )
 
 # Lists
 
 enemy = [
 easy1, easy2, easy3, easy4, easy5, easy6, easy7, easy8, easy9, easy10, 
 mid1, mid2, mid3, mid4, mid5, mid6, mid7, mid8, mid9, mid10,
-hard1, hard2, hard3, hard4, hard5, hard6, hard7,
-ut1, ut2, ut3, ut4, ut5, ut6, ut7,
-isama, nme, uksniper, sfass, kdono, tmaster, rebdio, herian
+hard1, hard2, hard3, hard4, hard5, hard6, hard7, hard8, hard9, hard10,
+ut1, ut2, ut3, ut4, ut5, ut6, ut7, ut8, ut9, ut10,
+isama, nme, uksniper, sfass, kdono, tmaster, rebdio, herian, minmegu, dmaster
 ]
 
 # def __init__(self, name, tag, health, mindmg, maxdmg, mincoin, maxcoin, entrymessage, minxp, 
@@ -960,30 +893,30 @@ isama, nme, uksniper, sfass, kdono, tmaster, rebdio, herian
 # typeobj="npc"):
 
 # Raid Monster
-bebebe = BeastFight("Giant King Be Be Be", 90001, 6000, 200, 300, 8000, 10000, "Giant King Be Be Be has been awoken... and is very angry",1000,
-30, 25, bebebeslam, harder, "BE BE BE STRIKE!")
+bebebe = BeastFight("Giant King Be Be Be", 6000, 200, 300, 8000, 10000, "Giant King Be Be Be has been awoken... and is very angry",1000,
+30, 25, bebebeslam, chubz, "BE BE BE STRIKE!")
 
-giggeng = BeastFight("Giant Gargen", 90002, 9000, 450, 700, 9000, 12000, "A wild Giantified Gargen Has Appeared", 1500, 20, 20, ssuck, nlove, "Attacks", armour=gold)
+giggeng = BeastFight("Giant Gargen", 9000, 450, 700, 9000, 12000, "A wild Giantified Gargen Has Appeared", 1500, 20, 20, ssuck, nlove, "Attacks", armour=gold)
 
-biggums = BeastFight("Biggums", 90003, 11000, 650, 750, 25000, 30000, "Biggums is rising out of the earth. Isn't as big as we were told however.", 2000,
-20, 40, bellybump, harder, "kicks a giant foot at")
+biggums = BeastFight("Biggums", 11000, 650, 750, 25000, 30000, "Biggums is rising out of the earth. Isn't as big as we were told however.", 2000,
+20, 40, bellybump, chubz, "kicks a giant foot at")
 
-oogabooga = BeastFight("Ooga Booga", 90004, 14000, 800, 900, 40000, 50000, "Music plays as this giant tribal Man falls from the sky", 2500, 5, 3, swarm, sboost,
+oogabooga = BeastFight("Ooga Booga", 14000, 800, 900, 40000, 50000, "Music plays as this giant tribal Man falls from the sky", 2500, 5, 3, swarm, sboost,
 "dances then attacks", vibechk, wood)
 
-anansi = BeastFight("Anansi", 90005, 16000, 1000, 1100, 50000, 60000, "Anansi is a spider, Anansi is a man. Now he's big and giant, and your head is his demand.",
+anansi = BeastFight("Anansi", 16000, 1000, 1100, 50000, 60000, "Anansi is a spider, Anansi is a man. Now he's big and giant, and your head is his demand.",
 3000, 2, 10, swarm, rage, "Transforms then attacks", armour=assas)
 
-pdoctor = BeastFight("Plague Doctor", 90006, 20000, 1300, 1400, 60000, 72000, "...?", 4000, 3, 20, plague, sharpeye, "Spreads the plague to", pds,
+pdoctor = BeastFight("Plague Doctor", 20000, 1300, 1400, 60000, 72000, "...?", 4000, 3, 20, plague, sharpeye, "Spreads the plague to", pds,
 plaguearm)
 
-slimeraid = BeastFight("Prince Slime", 90007, 30000, 400, 500, 25000, 29000, "Prince Slime has awoken", 2000,
+slimeraid = BeastFight("Prince Slime", 30000, 400, 500, 25000, 29000, "Prince Slime has awoken", 2000,
 attackmsg="Bounces on", weapon=slime, armour=slimearm)
 
-dizawarudo = BeastFight("DIO ZA WARUDO", 90008, 35000, 1700, 2000, 60000, 70000, "What... He's just that good",
+dizawarudo = BeastFight("DIO ZA WARUDO", 35000, 1700, 2000, 60000, 70000, "What... He's just that good",
 5000, 10, 20, theworld, regeneration, "strikes", evampknife, vampcloak)
 
-loc = BeastFight("Lord Of Creation and Destruction", 90008, 100000, 6000, 8000, 100000, 400000, "1 force descends from heaven, the other from the underworld. Now... they are one",
+loc = BeastFight("Lord Of Creation and Destruction", 100000, 6000, 8000, 100000, 400000, "1 force descends from heaven, the other from the underworld. Now... they are one",
 10000, 40, 30, None, critblock, "manipulates the existence of", yin, yang)
 
 
