@@ -5,7 +5,7 @@ import random
 import os
 from random import randint
 from images import hugs, punches, kisses, slaps, knock, poses, flexes
-from fight import FightMe, Fighter, questpro, enemy, FightingBeast, abilities, allabilities, passives, raidingmonster, weaponlist, armorlist, gear, lilgear, allarmor, allweapons
+from fight import *
 import json
 import math
 import jobs
@@ -166,16 +166,29 @@ class FullFight(commands.Cog):
             sword, shield = target.getgear()
             if ctx.author.id == 347513030516539393:
                 if target.tag == ctx.author.id:
-                    if target.armour == "Unusual Loincloth":
+                    if target.armour == 4003:
                         pass
                     else:
                         if target.level < 300:
                             await ctx.send("Hello Trxsh. Reach level 300 to achieve your True Power")
                         else:
-                            target.weapon = "『Unravel the Heavens』"
-                            target.armour = "Unusual Loincloth"
+                            target.weapon = 3003
+                            target.armour = 4003
                             await ctx.send("Now... Embrace your true power")
-
+            
+            if ctx.author.id == 527111518479712256 and target.tag == 527111518479712256:
+                if target.level < 300:
+                    await ctx.send("Congratulations on being the first Non-Mod to reach Tier 5.\
+                         All you have to do is reach level 300 to get your reward")
+                else:
+                    if target.weapon == 3004:
+                        pass
+                    else:
+                        await ctx.send("It's about time you reached level 300.\
+                            Now... Take what you have earnt")
+                        target.weapon = 3004
+                        target.armour = 4004
+                        
         if target.mindmg > target.maxdmg:
             target.mindmg, target.maxdmg = target.maxdmg, target.mindmg
             
@@ -419,7 +432,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             await ctx.send(msg)
 
 
-    @commands.command()
+    @commands.command(aliases=["ability"])
     async def active(self, ctx, arg=False, *, act=None):
         user = await self.getmember(ctx.author)
 
@@ -464,7 +477,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                     break
             
             if target == None:
-                await ctx.send(f"That is not an Active Ability")
+                await ctx.send(f"That is either not an active ability, or must be obtained by special means")
                 return
 
             msg = user.actichange(target)
@@ -728,6 +741,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         slagged = False
         psn = False
         ts = False
+        ctx = False
 
         while fighting:            
             
@@ -809,10 +823,18 @@ Stat names are the names that you see in the above embed, with the exception of 
                         power, abilname = await self.canability(defender, attacker, power, battlebed)
                         if abilname == "Stop Time":
                             ts = True
+                            if abilname == "Celestial's ZA WARUDO":
+                                cts = True
                         if abilname == "The Plague":
                             psned.append(defender)
                             psn = True
-                            psndmg = 100          
+                            psndmg = 100
+                        if abilname == "Deadly Grasp":
+                            if attacker.armour.haspair():
+                                if attacker.weapon.name == attacker.armour.pairs.name:
+                                    battlebed.add_field(name=f"{attacker.ability.usename}", value="Having armour set increases damage by 1.3 + 70")
+                                    power *= 1.3
+                                    power += 70
 
             if ts:
                 defender.attack(power)       
@@ -823,6 +845,12 @@ Stat names are the names that you see in the above embed, with the exception of 
                 power += attacker.weapon.damage
 
                 battlebed.add_field(name="In Stopped Time", value=f"{attacker.name} {attacker.attackmsg} {defender.name}")
+                
+                if cts:
+                    defender.attack(power)
+                    battlebed.add_field(name="In Stopped Time", value=f"{attacker.name} {attacker.attackmsg} {defender.name}")
+                ts = False
+                cts = False
 
             if attacker.hasPassive():
                 if attacker.passive.name == "Sharp Eye":
@@ -1284,7 +1312,8 @@ Stat names are the names that you see in the above embed, with the exception of 
             await ctx.send("You do not have a fight profile. Do <>createprofile")
 
 
-    @commands.command()
+    # Teams
+    @commands.command(alias=["team"])
     async def teams(self, ctx):
         serverteams = [x for x in self.teamlist if x.guildid == ctx.guild.id]
         if serverteams:
@@ -1303,11 +1332,11 @@ Stat names are the names that you see in the above embed, with the exception of 
 
                 await ctx.send(embed=teambed) 
         else:
-            await ctx.send("Your server has no teams currently registered.")
+            await ctx.send("Your server has no teams currently registered. Make one with <>register {teamname}")
 
     
     @commands.command()
-    # @commands.cooldown(1, 300, commands.BucketType.user)
+    @commands.cooldown(1, 300, commands.BucketType.user)
     async def register(self, ctx, *, teamname):
         if await self.ismember(ctx.author):
             user = await self.getmember(ctx.author)
@@ -1371,9 +1400,31 @@ Stat names are the names that you see in the above embed, with the exception of 
 
                 await ctx.send(embed=teambed)
             else:
-                await ctx.send("You are not part of a team")
+                await self.tdeny(ctx)
         else:
             await ctx.send("You do not have an account. Create one with <>createprofile")
+
+
+    @commands.command()
+    async def rebase(self, ctx):
+        if await self.ismember(ctx.author):
+            user = await self.getmember(ctx.author)
+            if user.inteam:
+                userteam = [x for x in self.teamlist if user.tag == x.leaderid]
+                if userteam:
+                    userteam = userteam[0]
+                    userteam.guildid = ctx.guild.id
+                    await ctx.send(f"Successfully changed your base guild to {ctx.guild}")
+                else:
+                    await ctx.send("You must be team leader to use this command")
+                    return
+            else:
+                await self.tdeny(ctx)
+                return
+        else:
+            await self.denied(ctx.channel, ctx.author)
+            return
+
 
     inadventure = []
     @commands.command()
@@ -1421,7 +1472,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                         return                   
                     
             else:
-                await ctx.send("You are not in a team")
+                await self.tdeny(ctx)
         else:
             await self.denied(ctx.channel, ctx.author)
             return
@@ -1436,7 +1487,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                 return
 
             if not user.inteam:
-                await ctx.send("You are not in a team, and therefore cannot invite anyone as yet")
+                await self.tdeny(ctx)
                 return
 
             userteam = [x for x in self.teamlist if ctx.author.id == x.leaderid]
@@ -1561,6 +1612,10 @@ Stat names are the names that you see in the above embed, with the exception of 
 
     # Functions
     
+    async def tdeny(self, ctx):
+        await ctx.send("You are not part of a team.\
+            Do <>teams to see available ones and ask to be invited, or do <>register {teamname} to make your own")
+
     async def doublecheck(self, user):
         userteam = [x for x in self.teamlist if user.tag in x.teammates or user.tag == x.leaderid]
         if userteam:

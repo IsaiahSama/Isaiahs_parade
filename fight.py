@@ -81,6 +81,10 @@ nmareterror = Ability("Nightmare Terror", "Finds the targets worse nightmare and
 slag = Ability("Slag", "Has a 1 in 6 chance of applying Slag to the target, causing them to take 1.5x damage for 2 turns",
 "You... have been slagged", "now takes 1.5x damage for the next", 1.5, 0, 0, 0, 0)
 
+psusanoo = Ability("Perfect Susanoo", "The perfected susanoo. Increases power of attack by 2.5x but reduces min and max damage by 20",
+"Know the power, of my Perfect Susanoo", "exponentially increases power, and steals 20 min and max damage as a result", 2.5, 0, 0, 
+20, 20)
+
 
 # Passives
 
@@ -114,8 +118,11 @@ balancepride = Passive("Pride of Balance", "Requires: Yin Blade and Yang Armour 
 ,"The emodiment of Balance I am", "Increases power by 100. Heals for 200", 1, 100, 200, 0, 0)
 
 # Unique
-plague = Ability("The Plague", "Poisons the victim. Has a base damage of 100 increases by 50 for 3 turns, Unique to ...?", "wishes death upon You",
-"Summons The Plague and infects",1, 100, 0, 0, 0)
+plague = Ability("The Plague", "...?'s special abiltiy which poisons the victim. Has a base damage of 100 increases by 50 for 3 turns, Unique to ...?",
+ "wishes death upon You", "Summons The Plague and infects",1, 100, 0, 0, 0)
+
+czw = Ability("Celestial's ZA WARUDO", "CelestialG's special ability which stops time for 3 turns",
+"THIS IS MY ZA WARUDO!", "has stopped time, and attacked", 1, 20, 0, 0, 0)
 
 # Raid Enemies
 bebebeslam = Ability("BBB slam!", "Giant King B B B, belly flops dealing 1.3x dmg and hitting 3 people", "BE BE BE... SLAM!", 
@@ -126,11 +133,14 @@ bellybump = Ability("Belly Belly Bounce", "Massive user dashes at an immense spe
 "charges gaining x1.4 strength increasing min and max damage by 10, and then bounces", 1.4, 0, 0, 10, 10)
 
 abilities = [theworld, swarm, blast, deadlygrasp, critstrike, pickelize, sonic, jajanken, uheal, slag, ssuck, nmareterror]
-allabilities = [plague]
+allabilities = [plague, psusanoo, czw]
 for thing in abilities:
     allabilities.append(thing)
 
-passives = [dodge, counter, regeneration, rage, sharpeye, sboost, critblock, nlove, chubz, haohaki, balancepride]
+passives = [dodge, counter, regeneration, rage, sharpeye, sboost, critblock, nlove, chubz]
+allpassives = [haohaki, balancepride]
+for thing in passives:
+    allpassives.append(thing)
 
 # Weapons
 @dataclass
@@ -183,6 +193,9 @@ srifle = Weapons("Sniper Rifle", 1025, "Never miss a shot", "Snipes", 300, 40, 4
 evampknife = Weapons("Enchanted Vamp Knife", 1026, "Vampire knife, but enchanted with the blood of many", "drains the blood of", 600, 7, 20, 1000000, 5)
 dreamsword = Weapons("Dream Sword", 1027, "Crafted from the essence of the light side of sleep", "steals the dreams of", 700, 15, 2, 1000000, 5)
 herorian = Weapons("The Herorian", 1028, "The prized Spinning Top of the legendary Herorian from Heroria", "spins into", 800, 3, 1, 1000500, 5)
+daxe = Weapons("Deathly Axe", 1033, "Said to bring out the true power of Deadly Grasp, and linked directly to Azoth himself. But leeches off of 2% of the users hp",
+"reveals death to", 750, 20, -2, 1100000, 5)
+emace = Weapons("Energy Mace", 1034, "Made of concentrated chak-- energy", "slams into", 850, 5, 0, 11000000, 5)
 
 # Tier 6
 bblade = Weapons("Banana Blaster", 1032, "YAA HOO, not your typical exploding bananas", "fires at", 1800, 40, 3, 5300000, 6)
@@ -190,24 +203,24 @@ cqhaki = Weapons("Conqueror Haki", 1029, "A physical manifestation of the abilit
 "controls", 2000, 16, 5, 5400000, 6)
 yin = Weapons("Yin Blade", 1030, "The physical manifestation of darkness, destruction and negative energy", "alters the existence of", 1800, 20, 5, 5300000, 6)
 mhand = Weapons("Master Hand", 1031, "A mysterious floating hand with seemingly immense power used for offense", "sways then strikes", 2000, 30, 10, 5400000, 6)
+tblade = Weapons("Tatsuki Blade", 1033, "Said to have the ability to quickly siphon the life force of all that touch it, you included", 2000, 5500000, 6)
 
 weaponlist = [fist, katana, bow, pistol, sword, dagger, slime, fishrod, axe, fpan, vampknives, 
 miracles, blaster, dsword, bomb, crossbow, bsuckler, sancspear, stormbreaker, hcard, seruption, vibechk, 
 tsummon, sfknife, srifle, 
-evampknife, dreamsword, herorian, 
-bblade, cqhaki, yin, mhand]
+evampknife, dreamsword, herorian, daxe, emace,
+bblade, cqhaki, yin, mhand, tblade]
 
 # Unique
 pds = Weapons("Plague Doctors Scepter", 3001, "Soulbound to ...?", "infects", 0, 10, 15, 0, 6)
 parblade = Weapons("Staff of the Parade", 3002, "The Chosen weapon of the Parade Creator", "moderates", 5000, 20, 25, 0, 6)
 uth = Weapons("『Unravel the Heavens』", 3003, "He's just standing there, menacingly, with the power of ∞ and ∅!", "shine barrages",
 4200, 0, 10, 0, 6)
+diowep = Weapons("Celestial's Dio", 3004, "The power of ZA WARUDO is overflowing", "poses then brutally barrages", 4000, 2, 15, 0, 6)
 
-allweapons = [pds, parblade, uth]
+allweapons = [pds, parblade, uth, diowep]
 for weapon in weaponlist:
     allweapons.append(weapon)
-
-
 
 # Armour
 @dataclass
@@ -268,6 +281,10 @@ nightmare = Armour("Nightmare", 2024, "Woven together from the essence of the da
 hshield = Armour("Hero's Shield", 2031, "The shield of the legendary Herorian of Heroria. Gains set bonus with The Herorian", 750, 400, 1400000, 4, herorian, 6)
 blastgear = Armour("Blasting", 2025, "Said to increase your power... Explosively. Gains set bonus with Tier 2 Buh-bomb", 700, 400, 1300000, 0, bomb, 5 )
 vmaster = Armour("Vibe Master", 2026, "An upgrade to the previous Wooden Armor. Gains set bonus with The Vibe Check", 700, 250, 1100000 , 8, vibechk, 5)
+loincloth = Armour("Loincloth", 2032, "Who knows where this came from. With Deathly Axe, increases effectiveness of Deadly Grasp",
+500, 500, 1200000, 3, daxe, 6)
+susanoo1 = Armour("Imperfect Susanoo", 2033, "Named after the shinto god of storms. It hurts. Loses 2%hp each turn Gains set bonus with Energy Mace", 900, 300,
+1400000, -2, emace, 6)
 
 # Tier 6 (God Tier)
 mkgear = Armour("Monkey Suit", 2030, "An outfit made by the Monkey King. Gains set bonus with Banana Blaster", 1700, 800,
@@ -275,19 +292,25 @@ mkgear = Armour("Monkey Suit", 2030, "An outfit made by the Monkey King. Gains s
 haki = Armour("Haki", 2027, "Makes it easier to absorb this mysterious energy. Gains set bonus with Conqueror Haki",
 1200, 1200, 5000000, 5, cqhaki, 6)
 yang = Armour("Yang", 2028, "The physical manifestation of creation, light and positive energy", 1500, 1000, 5000000, 30, yin, 6)
+ymr = Armour("YareYare Mirror",2034, "Said to be able to significantly reduce all incoming damage. Set bonus with Tatsuki Blade", 2500, 50, 5200000, 0, tblade, 6)
 chand = Armour("Crazy Hand", 2029, "A mysterious floating with seemingly immense power used to defend", 1400, 1300, 5000000, 10, mhand, 6)
 
 
 # unique
-paraders = Armour("Parade Creators Outfit", 4001, "Identifies the creator of the Parade", 5900, 3370, 0, 10, parblade, 6)
-pdr = Armour("True Plague Doctors Uniform", 4002, "Identifies ...? as a Parade Leader", 4050, 1900, 0, 25, pds, 6)
+paraders = Armour("Parade Creators Outfit", 4001, "The cloak donned by the Creator of Isaiah's Parade", 5900, 3370, 0, 10, parblade, 6)
+pdr = Armour("True Plague Doctors Uniform", 4002, "You don't want him doing your autopsy", 4050, 1900, 0, 25, pds, 6)
 loin = Armour("Unusual Loincloth", 4003, "Wait, is that a monkey tail?", 5000, 2000, 0, 4, uth, 6)
+jotarowep = Armour("Celestial Platinum", 4004, "The physical manifestation of CelestialG's fighting spirit",
+5000, 1700, 0, 5, diowep, 6)
 
-armorlist = [linen, chain, hunters, iron, gold, slimearm, assas, valkryie, diamond, saiyanguc, abyss, paladium, cranger,
-solarflare, elitist, wood, hierro, plaguearm, vknight, shadowflame, artillery, sranger, 
-vampcloak, nightmare, vmaster, haki, yang, chand]
+armorlist = [linen, chain, hunters, iron, gold, slimearm, assas, valkryie, diamond, saiyanguc, 
+abyss, paladium, cranger,
+solarflare, elitist, wood, hierro, plaguearm,
+vknight, shadowflame, artillery, sranger, 
+vampcloak, nightmare, hshield, blastgear, vmaster, loincloth, susanoo1,
+mkgear, haki, yang, ymr, chand]
 
-allarmor = [paraders, pdr, loin]
+allarmor = [paraders, pdr, loin, jotarowep]
 for thing in armorlist:
     allarmor.append(thing)
 
@@ -664,6 +687,18 @@ def buffing(tobuff):
 
     elif tobuff.armour.name == 'Crazy Hand':
         msg = "None as yet"
+
+    elif tobuff.armour.name == "YareYare Mirror":
+        tobuff.weapon.damage += 100
+        tobuff.weapon.healplus = 5
+        tobuff.ability.name = "Perfect Susanoo"
+        msg = "You have awakened the ability of Perfect Susanoo. Tatsuki blade no longer harms you, but instead heals you and has +100 dmg"
+
+    elif tobuff.armour.name == "Imperfect Susanoo":
+        tobuff.health += 200
+        tobuff.weapon.damage += 50
+        tobuff.weapon.healplus += 2
+        msg = "Increases Health by 200, increases weapon damage by 50. Increased lifesteal of energy mace by 2%"
 
     else:
         msg = "Something went wrong"
