@@ -325,7 +325,7 @@ class Fighter:
     typeobj: str="player"
     canfight: bool=True
     inteam: bool=False
-    invation: int= None
+    invitation: int= None
     weapon2: int=1001
     armour2: int=2001
     
@@ -661,6 +661,9 @@ def buffing(tobuff):
         tobuff.mindmg += 40
         tobuff.maxdmg += 40
         msg = "You are now the hero. Increased health by 400, damage by 200 and min and max dmg by 40"
+
+    elif tobuff.armour.name == 'Crazy Hand':
+        msg = "None as yet"
 
     else:
         msg = "Something went wrong"

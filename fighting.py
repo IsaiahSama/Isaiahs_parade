@@ -37,10 +37,12 @@ class FullFight(commands.Cog):
         # def __init__(self, name, tag, level, curxp, health, mindmg, maxdmg, wins, losses, pcoin, 
         # critchance=5, healchance=3, ability=None, passive=None, weapon="Fist", armour="Linen", 
         # xpthresh=50, typeobj="player", canfight=True):
+        # name tag level curxp health mindmg maxdmg wins losses pcoin critchance healchance ability passive weapon armour xpthresh typeobj
+        # canfight inteam invation weapon2 armour2
         
         
         for fightmaster in tempuser:
-            acc = Fighter(*fightmaster[0:22])
+            acc = Fighter(*fightmaster[0:23])
             
             loadedacc.append(acc)
 
@@ -2465,9 +2467,9 @@ Stat names are the names that you see in the above embed, with the exception of 
         if user.pcoin >= arg.cost:
             user.pcoin -= arg.cost
             if arg.typeobj.lower() == "weapon":
-                user.weapon = arg.name
+                user.weapon = arg.tag
             else:
-                user.armour = arg.name
+                user.armour = arg.tag
 
             msg = f"Successfully bought {arg.name}"
 
