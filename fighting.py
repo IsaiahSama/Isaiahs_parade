@@ -5,7 +5,7 @@ import random
 import os
 from random import randint
 from images import hugs, punches, kisses, slaps, knock, poses, flexes
-from fight import *
+from fight import FightMe, Fighter, questpro, enemy, FightingBeast, abilities, allabilities, passives, allpassives, raidingmonster, weaponlist, armorlist, gear, lilgear, allarmor, allweapons
 import json
 import math
 import jobs
