@@ -203,7 +203,7 @@ cqhaki = Weapons("Conqueror Haki", 1029, "A physical manifestation of the abilit
 "controls", 2000, 16, 5, 5400000, 6)
 yin = Weapons("Yin Blade", 1030, "The physical manifestation of darkness, destruction and negative energy", "alters the existence of", 1800, 20, 5, 5300000, 6)
 mhand = Weapons("Master Hand", 1031, "A mysterious floating hand with seemingly immense power used for offense", "sways then strikes", 2000, 30, 10, 5400000, 6)
-tblade = Weapons("Tatsuki Blade", 1033, "Said to have the ability to quickly siphon the life force of all that touch it, you included", 2000, 5500000, 6)
+tblade = Weapons("Tatsuki Blade", 1033, "Said to have the ability to quickly siphon the life force of all that touch it, you included", "drains", 2000, 15, -2, 5500000, 6)
 
 weaponlist = [fist, katana, bow, pistol, sword, dagger, slime, fishrod, axe, fpan, vampknives, 
 miracles, blaster, dsword, bomb, crossbow, bsuckler, sancspear, stormbreaker, hcard, seruption, vibechk, 
@@ -718,7 +718,7 @@ class FightMe(Fighter):
         if self.passive == None:
             pass
         else:
-            value = [x for x in passives if x.name == self.passive]
+            value = [x for x in allpassives if x.name == self.passive]
             self.passive = value[0]
 
         weapon = [w for w in allweapons if w.tag == self.weapon]

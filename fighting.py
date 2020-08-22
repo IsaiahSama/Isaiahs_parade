@@ -405,7 +405,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                 color=randint(0, 0xffffff)
             )
 
-            for passi in passives:
+            for passi in allpassives:
                 passconfirm.add_field(name=f"{passi.name}:", value=f"{passi.desc}")
 
             passconfirm.add_field(name="\nContinue...", value="If you wish to continue, use <>passive True {Name of Passive}")
@@ -1250,13 +1250,13 @@ Stat names are the names that you see in the above embed, with the exception of 
                 cost = math.ceil((3/4) * uarm.cost)
                 await ctx.send(f"Sold {uarm.name} for {cost} Parade Coins")
                 user.addcoin(cost)
-                user.armour = "Linen"
+                user.armour = 2001
 
-            if arg.lower() == "weapon":
+            elif arg.lower() == "weapon":
                 cost = math.ceil((3/4) * uwep.cost)
                 await ctx.send(f"Sold {uwep.name} for {cost} Parade Coins")
                 user.addcoin(cost)
-                user.weapon = "Fist"
+                user.weapon = 1001
 
             else:
                 await ctx.send(f"{arg} is neither 'armour', 'armor' or 'weapon'")
