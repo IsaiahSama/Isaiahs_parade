@@ -373,22 +373,29 @@ class Fighter:
             return True
 
     def healthprice(self):
-        if self.getTier() >= 4:
+        if self.getTier() in [4, 5]:
             cost = 16000 + (self.health * 1.5)
+        elif self.getTier() == 6:
+            cost = 200000 + (self.health * 1.5)
+
         else:
             cost = 400 + (self.health * 1.5)
         return cost
 
     def mindmgprice(self):
-        if self.getTier() >= 4:
+        if self.getTier() in [4, 5]:
             cost = 13000 + (self.mindmg * 1.5)
+        elif self.getTier() == 6:
+            cost = 150000 + (self.mindmg * 1.5)
         else:
             cost = 200 + (self.mindmg * 1.5)
         return cost
 
     def maxdmgprice(self):
-        if self.getTier() >= 4:
-            cost = 14000 + (self.mindmg * 1.5)
+        if self.getTier() in [4, 5]:
+            cost = 14000 + (self.maxdmg * 1.5)
+        elif self.getTier() == 6:
+            cost = 180000 + (self.maxdmg * 1.5)
         else:
             cost = 220 + (self.maxdmg * 1.75)
         return cost
