@@ -153,12 +153,15 @@ class FullFight(commands.Cog):
             await self.denied(ctx.channel, ctx.author)
             return
 
+        
         if powpof:
             target = await self.fightuser(target)
+            sword, shield = target.weapon, target.armour
             if target.weapon.name == "Plague Doctors Scepter":
                 target.weapon.damage = math.floor(target.maxdmg * 0.5)
         
         if not powpof:
+            sword, shield = target.getgear()
             if ctx.author.id == 347513030516539393:
                 if target.tag == ctx.author.id:
                     if target.armour == "Unusual Loincloth":
@@ -204,8 +207,8 @@ class FullFight(commands.Cog):
         profileEmbed.add_field(name="Losses:", value=f"{target.losses}")
         if powpof:
             profileEmbed.add_field(name="Max Base Damage:", value=f"{target.maxdmg + target.weapon.damage}")
-            profileEmbed.add_field(name="Weapon:", value=f"{target.weapon.name}")
-            profileEmbed.add_field(name="Armour:", value=f"{target.armour.name}")
+            profileEmbed.add_field(name="Weapon:", value=f"{sword.name}")
+            profileEmbed.add_field(name="Armour:", value=f"{shield.name}")
             if target.hasActive():
                 profileEmbed.add_field(name=f"Ability:", value=f"{target.ability.name}")
 
@@ -218,8 +221,8 @@ class FullFight(commands.Cog):
                 profileEmbed.add_field(name="Passive:", value=f"None... Yet")
         else:
             
-            profileEmbed.add_field(name="Weapon:", value=f"{target.weapon}")
-            profileEmbed.add_field(name="Armour:", value=f"{target.armour}")
+            profileEmbed.add_field(name="Weapon:", value=f"{sword.name}")
+            profileEmbed.add_field(name="Armour:", value=f"{shield.name}")
             if target.hasActive():
                 profileEmbed.add_field(name=f"Ability:", value=f"{target.ability}")
             else:
@@ -253,6 +256,19 @@ class FullFight(commands.Cog):
             role = [p for p in ctx.guild.roles if p.name == "Parader"]
             role = role[0]
             await ctx.author.add_roles(role)
+
+    @commands.command(aliases=["q6"])
+    @commands.cooldown(2, 120, commands.BucketType.user)
+    async def quest6(self, ctx):
+        if await self.ismember(ctx.author):
+            user = await self.getmember(ctx.author)
+            if user.getTier() != 6:
+                await ctx.send("You can not use this as you are not tier 6")
+            else:
+                await self.quest(ctx)
+        else:
+            await self.denied(ctx.channel, ctx.author)
+            return
 
     inquest = []
     @commands.command(aliases=["q"])
@@ -734,6 +750,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             except ValueError:
                 power = randint(400, 600)
                 await ctx.send("Something went wrong with your damage values. So I have applied a fix. Let Kevin-Dono know at your earliest convenience")
+            
             critnum = randint(0, 100)
             healnum = randint(0, 100)
 
@@ -947,6 +964,38 @@ Stat names are the names that you see in the above embed, with the exception of 
 
         if self.aboutupdate:
             await ctx.send("Bot going offline shortly")
+
+    @commands.command()
+    async def gods(self, ctx):
+        embed = discord.Embed(
+            title="First 25 Tier 6 gods",
+            color=randint(0, 0xffffff)
+        )
+
+        counter = 0
+        for warrior in self.users:
+            if counter >= 25:
+                counter += 1
+                continue
+            if warrior.getTier() == 6:
+                counter += 1
+                embed.add_field(name=f"{warrior.name}", value=f"Level: {warrior.level}")
+
+        embed.description=f"Number of Tier 6 gods are {counter}"
+
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    @commands.cooldown(1, 600, commands.BucketType.guild)
+    async def paraid6(self, ctx):
+        if await self.ismember(ctx.author):
+            user = await self.getmember(ctx.author)
+            if user.getTier() == 6:
+                await self.paraid(ctx)
+            else:
+                await ctx.send("You have to be at least tier 6 to use this")
+        else:
+            await self.denied(ctx.channel, ctx.author)
 
     @commands.command()
     @commands.cooldown(1, 1200, commands.BucketType.guild)
@@ -1203,7 +1252,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         
         tierbed.add_field(name="How they work", 
         value="""Your tier is determined based on the amount of health you have. If your health is less than 250, You are tier 1. 
-        Tier 2 is 250 to 500. Tier 3 is 501 to 950. Tier 4 is everthing 950-2999. And tier 5 is 3000+""")
+        Tier 2 is 250 to 500. Tier 3 is 501 to 950. Tier 4 is everthing 950-2999, tier 5 is 3000+ and Tier 6, God Tier, is level 300+ with 10k+ hp""")
         tierbed.add_field(name="Weapons and Armour", 
         value="Weapons and Armours also have tiers. Because of this, when you open the shop, you will only see items at your tier and lower. Tier 5's get a different Shop with tier 5 and 4 only")
 
@@ -1501,7 +1550,7 @@ Stat names are the names that you see in the above embed, with the exception of 
     async def switch(self, ctx):
         if await self.ismember(ctx.author):
             user = await self.getmember(ctx.author)
-            user.weapon, user.armour = user.weapon2, user.armour2
+            user.weapon, user.armour, user.weapon2, user.armour2 = user.weapon2, user.armour2, user.weapon, user.armour
             await ctx.send("Successfully switched your gear")
         else:
             await self.denied(ctx.channel, ctx.author)
@@ -1560,8 +1609,10 @@ Stat names are the names that you see in the above embed, with the exception of 
                 if player.hasActive():
                     player.ability.reset()
                 player.oghealth = player.health
+                player.slag = 0
 
             self.raidbeast.oghealth = self.raidbeast.health
+            self.raidbeast.slag = 0
             await self.raidStart(channel)
         
         else:
@@ -1649,9 +1700,9 @@ Stat names are the names that you see in the above embed, with the exception of 
 
     async def spawnraid(self):
         rbeast = random.choice(raidingmonster)
-        rbeast = FightingBeast(rbeast.name, rbeast.tag, rbeast.health, rbeast.mindmg, rbeast.maxdmg, 
+        rbeast = FightingBeast(rbeast.name, rbeast.health, rbeast.mindmg, rbeast.maxdmg, 
         rbeast.mincoin, rbeast.maxcoin, rbeast.entrymessage, rbeast.minxp, rbeast.critchance, rbeast.healchance,
-        rbeast.ability, rbeast.passive, rbeast.attackmsg, rbeast.weapon, rbeast.armour)
+        rbeast.ability, rbeast.passive, rbeast.attackmsg, rbeast.weapon, rbeast.armour, rbeast.level)
         
         self.raidbeast = rbeast
         self.raidbeast.slag = 0
@@ -1697,22 +1748,30 @@ Stat names are the names that you see in the above embed, with the exception of 
                         player.passuse(0)
                         raidbed.add_field(name=f"{player.name}", value=f"{player.passive.usename}: {player.passive.effect}")
 
+                if player.passive.name == "Haoshoku Haki":
+                    if player.armour.name == "Haki":
+                        if player.armour.haspair():
+                            if player.weapon.name == player.armour.pairs.name:
+                                power = await self.cantruehaki(self.raidbeast, player, power, raidbed)
+                        
+                    elif player.weapon.name == "Conqueror Haki":
+                        power = await self.canhaki(self.raidbeast, player, power, raidbed)
+                    
+                    else:
+                        pass
+
+                if player.passive.name == "Pride of Balance":
+                    if player.armour.haspair():
+                        if player.armour.name == "Yang":
+                            power = await self.canbalance(self.raidbeast, player, power, raidbed)
             
             power = player.maxdmg
             critnum = randint(0, 100)
             healnum = randint(0, 100)
 
             if self.rslagged:
-                if player.hasActive():
-                    if player.ability.name == "Slag":
-                        if self.raidbeast.slag == 0:
-                            raidbed.add_field(name=f"{player.ability.usename}", value=f"{self.raidbeast.name} has been freed of Slag")
-                            del self.raidbeast.slag
-                            self.rslagged = False
-                        else:
-                            self.raidbeast.slag -= 1
-                            power *= 1.5
-                            raidbed.add_field(name=f"{player.ability.usename}", value=f"{self.raidbeast.name} {player.ability.effect} {self.raidbeast.slag} turns")
+                power *= 1.5
+                raidbed.add_field(name=f"{player.ability.usename}", value=f"{self.raidbeast.name} takes 1.5x dmg because of slag ")
 
 
             power += player.weapon.damage
@@ -1871,6 +1930,24 @@ Stat names are the names that you see in the above embed, with the exception of 
                 if self.raidbeast.health <= 500:
                     self.raidbeast.passuse(0)
                     raidbed.add_field(name=f"{self.raidbeast.name}", value=f"{self.raidbeast.passive.usename}: {self.raidbeast.passive.effect}")
+            
+            if self.raidbeast.passive.name == "Haoshoku Haki":
+                if self.raidbeast.armour.name == "Haki":
+                    if self.raidbeast.armour.haspair():
+                        if self.raidbeast.weapon.name == self.raidbeast.armour.pairs.name:
+                            power = await self.cantruehaki(target, self.raidbeast, power, raidbed)
+                        
+                elif self.raidbeast.weapon.name == "Conqueror Haki":
+                    power = await self.canhaki(target, self.raidbeast, power, raidbed)
+                    
+                else:
+                    pass
+
+                if self.raidbeast.passive.name == "Pride of Balance":
+                    if self.raidbeast.armour.haspair():
+                        if self.raidbeast.armour.name == "Yang":
+                            power = await self.canbalance(target, self.raidbeast, power, raidbed)
+            
             else:
                 power = self.raidbeast.passuse(power)
                 raidbed.add_field(name=f"{self.raidbeast.passive.usename}", value=f"{self.raidbeast.name} {self.raidbeast.passive.effect} {target.name}", inline=False)
@@ -1988,12 +2065,15 @@ Stat names are the names that you see in the above embed, with the exception of 
         if tier == 1:
             min = 10
             max = 250
+            
         elif tier == 2:
             min = 250
             max = 350
+
         elif tier == 3:
             min = 350
             max = 900
+
         elif tier == 4:
             min = 700
             max = 2999
@@ -2329,7 +2409,12 @@ Stat names are the names that you see in the above embed, with the exception of 
         if user.getTier() == 5:
             for item in armorlist:
                 if item.tierz >= 4:
-                    armorbed.add_field(name=f"Name: {item.name}", value=f"Cost: {item.cost} Parade Coins")            
+                    armorbed.add_field(name=f"Name: {item.name}", value=f"Cost: {item.cost} Parade Coins")  
+
+        elif user.getTier() == 6:
+            for item in armorlist:
+                if item.tierz >= 6:
+                    armorbed.add_field(name=f"Name: {item.name}", value=f"Cost: {item.cost} Parade Coins")           
 
         else:
             for item in armorlist:
@@ -2353,6 +2438,11 @@ Stat names are the names that you see in the above embed, with the exception of 
             for item in weaponlist:
                 if item.tierz >= 4:
                     weaponbed.add_field(name=f"Name: {item.name}", value=f"Cost: {item.cost} Parade Coins")
+        
+        elif user.getTier() == 6:
+            for item in weaponlist:
+                if item.tierz >= 6:
+                    weaponbed.add_field(name=f"Name: {item.name}", value=f"Cost: {item.cost} Parade Coins")
 
         else:
             for item in weaponlist:
@@ -2365,7 +2455,7 @@ Stat names are the names that you see in the above embed, with the exception of 
 
     
     async def canbuy(self, user, arg):
-        if user.weapon == arg.name or user.armour == arg.name:
+        if user.weapon == arg.tag or user.armour == arg.tag:
             msg = "You already have this equipped"
             return msg
 
@@ -2415,6 +2505,10 @@ Stat names are the names that you see in the above embed, with the exception of 
             jobdesc = random.choice(jobs.jtier5)
             reward = randint(30000, 40000)
             loss = randint(3600, 4000)
+
+        elif tier == 6:
+            await channel.send("You no longer take jobs")
+            return
             
         else:
             await channel.send("An unknown error occured.")
