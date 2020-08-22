@@ -679,6 +679,8 @@ Stat names are the names that you see in the above embed, with the exception of 
 
         user1.oghealth = user1.health
         user2.oghealth = user2.health
+        user1.slag = 0
+        user2.slag = 0
 
         attacker = user1
         defender = user2
@@ -1829,9 +1831,10 @@ Stat names are the names that you see in the above embed, with the exception of 
                 raidbed.add_field(inline=False,name="Self Heal", value=f"{player.name} heals {healin} hp")
                 player.heal(healin)
 
-            if self.raidbeast.name == "Giant King Be Be Be":
-                power -= 10
-                raidbed.add_field(inline=False,name=f"{self.raidbeast.passive.usename}", value=f"{self.raidbeast.passive.effect}")
+            if self.raidbeast.hasPassive():
+                if self.raidbeast.passive.name == "Chubby":
+                    power -= 50
+                    raidbed.add_field(inline=False,name=f"{self.raidbeast.passive.usename}", value=f"{self.raidbeast.passive.effect}")
 
             
             self.raidbeast.attack(power)
@@ -1970,8 +1973,12 @@ Stat names are the names that you see in the above embed, with the exception of 
         if target.hasPassive():
             if target.passive.name == "Dodge":
                 power = await self.candodge(target, self.raidbeast, power, raidbed)
+            if target.passive.name == "Chubby":
+                power -= 50
+                raidbed.add_field(inline=False,name=f"{target.passive.usename}", value=f"{target.passive.effect}")
             
         power = math.floor(power)
+       
         target.attack(power)
         if target.health <= 0:
             await channel.send(f"{target.name} has been slain")
