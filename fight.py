@@ -82,7 +82,7 @@ slag = Ability("Slag", "Has a 1 in 6 chance of applying Slag to the target, caus
 "You... have been slagged", "now takes 1.5x damage for the next", 1.5, 0, 0, 0, 0)
 
 psusanoo = Ability("Perfect Susanoo", "The perfected susanoo. Increases power of attack by 2.5x but reduces min and max damage by 20",
-"Know the power, of my Perfect Susanoo", "exponentially increases power, and steals 20 min and max damage as a result", 2.5, 0, 0, 
+"Know the power, of my Perfect Susanoo", "exponentially increases power, steals 20 min and max damage from you then attacks", 2.5, 0, 0, 
 20, 20)
 
 
@@ -203,7 +203,7 @@ cqhaki = Weapons("Conqueror Haki", 1029, "A physical manifestation of the abilit
 "controls", 2000, 16, 5, 5400000, 6)
 yin = Weapons("Yin Blade", 1030, "The physical manifestation of darkness, destruction and negative energy", "alters the existence of", 1800, 20, 5, 5300000, 6)
 mhand = Weapons("Master Hand", 1031, "A mysterious floating hand with seemingly immense power used for offense", "sways then strikes", 2000, 30, 10, 5400000, 6)
-tblade = Weapons("Tatsuki Blade", 1033, "Said to have the ability to quickly siphon the life force of all that touch it, you included", "drains", 2000, 15, -2, 5500000, 6)
+tblade = Weapons("Tatsuki Blade", 1035, "Said to have the ability to quickly siphon the life force of all that touch it, you included", "drains", 2000, 15, -2, 5500000, 6)
 
 weaponlist = [fist, katana, bow, pistol, sword, dagger, slime, fishrod, axe, fpan, vampknives, 
 miracles, blaster, dsword, bomb, crossbow, bsuckler, sancspear, stormbreaker, hcard, seruption, vibechk, 
@@ -691,7 +691,7 @@ def buffing(tobuff):
     elif tobuff.armour.name == "YareYare Mirror":
         tobuff.weapon.damage += 100
         tobuff.weapon.healplus = 5
-        tobuff.ability.name = "Perfect Susanoo"
+        tobuff.ability = psusanoo
         msg = "You have awakened the ability of Perfect Susanoo. Tatsuki blade no longer harms you, but instead heals you and has +100 dmg"
 
     elif tobuff.armour.name == "Imperfect Susanoo":
@@ -708,23 +708,18 @@ def buffing(tobuff):
 class FightMe(Fighter):
 
     def instantize(self):
-        if self.ability == None:
-            pass
-        else:
+        if self.ability != None:
             value = [x for x in allabilities if x.name == self.ability]
             self.ability = value[0]
         
 
-        if self.passive == None:
-            pass
-        else:
+        if self.passive != None:
             value = [x for x in allpassives if x.name == self.passive]
             self.passive = value[0]
 
-        weapon = [w for w in allweapons if w.tag == self.weapon]
-        armor = [t for t in allarmor if t.tag == self.armour]
+        weapon, armour = self.getgear()
 
-        self.weapon, self.armour = copy.copy(weapon[0]), copy.copy(armor[0])
+        self.weapon, self.armour = copy.copy(weapon), copy.copy(armour)
 
         self.buffup()
 

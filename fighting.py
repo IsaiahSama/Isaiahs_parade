@@ -408,7 +408,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             for passi in allpassives:
                 passconfirm.add_field(name=f"{passi.name}:", value=f"{passi.desc}")
 
-            passconfirm.add_field(name="\nContinue...", value="If you wish to continue, use <>passive True {Name of Passive}")
+            passconfirm.set_footer(text="Continue... If you wish to continue, use <>passive True {Name of Passive}")
 
             await ctx.send(embed=passconfirm)
             return
@@ -460,7 +460,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             for acci in allabilities:
                 accheck.add_field(name=f"{acci.name}", value=f"{acci.desc}")
 
-            accheck.add_field(name="\nContinue...", value="If you wish to continue, use <>active True {Name of Active}")
+            accheck.set_footer(text="\nContinue... If you wish to continue, use <>active True {Name of Active}")
 
             await ctx.send(embed=accheck)
             return
