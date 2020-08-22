@@ -741,7 +741,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         slagged = False
         psn = False
         ts = False
-        ctx = False
+        cts = False
 
         while fighting:            
             
@@ -953,6 +953,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             )
                 
         await ctx.send(embed=ended)
+
         if isquest:
             self.inquest.remove(user1.tag)
         
