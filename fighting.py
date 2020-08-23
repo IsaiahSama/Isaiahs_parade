@@ -1314,7 +1314,7 @@ Stat names are the names that you see in the above embed, with the exception of 
 
 
     # Teams
-    @commands.command(alias=["team"])
+    @commands.command()
     async def teams(self, ctx):
         serverteams = [x for x in self.teamlist if x.guildid == ctx.guild.id]
         if serverteams:
@@ -1375,7 +1375,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             return
 
 
-    @commands.command()
+    @commands.command(aliases=["team"])
     async def myteam(self, ctx):
         if await self.ismember(ctx.author):
             user = await self.getmember(ctx.author)
