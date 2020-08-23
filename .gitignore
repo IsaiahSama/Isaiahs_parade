@@ -1,0 +1,8 @@
+.env
+.vscode
+music_com.py
+fightdata.json
+relausers.json
+special_com.py
+Teams.json
+./backups

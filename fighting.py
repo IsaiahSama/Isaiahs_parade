@@ -132,11 +132,7 @@ class FullFight(commands.Cog):
     @commands.command()
     async def powprofile(self, ctx, member: discord.Member=None):
         if await self.ismember(ctx.author):
-            await ctx.send("Buffing you up...")
-            await asyncio.sleep(2)
-            await ctx.send("Measuring information...")
-            await asyncio.sleep(2)
-            await ctx.send("Done")
+            await ctx.send("Now shine... In your true form")
             await self.profile(ctx, member, True)
             return 0
         else:
@@ -775,8 +771,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             if slagged:
                 if attacker.ability.name == "Slag":
                     if defender.slag == 0:
-                        battlebed.add_field(name=f"{attacker.ability.usename}", value=f"{defender.name} has been freed of Slag")
-                        slagged = False
+                        pass
                     else:
                         defender.slag -= 1
                         power *= 1.5
@@ -1054,7 +1049,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                     await channel.send(f"Attention {rmention.name}: {ctx.author.name} from {ctx.guild.name} has started a raid. Come let us raid their raid. We only have 3 minutes")
                 
                 await ctx.channel.send(f"{ctx.author.name} has started a raid.")
-                await self.startRaid(ctx.guild, ctx.channel)
+                await self.startRaid(ctx.guild, ctx.channel, user)
             else:
                 await ctx.send("You must be at least level 40 to start a raid")
 
@@ -1625,7 +1620,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             user.inteam = False
 
 
-    async def startRaid(self, guild=None, channel=None):
+    async def startRaid(self, guild=None, channel=None, user=None):
 
         if guild == None and channel == None:
             guild = self.bot.get_guild(739229902921793637)
@@ -1645,7 +1640,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             currole2 = discord.utils.get(guild2.roles, name="Parader")
             await channel2.send(f"{currole2.name} 30 Seconds remain and we have our info")
         
-        await self.spawnraid()
+        await self.spawnraid(user)
         beastembed = discord.Embed(
             title=f"{self.raidbeast.name}",
             description=f"{self.raidbeast.entrymessage}",
@@ -1669,10 +1664,8 @@ Stat names are the names that you see in the above embed, with the exception of 
                 if player.hasActive():
                     player.ability.reset()
                 player.oghealth = player.health
-                player.slag = 0
 
             self.raidbeast.oghealth = self.raidbeast.health
-            self.raidbeast.slag = 0
             await self.raidStart(channel)
         
         else:
@@ -1758,8 +1751,14 @@ Stat names are the names that you see in the above embed, with the exception of 
             await channel.send(f"Unfortunately, {self.raidbeast.name} wiped the floor with the young heroes.")
 
 
-    async def spawnraid(self):
-        rbeast = random.choice(raidingmonster)
+    async def spawnraid(self, user):
+        if user == None or user.getTier() < 6:
+            rbeast = random.choice(raidingmonster)
+        
+        elif user.getTier() == 6:
+            strong = [beast for beast in raidingmonster if beast.health >= 75000]
+            rbeast = random.choice(strong)
+        
         rbeast = FightingBeast(rbeast.name, rbeast.health, rbeast.mindmg, rbeast.maxdmg, 
         rbeast.mincoin, rbeast.maxcoin, rbeast.entrymessage, rbeast.minxp, rbeast.critchance, rbeast.healchance,
         rbeast.ability, rbeast.passive, rbeast.attackmsg, rbeast.weapon, rbeast.armour, rbeast.level)

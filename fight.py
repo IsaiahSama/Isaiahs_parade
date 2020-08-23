@@ -693,7 +693,8 @@ def buffing(tobuff):
         msg = "You are now the hero. Increased health by 400, damage by 200 and min and max dmg by 40"
 
     elif tobuff.armour.name == 'Crazy Hand':
-        msg = "None as yet"
+        tobuff.ability = psusanoo
+        msg = "You have awakened Perfect Susanoo"
 
     elif tobuff.armour.name == "YareYare Mirror":
         tobuff.weapon.damage += 100
@@ -706,6 +707,10 @@ def buffing(tobuff):
         tobuff.weapon.damage += 50
         tobuff.weapon.healplus += 2
         msg = "Increases Health by 200, increases weapon damage by 50. Increased lifesteal of energy mace by 2%"
+
+    elif tobuff.armour.name == "Loincloth":
+        tobuff.ability = deadlygrasp
+        msg = "Grants you the ability of deadly grasp"
 
     else:
         msg = "Something went wrong"
