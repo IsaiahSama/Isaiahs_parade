@@ -259,11 +259,9 @@ class Moderator(commands.Cog):
     @commands.command()
     @commands.has_permissions(kick_members=True)
     async def deathnote(self, ctx, member: discord.Member):
-        await ctx.send("***I've eaten my potato chip... Now you have 60 seconds left...***")
-        await ctx.send(file=discord.File("images/deathnote.gif"))
-        await asyncio.sleep(30)
-        await ctx.send(f"***30 seconds remain {member.mention}***")
-        await asyncio.sleep(25)
+        await ctx.send(content="***You're name has been written in my notebook... Now you have 5 seconds left...***",
+        file=discord.File("images/deathnote.gif"))
+        await asyncio.sleep(1)
         await ctx.send(f"***It is done... goodbye {member.mention}. You were pathetic compared to L***")
         await asyncio.sleep(5)
         await member.kick()
