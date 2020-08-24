@@ -140,7 +140,7 @@ class FullFight(commands.Cog):
             await self.denied(ctx.channel, ctx.author)
             return
 
-    @commands.command()
+    @commands.command(aliases=["p"])
     async def profile(self, ctx, member: discord.Member=None, powpof=False):
         if member == None:
             target = await self.getmember(ctx.author)
