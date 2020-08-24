@@ -569,7 +569,7 @@ Stat names are the names that you see in the above embed, with the exception of 
     infight = []
     aboutupdate = False
     @commands.command()
-    @commands.cooldown(2, 30, commands.BucketType.user)
+    @commands.cooldown(1, 30, commands.BucketType.user)
     async def fight(self, ctx, member: discord.Member=None, isbot=False, isquest=False):
         if self.aboutupdate:
             await ctx.send("Cannot Do a Quest/Fight Right now as bot is about to go offine")
