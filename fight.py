@@ -105,7 +105,7 @@ sboost = Passive("Speed Boost", "Goes First and deals 1.2x dmg on first hit", "S
 
 critblock = Passive("Critical Guard", "All critical hits against you deal x0.75 instead of x1.5. 2 in 3 chance of occuring", "Critical Guard","Reduces your critical damage to only 0.75x the original", 0.75,0,0,0,0)
 
-chubz = Passive("Chubby", "CHUB ABSORPTION", "large size acts as a shock absorber, and enemy attacks do -50 damage", "Absorbs 50 damage",
+chubz = Passive("Chubby", "large size acts as a shock absorber, and enemy attacks do -50 damage", "Absorbs 50 damage", "Feel my chubzzz",
 1, -50, 0, 0, 0)
 
 nlove = Passive("Nightmare Lover", "Feeds off of the memories of your nightmares and heals itself. Increases it's max damage by 5 each time",
@@ -356,10 +356,10 @@ class Fighter:
     inventory: list=field(default_factory=list)
 
     def hasbuff(self):
-        if self.curbuff == None:
-            return False
-        else:
+        if self.curbuff is not None:
             return True
+        
+        return False
 
     def addcoin(self, coin):
         self.pcoin += coin

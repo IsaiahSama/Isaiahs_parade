@@ -43,7 +43,7 @@ class FullFight(commands.Cog):
         
         
         for fightmaster in tempuser:
-            acc = Fighter(*fightmaster[0:27])
+            acc = Fighter(*fightmaster[0:26])
             
             loadedacc.append(acc)
 
@@ -173,7 +173,7 @@ class FullFight(commands.Cog):
                             target.armour = 4003
                             await ctx.send("Now... Embrace your true power")
             
-            if ctx.author.id == 527111518479712256 and target.tag == 527111518479712256:
+            """if ctx.author.id == 527111518479712256 and target.tag == 527111518479712256:
                 if target.level < 300:
                     await ctx.send("Congratulations on being the first Non-Mod to reach Tier 5.\
                          All you have to do is reach level 300 to get your reward")
@@ -184,7 +184,7 @@ class FullFight(commands.Cog):
                         await ctx.send("It's about time you reached level 300.\
                             Now... Take what you have earnt")
                         target.weapon = 3004
-                        target.armour = 4004
+                        target.armour = 4004"""
                         
         if target.mindmg > target.maxdmg:
             target.mindmg, target.maxdmg = target.maxdmg, target.mindmg
@@ -740,31 +740,33 @@ Stat names are the names that you see in the above embed, with the exception of 
         ts = False
         cts = False
 
+        
         if user1.hasbuff():
-            user1.bdur -= 1
+            main1 = await self.getmain(user1)
+            main1.bdur -= 1
             msg = await self.buffuse(user1)
                   
             await ctx.send(f"{user1.name}: {msg}")
 
-            if user1.bdur == 0:
+            if user1.bdur <= 0:
                 await ctx.send("Your buff has expired")
-                user1.curbuff = None
+                main1.curbuff = None
             else:
-                await ctx.send(f"You have {user1.bdur} fights remaining")
+                await ctx.send(f"You have {main1.bdur} fights remaining with this buff")
         
-        if not isquest():
+        if not isquest:
             if user2.hasbuff():
-                buffitem = await self.getbuff(user2.curbuff)
-                user2.bdur -= 1
+                main2 = await self.getmain(user1)
+                main2.bdur -= 1
                 msg = await self.buffuse(user2)
                   
                 await ctx.send(f"{user2.name}: {msg}")
 
-                if user2.bdur == 0:
+                if user2.bdur <= 0:
                     await ctx.send("Your buff has expired")
                     user2.curbuff = None
                 else:
-                    await ctx.send(f"You have {user2.bdur} fights remaining")
+                    await ctx.send(f"You have {main2.bdur} fights remaining")
 
         while fighting:            
             
@@ -1048,7 +1050,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         await ctx.send(embed=embed)
 
     @commands.command()
-    @commands.cooldown(1, 600, commands.BucketType.guild)
+    @commands.cooldown(2, 600, commands.BucketType.guild)
     async def paraid6(self, ctx):
         if await self.ismember(ctx.author):
             user = await self.getmember(ctx.author)
@@ -1169,6 +1171,11 @@ Stat names are the names that you see in the above embed, with the exception of 
         for t in gear:
             if t.name.lower() == arg.lower():
                 item = t
+        
+        if item == None:
+            for t in potlist:
+                if t.name.lower() == arg.lower():
+                    item = t
 
         if item == None:
             await ctx.send("Not a part of my stock")
@@ -1207,8 +1214,25 @@ Stat names are the names that you see in the above embed, with the exception of 
 
             msg = await ctx.send(embed=armorbed)
 
-        else:
-            pass
+        elif item.typeobj == "item":
+            infobed = discord.Embed(
+                title="Here is the info you requested",
+                color=randint(0, 0xffffff)
+            )
+
+            infobed.add_field(name="Name:", value=f"{item.name}")
+            infobed.add_field(name="Description:", value=f"{item.desc}")
+            infobed.add_field(name="ID:", value=f"{item.tag}")
+            infobed.add_field(name="Health Up:", value=f"+{item.hup}")
+            infobed.add_field(name="Min Dmg Up:", value=f"+{item.minup}")
+            infobed.add_field(name="Max Dmg Up:", value=f"+{item.maxup}")
+            infobed.add_field(name="Power Up:", value=f"+{item.pup}")
+            infobed.add_field(name="Crit Increase:", value=f"+{item.critup}")
+            infobed.add_field(name="Cost:", value=f"{item.cost} Parade Coins")
+            infobed.add_field(name="Tier:", value=f"{item.tierz}")
+            infobed.add_field(name="Duration:", value=f"{item.duration}")
+
+            msg = await ctx.send(embed=infobed)
             
         await asyncio.sleep(60)
         await msg.delete()
@@ -1696,6 +1720,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             if itemtouse:
                 itemtouse = itemtouse[0]
                 itemtouse = await self.getbuff(itemtouse)
+                user.inventory.remove(itag)
                 if itemtouse.untype == "pot":
                     await ctx.send(f"You drink {itemtouse.name}")
                 elif itemtouse.untype == "item":
@@ -1708,6 +1733,19 @@ Stat names are the names that you see in the above embed, with the exception of 
                 await ctx.send("You do not have this item in your inventory")
                 return
         
+        else:
+            await self.denied(ctx.channel, ctx.author)
+            return
+
+    @commands.command()
+    async def buff(self, ctx):
+        if await self.ismember(ctx.author):
+            user = await self.getmember(ctx.author)
+            if user.hasbuff():
+                item = await self.getbuff(user.curbuff)
+                await ctx.send(f"Your current buff is {item.name}")
+            else:
+                await ctx.send("You do not have a buff")
         else:
             await self.denied(ctx.channel, ctx.author)
             return
@@ -2546,7 +2584,8 @@ Stat names are the names that you see in the above embed, with the exception of 
     async def fightuser(self, account):
         person = FightMe(account.name, account.tag, account.level, account.curxp, account.health, account.mindmg, account.maxdmg, 
         account.wins, account.losses, account.pcoin, account.critchance, account.healchance, account.ability,
-        account.passive, account.weapon, account.armour, account.xpthresh, account.typeobj, account.canfight)
+        account.passive, account.weapon, account.armour, account.xpthresh, account.typeobj, account.canfight, 
+        curbuff=account.curbuff, bdur=account.bdur)
         person.instantize()
         return person
         

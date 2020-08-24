@@ -52,7 +52,7 @@ Available categories are Action, Battle, Mod, Misc, gaming, general and social""
             await ctx.send(f"""```md\n{tosend}\n```""")
 
         else:
-            zacmd = [x for x in mycommands if param.lower() in [x.name.lower(), x.usage.lower()]]
+            zacmd = [x for x in mycommands if param.lower() in x.name.lower() or param.lower() in x.usage.lower()]
             if zacmd:
                 for thing in zacmd:
                     tosend.append(thing.info())
@@ -136,6 +136,7 @@ togglefight = MyHelp("Battle", "Toggle Fight", "<>togglefight", "used to toggle 
 upgrade = MyHelp("Battle", "Upgrade", "<>upgrade", "Shows your stat table")
 upgrade2 = MyHelp("Battle", "Upgrade", "<>upgrade statname", "Upgrades the stat which you specify")
 view = MyHelp("Battle", "View", "<>view itemname", "Shows more information on the item/weapon/armour you said")
+use = MyHelp("Battle", "Use", "<>use itemid", "Uses the buff item/potion")
 
 startgame = MyHelp("Gaming", "Start Game", "<>startgame", "Used to start a game of hangman")
 endgame = MyHelp("Gaming", "End Game", "<>endgame", "Used to end a hangman game early")
@@ -207,7 +208,7 @@ gcall, gjoin, gleave, emoji, mentioned, nohide, ping, deathnote, freeze3, ger, g
 impactrevive, killerqueen, kingcrimson, mute, relog, shadowrealm, wipe, zahando, zawarudo, namegen, soulmate,
 profane, acceptbff, acceptfr, acceptlove, acceptparent, addfriend, addlove, createsocial, delpet, denybff,
 denylove, denyparent, dump, feed, getpet, newbff, newchild, pet, play, showfriends, socialprofile,
-updatesocial, parade]
+updatesocial, parade, use]
 
 
 def setup(bot):
