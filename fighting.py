@@ -6,6 +6,7 @@ import os
 from random import randint
 from images import hugs, punches, kisses, slaps, knock, poses, flexes
 from fight import FightMe, Fighter, questpro, enemy, FightingBeast, abilities, allabilities, passives, allpassives, raidingmonster, weaponlist, armorlist, gear, lilgear, allarmor, allweapons
+from items import Item, potlist
 import json
 import math
 import jobs
@@ -38,11 +39,11 @@ class FullFight(commands.Cog):
         # critchance=5, healchance=3, ability=None, passive=None, weapon="Fist", armour="Linen", 
         # xpthresh=50, typeobj="player", canfight=True):
         # name tag level curxp health mindmg maxdmg wins losses pcoin critchance healchance ability passive weapon armour xpthresh typeobj
-        # canfight inteam invation weapon2 armour2
+        # canfight inteam invation weapon2 armour2 curbuff buffdur inventory
         
         
         for fightmaster in tempuser:
-            acc = Fighter(*fightmaster[0:23])
+            acc = Fighter(*fightmaster[0:27])
             
             loadedacc.append(acc)
 
@@ -739,6 +740,32 @@ Stat names are the names that you see in the above embed, with the exception of 
         ts = False
         cts = False
 
+        if user1.hasbuff():
+            user1.bdur -= 1
+            msg = await self.buffuse(user1)
+                  
+            await ctx.send(f"{user1.name}: {msg}")
+
+            if user1.bdur == 0:
+                await ctx.send("Your buff has expired")
+                user1.curbuff = None
+            else:
+                await ctx.send(f"You have {user1.bdur} fights remaining")
+        
+        if not isquest():
+            if user2.hasbuff():
+                buffitem = await self.getbuff(user2.curbuff)
+                user2.bdur -= 1
+                msg = await self.buffuse(user2)
+                  
+                await ctx.send(f"{user2.name}: {msg}")
+
+                if user2.bdur == 0:
+                    await ctx.send("Your buff has expired")
+                    user2.curbuff = None
+                else:
+                    await ctx.send(f"You have {user2.bdur} fights remaining")
+
         while fighting:            
             
             if attacker.hasPassive():
@@ -866,6 +893,13 @@ Stat names are the names that you see in the above embed, with the exception of 
             if defender.hasPassive():
                 if defender.passive.name == "Dodge":
                     power = await self.candodge(defender, attacker, power, battlebed)
+
+            if attacker.typeobj == "player":
+                if attacker.hasbuff():
+                    buffitem = await self.getbuff(attacker.curbuff)
+                    if buffitem.pup > 0:
+                        power += buffitem.pup
+                        battlebed.add_field(name=f"{buffitem.name}", value=f"{buffitem.effect}")
                     
             defender.attack(power)
 
@@ -1081,7 +1115,7 @@ Stat names are the names that you see in the above embed, with the exception of 
     @commands.command()
     async def shop(self, ctx, arg=None):
         if arg == None:
-            await ctx.send("Welcome to the shop, Here, you can purchase weapons and armour. use <>shop weapons for weapons and <>shop armor for armor")
+            await ctx.send("Welcome to the shop, Here, you can purchase weapons armours and items. use <>shop weapons/armour/items")
             return
         if await self.ismember(ctx.author):
             if arg.lower() == "armour" or arg.lower() == "armor":
@@ -1091,9 +1125,13 @@ Stat names are the names that you see in the above embed, with the exception of 
             if arg.lower() == "weapons":
                 await self.loadweapon(ctx)
                 return
+            
+            if arg.lower() == "items":
+                await self.loaditems(ctx)
+                return
 
             else:
-                await ctx.send(f"{arg} must be weapons, armour or armor. not {arg}")
+                await ctx.send(f"{arg} must be weapons, armour or armor or items. not {arg}")
         
         else:
             await ctx.send("You can not view the store without an adventurer's license. Do <>createprofile")
@@ -1192,6 +1230,12 @@ Stat names are the names that you see in the above embed, with the exception of 
             if item.name.lower() == arg.lower():
                 req = item
                 break
+        
+        if req is None:
+            for item in potlist:
+                if item.name.lower() == arg.lower():
+                    req = item
+                    break
 
         if req == None:
             await ctx.send(f"Sorry, I don't have any {req} in stock") 
@@ -1606,7 +1650,84 @@ Stat names are the names that you see in the above embed, with the exception of 
         else:
             await self.denied(ctx.channel, ctx.author)
 
+    @commands.command()
+    async def inventory(self, ctx):
+        if await self.ismember(ctx.author):
+            user = await self.getmember(ctx.author)
+            if len(user.inventory) == 0:
+                await ctx.send("Your inventory is empty. Get stuff with <>shop items")
+                return
+            if len(user.inventory) >= 1:
+                invenbed = discord.Embed(
+                    title="Inventory",
+                    description=f"Showing inventory for {user.name}",
+                    color=randint(0, 0xffffff)
+                )
+
+                for item in user.inventory:
+                    x = await self.getbuff(item)
+                    invenbed.add_field(name=f"{x.name}", value=f"{x.desc} ID: {x.tag}\n")
+
+                await ctx.send(embed=invenbed)
+
+        else:
+            await self.denied(ctx.channel, ctx.author)
+
+    hasbuff = []
+
+    @commands.command()
+    async def use(self, ctx, itag:int=None, confirm=False):
+        if await self.ismember(ctx.author):
+            user = await self.getmember(ctx.author)
+            if len(user.inventory) == 0:
+                await ctx.send("You do not have any items to use")
+                return
+
+            if itag is None:
+                await ctx.send("You did not tell me the id of the item you wanted")
+                return
+            
+            if not confirm and user.hasbuff():
+                await ctx.send(f"This will replace will replace your current buff. Do <>use {itag} True to proceed")
+                return
+
+            itemtouse = [x for x in user.inventory if x == itag]
+
+            if itemtouse:
+                itemtouse = itemtouse[0]
+                itemtouse = await self.getbuff(itemtouse)
+                if itemtouse.untype == "pot":
+                    await ctx.send(f"You drink {itemtouse.name}")
+                elif itemtouse.untype == "item":
+                    await ctx.send(f"You equip {itemtouse.name}")
+
+                user.curbuff = itemtouse.tag
+                user.bdur = itemtouse.duration
+
+            else:
+                await ctx.send("You do not have this item in your inventory")
+                return
+        
+        else:
+            await self.denied(ctx.channel, ctx.author)
+            return
+
     # Functions
+
+    async def buffuse(self, user):
+        item = await self.getbuff(user.curbuff)
+        user.health += item.hup
+        user.mindmg += item.minup
+        user.maxdmg += item.maxup
+        user.critchance += item.critup
+
+        msg = item.effect
+
+        return msg
+
+    async def getbuff(self, idtoget):
+        item = [x for x in potlist if x.tag == idtoget]
+        return item[0]
     
     async def tdeny(self, ctx):
         await ctx.send("You are not part of a team.\
@@ -2515,7 +2636,20 @@ Stat names are the names that you see in the above embed, with the exception of 
 
         await ctx.send(embed=weaponbed)
 
+    async def loaditems(self, ctx):
+        itembed = discord.Embed(
+            title="Welcome to the item store",
+            description="To buy an item, use <>buy {itemname} or use <>view {itemname} for details",
+            color=randint(0, 0xffffff)
+        )
 
+        user = await self.getmember(ctx.author)
+
+        for valuable in potlist:
+            if user.getTier() >= valuable.tierz:
+                itembed.add_field(name=f"{valuable.name}", value=f"{valuable.desc} \nCost: {valuable.cost}")
+                
+        await ctx.send(embed=itembed)
 
     
     async def canbuy(self, user, arg):
@@ -2527,11 +2661,18 @@ Stat names are the names that you see in the above embed, with the exception of 
             return "You are too weak to wield this item"
 
         if user.pcoin >= arg.cost:
-            user.pcoin -= arg.cost
             if arg.typeobj.lower() == "weapon":
                 user.weapon = arg.tag
-            else:
+            elif arg.typeobj.lower() == "armour":
                 user.armour = arg.tag
+            
+            elif arg.typeobj.lower() == "item":
+                if len(user.inventory) == 25:
+                    return "Your inventory is full, therefore you cannot buy this item"
+                else:
+                    user.inventory.append(arg.tag)
+
+            user.pcoin -= arg.cost            
 
             msg = f"Successfully bought {arg.name}"
 

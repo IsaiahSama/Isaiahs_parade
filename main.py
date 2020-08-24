@@ -12,7 +12,7 @@ load_dotenv()
 
 # Set Client
 bot = commands.Bot(command_prefix='<>', case_insensitive=True)
-# bot.help_command = None
+bot.help_command = None
 
 
 bot.load_extension("general_com")

@@ -1,5 +1,5 @@
 import math
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import copy
 
 @dataclass
@@ -351,7 +351,15 @@ class Fighter:
     invitation: int= None
     weapon2: int=1001
     armour2: int=2001
-    
+    curbuff: int=None
+    bdur: int=0
+    inventory: list=field(default_factory=list)
+
+    def hasbuff(self):
+        if self.curbuff == None:
+            return False
+        else:
+            return True
 
     def addcoin(self, coin):
         self.pcoin += coin
