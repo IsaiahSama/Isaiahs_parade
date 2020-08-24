@@ -131,7 +131,7 @@ class Moderator(commands.Cog):
     async def wipe(self, ctx, amount: typing.Optional[int] = 100, *, args):
         counter = 0
         
-        args = f"{args}"
+        args = f" {args} "
 
         for message in await ctx.channel.history().flatten():
             if counter <= amount:
