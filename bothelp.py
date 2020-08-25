@@ -197,6 +197,7 @@ play = MyHelp("Social", "Play", "<>play", "Used to play with your pet")
 showfriends = MyHelp("Social", "Show friends", "<>showfriends", "Shows your friends")
 updatesocial = MyHelp("Social", "Update Social", "<>updatesocial", "Changes the name and guild on your social profile to match your nickname and guild name of the one you are in")
 socialprofile = MyHelp("Social", "Social profile", "<>socialprofile", "Displays your social profile", "<>sp")
+nickpet = MyHelp("Social", "Nick pet", "<>nickpet name", "Gives your pet a nickname")
 
 mycommands = [barrage, blush, clown, condescend, cry, dance, fistbump, flex, hug, kiss, pat, poke, pose, punch,
 slap, afk, back, resetnick, suggest, intercom, endcall, accept, active, adventure, buy, createprofile,
@@ -208,7 +209,7 @@ gcall, gjoin, gleave, emoji, mentioned, nohide, ping, deathnote, freeze3, ger, g
 impactrevive, killerqueen, kingcrimson, mute, relog, shadowrealm, wipe, zahando, zawarudo, namegen, soulmate,
 profane, acceptbff, acceptfr, acceptlove, acceptparent, addfriend, addlove, createsocial, delpet, denybff,
 denylove, denyparent, dump, feed, getpet, newbff, newchild, pet, play, showfriends, socialprofile,
-updatesocial, parade, use]
+updatesocial, parade, use, nickpet]
 
 
 def setup(bot):

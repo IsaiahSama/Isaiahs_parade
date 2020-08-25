@@ -7,6 +7,7 @@ from relastatus import relauser, egg, allpets, petlist
 import json
 import os
 import traceback
+import copy
 
 
 class Relamain(commands.Cog):
@@ -32,7 +33,7 @@ class Relamain(commands.Cog):
        
         
         for relaperson in tempuser:
-            acc = relauser(*relaperson[0:17])
+            acc = relauser(*relaperson[0:18])
 
             loadedacc.append(acc)
 
@@ -117,8 +118,7 @@ class Relamain(commands.Cog):
 
             userbed.add_field(name="Pet exp", value=f"{ruser.petexp}")
             if ruser.haspet():
-                pet = await self.getpetid(ruser.petid, ctx.channel)
-                userbed.add_field(name="Pet", value=f"{pet.name}")
+                userbed.add_field(name="Pet", value=f"{ruser.petnick}")
 
 
             await ctx.send(embed=userbed)
@@ -498,9 +498,9 @@ class Relamain(commands.Cog):
             if user.haspet():
                 pet = await self.getpetid(user.petid, ctx.channel)
                 msg = pet.playmessage
-                await ctx.send(f"You play with {pet.name}")
+                await ctx.send(f"You play with {user.petnick}")
                 await asyncio.sleep(2)
-                await ctx.send(f"{pet.name} {msg}")
+                await ctx.send(f"{user.petnick} {msg}")
                 user.petexp += 20
             
             else:
@@ -521,8 +521,9 @@ class Relamain(commands.Cog):
                     return
                 if confirm:
                     await ctx.send(f"{pet.name} vanishes with a menacing look, and you get the urge to check your social profile")
-                    user.petexp = -30
+                    user.petexp = -100
                     user.petid = None
+                    user.petnick = None
                     await self.socialprofile(ctx)
             
             else:
@@ -538,9 +539,9 @@ class Relamain(commands.Cog):
             user = await self.getuser(ctx.author)
             if user.haspet():
                 pet = await self.getpetid(user.petid, ctx.channel)
-                await ctx.send(f"You feed {pet.name}")
+                await ctx.send(f"You feed {user.petnick}")
                 await asyncio.sleep(2)
-                await ctx.send(f"{pet.name} {pet.feedmsg}")
+                await ctx.send(f"{user.petnick} {pet.feedmsg}")
                 user.petexp += 15
             else:
                 await ctx.send("You don't have a pet to feed")
@@ -552,6 +553,22 @@ class Relamain(commands.Cog):
     async def save(self, ctx):
         self.updateusers.restart()
         print("Updated profile")
+
+    @commands.command()
+    async def nickpet(self, ctx, name):
+        if len(name) >= 15:
+            await ctx.send("That name is too long")
+            return
+        
+        if await self.isuser(ctx.author):
+            user = await self.getuser(ctx.author)
+            if user.haspet():
+                user.petnick = name
+                await ctx.send(f"Set your Pet's name to {name}")
+                
+            else:
+                await ctx.send("You do not have a pet to nickname")
+                return
         
 
     # Non Commands
@@ -572,7 +589,7 @@ class Relamain(commands.Cog):
         pett = [x for x in allpets if x.tag == target]
         try:
             pett = pett[0]
-            return pett
+            return copy.copy(pett)
         except IndexError:
             await channel.send("Something went wrong getting your pet")
 
@@ -593,6 +610,14 @@ class Relamain(commands.Cog):
 
         print("Updated Successfully")
 
+    @commands.command()
+    async def getpetnames(self, ctx):
+        for acc in self.allusers:
+            if acc.haspet():
+                if acc.petnick == None:
+                    x = await self.getpetid(acc.petid, ctx.channel)
+                    acc.petnick = x.name
+
 
     # Events
     @commands.Cog.listener()
@@ -605,6 +630,8 @@ class Relamain(commands.Cog):
                 if user.petexp >= pett.expreq and pett.expreq != 0:
                     msg, npet = pett.evolve()
                     user.petexp = 0
+                    if user.petnick == None:
+                        user.petnick = npet.name
                     await message.channel.send(msg)
                     user.petid = npet
             else:
