@@ -5,6 +5,7 @@ import random
 from random import randint
 from isaiahball import responses
 
+
 class delemsg:
     def __init__(self, chan, msgobj):
         self.chan = chan
@@ -100,6 +101,9 @@ class Miscgen(commands.Cog):
 
         await ctx.send("You weren't recently mentioned")
 
+    
+
+
     isaiah = 493839592835907594
     def revealcategory(self):
         return random.choice(responses)
@@ -145,12 +149,7 @@ class Miscgen(commands.Cog):
             if message.author.id == self.isaiah:
                 await message.channel.send(f"No problem. Glad to be of assistance to you {message.author.mention}")        
 
-
-class getmentioned(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    
+   
 
 
 def setup(bot):
