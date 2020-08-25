@@ -366,6 +366,10 @@ class Moderator(commands.Cog):
             
             await ctx.send(error)
 
+        if isinstance(error, asyncio.TimeoutError):
+
+            await ctx.send("You took to long to respond.")
+
         else:
             channel = self.bot.get_channel(740337325971603537)
             await channel.send(f"{ctx.author.name}: {error}")
