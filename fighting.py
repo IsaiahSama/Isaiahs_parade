@@ -43,7 +43,7 @@ class FullFight(commands.Cog):
         
         
         for fightmaster in tempuser:
-            acc = Fighter(*fightmaster[0:26])
+            acc = Fighter(*fightmaster[0:27])
             
             loadedacc.append(acc)
 
@@ -249,6 +249,9 @@ class FullFight(commands.Cog):
         profileEmbed.add_field(name="Parade Coins:", value=f"{target.pcoin}")
         profileEmbed.add_field(name="Crit Chance:", value=f"{target.critchance}%")
         profileEmbed.add_field(name="Self Heal Chance:", value=f"{target.healchance}%")
+        
+        if target.hasreborn():
+            profileEmbed.add_field(name="Number of times Reincarnated", value=target.reborn)
 
         await ctx.send(embed=profileEmbed)
 
@@ -1347,8 +1350,8 @@ Stat names are the names that you see in the above embed, with the exception of 
             tierbed.add_field(name="Tier:", value=f"You are currently Tier {user.getTier()}", inline=False)
         
         tierbed.add_field(name="How they work", 
-        value="""Your tier is determined based on the amount of health you have. If your health is less than 250, You are tier 1. 
-        Tier 2 is 250 to 500. Tier 3 is 501 to 950. Tier 4 is everthing 950-2999, tier 5 is 3000+ and Tier 6, God Tier, is level 300+ with 10k+ hp""")
+        value="""Your tier is determined based on your level. Levels 0-50 are Tier 1, 50-100 Tier 2
+100-150 Tier3, 150-200 Tier 4, 200-300 Tier5 and level 300+ and 10k+ hp for Tier 6 """)
         tierbed.add_field(name="Weapons and Armour", 
         value="Weapons and Armours also have tiers. Because of this, when you open the shop, you will only see items at your tier and lower. Tier 5's get a different Shop with tier 5 and 4 only")
 
@@ -1749,6 +1752,25 @@ Stat names are the names that you see in the above embed, with the exception of 
         else:
             await self.denied(ctx.channel, ctx.author)
             return
+
+    @commands.command()
+    async def reborn(self, ctx, confirm=False):
+        if await self.ismember(ctx.author):
+            user = await self.getmember(ctx.author)
+            if user.getTier() == 6:
+                if not confirm:
+                    await ctx.send("This will send you back to tier 1. Do <>reborn True to confirm")
+                    return
+                
+                await ctx.send("Heading back to Tier 1... Best of luck progressing again")
+                user.rtz()
+                await ctx.send("And it was done")
+            else:
+                await ctx.send("You must be tier 6 to use this")
+                return
+        else:
+            await self.denied(ctx.channel, ctx.author)
+            
 
     # Functions
 

@@ -354,6 +354,24 @@ class Fighter:
     curbuff: int=None
     bdur: int=0
     inventory: list=field(default_factory=list)
+    reborn: int=0
+
+    def rtz(self):
+        self.weapon = 1001
+        self.armour = 2001
+        self.weapon2 = 1001
+        self.armour2 = 2001
+        self.level = 0
+        self.curxp = 0
+        self.health = 170 + (0.01 * self.health)
+        self.mindmg = 10 + (0.05 * self.mindmg)
+        self.maxdmg = 20 + (0.05 * self.maxdmg)
+        self.reborn += 1
+
+    def hasreborn(self):
+        if self.reborn == 0:
+            return False
+        return True
 
     def hasbuff(self):
         if self.curbuff is not None:
@@ -551,15 +569,15 @@ class Fighter:
         return weapon[0], armor[0]
 
     def getTier(self):
-        if self.health <= 249:
+        if self.level >= 0 and self.level < 50:
             return 1
-        elif self.health >= 250 and self.health <= 500:
+        elif self.level >= 50 and self.level < 100:
             return 2
-        elif self.health >= 501 and self.health <= 950:
+        elif self.level >= 100 and self.level < 150:
             return 3
-        elif self.health >= 951 and self.health <= 2999:
+        elif self.level >= 150 and self.level < 200:
             return 4
-        elif self.health >= 3000 and self.level < 300:
+        elif self.level >= 200 and self.health < 10000:
             return 5
         elif self.health >= 10000 and self.level >= 300:
             return 6
