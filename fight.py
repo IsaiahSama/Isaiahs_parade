@@ -363,6 +363,7 @@ class Fighter:
         self.armour2 = 2001
         self.level = 0
         self.curxp = 0
+        self.xpthresh = 50
         self.health = 170 + (0.01 * self.health)
         self.mindmg = 10 + (0.05 * self.mindmg)
         self.maxdmg = 20 + (0.05 * self.maxdmg)
@@ -577,13 +578,13 @@ class Fighter:
             return 3
         elif self.level >= 150 and self.level < 200:
             return 4
-        elif self.level >= 200 and self.health < 10000:
-            return 5
         elif self.health >= 10000 and self.level >= 300:
             return 6
+        elif self.level >= 200:
+            return 5
         else:
             print("Something went wrong with the tiers")
-            return False
+            return 0
 
 def buffing(tobuff):
     if tobuff.armour.name == "Solar Flare":

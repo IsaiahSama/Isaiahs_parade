@@ -39,11 +39,11 @@ class FullFight(commands.Cog):
         # critchance=5, healchance=3, ability=None, passive=None, weapon="Fist", armour="Linen", 
         # xpthresh=50, typeobj="player", canfight=True):
         # name tag level curxp health mindmg maxdmg wins losses pcoin critchance healchance ability passive weapon armour xpthresh typeobj
-        # canfight inteam invation weapon2 armour2 curbuff buffdur inventory
+        # canfight inteam invation weapon2 armour2 curbuff buffdur inventory, reborn
         
         
         for fightmaster in tempuser:
-            acc = Fighter(*fightmaster[0:27])
+            acc = Fighter(*fightmaster[0:26])
             
             loadedacc.append(acc)
 
