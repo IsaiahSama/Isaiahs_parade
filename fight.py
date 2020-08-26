@@ -365,8 +365,8 @@ class Fighter:
         self.curxp = 0
         self.xpthresh = 50
         self.health = 170 + (0.01 * self.health)
-        self.mindmg = 10 + (0.05 * self.mindmg)
-        self.maxdmg = 20 + (0.05 * self.maxdmg)
+        self.mindmg = 10 + (0.03 * self.mindmg)
+        self.maxdmg = 20 + (0.03 * self.maxdmg)
         self.reborn += 1
 
     def hasreborn(self):
@@ -407,6 +407,9 @@ class Fighter:
 
         else:
             cost = 400 + (self.health * 1.5)
+
+        cost -= 500
+        
         return cost
 
     def mindmgprice(self):
@@ -416,6 +419,7 @@ class Fighter:
             cost = 150000 + (self.mindmg * 1.5)
         else:
             cost = 200 + (self.mindmg * 1.5)
+        cost -= 400
         return cost
 
     def maxdmgprice(self):
@@ -425,6 +429,7 @@ class Fighter:
             cost = 180000 + (self.maxdmg * 1.5)
         else:
             cost = 220 + (self.maxdmg * 1.75)
+        cost -= 450
         return cost
 
     def critchanceprice(self):
