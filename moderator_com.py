@@ -346,6 +346,7 @@ class Moderator(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
+
         if isinstance(error, commands.CommandOnCooldown):
 
             await ctx.send(f"You are on Cooldown for {math.floor(error.retry_after)} seconds")
@@ -364,11 +365,7 @@ class Moderator(commands.Cog):
 
         if isinstance(error, commands.MissingRequiredArgument):
             
-            await ctx.send(error)
-
-        if isinstance(error, asyncio.TimeoutError):
-
-            await ctx.send("You took to long to respond.")
+            await ctx.send(error)         
 
         else:
             channel = self.bot.get_channel(740337325971603537)
