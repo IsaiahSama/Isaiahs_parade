@@ -2308,35 +2308,35 @@ Stat names are the names that you see in the above embed, with the exception of 
     async def get_enemy(self, tier):
         yes = []
         if tier == 1:
-            min = 10
-            max = 250
+            min = 0
+            max = 49
             
         elif tier == 2:
-            min = 250
-            max = 350
+            min = 50
+            max = 99
 
         elif tier == 3:
-            min = 350
-            max = 900
+            min = 100
+            max = 149
 
         elif tier == 4:
-            min = 700
-            max = 2999
+            min = 150
+            max = 199
 
         elif tier == 5:
-            min = 3000
-            max = 10000
+            min = 200
+            max = 399
         
         elif tier == 6:
-            min = 10001
-            max = 300000
+            min = 400
+            max = 999999
         
         else:
             min = 0
             max = 200
 
         for vanillian in enemy:
-            if vanillian.health >= min and vanillian.health <= max:
+            if vanillian.level >= min and vanillian.level <= max:
                 yes.append(vanillian)
 
         villain = random.choice(yes)
@@ -2344,7 +2344,7 @@ Stat names are the names that you see in the above embed, with the exception of 
 
         villain = FightingBeast(villain.name, villain.health, villain.mindmg, villain.maxdmg, 
         villain.mincoin, villain.maxcoin, villain.entrymessage, villain.minxp, villain.critchance, villain.healchance,
-        villain.ability, villain.passive, villain.attackmsg, villain.weapon, villain.armour, villain.typeobj)
+        villain.ability, villain.passive, villain.attackmsg, villain.weapon, villain.armour, villain.level, villain.typeobj)
         
         return villain
 
