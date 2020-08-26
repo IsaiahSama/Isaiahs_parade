@@ -7,20 +7,24 @@ class furniture:
         self.name = name
         self.description = description
         self.color = color
-        self.material = material
         self.amountoflegs = amountoflegs
+        self.material = material
         self.creator = creator
+        self.objname = "furniture"
+       
 
 class creature:
     
-    def __init__(self, name, description="None", color="None", amountoflegs=0, traits="None", typeof="None", creator=None):
+    def __init__(self, name, description="None", color="None", amountoflegs=0, traits="None", species="None", creator=None):
         self.name = name
         self.description = description
+        self.color = color
+        self.species = species
         self.amountoflegs = amountoflegs
         self.traits = traits
-        self.color = color
-        self.typepf = typeof
         self.creator = creator
+        self.objname = "creature"
+
 
 class vehicle:
 
@@ -32,3 +36,6 @@ class vehicle:
         self.material = material
         self.speed = speed
         self.creator = creator
+        self.objname = "vehicle"
+
+        

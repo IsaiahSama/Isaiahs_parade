@@ -916,15 +916,15 @@ easy1 = BeastFight("The Cat", 40, 6, 30, 10, 15, "Uh... What harm could a harmle
 easy2 = BeastFight("ZombieMan", 60, 5, 15, 15, 25, "Ah... the typical zombie is chasing you",15, attackmsg="tickles the brains of", level=5)
 easy3 = BeastFight("Magikarp", 120, 1, 2, 2, 5, "No challenge... Let's make it quick",25, attackmsg="flops on", level=6)
 easy4 = BeastFight("Random Meme", 45, 1, 20, 20, 40, "Some one has sent you a random powerful meme...", 60, attackmsg="memes on", level=10)
-easy5 = BeastFight("Robloxian Army", 60, 14, 20, 20, 60, "First their pets, now themeselves? sigh...",40, attackmsg="gangs up on", level=11)
-easy6 = BeastFight("Mr.Skeleton", 70, 17, 22, 10, 30, "Mr. Skeleton has spawned.", 15, attackmsg="aims their bow and shoots", level=12)
-easy7 = BeastFight("Goblin Tinkerer", 120, 25, 31, 50, 90, "Wait, I thought the Goblin Tinkerer was on our side?", 25,
+easy5 = BeastFight("Robloxian Army", 60, 14, 20, 20, 60, "First their pets, now themeselves? sigh...",100, attackmsg="gangs up on", level=11)
+easy6 = BeastFight("Mr.Skeleton", 70, 17, 22, 10, 30, "Mr. Skeleton has spawned.", 115, attackmsg="aims their bow and shoots", level=12)
+easy7 = BeastFight("Goblin Tinkerer", 120, 25, 31, 50, 90, "Wait, I thought the Goblin Tinkerer was on our side?", 125,
  attackmsg="throws spike balls at", level=23)
 easy8 = BeastFight("Annoying Discord Spammer", 120, 18, 35, 2, 10, 
-"There's always that one person that loves to spam @mentions... Found him", 10, attackmsg="spams on", level=34)
+"There's always that one person that loves to spam @mentions... Found him", 410, attackmsg="spams on", level=34)
 
-easy9 = BeastFight("Possessed Friend", 125, 32, 38, 20, 40, "I can't believe your friend got possessed... again", 70, attackmsg="slashes", level=35)
-easy10 = BeastFight("Baby Shark", 130, 50, 90, 30, 50, "Baby shark doo doo doo oops...",60, attackmsg="sings then bites", level=46)
+easy9 = BeastFight("Possessed Friend", 125, 32, 38, 20, 40, "I can't believe your friend got possessed... again", 670, attackmsg="slashes", level=35)
+easy10 = BeastFight("Baby Shark", 130, 50, 90, 30, 50, "Baby shark doo doo doo oops...",560, attackmsg="sings then bites", level=46)
 
 # Mid Level between 200 and 300 hp
 mid1 = BeastFight("Cherry Blossom", 260, 60, 80, 30, 60,"Sakur- Cherry Blossom? \"WHO YOU CALLING USELESS...\"", 360,
