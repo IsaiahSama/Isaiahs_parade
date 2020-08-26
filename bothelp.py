@@ -97,7 +97,6 @@ gleave = MyHelp("Misc", "Group Leave", "<>gleave", "Used to leave the multi-serv
 namegen = MyHelp("Misc", "Name generator", "<>namegen number", "Generates a name with the amount of letters you specified. Max is 11 for sake of it still making a bit of sense")
 soulmate = MyHelp("Misc", "Soulmate", "<>soulmate", "Reveals the first letter of your soulmate... probably")
 parade = MyHelp("Misc", "Parade", "<>parade", "Gets the invite link to the bot's discord")
-createobject = MyHelp("Misc", "Create Object", "<>createobject", "Allows you to make an item of sorts.")
 
 accept = MyHelp("Battle", "accept", "<>accept teamname", "Used to accept a team invite")
 active = MyHelp("Battle", "Active", "<>active", "Used to view the Ability table.", "ability")
@@ -211,7 +210,7 @@ gcall, gjoin, gleave, emoji, mentioned, nohide, ping, deathnote, freeze3, ger, g
 impactrevive, killerqueen, kingcrimson, mute, relog, shadowrealm, wipe, zahando, zawarudo, namegen, soulmate,
 profane, acceptbff, acceptfr, acceptlove, acceptparent, addfriend, addlove, createsocial, delpet, denybff,
 denylove, denyparent, dump, feed, getpet, newbff, newchild, pet, play, showfriends, socialprofile,
-updatesocial, parade, use, nickpet, reborn, createobject]
+updatesocial, parade, use, nickpet, reborn]
 
 
 def setup(bot):
