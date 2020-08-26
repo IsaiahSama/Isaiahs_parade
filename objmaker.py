@@ -57,8 +57,13 @@ class objcreator(commands.Cog):
             else:
                 await ctx.send("That... is not an option. Try again")
                 continue
-
-        eval(f"{msg}make(ctx, msg)")
+        
+        if msg == "vehicle":
+            await self.vehiclemake(ctx, msg)
+        elif msg == "furniture":
+            await self.furnituremake(ctx, msg)
+        else:
+            await self.creaturemake(ctx, msg)
 
     # Functions
 
@@ -123,12 +128,12 @@ class objcreator(commands.Cog):
 
             msg = await self.bot.wait_for("message", timeout=20, check=check)
 
-            await ctx.send(f"Ok, so it's {valuetoget} is {msg}? Yes or No")
+            await ctx.send(f"Ok, so it's {valuetoget} is {msg.content}? Yes or No")
             newmsg = await self.bot.wait_for("message", timeout=20, check=check)
 
             if newmsg.content.lower() == "yes":
                 await ctx.send("Excellent. Moving on")
-                return msg
+                return msg.content
 
             elif newmsg.content.lower() == "no":
                 await ctx.send("Ok, so we'll go again")
@@ -149,7 +154,7 @@ class objcreator(commands.Cog):
             msg = await self.bot.wait_for("message", timeout=20, check=check)
 
             try:
-                msg = int(msg)
+                msg = int(msg.content)
             except ValueError:
                 await ctx.send("That is not a number. Try again")
                 continue
@@ -180,6 +185,8 @@ class objcreator(commands.Cog):
 
             with open("customobject.json", "a") as f:
                 json.dump(todump, f, indent=4)
+
+        todump.clear()
 
 def setup(bot):
     bot.add_cog(objcreator(bot))
