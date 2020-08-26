@@ -26,6 +26,7 @@ bot.load_extension("fighting")
 bot.load_extension("relacom")
 bot.load_extension("calling")
 bot.load_extension("bothelp")
+bot.load_extension("objmaker")
 
 # Events
 # Creating On_ready event
