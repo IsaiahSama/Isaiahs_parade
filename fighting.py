@@ -2005,7 +2005,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             critnum = randint(0, 100)
             healnum = randint(0, 100)
 
-            if self.rslagged:
+            if self.rslagged == True:
                 power *= 1.5
                 raidbed.add_field(name=f"{player.ability.usename}", value=f"{self.raidbeast.name} takes 1.5x dmg because of slag ")
 
@@ -2280,7 +2280,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         if x.curxp >= x.xpthresh:
             while x.curxp >= x.xpthresh:
                 x.curxp -= x.xpthresh
-                x.xpthresh += 50
+                x.xpthresh += 30
                 x.level += 1
                 x.health += randint(3, 8)
                 x.mindmg += randint(1, 4)
