@@ -649,11 +649,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         if isquest:
             temp = await self.getmain(user1)
             tier = temp.getTier()
-            user2 = await self.get_enemy(tier)
-            
-            rannum = randint(temp.level - 50, temp.level + 50)
-            user2.level = rannum
-            
+            user2 = await self.get_enemy(tier)          
 
             questembed = discord.Embed(
                 title=f"Fighting {user2.name}",

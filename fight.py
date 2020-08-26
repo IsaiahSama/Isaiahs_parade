@@ -1027,7 +1027,7 @@ god5 = BeastFight("Hiro Kage", 80000, 30000, 35000, 2000000, 2300000, "His Kagek
 
 # Lists
 
-enemy = [
+enemybeta = [
 easy1, easy2, easy3, easy4, easy5, easy6, easy7, easy8, easy9, easy10, 
 mid1, mid2, mid3, mid4, mid5, mid6, mid7, mid8, mid9, mid10,
 hard1, hard2, hard3, hard4, hard5, hard6, hard7, hard8, hard9, hard10,
@@ -1035,6 +1035,10 @@ ut1, ut2, ut3, ut4, ut5, ut6, ut7, ut8, ut9, ut10,
 isama, nme, uksniper, sfass, kdono, tmaster, rebdio, herian, minmegu, dmaster,
 god1, god2, god3, god4, god5
 ]
+
+enemy = []
+for thingie in enemybeta:
+    enemy.append(copy.copy(thingie))
 
 # def __init__(self, name, tag, health, mindmg, maxdmg, mincoin, maxcoin, entrymessage, minxp, 
 # critchance=5, healchance=3, ability=None, passive=None, attackmsg=None, weapon=fist, armour=linen, 
