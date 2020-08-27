@@ -8,7 +8,7 @@ Currently, there are 7 categories for you as a Discord user to choose from.
 
 ## Getting Isaiah's Parade
 Currently, getting him is out of the option due to as my current setup can't handle too much stress. However, you can gain full accessibility to him by joining the main server using the below link:
-[The Parade Discord Server](https://discord.gg/5szJdKY "The official Discord Server for Isaiah's Parade")
+[Kevin's Parade Discord Server](https://discord.gg/5szJdKY "The official Discord Server for Isaiah's Parade")
 
 ### Usage
 Upon joining The Parade, you will be given a "Follower" role. This is unique to this server only along with a few other features such as naturally occuring raids.
