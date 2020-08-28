@@ -22,10 +22,10 @@ bot.load_extension("moderator_com")
 bot.load_extension("action_com")
 bot.load_extension("special_com")
 bot.load_extension("fighting")
-# bot.load_extension("music_com")
 bot.load_extension("relacom")
 bot.load_extension("calling")
 bot.load_extension("bothelp")
+# bot.load_extension("music_com")
 
 # Events
 # Creating On_ready event
@@ -38,6 +38,19 @@ async def on_ready():
     await bot.change_presence(activity=activity)
     # , status=discord.Status.dnd
 
+@bot.command()
+@bot.is_owner()
+async def refresh(ctx):
+    bot.reload_extension("general_com")
+    bot.reload_extension("gaming_com")
+    bot.reload_extension("misc_com")
+    bot.reload_extension("moderator_com")
+    bot.reload_extension("action_com")
+    bot.reload_extension("special_com")
+    bot.reload_extension("fighting")
+    bot.reload_extension("relacom")
+    bot.reload_extension("calling")
+    bot.reload_extension("bothelp")
 
 # On Join
 @bot.event
