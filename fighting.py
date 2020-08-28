@@ -1771,7 +1771,6 @@ Stat names are the names that you see in the above embed, with the exception of 
                 return
         else:
             await self.denied(ctx.channel, ctx.author)
-            
 
     # Functions
 
@@ -2258,9 +2257,10 @@ Stat names are the names that you see in the above embed, with the exception of 
         winner = await self.getmain(winner)
         if loser.typeobj == "npc":
             exp = randint(loser.minxp, loser.maxxp)
+            exp *= 2
             winner.curxp += exp
         else:
-            exp = loser.xpthresh / 2
+            exp = loser.xpthresh / 3
             winner.curxp += exp
         
         winner.wins += 1
@@ -2280,7 +2280,6 @@ Stat names are the names that you see in the above embed, with the exception of 
         return person
 
 
-
     async def didlevel(self, x):
         if x.curxp >= x.xpthresh:
             while x.curxp >= x.xpthresh:
@@ -2290,7 +2289,21 @@ Stat names are the names that you see in the above embed, with the exception of 
                 x.health += randint(3, 8)
                 x.mindmg += randint(1, 4)
                 x.maxdmg += randint(3, 8)
-                x.addcoin(20 * x.level)
+                if x.hasreborn():
+                    x.addcoin(x.level * 50)
+
+                if x.getTier() == 1:
+                    x.addcoin(20 * x.level)
+                elif x.getTier() == 2:
+                    x.addcoin(50 * x.level)
+                elif x.getTier() == 3:
+                    x.addcoin(100 * x.level)
+                elif x.getTier() == 4:
+                    x.addcoin(500 * x.level)
+                elif x.getTier() == 5:
+                    x.addcoin(10000 * x.level)
+                else:
+                    x.addcoin(100000 * x.level)
             
             return True
 
