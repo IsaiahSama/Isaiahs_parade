@@ -39,7 +39,7 @@ async def on_ready():
     # , status=discord.Status.dnd
 
 @bot.command()
-@bot.is_owner()
+@commands.is_owner()
 async def refresh(ctx):
     bot.reload_extension("general_com")
     bot.reload_extension("gaming_com")
