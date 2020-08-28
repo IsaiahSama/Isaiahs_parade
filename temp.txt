@@ -1,0 +1,91 @@
+At level 50 you will need 1550 exp to level up
+Weakest will have 62 exp
+
+Exp will be 65
+Exp will be 73
+Exp will be 95
+Exp will be 112
+Exp will be 148
+Exp will be 212
+Exp will be 237
+Exp will be 246
+Strongest will have 258 exp
+
+At level 100 you will need 4550 exp to level up
+Weakest will have 182 exp
+
+Exp will be 227
+Exp will be 300
+Exp will be 307
+Exp will be 335
+Exp will be 545
+Exp will be 677
+Exp will be 693
+Exp will be 703
+Strongest will have 758 exp
+
+At level 150 you will need 9050 exp to level up
+Weakest will have 362 exp
+
+Exp will be 454
+Exp will be 721
+Exp will be 722
+Exp will be 801
+Exp will be 1048
+Exp will be 1184
+Exp will be 1480
+Exp will be 1498
+Strongest will have 1508 exp
+
+At level 200 you will need 15050 exp to level up
+Weakest will have 602 exp
+
+Exp will be 1121
+Exp will be 1205
+Exp will be 1436
+Exp will be 1766
+Exp will be 1815
+Exp will be 1861
+Exp will be 2060
+Exp will be 2069
+Strongest will have 2508 exp
+
+At level 250 you will need 22550 exp to level up
+Weakest will have 902 exp
+
+Exp will be 1216
+Exp will be 1591
+Exp will be 1987
+Exp will be 2382
+Exp will be 2780
+Exp will be 3339
+Exp will be 3411
+Exp will be 3454
+Strongest will have 3758 exp
+
+At level 300 you will need 31550 exp to level up
+Weakest will have 1262 exp
+
+Exp will be 1432
+Exp will be 2525
+Exp will be 2882
+Exp will be 2898
+Exp will be 2953
+Exp will be 3734
+Exp will be 4638
+Exp will be 4914
+Strongest will have 5258 exp
+
+At level 350 you will need 42050 exp to level up
+Weakest will have 1682 exp
+
+Exp will be 2755
+Exp will be 2789
+Exp will be 3010
+Exp will be 4263
+Exp will be 4556
+Exp will be 4698
+Exp will be 5400
+Exp will be 6894
+Strongest will have 7008 exp
+
