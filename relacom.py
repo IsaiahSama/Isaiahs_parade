@@ -330,7 +330,7 @@ class Relamain(commands.Cog):
         if await self.isuser(ctx.author):
             user = await self.getuser(ctx.author)
             if user.pendingbf != None:
-                sender = user.pendingbf
+                sender = await self.reget(user.pendingbf)
                 temp2 = self.bot.get_user(sender.tag)
                 await ctx.send("Congratulations")
                 await temp2.send(f"{user.name} Accepted your best friend request")
@@ -463,7 +463,7 @@ class Relamain(commands.Cog):
                 pett = await self.getpetid(user.petid, ctx.channel)
         
                 petbed = discord.Embed(
-                    title=f"{ctx.author.name}'s pet",
+                    title=f"{ctx.author.name}'s pet {user.petnick}",
                     description=f"{pett.name}: {pett.desc}",
                     color=randint(0, 0xffffff)
                 )
