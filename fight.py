@@ -442,6 +442,16 @@ class Fighter:
 
     def uphealth(self, narg):
         cost = self.healthprice()
+
+        if self.getTier() == 1 and self.health + 20 > easy10.health * 1.3:
+            return "Reach Tier 2 to upgrade your health further"
+        if self.getTier() == 2 and self.health + 20 > mid10.health * 1.3:
+            return "Reach Tier 3 to upgrade your health further"
+        if self.getTier() == 3 and self.health + 20 > hard10.health * 1.3:
+            return "Reach Tier 4 to upgrade your health further"
+        if self.getTier() == 4 and self.health + 20 > ut10.health * 1.3:
+            return "Reach Tier 5 to upgrade your health further"
+
         cando = self.cashchk(cost)
         if narg.lower() == "all":
             while cando:
@@ -473,7 +483,7 @@ class Fighter:
         elif self.mindmg + 5 > 1500 and self.getTier() == 4:
             return "Reach Tier 5 in order to upgrade your min damage some more"
         
-        elif self.mindmg + 5 > 3200 and self.getTier() == 5:
+        elif self.mindmg + 5 > 6200 and self.getTier() == 5:
             return "Reach Tier 6 in order to upgrade your min damage further"
 
         cando = self.cashchk(cost)
@@ -510,7 +520,7 @@ class Fighter:
         if self.maxdmg + 5 > 1600 and self.getTier() == 4:
             return "Reach Tier 5 in order to upgrade your max damage some more"
 
-        if self.maxdmg + 5 > 3400 and self.getTier() == 5:
+        if self.maxdmg + 5 > 6400 and self.getTier() == 5:
             return "Reach Tier 6 in order to upgrade your max damage some more"
 
         cando = self.cashchk(cost)
@@ -845,7 +855,7 @@ class BeastFight:
         self.maxcoin = maxcoin
         self.entrymessage = entrymessage
         self.minxp = minxp
-        self.maxxp = minxp + 25
+        self.maxxp = minxp + 40
         self.critchance = critchance
         self.healchance = healchance
         self.ability = ability
