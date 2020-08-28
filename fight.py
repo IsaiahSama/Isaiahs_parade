@@ -922,102 +922,102 @@ class FightingBeast(BeastFight):
         
 
 # Low Level below 200 hp and Magikarp
-easy1 = BeastFight("The Cat", 40, 6, 30, 10, 15, "Uh... What harm could a harmless little... oh my...", 10, attackmsg="raises up and scratches", level=5)
-easy2 = BeastFight("ZombieMan", 60, 5, 15, 15, 25, "Ah... the typical zombie is chasing you",15, attackmsg="tickles the brains of", level=5)
-easy3 = BeastFight("Magikarp", 120, 1, 2, 2, 5, "No challenge... Let's make it quick",25, attackmsg="flops on", level=6)
-easy4 = BeastFight("Random Meme", 45, 1, 20, 20, 40, "Some one has sent you a random powerful meme...", 60, attackmsg="memes on", level=10)
-easy5 = BeastFight("Robloxian Army", 60, 14, 20, 20, 60, "First their pets, now themeselves? sigh...",100, attackmsg="gangs up on", level=11)
-easy6 = BeastFight("Mr.Skeleton", 70, 17, 22, 10, 30, "Mr. Skeleton has spawned.", 115, attackmsg="aims their bow and shoots", level=12)
-easy7 = BeastFight("Goblin Tinkerer", 120, 25, 31, 50, 90, "Wait, I thought the Goblin Tinkerer was on our side?", 125,
+easy1 = BeastFight("The Cat", 40, 6, 30, 10, 15, "Uh... What harm could a harmless little... oh my...", 62, attackmsg="raises up and scratches", level=5)
+easy2 = BeastFight("ZombieMan", 60, 5, 15, 15, 25, "Ah... the typical zombie is chasing you",65, attackmsg="tickles the brains of", level=5)
+easy3 = BeastFight("Magikarp", 120, 1, 2, 2, 5, "No challenge... Let's make it quick",73, attackmsg="flops on", level=6)
+easy4 = BeastFight("Random Meme", 45, 1, 20, 20, 40, "Some one has sent you a random powerful meme...", 95, attackmsg="memes on", level=10)
+easy5 = BeastFight("Robloxian Army", 60, 14, 20, 20, 60, "First their pets, now themeselves? sigh...",112, attackmsg="gangs up on", level=11)
+easy6 = BeastFight("Mr.Skeleton", 70, 17, 22, 10, 30, "Mr. Skeleton has spawned.", 148, attackmsg="aims their bow and shoots", level=12)
+easy7 = BeastFight("Goblin Tinkerer", 120, 25, 31, 50, 90, "Wait, I thought the Goblin Tinkerer was on our side?", 212,
  attackmsg="throws spike balls at", level=23)
 easy8 = BeastFight("Annoying Discord Spammer", 120, 18, 35, 2, 10, 
-"There's always that one person that loves to spam @mentions... Found him", 410, attackmsg="spams on", level=34)
+"There's always that one person that loves to spam @mentions... Found him", 237, attackmsg="spams on", level=34)
 
-easy9 = BeastFight("Possessed Friend", 125, 32, 38, 20, 40, "I can't believe your friend got possessed... again", 670, attackmsg="slashes", level=35)
-easy10 = BeastFight("Baby Shark", 130, 50, 90, 30, 50, "Baby shark doo doo doo oops...",560, attackmsg="sings then bites", level=46)
+easy9 = BeastFight("Possessed Friend", 125, 32, 38, 20, 40, "I can't believe your friend got possessed... again", 246, attackmsg="slashes", level=35)
+easy10 = BeastFight("Baby Shark", 130, 50, 90, 30, 50, "Baby shark doo doo doo oops...",258, attackmsg="sings then bites", level=46)
 
 # Mid Level between 200 and 300 hp
-mid1 = BeastFight("Cherry Blossom", 260, 60, 80, 30, 60,"Sakur- Cherry Blossom? \"WHO YOU CALLING USELESS...\"", 360,
+mid1 = BeastFight("Cherry Blossom", 260, 60, 80, 30, 60,"Sakur- Cherry Blossom? \"WHO YOU CALLING USELESS...\"", 182,
 attackmsg="charges chakra then punches", level=51)
-mid2 = BeastFight("Buh-bomb", 330, 70, 90, 45, 90, "Look who came not from Mario's world", 340, weapon=bomb,
+mid2 = BeastFight("Buh-bomb", 330, 70, 90, 45, 90, "Look who came not from Mario's world", 227, weapon=bomb,
 attackmsg="says \"My main goal, is to blow up\" and explodes on", level=55)
-mid3 = BeastFight("Big Rock", 345, 10, 130, 60, 100, "*Smiles*", 350 , attackmsg="Jumps then lands on", level=57 )
-mid4 = BeastFight("Isaiah's Parade", 324, 90, 100, 40, 70, "Parade?... no... Just a clone", 320, attackmsg="slashes", level=69)
-mid5 = BeastFight("Angel Statue", 300, 110, 125, 20, 50, "An Angel Statue feel from the sky... Nice?", 310, attackmsg="Pounds on", level=80)
-mid6 = BeastFight("Azoth", 320, 40, 120, 140, 70, "Straight from Valhalla, Azoth is here", 330, ability=deadlygrasp, weapon=axe,
+mid3 = BeastFight("Big Rock", 345, 10, 130, 60, 100, "*Smiles*", 300 , attackmsg="Jumps then lands on", level=57 )
+mid4 = BeastFight("Isaiah's Parade", 324, 90, 100, 40, 70, "Parade?... no... Just a clone", 307, attackmsg="slashes", level=69)
+mid5 = BeastFight("Angel Statue", 300, 110, 125, 20, 50, "An Angel Statue feel from the sky... Nice?", 335, attackmsg="Pounds on", level=80)
+mid6 = BeastFight("Azoth", 320, 40, 120, 140, 70, "Straight from Valhalla, Azoth is here", 545, ability=deadlygrasp, weapon=axe,
 attackmsg="swings his axe at", level=90)
 
-mid7 = BeastFight("Valkryie", 330, 120, 142, 100, 120, "Uh... I think she found out we stole their armour", 440, 8, ability=critstrike, weapon=axe,
+mid7 = BeastFight("Valkryie", 330, 120, 142, 100, 120, "Uh... I think she found out we stole their armour", 677, 8, ability=critstrike, weapon=axe,
 armour=valkryie, attackmsg="swings her axes and slashes", level=92)
 
-mid8 = BeastFight("Rick Sanchez", 325, 145, 170, 80, 130,"Guess who just popped out of a portal ready to attack", 470,
+mid8 = BeastFight("Rick Sanchez", 325, 145, 170, 80, 130,"Guess who just popped out of a portal ready to attack", 693,
  ability=pickelize, attackmsg="blasts", weapon=blaster, level=93)
 
-mid9 = BeastFight("Slivial", 325, 150, 176, 120, 250, "Straight from Slimenia, He summons his tank", 500, 6, 5, blast, regeneration,
+mid9 = BeastFight("Slivial", 325, 150, 176, 120, 250, "Straight from Slimenia, He summons his tank", 703, 6, 5, blast, regeneration,
 "Shoots some ammo from his cannon at", weapon=miracles, level=94)
 
-mid10 = BeastFight("Sanic", 340, 160, 190, 125, 150, "Gotta go fast", 430, 15, ability=sonic, attackmsg="zooms around then hits", level=95    )
+mid10 = BeastFight("Sanic", 340, 160, 190, 125, 150, "Gotta go fast", 758, 15, ability=sonic, attackmsg="zooms around then hits", level=95    )
 
 
 # High Level between 500 and 950 hp
-hard1 = BeastFight("DRAGON!", 900, 270, 310, 2220, 2400, "Dragon goes rawr but no 'XD'",500, ability=blast, attackmsg="Breathes on", armour=iron, level=100)
-hard2 = BeastFight("Dio", 700, 250, 360, 2350, 2600, "Oh no... It's dio... Quick, take him out. (Not on a date mind you)",700, ability=theworld, passive=regeneration,
+hard1 = BeastFight("DRAGON!", 900, 270, 310, 2220, 2400, "Dragon goes rawr but no 'XD'",362, ability=blast, attackmsg="Breathes on", armour=iron, level=100)
+hard2 = BeastFight("Dio", 700, 250, 360, 2350, 2600, "Oh no... It's dio... Quick, take him out. (Not on a date mind you)",454, ability=theworld, passive=regeneration,
 weapon=vampknives,armour=gold, attackmsg="Barrages on", level=120)
-hard3 = BeastFight("Red Paladins", 650, 215, 300, 1800, 2300, "The Red Paladins have arrived.",450, ability=swarm, weapon=axe, attackmsg="Gather and attack", level=121)
-hard4 = BeastFight("Queen Bee", 900, 380, 490, 2000, 2370, "Queen Bee has Awoken", 430, ability=swarm, attackmsg="Rams into", level=125) 
-hard5 = BeastFight("Kairo", 600, 200, 230, 2000, 3200, "Out of the trash, the Racoon has emerged", 450, ability=swarm,
+hard3 = BeastFight("Red Paladins", 650, 215, 300, 1800, 2300, "The Red Paladins have arrived.",721, ability=swarm, weapon=axe, attackmsg="Gather and attack", level=121)
+hard4 = BeastFight("Queen Bee", 900, 380, 490, 2000, 2370, "Queen Bee has Awoken", 722, ability=swarm, attackmsg="Rams into", level=125) 
+hard5 = BeastFight("Kairo", 600, 200, 230, 2000, 3200, "Out of the trash, the Racoon has emerged", 801, ability=swarm,
 attackmsg="bites", level=130)
 hard6 = BeastFight("Money Tree", 800, 270, 320, 5000, 6200, "Who said money doesn't grow on trees.",
-500, attackmsg="Blows money on", level=140)
+1048, attackmsg="Blows money on", level=140)
 hard7 = BeastFight("The Story Teller", 700, 530, 670, 4100, 5300, "The story Teller is angry you slept through his story",
-450, attackmsg="Reads to", passive=dodge, level=143)
-hard8 = BeastFight("Max Steal", 949, 600, 650, 5500, 6000, "GO TURBO", 500, 20, 5, blast, sboost, "strikes", sancspear, elitist, 144)
-hard9 = BeastFight("Thor not Thor", 900, 500, 600, 5000, 5500, "Something just came crashing down", 520, 6, 10, blast, critblock, "Zaps", stormbreaker, hierro, 145)
-hard10 = BeastFight("Kid", 800, 600, 700, 6000, 6200, "Clearly not an ordinary kid", 500, 30, 5, passive=dodge,
+1184, attackmsg="Reads to", passive=dodge, level=143)
+hard8 = BeastFight("Max Steal", 949, 600, 650, 5500, 6000, "GO TURBO", 1480, 20, 5, blast, sboost, "strikes", sancspear, elitist, 144)
+hard9 = BeastFight("Thor not Thor", 900, 500, 600, 5000, 5500, "Something just came crashing down", 1498, 6, 10, blast, critblock, "Zaps", stormbreaker, hierro, 145)
+hard10 = BeastFight("Kid", 800, 600, 700, 6000, 6200, "Clearly not an ordinary kid", 1508, 30, 5, passive=dodge,
 attackmsg="sorts his cards then attack", weapon=hcard, armour=plaguearm, level=149)
 
 # tier 4 mofos. Between 951 and 3k hp
-ut1 = BeastFight("DIO!", 1100, 400, 550, 19000, 20950, "Dio... no... it's DIO", 1000, 15, 60, theworld, regeneration,"Attacks", vampknives, gold, 150)
-ut2 = BeastFight("Robloxian Lord", 960, 200, 250, 15050, 17000, "Uh oh... A big one", 540, ability=swarm, passive=dodge, attackmsg="Memes on",
+ut1 = BeastFight("DIO!", 1100, 400, 550, 19000, 20950, "Dio... no... it's DIO", 602, 15, 60, theworld, regeneration,"Attacks", vampknives, gold, 150)
+ut2 = BeastFight("Robloxian Lord", 960, 200, 250, 15050, 17000, "Uh oh... A big one", 1121, ability=swarm, passive=dodge, attackmsg="Memes on",
 weapon=blaster, armour=saiyanguc, level=151)
-ut3 = BeastFight("Ender Dragon", 1000, 450, 480, 17000, 18050, "Uh, Something was wrong with the respawn system, and now it's in your world", 500,
+ut3 = BeastFight("Ender Dragon", 1000, 450, 480, 17000, 18050, "Uh, Something was wrong with the respawn system, and now it's in your world", 1205,
 ability=blast, attackmsg="Breathes on", level=152)
-ut4 = BeastFight("Moon Lord", 2000, 750, 800, 17000, 20000, "Impending Doom Approaches", 1000,10,20,
+ut4 = BeastFight("Moon Lord", 2000, 750, 800, 17000, 20000, "Impending Doom Approaches", 1436 ,10,20,
 critstrike, regeneration, "Summons a Phantasmal Deathray and blasts", armour=abyss, level=153)
-ut5 = BeastFight("Young Flame Handler", 2020, 1700, 1800, 17000, 19000, "His job... defeat you", 800, 5, 3, critstrike, attackmsg="strikes",
+ut5 = BeastFight("Young Flame Handler", 2020, 1700, 1800, 17000, 19000, "His job... defeat you", 1766, 5, 3, critstrike, attackmsg="strikes",
 weapon=sfknife, armour=shadowflame, level=154)
-ut6 = BeastFight("Young General", 2400, 1500, 1700, 17000, 18000, "You are simply practice for this rising star", 850, 10, 3, blast, None,
+ut6 = BeastFight("Young General", 2400, 1500, 1700, 17000, 18000, "You are simply practice for this rising star", 1815, 10, 3, blast, None,
 "Aims and shoots at", tsummon, artillery, 155)
-ut7 = BeastFight("Young Marksman", 2100, 1200, 1300, 15000, 16000, "ready... aim...", 750, 30, 3, critstrike, None, "sets up and quickly snipes",
+ut7 = BeastFight("Young Marksman", 2100, 1200, 1300, 15000, 16000, "ready... aim...", 1861, 30, 3, critstrike, None, "sets up and quickly snipes",
 srifle, sranger, 156)
-ut8 = BeastFight("Valhalla Knight", 2800, 800, 900, 16000, 19000, "This menacing warrior has arrived", 700, 10, 20, uheal, rage,
+ut8 = BeastFight("Valhalla Knight", 2800, 800, 900, 16000, 19000, "This menacing warrior has arrived", 2060, 10, 20, uheal, rage,
 "Swings his axe menacingly and then attacks", bsuckler, vknight, 157)
-ut9 = BeastFight("Drippler", 952, 500, 550, 15000, 16000, "What is this strange multi-eyed floating creature", 600, 10, 10,
+ut9 = BeastFight("Drippler", 952, 500, 550, 15000, 16000, "What is this strange multi-eyed floating creature", 2069, 10, 10,
 swarm, dodge, "drains the blood of", bsuckler, hierro, 158)
-ut10 = BeastFight("Magician", 980, 470, 600, 15000, 19000, "Come, let me show you a trick you won't forget", 600, 5, 3,
+ut10 = BeastFight("Magician", 980, 470, 600, 15000, 19000, "Come, let me show you a trick you won't forget", 2508, 5, 3,
 uheal, dodge, "shuffles cards then attacks", hcard, vknight, 159)
 
 
 # Tier 5 Between 3k and 10k hp
-nme = BeastFight("NME", 6000, 1100, 1300, 42400, 52800, "NME is the enemy and he's come to prove that", 4000, 
+nme = BeastFight("NME", 6000, 1100, 1300, 42400, 52800, "NME is the enemy and he's come to prove that", 902, 
 20, 25, nmareterror, sboost, "devours the nightmares of", sfknife, shadowflame, 220)
-isama = BeastFight("Isaiah-Sama", 5500, 1600, 1800, 31400, 35600, "Isaiah has Arrived, but is nerfed", 1200, 15,20, theworld, regeneration,
+isama = BeastFight("Isaiah-Sama", 5500, 1600, 1800, 31400, 35600, "Isaiah has Arrived, but is nerfed", 1216, 15,20, theworld, regeneration,
  "fires at", seruption, solarflare, 240)
 uksniper = BeastFight("Unknown Sniper", 5000, 1000, 1100, 32000, 38000, "You feel someone watching you", 
-4000, 5, 3, critstrike, sharpeye, "snipes", srifle, sranger, 250)
+1591, 5, 3, critstrike, sharpeye, "snipes", srifle, sranger, 250)
 sfass = BeastFight("Shadow Flame Assassin", 6000, 1300, 1400, 40000, 44000, "You glimpse a shadow following you",
-3500, 25, 10, critstrike, dodge, "slashes at", sfknife, shadowflame, 270)
-kdono = BeastFight("Kevin not Kevin", 8000, 1000, 1200, 58000, 64000, "KEVIN!!!", 5000, 5, 20, uheal, regeneration,
+1987, 25, 10, critstrike, dodge, "slashes at", sfknife, shadowflame, 270)
+kdono = BeastFight("Kevin not Kevin", 8000, 1000, 1200, 58000, 64000, "KEVIN!!!", 2382, 5, 20, uheal, regeneration,
 "menacingly approaches", hcard, vknight, 280)
-herian = BeastFight("The Herorian", 7000, 1600, 1900, 20000, 21000, "The Herorian from Heroria?", 900,
+herian = BeastFight("The Herorian", 7000, 1600, 1900, 20000, 21000, "The Herorian from Heroria?", 2953,
 20, 10, slag, dodge, "expertly spins his top and throws it at", herorian, vknight, 300)
-tmaster = BeastFight("Tank Master", 9300, 1000, 1200, 58000, 64000, "have you ever seen a tank up close?", 5000, 5,3,
+tmaster = BeastFight("Tank Master", 9300, 1000, 1200, 58000, 64000, "have you ever seen a tank up close?", 3734, 5,3,
 blast, sharpeye, "Summons his tank, aims it, and fires", tsummon, artillery, 310)
-rebdio = BeastFight("DIO Reborn", 10000, 1600, 1800, 64000, 67000, "It's like he never dies.", 6000, 20,5, uheal, regeneration,
+rebdio = BeastFight("DIO Reborn", 10000, 1600, 1800, 64000, 67000, "It's like he never dies.", 4638, 20,5, uheal, regeneration,
 "flash freezes then drains", evampknife, vampcloak, 320)
-minmegu = BeastFight("Minmegu", 9600, 3000, 4000, 70000, 72000, "ECKS-PLOH-SHUN!!!", 8000, 10, 4, jajanken, counter, "EXPLOSION!!!",
+minmegu = BeastFight("Minmegu", 9600, 3000, 4000, 70000, 72000, "ECKS-PLOH-SHUN!!!", 4914, 10, 4, jajanken, counter, "EXPLOSION!!!",
 bomb, blastgear, 350)
-dmaster = BeastFight("Dream Master", 8500, 3500, 4200, 68000, 72000, "Your worst nightmare??", 7500, 5, 3, nmareterror, nlove, "gathers nightmares and strikes",
+dmaster = BeastFight("Dream Master", 8500, 3500, 4200, 68000, 72000, "Your worst nightmare??", 5258, 5, 3, nmareterror, nlove, "gathers nightmares and strikes",
 dreamsword, nightmare, 400)
 
 # Tier 6 10k +
