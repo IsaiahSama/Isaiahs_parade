@@ -200,13 +200,18 @@ class FullFight(commands.Cog):
              profileEmbed.set_thumbnail(url=member.avatar_url)
         
         if ctx.guild == self.homeguild and not powpof:
-            role = [x for x in ctx.author.roles if x.name == f"Tier{target.getTier()}"]
-            if role:
-                pass
-            else:
-                role = discord.utils.get(ctx.guild.roles, name=f"Tier{target.getTier()}")
-                await ctx.author.add_roles(role)
-                await ctx.send(f"You have received your ranking role of {role.name}")
+            if ctx.author.id == target.tag:
+                role = [x for x in ctx.author.roles if x.name == f"Tier{target.getTier()}"]
+                if not role:
+                    role = discord.utils.get(ctx.guild.roles, name=f"Tier{target.getTier()}")
+                    await ctx.author.add_roles(role)
+                    await ctx.send(f"You have received your ranking role of {role.name}")
+                if target.hasreborn():
+                    role = [x for x in ctx.author.roles if x.name == "The Reborn"]
+                    if not role:
+                        role = discord.utils.get(ctx.guild.roles, name="The Reborn")
+                        await ctx.author.add_roles(role)
+                        await ctx.send("You Have received your role of The Reborn")
 
         profileEmbed.add_field(name="Name:", value=f"{target.name}")
         profileEmbed.add_field(name="Level:", value=f"{target.level}")
