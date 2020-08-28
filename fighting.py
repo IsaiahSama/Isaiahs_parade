@@ -43,7 +43,7 @@ class FullFight(commands.Cog):
         
         
         for fightmaster in tempuser:
-            acc = Fighter(*fightmaster[0:26])
+            acc = Fighter(*fightmaster[0:27])
             
             loadedacc.append(acc)
 
