@@ -29,11 +29,11 @@ class relauser:
 
 
 class Pet:
-    def __init__(self, name, desc, tag, type, stages, expreq, stage=0, evolvesinto=None, playmessage=None, feedmsg=None):
+    def __init__(self, name, desc, tag, typef, stages, expreq, stage=0, evolvesinto=None, playmessage=None, feedmsg=None):
         self.name = name
         self.desc = desc
         self.tag = tag
-        self.type = type
+        self.type = typef
         self.stages = stages
         self.expreq = expreq
         self.stage = stage
