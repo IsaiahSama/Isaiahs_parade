@@ -474,19 +474,19 @@ class Fighter:
     def upmin(self, narg):
         cost = self.mindmgprice()
 
-        if self.mindmg + 5 > 120 and self.getTier() == 1:
+        if self.mindmg + 5 > easy10.mindmg * 1.5 and self.getTier() == 1:
             return "Reach Tier 2 to upgrade some more"
 
-        elif self.mindmg + 5 > 250 and self.getTier() == 2:
+        elif self.mindmg + 5 > mid10.mindmg * 1.5 and self.getTier() == 2:
             return "Reach Tier 3 to upgrade some more"
 
-        elif self.mindmg + 5 > 400 and self.getTier() == 3:
+        elif self.mindmg + 5 > hard10.mindmg * 1.5 and self.getTier() == 3:
             return "Reach Tier 4 to upgrade some more"
 
-        elif self.mindmg + 5 > 1500 and self.getTier() == 4:
+        elif self.mindmg + 5 > ut10.mindmg * 1.5 and self.getTier() == 4:
             return "Reach Tier 5 in order to upgrade your min damage some more"
         
-        elif self.mindmg + 5 > 6200 and self.getTier() == 5:
+        elif self.mindmg + 5 > dmaster.mindmg * 1.5 and self.getTier() == 5:
             return "Reach Tier 6 in order to upgrade your min damage further"
 
         cando = self.cashchk(cost)
@@ -513,19 +513,19 @@ class Fighter:
     def upmax(self, narg):
         cost = self.maxdmgprice()
 
-        if self.maxdmg + 5 > 160 and self.getTier() == 1:
+        if self.maxdmg + 5 > easy10.maxdmg * 1.5 and self.getTier() == 1:
             return "Reach Tier 2 to upgrade some more"
 
-        elif self.maxdmg + 5 > 300 and self.getTier() == 2:
+        elif self.maxdmg + 5 > mid10.maxdmg * 1.5 and self.getTier() == 2:
             return "Reach Tier 3 to upgrade some more"
 
-        elif self.maxdmg + 5 > 450 and self.getTier() == 3:
+        elif self.maxdmg + 5 > hard10.maxdmg * 1.5 and self.getTier() == 3:
             return "Reach Tier 4 to upgrade some more"
 
-        if self.maxdmg + 5 > 1600 and self.getTier() == 4:
+        if self.maxdmg + 5 > ut10.maxdmg * 1.5 and self.getTier() == 4:
             return "Reach Tier 5 in order to upgrade your max damage some more"
 
-        if self.maxdmg + 5 > 6400 and self.getTier() == 5:
+        if self.maxdmg + 5 > dmaster.maxdmg * 1.5 and self.getTier() == 5:
             return "Reach Tier 6 in order to upgrade your max damage some more"
 
         cando = self.cashchk(cost)
