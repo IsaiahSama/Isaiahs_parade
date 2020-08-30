@@ -135,6 +135,7 @@ tier = MyHelp("Battle", "Tier", "<>tier", "Shows the information on how tiers wo
 togglefight = MyHelp("Battle", "Toggle Fight", "<>togglefight", "used to toggle whether or not you can be fought")
 upgrade = MyHelp("Battle", "Upgrade", "<>upgrade", "Shows your stat table")
 upgrade2 = MyHelp("Battle", "Upgrade", "<>upgrade statname", "Upgrades the stat which you specify")
+upgrade3 = MyHelp("Battle", "Upgrade", "<>upgrade statname amount", "Upgrades the stat the specified number of times")
 view = MyHelp("Battle", "View", "<>view itemname", "Shows more information on the item/weapon/armour you said")
 use = MyHelp("Battle", "Use", "<>use itemid", "Uses the buff item/potion")
 reborn = MyHelp("Battle", "Reborn", "<>reborn", "Must be tier 6. Allows you to go back to tier 1 and progress again. You keep 1% hp and 3% of other stats added on to the base. Crit and Healchance remain unaffected")
@@ -204,7 +205,7 @@ mycommands = [barrage, blush, clown, condescend, cry, dance, fistbump, flex, hug
 slap, afk, back, resetnick, suggest, intercom, endcall, accept, active, adventure, buy, createprofile,
 deny, fight, gear, gods, grant, invite, job, kickmember, leaveteam, myteam, paradecoins, paraid,
 paraid6, passive, powprofile, profile, quest, quest6, raid, readd, rebase, register, reward, search, sell, shop,
-switch, teams, tier, togglefight, upgrade, upgrade2, view, endgame, endstory, startgame, startstory, wordadd, wordremove,
+switch, teams, tier, togglefight, upgrade, upgrade2, upgrade3, view, endgame, endstory, startgame, startstory, wordadd, wordremove,
 wordshow, add, allseeing, chosenone, divide, heavens_door, me, multiply, no, online, subtract, timer, yes,
 gcall, gjoin, gleave, emoji, mentioned, nohide, ping, deathnote, freeze3, ger, ger_rtz, 
 impactrevive, killerqueen, kingcrimson, mute, relog, shadowrealm, wipe, zahando, zawarudo, namegen, soulmate,
