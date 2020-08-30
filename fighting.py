@@ -14,43 +14,52 @@ from teams import Team, ToAdv
 
 emojiz = ["🤔", "🤫", "🤨", "🤯", "😎", "😓", "🤡", "💣", "🧛", "🧟‍♂️", "🏋️‍♂️", "⛹", "🏂"]
 
+# Evolution of Fighter class
+
+# def __init__(self, name, tag, level, health, mindmg, maxdmg, wins, losses, attackmsg=None):
+
+# def __init__(self, name, tag, level, health, mindmg, maxdmg, wins, losses, pcoin, critchance=5, healchance=3, 
+# ability=None, passive=None, weapon=fist, armour=linen):
+
+# def __init__(self, name, tag, level, curxp, health, mindmg, maxdmg, wins, losses, pcoin, critchance=5, healchance=3, 
+# ability=None, passive=None, weapon=fist, armour=linen, xpthresh=50, typeobj="player"):
+
+# def __init__(self, name, tag, level, curxp, health, mindmg, maxdmg, wins, losses, pcoin, 
+# critchance=5, healchance=3, ability=None, passive=None, weapon="Fist", armour="Linen", 
+# xpthresh=50, typeobj="player", canfight=True):
+
+# name tag level curxp health mindmg maxdmg wins losses pcoin critchance healchance ability passive weapon armour xpthresh typeobj
+# canfight inteam invation weapon2 armour2 curbuff buffdur inventory, reborn
+
 
 class FullFight(commands.Cog):
+    users = []
     if os.path.exists("fightdata.json"):
         with open("fightdata.json") as h:
             data = json.load(h)
 
-        tempuser = []
-        
-        for dictobj in data:
-            templist = []
-            for v in dictobj.values():
-                templist.append(v)
-            tempuser.append(templist)
+        for k in data:
+            u = Fighter(k["name"], k["tag"], k["level"], k['curxp'], k['health'], k['mindmg'], k['maxdmg'], k['wins'], k['losses'], k['pcoin'])
+            for m, v in k.items():
+                setattr(u, m, v)
+            users.append(u)
 
-        loadedacc = []
+        # tempuser = []
 
-        # def __init__(self, name, tag, level, health, mindmg, maxdmg, wins, losses, attackmsg=None):
-        # def __init__(self, name, tag, level, health, mindmg, maxdmg, wins, losses, pcoin, critchance=5, healchance=3, 
-        # ability=None, passive=None, weapon=fist, armour=linen):
-        # def __init__(self, name, tag, level, curxp, health, mindmg, maxdmg, wins, losses, pcoin, critchance=5, healchance=3, 
-        # ability=None, passive=None, weapon=fist, armour=linen, xpthresh=50, typeobj="player"):
-        # def __init__(self, name, tag, level, curxp, health, mindmg, maxdmg, wins, losses, pcoin, 
-        # critchance=5, healchance=3, ability=None, passive=None, weapon="Fist", armour="Linen", 
-        # xpthresh=50, typeobj="player", canfight=True):
-        # name tag level curxp health mindmg maxdmg wins losses pcoin critchance healchance ability passive weapon armour xpthresh typeobj
-        # canfight inteam invation weapon2 armour2 curbuff buffdur inventory, reborn
+        #for dictobj in data:
+        #    templist = []
+        #    for v in dictobj.values():
+        #        templist.append(v)
+        #    tempuser.append(templist)
+
+        # loadedacc = []
         
-        
-        for fightmaster in tempuser:
-            acc = Fighter(*fightmaster[0:27])
+        #for fightmaster in tempuser:
+        #    acc = Fighter(*fightmaster[0:27])
             
-            loadedacc.append(acc)
+        #    loadedacc.append(acc)
 
-        users = loadedacc
-
-    else:
-        users = []
+        #users = loadedacc
 
     if os.path.exists("Teams.json"):
         with open("Teams.json") as t:
@@ -121,6 +130,11 @@ class FullFight(commands.Cog):
         if user2 == None:
             await self.denied(ctx.channel, member)
             return
+
+        if user1 == user2:
+            user1.takecoin(arg)
+            user2.addcoin(1/2 * arg)
+            await ctx.send("Successful... But it seems you dropped and lost some in the process")
 
         if user1.pcoin >= arg:
             user1.takecoin(arg)
@@ -732,7 +746,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                 fighting = False"""
             
         psned = []
-        turns = 0
+        turns = 1
 
         battlebed = discord.Embed(
                 title=f"FIGHT... Turn {turns}",
@@ -753,6 +767,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             await ctx.send(f"{user1.name}: {msg}")
 
             if user1.bdur <= 0:
+                user1.bdur = 0
                 await ctx.send("Your buff has expired")
                 main1.curbuff = None
             else:
@@ -767,10 +782,11 @@ Stat names are the names that you see in the above embed, with the exception of 
                 await ctx.send(f"{user2.name}: {msg}")
 
                 if user2.bdur <= 0:
+                    user2.bdur = 0
                     await ctx.send("Your buff has expired")
                     user2.curbuff = None
                 else:
-                    await ctx.send(f"You have {main2.bdur} fights remaining")
+                    await ctx.send(f"You have {main2.bdur} fights remaining with this buff")
 
         while fighting:            
             
@@ -906,6 +922,14 @@ Stat names are the names that you see in the above embed, with the exception of 
                     if buffitem.pup > 0:
                         power += buffitem.pup
                         battlebed.add_field(name=f"{buffitem.name}", value=f"{buffitem.effect}")
+                    if turns == 1:
+                        if buffitem.tag == 601:
+                            rnum = randint(0, 100)
+                            if rnum >= 25 and rnum <= 30:
+                                battlebed.add_field(name=buffitem.name, value=buffitem.effect)
+                                power = 9999999999999999999999999999999999
+                                user1.curbuff = None
+                                user1.bdur = 0
                     
             defender.attack(power)
 
@@ -933,7 +957,15 @@ Stat names are the names that you see in the above embed, with the exception of 
                         if len(psned) == 0:
                             psn = False
 
-            
+            if defender.typeobj == "player":
+                if turns == 1 and defender.health <= 0:
+                    if defender.hasbuff():
+                        if defender.curbuff == 401:
+                            buffitem = await self.getbuff(defender.curbuff)
+                            battlebed.add_field(name=buffitem.name, value=buffitem.effect)
+                            defender.health = 100
+                            user2.curbuff = None
+                            user2.bdur = 0
 
             if defender.health <= 0:
                 fighting = False

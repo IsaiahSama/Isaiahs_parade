@@ -26,14 +26,23 @@ hpot = Item("Health Potion", 101, "A basic health potion which increases your he
 600, "Increases health by 30", 2, 1, 30, 0, 0, 0, 0, "pot")
 lblet = Item("Lucky Bracelet", 102, "A bracelet which increases your crit chance by 10% for 2 fights",
 650, "Increases Crit Chance by 10%", 2, 1, 0, 0, 0, 0, 10, "item")
-mpot = Item("Mixa Pot", 104, "A potion carefully brewed increasing your power and health by 50 for 2 fights",
+mpot = Item("Mixa Pot", 201, "A potion carefully brewed increasing your power and health by 50 for 2 fights",
 1100, "Increases health and power by 50", 2, 2, 50, 50, 0, 0, 0, "pot")
-sring = Item("Special Ring", 105, "A ring which increases your min and max damage by 30 for 3 fights",
+sring = Item("Special Ring", 202, "A ring which increases your min and max damage by 30 for 3 fights",
 1200, "Increases min and max damage by 30", 3, 2, 0, 0, 30, 30, 0, "item")
-mcloak = Item("Magic Cloak", 106, "Fairly dusty, but seems to increase all of your stats by 15 for 5 fights",
+mcloak = Item("Magic Cloak", 203, "Fairly dusty, but seems to increase all of your stats by 15 for 5 fights",
 1000, "Increases all stats by 15", 5, 2, 15, 15, 15, 15, 15, "item")
-gpapple = Item("Golden Pineapple", 107, "A golden pineapple that when it's juice is drunk, increases health by 150 and power by 40 for 2 fights",
+gpapple = Item("Golden Pineapple", 301, "A golden pineapple that when it's juice is drunk, increases health by 150 and power by 40 for 2 fights",
 2300, "Increases health by 150, and power by 40", 2, 3, 150, 40, 0, 0, 0, "pot")
+fsash = Item("Sash of FOCUS", 401, "A sash worn around the forehead that helps you to survive an OHKO. Lasts until activated",
+10000, "Ripped sash and survived an OHKO", 6666, 4, 0, 0, 0, 0, 0, "item")
+ohkoscarf = Item("OHKO scarf", 601, "A sacred scarf that gives you a 5/100 chance to OHKO an enemy on first turn. Lasts until activated",
+1200000, "Ripped scarf and One Hit KO enemy", 66666, 6, 0, 0, 0, 0, 0, "item")
 
-potlist = [ppot, hpot, lblet, mpot, sring, mcloak, gpapple]
+
+potlist = [ppot, hpot, lblet, 
+mpot, sring, mcloak,
+gpapple, 
+fsash,
+ohkoscarf]
 

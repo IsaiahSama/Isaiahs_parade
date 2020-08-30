@@ -630,10 +630,11 @@ class Relamain(commands.Cog):
                 if user.petexp >= pett.expreq and pett.expreq != 0:
                     msg, npet = pett.evolve()
                     user.petexp = 0
-                    if user.petnick == None:
-                        user.petnick = npet.name
                     await message.channel.send(msg)
                     user.petid = npet
+                    if user.petnick == None:
+                        npet = await self.getpetid(user.petid, message.channel)
+                        user.petnick = npet.name
             else:
                 return
 
