@@ -453,13 +453,16 @@ class Fighter:
             return "Reach Tier 5 to upgrade your health further"
 
         cando = self.cashchk(cost)
-        if narg.lower() == "all":
-            while cando:
+        at = 0
+
+        if narg > 0:
+            while cando and at <= narg:
+                at += 1
                 cost = self.healthprice()
                 cando = self.cashchk(cost)
                 self.health += 20
                 self.health = math.ceil(self.health)
-            return "You traded all of your cash for upgrades in health"
+            return f"You upgraded your health {at} times"
         
         if cando:
             self.health += 20
@@ -487,14 +490,16 @@ class Fighter:
             return "Reach Tier 6 in order to upgrade your min damage further"
 
         cando = self.cashchk(cost)
+        at = 0
 
-        if narg.lower() == "all":
-            while cando:
+        if narg > 0:
+            while cando and at <= narg:
+                at += 1
                 cost = self.mindmgprice()
                 cando = self.cashchk(cost)
                 self.mindmg += 5
                 self.mindmg = math.ceil(self.mindmg)
-            return "You traded all of your cash for upgrades in min damage"
+            return f"You upgraded your min damage {at} times"
         
         
         if cando:
@@ -524,14 +529,16 @@ class Fighter:
             return "Reach Tier 6 in order to upgrade your max damage some more"
 
         cando = self.cashchk(cost)
+        at = 0
 
-        if narg.lower() == "all":
-            while cando:
+        if narg > 0:
+            while cando and at <= narg:
+                at += 1
                 cost = self.maxdmgprice()
                 cando = self.cashchk(cost)
                 self.maxdmg += 5
                 self.maxdmg = math.ceil(self.maxdmg)
-            return "You traded all of your cash for upgrades in max damage"
+            return f"You upgraded your max dmg {at} times"
 
         if cando:
             self.maxdmg += 5

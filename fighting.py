@@ -323,7 +323,13 @@ class FullFight(commands.Cog):
         await ctx.send("Reset All Quests")  
 
     @commands.command()
-    async def upgrade(self, ctx, arg=None, narg="yes"):
+    async def upgrade(self, ctx, arg=None, narg=0):
+        try:
+            narg = int(narg)
+        except ValueError:
+            await ctx.send("The amount of times to upgrade must be a number")
+            return
+
         user = await self.getmember(ctx.author)
         
         if user == None:
@@ -1027,7 +1033,11 @@ Stat names are the names that you see in the above embed, with the exception of 
 
         if attacker.typeobj == "player" and defender.typeobj == "npc":
             attacker = await self.getmain(attacker)
-            coin = randint(defender.mincoin, defender.maxcoin)
+            try:
+                coin = randint(defender.mincoin, defender.maxcoin)
+            except ValueError:
+                coin = 1000
+                await ctx.send("Something went wrong with the money. So take 1k coin as substitute")
             attacker.addcoin(coin)
             await ctx.send(f"{attacker.name}: You have received {coin} Parade Coins for defeating {defender.name}")
 
@@ -1539,7 +1549,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                     if user.tag == userteam.leaderid:
                         await ctx.send("Inviting your members")
                         for mate in userteam.teammates:
-                            target = self.bot.get_user(mate)
+                            target = self.bot.get_all_members(mate)
                             if target.status == discord.Status.offline:
                                 continue
                             await target.send(f"{user.name} is preparing to go on an adventure. Join with <>adventure")
@@ -1719,7 +1729,13 @@ Stat names are the names that you see in the above embed, with the exception of 
     hasbuff = []
 
     @commands.command()
-    async def use(self, ctx, itag:int=None, confirm=False):
+    async def use(self, ctx, itag=None, confirm=False):
+        try:
+            itag = int(itag)
+        except ValueError:
+            await ctx.send("You must tell me the ID of the item you wish to use")
+            return
+
         if await self.ismember(ctx.author):
             user = await self.getmember(ctx.author)
             if len(user.inventory) == 0:
