@@ -102,6 +102,9 @@ class FullFight(commands.Cog):
             x, y = x[0], y[0]
             person.weapon, person.armour = x, y"""
 
+    modlist = [347513030516539393, 527111518479712256, 493839592835907594, 315619611724742656]
+    
+
     # Commands
 
     @commands.command(aliases=["pcoin", "pcoins"])
@@ -175,30 +178,8 @@ class FullFight(commands.Cog):
         
         if not powpof:
             sword, shield = target.getgear()
-            if ctx.author.id == 347513030516539393:
-                if target.tag == ctx.author.id:
-                    if target.armour == 4003:
-                        pass
-                    else:
-                        if target.level < 300:
-                            await ctx.send("Hello Trxsh. Reach level 300 to achieve your True Power")
-                        else:
-                            target.weapon = 3003
-                            target.armour = 4003
-                            await ctx.send("Now... Embrace your true power")
-            
-            """if ctx.author.id == 527111518479712256 and target.tag == 527111518479712256:
-                if target.level < 300:
-                    await ctx.send("Congratulations on being the first Non-Mod to reach Tier 5.\
-                         All you have to do is reach level 300 to get your reward")
-                else:
-                    if target.weapon == 3004:
-                        pass
-                    else:
-                        await ctx.send("It's about time you reached level 300.\
-                            Now... Take what you have earnt")
-                        target.weapon = 3004
-                        target.armour = 4004"""
+            if ctx.author.id in self.modlist and target.tag == ctx.author.id:
+                await self.modcheck(ctx, target)
                         
         if target.mindmg > target.maxdmg:
             target.mindmg, target.maxdmg = target.maxdmg, target.mindmg
@@ -1559,6 +1540,8 @@ Stat names are the names that you see in the above embed, with the exception of 
                         await ctx.send("Inviting your members")
                         for mate in userteam.teammates:
                             target = self.bot.get_user(mate)
+                            if target.status == discord.Status.offline:
+                                continue
                             await target.send(f"{user.name} is preparing to go on an adventure. Join with <>adventure")
                         
                         pendingadv = ToAdv(userteam.teamid, True)
@@ -1805,6 +1788,35 @@ Stat names are the names that you see in the above embed, with the exception of 
             await self.denied(ctx.channel, ctx.author)
 
     # Functions
+
+    async def modcheck(self, ctx, target):
+        if target.tag == 347513030516539393:
+                if not target.armour == 4003 and not target.armour2 == 4003:
+                    if target.level < 300 and not target.hasreborn():
+                        await ctx.send("Hello Trxsh. Reach level 300 to achieve your True Power")
+                    else:
+                        target.weapon = 3003
+                        target.armour = 4003
+                        await ctx.send("Now... Embrace your true power")
+       
+        elif target.tag == 527111518479712256:
+                if target.level < 300 and not target.hasreborn():
+                    await ctx.send("Congratulations on being the first non-mod to reach Tier 5. Now just reach Tier 6 >:).")
+                else:
+                    if not target.weapon == 3004 and not target.weapon2 == 3004:
+                        await ctx.send("It's about time you reached level 300. Now... Take what you have earnt")
+                        target.weapon = 3004
+                        target.armour = 4004
+
+        elif target.tag == 493839592835907594:
+            if not target.hasreborn() and target.level < 300:
+                await ctx.send("Reach level 300 for your mod gear")
+            else:
+                if not target.weapon == 3002 and not target.weapon2 == 3002:
+                    await ctx.send("Welcome my Parader")
+                    target.weapon = 3002
+                    target.armour = 4001
+
 
     async def buffuse(self, user):
         item = await self.getbuff(user.curbuff)
@@ -2289,7 +2301,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         winner = await self.getmain(winner)
         if loser.typeobj == "npc":
             exp = randint(loser.minxp, loser.maxxp)
-            exp *= 2
+            exp *= 4
             winner.curxp += exp
         else:
             exp = loser.xpthresh / 3
