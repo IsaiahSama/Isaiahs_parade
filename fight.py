@@ -124,6 +124,12 @@ plague = Ability("The Plague", "...?'s special abiltiy which poisons the victim.
 czw = Ability("Celestial's ZA WARUDO", "CelestialG's special ability which stops time for 3 turns",
 "THIS IS MY ZA WARUDO!", "has stopped time, and attacked", 1, 20, 0, 0, 0)
 
+suffocation = Ability("Suffocation", "Ability of Trxsh. Has 4 in 10 chance of proccing. Removes 5% of opponents health for 4 turns",
+"SHINE... BAKAYARO", "Removes 5% of health from",1, 0, 0, 0, 0, 5)
+
+nklk = Passive("No Kill Like Overkill", "A sacred ability belonging to Trxsh. All extra damage done to him is added on to his power for his next turn",
+"NO KILL LIKE OVERKILL", "stole all extra power and overkilled", 1, 0, 0, 0, 0)
+
 # Raid Enemies
 bebebeslam = Ability("BBB slam!", "Giant King B B B, belly flops dealing 1.3x dmg and hitting 3 people", "BE BE BE... SLAM!", 
 "belly flops dealing 1.3x dmg, healing for 10hp", 1.3, 0, 10, 0, 0)
@@ -133,12 +139,12 @@ bellybump = Ability("Belly Belly Bounce", "Massive user dashes at an immense spe
 "charges gaining x1.4 strength increasing min and max damage by 10, and then bounces", 1.4, 0, 0, 10, 10)
 
 abilities = [theworld, swarm, blast, deadlygrasp, critstrike, pickelize, sonic, jajanken, uheal, slag, ssuck, nmareterror]
-allabilities = [plague, psusanoo, czw]
+allabilities = [plague, psusanoo, czw, suffocation]
 for thing in abilities:
     allabilities.append(thing)
 
 passives = [dodge, counter, regeneration, rage, sharpeye, sboost, critblock, nlove, chubz]
-allpassives = [haohaki, balancepride]
+allpassives = [haohaki, balancepride, nklk]
 for thing in passives:
     allpassives.append(thing)
 
@@ -195,7 +201,7 @@ dreamsword = Weapons("Dream Sword", 1027, "Crafted from the essence of the light
 herorian = Weapons("The Herorian", 1028, "The prized Spinning Top of the legendary Herorian from Heroria", "spins into", 800, 3, 1, 1000500, 5)
 daxe = Weapons("Deathly Axe", 1033, "Said to bring out the true power of Deadly Grasp, and linked directly to Azoth himself. But leeches off of 2% of the users hp",
 "reveals death to", 750, 20, -2, 1100000, 5)
-emace = Weapons("Energy Mace", 1034, "Made of concentrated chak-- energy", "slams into", 850, 5, 0, 11000000, 5)
+emace = Weapons("Energy Mace", 1034, "Made of concentrated chak-- energy", "slams into", 850, 5, 0, 1100000, 5)
 
 # Tier 6
 bblade = Weapons("Banana Blaster", 1032, "YAA HOO, not your typical exploding bananas", "fires at", 1800, 40, 3, 5300000, 6)
@@ -278,7 +284,7 @@ sranger = Armour("Tundra Ranger", 2022, "Gained from surviving the depth of the 
 vampcloak = Armour("Vampiric Cloak", 2023, "Makes it easier to drain blood. Pairs well with Enchanted Vamp Knives", 800, 300, 1100000, 18, evampknife, 5)
 nightmare = Armour("Nightmare", 2024, "Woven together from the essence of the dark side of sleep. Gains set bonus with Dream Sword",
 800, 420, 1100000, 0, dreamsword, 5)
-hshield = Armour("Hero's Shield", 2031, "The shield of the legendary Herorian of Heroria. Gains set bonus with The Herorian", 750, 400, 1400000, 4, herorian, 6)
+hshield = Armour("Hero's Shield", 2031, "The shield of the legendary Herorian of Heroria. Gains set bonus with The Herorian", 750, 400, 1400000, 4, herorian, 5)
 blastgear = Armour("Blasting", 2025, "Said to increase your power... Explosively. Gains set bonus with Tier 2 Buh-bomb", 700, 400, 1300000, 0, bomb, 5 )
 vmaster = Armour("Vibe Master", 2026, "An upgrade to the previous Wooden Armor. Gains set bonus with The Vibe Check", 700, 250, 1100000 , 8, vibechk, 5)
 loincloth = Armour("Loincloth", 2032, "Who knows where this came from. With Deathly Axe, increases effectiveness of Deadly Grasp",
@@ -368,6 +374,7 @@ class Fighter:
         self.mindmg = 10 + (0.03 * self.mindmg)
         self.maxdmg = 20 + (0.03 * self.maxdmg)
         self.reborn += 1
+        self.pcoin = (1/8 * self.pcoin) 
 
     def hasreborn(self):
         if self.reborn == 0:
@@ -456,7 +463,7 @@ class Fighter:
         at = 0
 
         if narg > 0:
-            while cando and at <= narg:
+            while cando and at < narg:
                 at += 1
                 cost = self.healthprice()
                 cando = self.cashchk(cost)
@@ -493,7 +500,7 @@ class Fighter:
         at = 0
 
         if narg > 0:
-            while cando and at <= narg:
+            while cando and at < narg:
                 at += 1
                 cost = self.mindmgprice()
                 cando = self.cashchk(cost)
@@ -532,7 +539,7 @@ class Fighter:
         at = 0
 
         if narg > 0:
-            while cando and at <= narg:
+            while cando and at < narg:
                 at += 1
                 cost = self.maxdmgprice()
                 cando = self.cashchk(cost)
@@ -782,7 +789,11 @@ def buffing(tobuff):
 
     elif tobuff.armour.name == "Loincloth":
         tobuff.ability = deadlygrasp
-        msg = "Grants you the ability of deadly grasp"
+        msg = "Grants you the ability of deadly grasp."
+
+    elif tobuff.armour.tag == 4003:
+        tobuff.ability = suffocation
+        msg = "Now... Suffocate them"
 
     else:
         msg = "Something went wrong"

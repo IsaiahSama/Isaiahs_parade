@@ -323,9 +323,9 @@ class FullFight(commands.Cog):
         await ctx.send("Reset All Quests")  
 
     @commands.command()
-    async def upgrade(self, ctx, arg=None, narg=0):
+    async def upgrade(self, ctx, arg=None, amount=0):
         try:
-            narg = int(narg)
+            narg = int(amount)
         except ValueError:
             await ctx.send("The amount of times to upgrade must be a number")
             return
@@ -915,10 +915,38 @@ Stat names are the names that you see in the above embed, with the exception of 
                             if rnum >= 25 and rnum <= 30:
                                 battlebed.add_field(name=buffitem.name, value=buffitem.effect)
                                 power = 9999999999999999999999999999999999
-                                user1.curbuff = None
-                                user1.bdur = 0
-                    
+                                temp = await self.getmain(attacker)
+                                temp.curbuff = None
+                                temp.bdur = 0
+            
+            try:
+                if defender.cursuf > 0:
+                    todeal = 5/100 * defender.health
+                    defender.attack(todeal)
+                    battlebed.add_field(name=attacker.ability.usename, value=attacker.ability.effect)
+                    defender.cursuf -= 1
+                if defender.cursuf == 0:
+                    del defender.cursuf
+            except AttributeError:
+                pass
+
+            if attacker.hasPassive():
+                if attacker.passive.name == "No Kill Like Overkill":
+                    attacker.dmgdone = power
+                    battlebed.add_field(name=attacker.passive.name, value="Damage done has been Noted")
+                    try:
+                        if attacker.dmgtaken > attacker.dmgdone:
+                            power += attacker.dmgtaken - attacker.dmgdone
+                            battlebed.add_field(name=attacker.passive.usename, value=attacker.passive.effect)
+                    except AttributeError:
+                        pass
+
             defender.attack(power)
+
+            if defender.hasPassive():
+                if defender.passive.name == "No Kill Like Overkill":
+                    defender.dmgtaken = power
+                    battlebed.add_field(name=defender.passive.name, value="Your damage has been noted")
 
             if power >= 1:
                 if attacker.weapon.islifesteal():
@@ -951,8 +979,9 @@ Stat names are the names that you see in the above embed, with the exception of 
                             buffitem = await self.getbuff(defender.curbuff)
                             battlebed.add_field(name=buffitem.name, value=buffitem.effect)
                             defender.health = 100
-                            user2.curbuff = None
-                            user2.bdur = 0
+                            temp = await self.getmain(defender)
+                            temp.curbuff = None
+                            temp.bdur = 0
 
             if defender.health <= 0:
                 fighting = False
@@ -1549,7 +1578,9 @@ Stat names are the names that you see in the above embed, with the exception of 
                     if user.tag == userteam.leaderid:
                         await ctx.send("Inviting your members")
                         for mate in userteam.teammates:
-                            target = self.bot.get_all_members(mate)
+                            target = self.bot.get_all_members()
+                            target = [member for member in target if member.id == mate]
+                            target = target[0]
                             if target.status == discord.Status.offline:
                                 continue
                             await target.send(f"{user.name} is preparing to go on an adventure. Join with <>adventure")
@@ -1807,13 +1838,15 @@ Stat names are the names that you see in the above embed, with the exception of 
 
     async def modcheck(self, ctx, target):
         if target.tag == 347513030516539393:
-                if not target.armour == 4003 and not target.armour2 == 4003:
-                    if target.level < 300 and not target.hasreborn():
-                        await ctx.send("Hello Trxsh. Reach level 300 to achieve your True Power")
-                    else:
+                if target.level < 300 and not target.hasreborn():
+                    await ctx.send("Hello Trxsh. Reach level 300 to achieve your True Power")
+                else:
+                    if not target.armour == 4003 and not target.armour2 == 4003:
                         target.weapon = 3003
                         target.armour = 4003
-                        await ctx.send("Now... Embrace your true power")
+                    if target.passive != "No Kill Like Overkill":
+                        target.passive = "No Kill Like Overkill" 
+                    await ctx.send("Now... Embrace your true power")
        
         elif target.tag == 527111518479712256:
                 if target.level < 300 and not target.hasreborn():
@@ -2317,7 +2350,6 @@ Stat names are the names that you see in the above embed, with the exception of 
         winner = await self.getmain(winner)
         if loser.typeobj == "npc":
             exp = randint(loser.minxp, loser.maxxp)
-            exp *= 4
             winner.curxp += exp
         else:
             exp = loser.xpthresh / 3
@@ -2357,13 +2389,13 @@ Stat names are the names that you see in the above embed, with the exception of 
                 elif x.getTier() == 2:
                     x.addcoin(50 * x.level)
                 elif x.getTier() == 3:
-                    x.addcoin(100 * x.level)
+                    x.addcoin(70 * x.level)
                 elif x.getTier() == 4:
-                    x.addcoin(500 * x.level)
+                    x.addcoin(120 * x.level)
                 elif x.getTier() == 5:
-                    x.addcoin(10000 * x.level)
+                    x.addcoin(150 * x.level)
                 else:
-                    x.addcoin(100000 * x.level)
+                    x.addcoin(300 * x.level)
             
             return True
 
@@ -2610,8 +2642,11 @@ Stat names are the names that you see in the above embed, with the exception of 
                 power = attacker.abiluse(power)
                 if attacker.ability.name == "The Plague":
                     defender.ptime = 3
+                if attacker.ability.name == "Suffocation":
+                    defender.sufturn = 4
                 embed.add_field(name=f"{attacker.ability.usename}", value=f"{attacker.name} {attacker.ability.effect} {defender.name} for {power} damage",inline=False)
                 return power, attacker.ability.name
+                
             else:
                 embed.add_field(name="Ability Failed", value=f"{attacker.name} tried to use their ability. But it's on Cooldown", inline=False)
 
@@ -2777,12 +2812,9 @@ Stat names are the names that you see in the above embed, with the exception of 
             description="To buy an item, use <>buy {itemname} or use <>view {itemname} for details",
             color=randint(0, 0xffffff)
         )
-
-        user = await self.getmember(ctx.author)
-
+        
         for valuable in potlist:
-            if user.getTier() >= valuable.tierz:
-                itembed.add_field(name=f"{valuable.name}", value=f"{valuable.desc} \nCost: {valuable.cost}")
+            itembed.add_field(name=f"{valuable.name}", value=f"{valuable.desc} \nCost: {valuable.cost}\nTier:{valuable.tierz}")
                 
         await ctx.send(embed=itembed)
 
