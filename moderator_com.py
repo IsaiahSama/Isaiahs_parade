@@ -351,21 +351,25 @@ class Moderator(commands.Cog):
 
             await ctx.send(f"You are on Cooldown for {math.floor(error.retry_after)} seconds")
 
-        if isinstance(error, commands.MissingPermissions):
+        elif isinstance(error, commands.MissingPermissions):
             
             await ctx.send(error)
         
-        if isinstance(error, commands.CommandNotFound):
+        elif isinstance(error, commands.CommandNotFound):
             
             await ctx.send(error)
 
-        if isinstance(error, commands.NotOwner):
+        elif isinstance(error, commands.NotOwner):
             
             await ctx.send(error)
 
-        if isinstance(error, commands.MissingRequiredArgument):
+        elif isinstance(error, commands.MissingRequiredArgument):
             
-            await ctx.send(error)         
+            await ctx.send(error)     
+
+        elif isinstance(error, commands.BadArgument):
+
+            await ctx.send(error)    
 
         else:
             channel = self.bot.get_channel(740337325971603537)
