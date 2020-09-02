@@ -2350,10 +2350,14 @@ Stat names are the names that you see in the above embed, with the exception of 
         winner = await self.getmain(winner)
         if loser.typeobj == "npc":
             exp = randint(loser.minxp, loser.maxxp)
-            winner.curxp += exp
         else:
             exp = loser.xpthresh / 3
-            winner.curxp += exp
+        
+        if winner.hasbuff():
+            if winner.curbuff == 401:
+                exp += 0.20 * exp
+        
+        winner.curxp += exp
         
         winner.wins += 1
 
@@ -2361,6 +2365,10 @@ Stat names are the names that you see in the above embed, with the exception of 
 
         if levelup:
             return True
+        elif winner.hasbuff():
+            if winner.curbuff == 401:
+                irl = await self.getirl(winner)
+                return f"{irl.mention} has gained an increased {exp} exp points from defeating {loser.name}"
         else:
             irl = await self.getirl(winner)
             return f"{irl.mention} has gained {exp} exp points from defeating {loser.name}"    
