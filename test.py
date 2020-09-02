@@ -26,11 +26,11 @@ while level < 301:
             f.write(f"Exp will be {enemy}\n")
         f.write(f"Strongest will have {highest} exp\n\n")
 
-tier1 = [x.health for x in enemybeta if x.level in range(0, 50)]
-tier2 = [x.health for x in enemybeta if x.level in range(50, 100)]
-tier3 = [x.health for x in enemybeta if x.level in range(100, 150)]
-tier4 = [x.health for x in enemybeta if x.level in range(150, 200)]
-tier5 = [x.health for x in enemybeta if x.level in range(200, 500)]
+tier1 = [x.mindmg for x in enemybeta if x.level in range(0, 50)]
+tier2 = [x.mindmg for x in enemybeta if x.level in range(50, 100)]
+tier3 = [x.mindmg for x in enemybeta if x.level in range(100, 150)]
+tier4 = [x.mindmg for x in enemybeta if x.level in range(150, 200)]
+tier5 = [x.mindmg for x in enemybeta if x.level in range(200, 500)]
 
 
 print(f"Highest: {max(tier1)}")

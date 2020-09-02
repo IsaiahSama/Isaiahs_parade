@@ -493,7 +493,7 @@ class Fighter:
         elif self.mindmg + 5 > 1700 * 1.5 and self.getTier() == 4:
             return "Reach Tier 5 in order to upgrade your min damage some more"
         
-        elif self.mindmg + 5 > 1800 * 1.5 and self.getTier() == 5:
+        elif self.mindmg + 5 > 3500 * 1.5 and self.getTier() == 5:
             return "Reach Tier 6 in order to upgrade your min damage further"
 
         cando = self.cashchk(cost)
