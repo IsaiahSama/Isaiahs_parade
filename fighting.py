@@ -909,7 +909,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                     if buffitem.pup > 0:
                         power += buffitem.pup
                         battlebed.add_field(name=f"{buffitem.name}", value=f"{buffitem.effect}")
-                    if turns == 1:
+                    if turns in [1, 2]:
                         if buffitem.tag == 601:
                             rnum = randint(0, 100)
                             if rnum >= 25 and rnum <= 30:
@@ -973,7 +973,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                             psn = False
 
             if defender.typeobj == "player":
-                if turns == 1 and defender.health <= 0:
+                if turns in [1, 2] and defender.health <= 0:
                     if defender.hasbuff():
                         if defender.curbuff == 401:
                             buffitem = await self.getbuff(defender.curbuff)
