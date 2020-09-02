@@ -2354,7 +2354,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             exp = loser.xpthresh / 3
         
         if winner.hasbuff():
-            if winner.curbuff == 401:
+            if winner.curbuff == 402:
                 exp += 0.20 * exp
         
         winner.curxp += exp
@@ -2366,7 +2366,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         if levelup:
             return True
         elif winner.hasbuff():
-            if winner.curbuff == 401:
+            if winner.curbuff == 402:
                 irl = await self.getirl(winner)
                 return f"{irl.mention} has gained an increased {exp} exp points from defeating {loser.name}"
         else:
