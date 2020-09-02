@@ -1,5 +1,6 @@
 # Here we will read through some quick values and print out the exp ranges at each level
 import random
+from fight import BeastFight, enemybeta
 base = 50
 current = 0
 level = 0
@@ -24,3 +25,17 @@ while level < 301:
         for enemy in sorted(lvlrange):
             f.write(f"Exp will be {enemy}\n")
         f.write(f"Strongest will have {highest} exp\n\n")
+
+tier1 = [x.health for x in enemybeta if x.level in range(0, 50)]
+tier2 = [x.health for x in enemybeta if x.level in range(50, 100)]
+tier3 = [x.health for x in enemybeta if x.level in range(100, 150)]
+tier4 = [x.health for x in enemybeta if x.level in range(150, 200)]
+tier5 = [x.health for x in enemybeta if x.level in range(200, 500)]
+
+
+print(f"Highest: {max(tier1)}")
+print(f"Highest: {max(tier2)}")
+print(f"Highest: {max(tier3)}")
+print(f"Highest: {max(tier4)}")
+print(f"Highest: {max(tier5)}")
+

@@ -289,8 +289,8 @@ blastgear = Armour("Blasting", 2025, "Said to increase your power... Explosively
 vmaster = Armour("Vibe Master", 2026, "An upgrade to the previous Wooden Armor. Gains set bonus with The Vibe Check", 700, 250, 1100000 , 8, vibechk, 5)
 loincloth = Armour("Loincloth", 2032, "Who knows where this came from. With Deathly Axe, increases effectiveness of Deadly Grasp",
 500, 500, 1200000, 3, daxe, 6)
-susanoo1 = Armour("Imperfect Susanoo", 2033, "Named after the shinto god of storms. It hurts. Loses 2%hp each turn Gains set bonus with Energy Mace", 900, 300,
-1400000, -2, emace, 6)
+susanoo1 = Armour("Imperfect Susanoo", 2033, "Named after the shinto god of storms. It hurts. Loses 2%hp each turn Gains set bonus with Energy Mace", 900, 400,
+1400000, -2, emace, 5)
 
 # Tier 6 (God Tier)
 mkgear = Armour("Monkey Suit", 2030, "An outfit made by the Monkey King. Gains set bonus with Banana Blaster", 1700, 800,
@@ -450,13 +450,13 @@ class Fighter:
     def uphealth(self, narg):
         cost = self.healthprice()
 
-        if self.getTier() == 1 and self.health + 20 > easy10.health * 1.3:
+        if self.getTier() == 1 and self.health + 20 > 130 * 1.3:
             return "Reach Tier 2 to upgrade your health further"
-        if self.getTier() == 2 and self.health + 20 > mid10.health * 1.3:
+        if self.getTier() == 2 and self.health + 20 > 345 * 1.3:
             return "Reach Tier 3 to upgrade your health further"
-        if self.getTier() == 3 and self.health + 20 > hard10.health * 1.3:
+        if self.getTier() == 3 and self.health + 20 > 949 * 1.3:
             return "Reach Tier 4 to upgrade your health further"
-        if self.getTier() == 4 and self.health + 20 > ut10.health * 1.3:
+        if self.getTier() == 4 and self.health + 20 > 2800 * 1.3:
             return "Reach Tier 5 to upgrade your health further"
 
         cando = self.cashchk(cost)
@@ -481,19 +481,19 @@ class Fighter:
     def upmin(self, narg):
         cost = self.mindmgprice()
 
-        if self.mindmg + 5 > easy10.mindmg * 1.5 and self.getTier() == 1:
+        if self.mindmg + 5 > 50 * 1.5 and self.getTier() == 1:
             return "Reach Tier 2 to upgrade some more"
 
-        elif self.mindmg + 5 > mid10.mindmg * 1.5 and self.getTier() == 2:
+        elif self.mindmg + 5 > 160 * 1.5 and self.getTier() == 2:
             return "Reach Tier 3 to upgrade some more"
 
-        elif self.mindmg + 5 > hard10.mindmg * 1.5 and self.getTier() == 3:
+        elif self.mindmg + 5 > 600 * 1.5 and self.getTier() == 3:
             return "Reach Tier 4 to upgrade some more"
 
-        elif self.mindmg + 5 > ut10.mindmg * 1.5 and self.getTier() == 4:
+        elif self.mindmg + 5 > 1700 * 1.5 and self.getTier() == 4:
             return "Reach Tier 5 in order to upgrade your min damage some more"
         
-        elif self.mindmg + 5 > dmaster.mindmg * 1.5 and self.getTier() == 5:
+        elif self.mindmg + 5 > 1800 * 1.5 and self.getTier() == 5:
             return "Reach Tier 6 in order to upgrade your min damage further"
 
         cando = self.cashchk(cost)
@@ -520,19 +520,19 @@ class Fighter:
     def upmax(self, narg):
         cost = self.maxdmgprice()
 
-        if self.maxdmg + 5 > easy10.maxdmg * 1.5 and self.getTier() == 1:
+        if self.maxdmg + 5 > 90 * 1.5 and self.getTier() == 1:
             return "Reach Tier 2 to upgrade some more"
 
-        elif self.maxdmg + 5 > mid10.maxdmg * 1.5 and self.getTier() == 2:
+        elif self.maxdmg + 5 > 190 * 1.5 and self.getTier() == 2:
             return "Reach Tier 3 to upgrade some more"
 
-        elif self.maxdmg + 5 > hard10.maxdmg * 1.5 and self.getTier() == 3:
+        elif self.maxdmg + 5 > 700 * 1.5 and self.getTier() == 3:
             return "Reach Tier 4 to upgrade some more"
 
-        if self.maxdmg + 5 > ut10.maxdmg * 1.5 and self.getTier() == 4:
+        if self.maxdmg + 5 > 1800 * 1.5 and self.getTier() == 4:
             return "Reach Tier 5 in order to upgrade your max damage some more"
 
-        if self.maxdmg + 5 > dmaster.maxdmg * 1.5 and self.getTier() == 5:
+        if self.maxdmg + 5 > 4200 * 1.5 and self.getTier() == 5:
             return "Reach Tier 6 in order to upgrade your max damage some more"
 
         cando = self.cashchk(cost)

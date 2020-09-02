@@ -1973,6 +1973,19 @@ Stat names are the names that you see in the above embed, with the exception of 
                     msg = person.buff()
                     await channel.send(f"Set Bonus {msg}")
                     await asyncio.sleep(2)
+            if person.hasbuff():
+                main1 = await self.getmain(person)
+                main1.bdur -= 1
+                msg = await self.buffuse(person)
+                    
+                await channel.send(f"{person.name}: {msg}")
+
+                if person.bdur <= 0:
+                    person.bdur = 0
+                    await channel.send("Your buff has expired")
+                    main1.curbuff = None
+                else:
+                    await channel.send(f"You have {main1.bdur} fights remaining with this buff")
 
         if self.raidbeast.hasActive():
             self.raidbeast.ability.reset()
@@ -2356,6 +2369,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         if winner.hasbuff():
             if winner.curbuff == 402:
                 exp += 0.20 * exp
+            
         
         winner.curxp += exp
         
