@@ -177,7 +177,9 @@ kingcrimson = MyHelp("Mod", "King Crimson", "<>kingcrimson @mention amount", "De
 mute = MyHelp("Mod", "Mute", "<>mute @mention", "Mutes the mentioned user")
 relog = MyHelp("Mod", "Relog", "<>relog amount", "Creates a channel called logs, if it does not exist already, and sends the history of the audit log up to the specified amount")
 shadowrealm = MyHelp("Mod", "Shadow realm", "<>shadowrealm @mention", "Bans the mentioned user from your server")
-wipe = MyHelp("Mod", "Wipe", "<>wipe message", "Deletes messages containing the word you specify")
+wipein = MyHelp("Mod", "Wipe in", "<>wipein amount text", "Deletes messages containing the text you specify")
+wipestartswith = MyHelp("Mod", "Wipe in", "<>wipestartswith amount text", "Deletes messages beginning with the text you specify")
+wipeendswith = MyHelp("Mod", "Wipe Ends With", "<>wipeendswith amount text", "Deletes messages ending with the text you specify")
 zahando = MyHelp("Mod", "Za Hando", "<>zahando amount", "Deletes the amount of messages you specify")
 zawarudo = MyHelp("Mod", "ZA WARUDO", "<>zawarudo time", "Stops everyone without manage channel permissions from speaking in the channel for that duration. Essentially a channel mute")
 profane = MyHelp("Mod", "Profane", "<>profane", "Used to toggle whether you want profanity moderated or not")
@@ -215,7 +217,7 @@ paraid6, passive, powprofile, profile, quest, quest6, raid, readd, rebase, regis
 switch, teams, tier, togglefight, upgrade, upgrade2, upgrade3, view, endgame, endstory, startgame, startstory, wordadd, wordremove,
 wordshow, add, allseeing, chosenone, divide, heavens_door, me, multiply, no, online, subtract, timer, yes,
 gcall, gjoin, gleave, emoji, mentioned, nohide, ping, deathnote, freeze3, ger, ger_rtz, 
-impactrevive, killerqueen, kingcrimson, mute, relog, shadowrealm, wipe, zahando, zawarudo, namegen, soulmate,
+impactrevive, killerqueen, kingcrimson, mute, relog, shadowrealm, wipein, wipestartswith, wipeendswith, zahando, zawarudo, namegen, soulmate,
 profane, acceptbff, acceptfr, acceptlove, acceptparent, addfriend, addlove, createsocial, delpet, denybff,
 denylove, denyparent, dump, feed, getpet, newbff, newchild, pet, play, showfriends, socialprofile,
 updatesocial, parade, use, nickpet, reborn, tmsg, tmsg2]

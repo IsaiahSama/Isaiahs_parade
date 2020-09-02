@@ -145,14 +145,44 @@ class Moderator(commands.Cog):
     # Target messages with a certain word
     @commands.command()
     @commands.has_permissions(manage_messages=True)
-    async def wipe(self, ctx, amount: typing.Optional[int] = 100, *, args):
+    async def wipein(self, ctx, amount: typing.Optional[int] = 100, *, args):
         counter = 0
         
-        args = f" {args} "
+        args = f"{args}"
 
         for message in await ctx.channel.history().flatten():
             if counter <= amount:
                 if args.lower() in message.content.lower():
+                    await message.delete()
+                    counter += 1
+
+        await ctx.send("Moderated")
+
+    @commands.command()
+    @commands.has_permissions(manage_messages=True)
+    async def wipeendswith(self, ctx, amount: typing.Optional[int] = 100, *, args):
+        counter = 0
+        
+        args = f"{args}"
+
+        for message in await ctx.channel.history().flatten():
+            if counter <= amount:
+                if message.content.lower().endswith(args.lower()):
+                    await message.delete()
+                    counter += 1
+
+        await ctx.send("Moderated")
+
+    @commands.command()
+    @commands.has_permissions(manage_messages=True)
+    async def wipestartswith(self, ctx, amount: typing.Optional[int] = 100, *, args):
+        counter = 0
+        
+        args = f"{args}"
+
+        for message in await ctx.channel.history().flatten():
+            if counter <= amount:
+                if message.content.lower().startswith(args.lower()):
                     await message.delete()
                     counter += 1
 
