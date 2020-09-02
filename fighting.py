@@ -1845,7 +1845,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         if level in range(0, 600):
             base = 50
             incre = 30
-            for x in range(level):
+            for _x in range(level):
                 base += incre
 
             await ctx.send(f"To reach level {level} you need a total of {base} exp points")
@@ -2415,8 +2415,7 @@ Stat names are the names that you see in the above embed, with the exception of 
     async def didlevel(self, x):
         if x.curxp >= x.xpthresh:
             while x.curxp >= x.xpthresh:
-                x.curxp -= x.xpthresh
-                x.xpthresh += 30
+                x.xpthresh += x.xpthresh + 30
                 x.level += 1
                 x.health += randint(3, 8)
                 x.mindmg += randint(1, 4)
