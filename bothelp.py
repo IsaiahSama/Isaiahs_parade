@@ -42,6 +42,7 @@ Available categories are Action, Battle, Mod, Misc, gaming, general and social""
 
         tosend = []
         categ = [x for x in mycommands if x.category.lower() == param.lower()] 
+        templist = []
 
         if categ:
             for thing in categ:
@@ -58,8 +59,12 @@ Available categories are Action, Battle, Mod, Misc, gaming, general and social""
                     tosend.append(thing.info())
                 
                 for item in tosend:
-                    await ctx.send(embed=item)
-
+                    msg = await ctx.send(embed=item)
+                    templist.append(msg)
+                
+                await asyncio.sleep(30)
+                for tmsg in templist:
+                    await tmsg.delete()
             else:
                 await ctx.send("Not a command or category")
 
