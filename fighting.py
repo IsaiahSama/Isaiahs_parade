@@ -1834,6 +1834,24 @@ Stat names are the names that you see in the above embed, with the exception of 
         else:
             await self.denied(ctx.channel, ctx.author)
 
+    @commands.command()
+    async def expfor(self, ctx, level):
+        try:
+            level = int(level)
+        except ValueError:
+            await ctx.send(f"{level} is not a number")
+            return False
+
+        if level in range(0, 600):
+            base = 50
+            incre = 30
+            for x in range(level):
+                base += incre
+
+            await ctx.send(f"To reach level {level} you need a total of {base} exp points")
+        else:
+            await ctx.send("That is out of range")
+
     # Functions
 
     async def modcheck(self, ctx, target):

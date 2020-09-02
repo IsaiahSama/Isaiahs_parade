@@ -144,6 +144,7 @@ upgrade3 = MyHelp("Battle", "Upgrade", "<>upgrade statname amount", "Upgrades th
 view = MyHelp("Battle", "View", "<>view itemname", "Shows more information on the item/weapon/armour you said")
 use = MyHelp("Battle", "Use", "<>use itemid", "Uses the buff item/potion")
 reborn = MyHelp("Battle", "Reborn", "<>reborn", "Must be tier 6. Allows you to go back to tier 1 and progress again. You keep 1% hp and 3% of other stats added on to the base. Crit and Healchance remain unaffected")
+expfor = MyHelp("Battle", "Exp for", "<>expfor level", "Shows the amount of exp needed to reach the level you request")
 
 startgame = MyHelp("Gaming", "Start Game", "<>startgame", "Used to start a game of hangman")
 endgame = MyHelp("Gaming", "End Game", "<>endgame", "Used to end a hangman game early")
@@ -220,7 +221,7 @@ gcall, gjoin, gleave, emoji, mentioned, nohide, ping, deathnote, freeze3, ger, g
 impactrevive, killerqueen, kingcrimson, mute, relog, shadowrealm, wipein, wipestartswith, wipeendswith, zahando, zawarudo, namegen, soulmate,
 profane, acceptbff, acceptfr, acceptlove, acceptparent, addfriend, addlove, createsocial, delpet, denybff,
 denylove, denyparent, dump, feed, getpet, newbff, newchild, pet, play, showfriends, socialprofile,
-updatesocial, parade, use, nickpet, reborn, tmsg, tmsg2]
+updatesocial, parade, use, nickpet, reborn, tmsg, tmsg2, expfor]
 
 
 def setup(bot):
