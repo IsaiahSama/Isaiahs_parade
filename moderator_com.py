@@ -145,7 +145,7 @@ class Moderator(commands.Cog):
     # Target messages with a certain word
     @commands.command()
     @commands.has_permissions(manage_messages=True)
-    async def wipein(self, ctx, amount: typing.Optional[int] = 100, *, args):
+    async def wipehas(self, ctx, amount: typing.Optional[int] = 100, *, args):
         counter = 0
         
         args = f"{args}"
