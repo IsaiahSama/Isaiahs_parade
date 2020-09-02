@@ -36,6 +36,8 @@ gpapple = Item("Golden Pineapple", 301, "A golden pineapple that when it's juice
 2300, "Increases health by 150, and power by 40", 2, 3, 150, 40, 0, 0, 0, "pot")
 fsash = Item("Sash of FOCUS", 401, "A sash worn around the forehead that helps you to survive an OHKO. Lasts until activated",
 10000, "Ripped sash and survived an OHKO", 6666, 4, 0, 0, 0, 0, 0, "item")
+boe = Item("Band Of Experience", 501, "A band said to increase exp gain by 20% from all sources",
+50000, "Increases exp gain by 20% from all sources", 5, 5, 0, 0, 0,0, 0, "item")
 ohkoscarf = Item("OHKO scarf", 601, "A sacred scarf that gives you a 5/100 chance to OHKO an enemy on first turn. Lasts until activated",
 1200000, "Ripped scarf and One Hit KO enemy", 66666, 6, 0, 0, 0, 0, 0, "item")
 
@@ -44,5 +46,6 @@ potlist = [ppot, hpot, lblet,
 mpot, sring, mcloak,
 gpapple, 
 fsash,
+boe,
 ohkoscarf]
 
