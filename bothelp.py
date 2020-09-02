@@ -176,6 +176,8 @@ wipe = MyHelp("Mod", "Wipe", "<>wipe message", "Deletes messages containing the 
 zahando = MyHelp("Mod", "Za Hando", "<>zahando amount", "Deletes the amount of messages you specify")
 zawarudo = MyHelp("Mod", "ZA WARUDO", "<>zawarudo time", "Stops everyone without manage channel permissions from speaking in the channel for that duration. Essentially a channel mute")
 profane = MyHelp("Mod", "Profane", "<>profane", "Used to toggle whether you want profanity moderated or not")
+tmsg = MyHelp("Mod", "Track Joins and Leaves", "<>trackjoins", "Used to toggle whether I will track join and leaves or not")
+tmsg2 = MyHelp("Mod", "Track Joins and Leaves", "<>trackjoins message", "Used when toggling to set a message to send when a user joins")
 
 acceptbff = MyHelp("Social", "Accept bff", "<>acceptbff", "Accepts a pending best friend request. You can only have 1")
 acceptfr = MyHelp("Social", "Accept friend request", "<>acceptfr", "Accepts a pending friend request")
@@ -211,7 +213,7 @@ gcall, gjoin, gleave, emoji, mentioned, nohide, ping, deathnote, freeze3, ger, g
 impactrevive, killerqueen, kingcrimson, mute, relog, shadowrealm, wipe, zahando, zawarudo, namegen, soulmate,
 profane, acceptbff, acceptfr, acceptlove, acceptparent, addfriend, addlove, createsocial, delpet, denybff,
 denylove, denyparent, dump, feed, getpet, newbff, newchild, pet, play, showfriends, socialprofile,
-updatesocial, parade, use, nickpet, reborn]
+updatesocial, parade, use, nickpet, reborn, tmsg, tmsg2]
 
 
 def setup(bot):

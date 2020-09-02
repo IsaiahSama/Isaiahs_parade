@@ -52,45 +52,7 @@ async def refresh(ctx):
     bot.reload_extension("calling")
     bot.reload_extension("bothelp")
 
-# On Join
-@bot.event
-async def on_member_join(member:discord.Member):
-    if member.guild.id == 722201014127820850:
-        try:
-            channel= discord.utils.get(member.guild.text_channels, name="welcome")
-        except:
-            for server in bot.guilds:
-                for tchan in server.text_channels:
-                    if "bot" in tchan.name.lower():
-                        channel = tchan
-        else:
-            channel = member.guild.system_channel
-
-        await channel.send(f"Welcome to {member.guild.name} {member.mention}... We look forward to having you serve in our domain :smiling_imp:")
-        await channel.send("Please keep in mind that you only have 2 minutes here")
-        await asyncio.sleep(120)
-        await member.kick()
     
-    if member.guild.id == 739229902921793637:
-        channel = member.guild.get_channel(739255078229377054)
-        await channel.send(f"Welcome to {member.guild.name} {member.mention}... We look forward to having you serve in our domain :smiling_imp:. If you already have a profile. Do <>readd")
-        role = discord.utils.get(member.guild.roles, name="Follower")
-
-        await member.add_roles(role)
-
-
-# On leaving
-@bot.event
-async def on_member_remove(member:discord.Member):
-    if member.guild.id == 733822954034561065:
-        return False
-    elif member.guild.id == 739229902921793637:
-        channel = member.guild.get_channel(739255078229377054)
-    else:
-        return
-
-    await channel.send(f"I hope {member.mention} doesn't think that they will be missed. They made their choice")
-
 # when bot joins a guild
 @bot.event
 async def on_guild_join(guild):

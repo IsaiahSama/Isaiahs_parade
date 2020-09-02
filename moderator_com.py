@@ -5,11 +5,28 @@ import random
 from random import randint
 import typing
 import math
+import os
+import json
+
+
+class Tracking:
+    def __init__(self, guildid, msg=None):
+        self.guildid=guildid
+        self.msg=msg
 
 
 class Moderator(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+
+    jltracking = []
+    if os.path.exists("jltracking.json"):
+        with open("jltracking.json") as tjl:
+            ttrack = json.load(tjl)
+
+        for server in ttrack:
+            server = Tracking(server["guildid"], server["msg"])
+            jltracking.append(server)
 
     # Admin's Command
     @commands.command()
@@ -341,7 +358,80 @@ class Moderator(commands.Cog):
             )
             
             await channel.send(embed=logbed)
-            
+
+    tlist = []
+
+    if len(jltracking) > 0:
+        tlist = [gid.guildid for gid in jltracking]
+
+    @commands.command()
+    @commands.has_permissions(administrator=True)
+    async def trackjoins(self, ctx, *, msg=None):
+
+        if msg:
+            if ctx.guild.id in self.tlist:
+                toobj = await self.getguildobj(ctx.guild.id)
+                toobj.msg = msg
+                await ctx.send("Updated your guild message")
+
+        if not msg:
+            msg = f"Welcome to {ctx.guild.name}. I hope you enjoy your time here"
+
+
+        if ctx.guild.id in self.tlist:
+            toobj = await self.getguildobj(ctx.guild.id)
+            self.jltracking.remove(toobj)
+            self.tlist.remove(ctx.guild.id)
+            await ctx.send("I will no longer track Joins and leaves from this server")
+        else:
+            tobj = Tracking(ctx.guild.id, msg)
+            self.jltracking.append(tobj)
+            self.tlist.append(ctx.guild.id)
+            await ctx.send("I will be tracking joins and leaves from this server. If you so desire, you can add on a custom message using <>trackjoins message")
+
+        await self.save()
+    # Events
+
+    @commands.Cog.listener()
+    async def on_member_join(self, member:discord.Member):
+        if member.guild.id == 722201014127820850:
+            channel= discord.utils.get(member.guild.text_channels, name="parade-room")
+
+            await channel.send(f"Welcome to {member.guild.name} {member.mention}... We look forward to having you serve in our domain :smiling_imp:")
+            await channel.send("Please keep in mind that you only have 2 minutes here")
+            await asyncio.sleep(120)
+            await member.kick()
+    
+        elif member.guild.id == 739229902921793637:
+            channel = member.guild.get_channel(739255078229377054)
+            await channel.send(f"Welcome to {member.guild.name} {member.mention}... We look forward to having you serve in our domain :smiling_imp:. If you already have a profile. Do <>readd")
+            role = discord.utils.get(member.guild.roles, name="Follower")
+
+            await member.add_roles(role)
+
+        elif member.guild.id in self.tlist:
+            channel= discord.utils.get(member.guild.text_channels, name="welcome")
+            if not channel:
+                channel = discord.utils.get(member.guild.text_channels, name="parade-room")
+                if not channel:
+                    channel = await member.guild.create_text_channel("parade-room")
+            else:
+                channel = member.guild.system_channel
+
+            ts = await self.getguildobj(member.guild.id)
+            await channel.send(f"{member.mention} {ts.msg}")
+                
+    # On leaving
+    @commands.Cog.listener()
+    async def on_member_remove(self, member:discord.Member):
+        if member.guild.id == 733822954034561065:
+            return False
+        elif member.guild.id == 739229902921793637:
+            channel = member.guild.get_channel(739255078229377054)
+        else:
+            return
+
+        await channel.send(f"I hope {member.mention} doesn't think that they will be missed. They made their choice")
 
 
     @commands.Cog.listener()
@@ -375,6 +465,20 @@ class Moderator(commands.Cog):
             channel = self.bot.get_channel(740337325971603537)
             await channel.send(f"{ctx.author.name}: {error}")
             print(error)
+
+    # Functions
+    async def getguildobj(self, gid):
+        for dic in self.jltracking:
+            if dic.guildid == gid:
+                return dic
+
+    async def save(self):
+        todump = []
+        for thing in self.jltracking:
+            todump.append(thing.__dict__)
+
+        with open("jltracking.json", "w") as f:
+            json.dump(todump, f, indent=4)
 
 
 class ProfanFilter(commands.Cog):
