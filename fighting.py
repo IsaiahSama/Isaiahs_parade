@@ -1066,11 +1066,9 @@ Stat names are the names that you see in the above embed, with the exception of 
 
         if attacker.typeobj == "player" and defender.typeobj == "npc":
             attacker = await self.getmain(attacker)
-            try:
-                coin = randint(defender.mincoin, defender.maxcoin)
-            except ValueError:
-                coin = 1000
-                await ctx.send("Something went wrong with the money. So take 1k coin as substitute")
+            if defender.mincoin > defender.maxcoin:
+                defender.mincoin, defender.maxcoin = defender.maxcoin, defender.mincoin
+            coin = randint(defender.mincoin, defender.maxcoin)
             attacker.addcoin(coin)
             await ctx.send(f"{attacker.name}: You have received {coin} Parade Coins for defeating {defender.name}")
 
