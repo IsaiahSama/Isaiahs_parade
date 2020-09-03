@@ -9,12 +9,12 @@ class Item:
     effect: str
     duration: int
     tierz: int
-    hup: int
-    pup: int
-    minup: int
-    maxup: int
-    critup: int
-    untype: str 
+    hup: int=0
+    pup: int=0
+    minup: int=0
+    maxup: int=0
+    critup: int=0
+    untype: str="pot"
     typeobj: str="item"
     
 
@@ -41,6 +41,9 @@ boe = Item("Band Of Experience", 402, "A band said to increase exp gain by 20% f
 ohkoscarf = Item("OHKO scarf", 601, "A sacred scarf that gives you a 5/100 chance to OHKO an enemy on first turn. Lasts until activated",
 1200000, "Ripped scarf and One Hit KO enemy", 66666, 6, 0, 0, 0, 0, 0, "item")
 
+ksc = Item("Kevin's Secret Candy", 999, "A rare item said to increase your levels by 5 when mixed with water. Has a 3% chance of dropping from defeated enemies",
+0, "Increases level by 5", 1, 2, untype="pot")
+
 
 potlist = [ppot, hpot, lblet, 
 mpot, sring, mcloak,
@@ -48,4 +51,7 @@ gpapple,
 fsash,
 boe,
 ohkoscarf]
+allpotlist = [ksc]
+for t in potlist:
+    allpotlist.append(t)
 

@@ -6,7 +6,7 @@ import os
 from random import randint
 from images import hugs, punches, kisses, slaps, knock, poses, flexes
 from fight import FightMe, Fighter, questpro, enemy, FightingBeast, abilities, allabilities, passives, allpassives, raidingmonster, weaponlist, armorlist, gear, lilgear, allarmor, allweapons
-from items import Item, potlist
+from items import Item, potlist, allpotlist
 import json
 import math
 import jobs
@@ -1051,6 +1051,12 @@ Stat names are the names that you see in the above embed, with the exception of 
                 await ctx.send(f"{irl.mention} has leveled up")
             else:
                 await ctx.send(f"{lvl}")
+            rnum = randint(0, 100)
+            if rnum in [5, 45, 64]:
+                umain = await self.getmain(attacker)
+                if len(umain.inventory) < 25:
+                    umain.inventory.append(999)
+                    await ctx.send("You have received Kevin's Secret Candy from your battle")
 
         if attacker.typeobj == "player" and defender.typeobj == "player":
             attacker = await self.getmain(attacker)
@@ -1792,8 +1798,12 @@ Stat names are the names that you see in the above embed, with the exception of 
                 elif itemtouse.untype == "item":
                     await ctx.send(f"You equip {itemtouse.name}")
 
-                user.curbuff = itemtouse.tag
-                user.bdur = itemtouse.duration
+                if itag == 999:
+                    user.level += 5
+                    await ctx.send("The secret candy has increased your levels by 5")
+                else:
+                    user.curbuff = itemtouse.tag
+                    user.bdur = itemtouse.duration
 
             else:
                 await ctx.send("You do not have this item in your inventory")
@@ -1928,7 +1938,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         return msg
 
     async def getbuff(self, idtoget):
-        item = [x for x in potlist if x.tag == idtoget]
+        item = [x for x in allpotlist if x.tag == idtoget]
         return item[0]
     
     async def tdeny(self, ctx):
