@@ -1841,18 +1841,49 @@ Stat names are the names that you see in the above embed, with the exception of 
         except ValueError:
             await ctx.send(f"{level} is not a number")
             return False
+        if await self.ismember(ctx.author):
+            user = await self.getmember(ctx.author)
+            ulevel = await self.getcurxp(user.level, user.curxp)
+            tlist = []
+            if user.level > level:
+                await ctx.send("You have already passed this level")
+                return False
 
-        if level in range(0, 600):
-            base = 50
-            incre = 30
-            for _x in range(level):
-                base += incre
+            if level in range(0, 600):
+                base = 50
+                for _x in range(level):
+                    tlist.append(base)
+                    base += 30
 
-            await ctx.send(f"To reach level {level} you need a total of {base} exp points")
+                tlist.pop()
+
+                await ctx.send(f"To reach level {level} you need a total of {sum(tlist) - ulevel} more exp points")
+            else:
+                await ctx.send("That is out of range")
+
+    @commands.command()
+    async def exp(self, ctx):
+        if await self.ismember(ctx.author):
+            user = await self.getmember(ctx.author)
+            curxp = await self.getcurxp(user.level, user.curxp)
+            await ctx.send(f"{ctx.author.mention} has a total of {curxp} exp points")
+        
         else:
-            await ctx.send("That is out of range")
+            await self.denied(ctx.channel, ctx.author)
 
     # Functions
+
+    async def getcurxp(self, level, curxp):
+        base = 50
+        tlist = []
+        for _x in range(level):
+            tlist.append(base)
+            base += 30
+
+        tlist.pop()
+
+        return math.ceil(sum(tlist) + curxp)
+
 
     async def modcheck(self, ctx, target):
         if target.tag == 347513030516539393:
@@ -2389,7 +2420,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                 exp += 0.20 * exp
             
         
-        winner.curxp += exp
+        winner.curxp += math.floor(exp)
         
         winner.wins += 1
 
@@ -2415,7 +2446,8 @@ Stat names are the names that you see in the above embed, with the exception of 
     async def didlevel(self, x):
         if x.curxp >= x.xpthresh:
             while x.curxp >= x.xpthresh:
-                x.xpthresh += x.xpthresh + 30
+                x.curxp -= x.xpthresh
+                x.xpthresh += 30
                 x.level += 1
                 x.health += randint(3, 8)
                 x.mindmg += randint(1, 4)
