@@ -795,12 +795,10 @@ Stat names are the names that you see in the above embed, with the exception of 
                     attacker.ability.name = None
                 await ctx.send("All regen has been Disabled")
 
-            try:
-                power = randint(round(attacker.mindmg), round(attacker.maxdmg))
-            except ValueError:
-                power = randint(400, 600)
-                await ctx.send("Something went wrong with your damage values. So I have applied a fix. Let Kevin-Dono know at your earliest convenience")
-            
+            if attacker.mindmg > attacker.maxdmg:
+                attacker.mindmg, attacker.maxdmg = attacker.maxdmg, attacker.mindmg
+            power = randint(round(attacker.mindmg), round(attacker.maxdmg))
+
             critnum = randint(0, 100)
             healnum = randint(0, 100)
 
