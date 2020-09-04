@@ -157,8 +157,6 @@ class General(commands.Cog):
         except TypeError:
             await ctx.send("Invalid value was passed")
             return
-
-    
         
         await ctx.send(round(arg1 * arg2))
 
@@ -183,6 +181,17 @@ class General(commands.Cog):
             return
 
         await ctx.send(round(arg1 - arg2))
+
+    @commands.command()
+    async def modulus(self, ctx, arg1, arg2):
+        try:
+            arg1 = float(arg1)
+            arg2 = float(arg2)
+        except TypeError:
+            await ctx.send("Invalid value was passed")
+            return
+
+        await ctx.send(arg1 % arg2)
 
 
 class Namegen(commands.Cog):
