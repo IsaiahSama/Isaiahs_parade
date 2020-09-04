@@ -363,18 +363,14 @@ class Fighter:
     reborn: int=0
 
     def rtz(self):
-        self.weapon = 1001
-        self.armour = 2001
-        self.weapon2 = 1001
-        self.armour2 = 2001
         self.level = 0
         self.curxp = 0
         self.xpthresh = 50
-        self.health = 170 + (0.01 * self.health)
-        self.mindmg = 10 + (0.03 * self.mindmg)
-        self.maxdmg = 20 + (0.03 * self.maxdmg)
+        self.health = 170 + ((0.01 + self.reborn) * self.health)
+        self.mindmg = 10 + ((0.03 + self.reborn) * self.mindmg)
+        self.maxdmg = 20 + ((0.03 + self.reborn) * self.maxdmg)
         self.reborn += 1
-        self.pcoin = (1/8 * self.pcoin) 
+        self.pcoin = (1/15 * self.pcoin) 
 
     def hasreborn(self):
         if self.reborn == 0:
@@ -620,6 +616,14 @@ class Fighter:
         armor = [t for t in allarmor if t.tag == self.armour]
 
         return weapon[0], armor[0]
+
+    def getallgear(self):
+        weapon = [w for w in allweapons if w.tag == self.weapon]
+        armor = [t for t in allarmor if t.tag == self.armour]
+        weapon2 = [w for w in allweapons if w.tag == self.weapon2]
+        armor2 = [t for t in allarmor if t.tag == self.armour2]
+
+        return weapon[0], armor[0], weapon2[0], armor2[0]
 
     def getTier(self):
         if self.level >= 0 and self.level < 50:

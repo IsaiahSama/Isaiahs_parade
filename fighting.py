@@ -180,9 +180,6 @@ class FullFight(commands.Cog):
             sword, shield = target.getgear()
             if ctx.author.id in self.modlist and target.tag == ctx.author.id:
                 await self.modcheck(ctx, target)
-                        
-        if target.mindmg > target.maxdmg:
-            target.mindmg, target.maxdmg = target.maxdmg, target.mindmg
             
         profileEmbed = discord.Embed(
             title=f"Profile for {target.name}",
@@ -1069,7 +1066,9 @@ Stat names are the names that you see in the above embed, with the exception of 
             if defender.mincoin > defender.maxcoin:
                 defender.mincoin, defender.maxcoin = defender.maxcoin, defender.mincoin
             coin = randint(defender.mincoin, defender.maxcoin)
-            attacker.addcoin(coin)
+            coin *= 1.3
+
+            attacker.addcoin(round(coin))
             await ctx.send(f"{attacker.name}: You have received {coin} Parade Coins for defeating {defender.name}")
 
                 
@@ -1138,9 +1137,9 @@ Stat names are the names that you see in the above embed, with the exception of 
                 if ctx.guild == self.homeguild:
                     ctx.channel = ctx.guild.get_channel(740764507655110666)
                 else:
-                    rmention = discord.utils.get(self.homeguild.roles, name="Parader")
+                    rmention = discord.utils.get(self.homeguild.roles, name="Raider")
                     channel = self.bot.get_channel(740764507655110666)
-                    await channel.send(f"Attention {rmention.name}: {ctx.author.name} from {ctx.guild.name} has started a raid. Come let us raid their raid. We only have 3 minutes")
+                    await channel.send(f"Attention {rmention.mention}: {ctx.author.name} from {ctx.guild.name} has started a raid. Come let us raid their raid. We only have 3 minutes")
                 
                 await ctx.channel.send(f"{ctx.author.name} has started a raid.")
                 await self.startRaid(ctx.guild, ctx.channel, user)
@@ -1731,6 +1730,11 @@ Stat names are the names that you see in the above embed, with the exception of 
     async def switch(self, ctx):
         if await self.ismember(ctx.author):
             user = await self.getmember(ctx.author)
+            _, _, s2, ss2 = user.getallgear()
+            if s2.tierz == 6 or ss2.tierz == 6 and user.getTier() < (6 - user.reborn):
+                await ctx.send(f"You have not yet reached the ability to wield god gear. You must be Tier {6 - user.reborn}")
+                return
+                
             user.weapon, user.armour, user.weapon2, user.armour2 = user.weapon2, user.armour2, user.weapon, user.armour
             await ctx.send("Successfully switched your gear")
         else:
@@ -1795,7 +1799,8 @@ Stat names are the names that you see in the above embed, with the exception of 
                     await ctx.send(f"You equip {itemtouse.name}")
 
                 if itag == 999:
-                    user.level += 5
+                    for _ in range(6):
+                        await self.didlevel(user, True)
                     await ctx.send("The secret candy has increased your levels by 5")
                 else:
                     user.curbuff = itemtouse.tag
@@ -1833,6 +1838,12 @@ Stat names are the names that you see in the above embed, with the exception of 
                 
                 await ctx.send("Heading back to Tier 1... Best of luck progressing again")
                 user.rtz()
+                sword1, shield1, sword2, shield2 = await user.getallgear()
+                if sword1.tierz == 6:
+                    sword1, sword2 = sword2, sword1
+                if shield1.tierz == 6:
+                    shield1, shield2 = shield2, shield1
+
                 await ctx.send("And it was done")
             else:
                 await ctx.send("You must be tier 6 to use this")
@@ -1876,6 +1887,19 @@ Stat names are the names that you see in the above embed, with the exception of 
         
         else:
             await self.denied(ctx.channel, ctx.author)
+
+    @commands.command()
+    async def raider(self, ctx):
+        if ctx.guild == self.homeguild:
+            role = discord.utils.get(ctx.guild.roles, name="Raider")
+            if role in ctx.author.roles:
+                await ctx.author.remove_roles(role)
+                await ctx.send("Removed Raider role")
+            else:
+                await ctx.author.add_roles(role)
+                await ctx.send("You now have Raider role")
+        else:
+            await ctx.send("This command cannot be used outside of The Parade. Get the link with <>parade")
 
     # Functions
 
@@ -1966,8 +1990,8 @@ Stat names are the names that you see in the above embed, with the exception of 
         await asyncio.sleep(150)
         await channel.send("We have info on the beast. 30 seconds remain")
         if channel != channel2:
-            currole2 = discord.utils.get(guild2.roles, name="Parader")
-            await channel2.send(f"{currole2.name} 30 Seconds remain and we have our info")
+            currole2 = discord.utils.get(guild2.roles, name="Raider")
+            await channel2.send(f"{currole2.mention} 30 Seconds remain and we have our info")
         
         await self.spawnraid(user)
         beastembed = discord.Embed(
@@ -2425,6 +2449,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             if winner.curbuff == 402:
                 exp += 0.20 * exp
             
+        exp *= 2
         
         winner.curxp += math.floor(exp)
         
@@ -2449,36 +2474,41 @@ Stat names are the names that you see in the above embed, with the exception of 
         return person
 
 
-    async def didlevel(self, x):
+    async def didlevel(self, x, val=False):
         if x.curxp >= x.xpthresh:
             while x.curxp >= x.xpthresh:
                 x.curxp -= x.xpthresh
-                x.xpthresh += 30
-                x.level += 1
-                x.health += randint(3, 8)
-                x.mindmg += randint(1, 4)
-                x.maxdmg += randint(3, 8)
-                if x.hasreborn():
-                    x.addcoin(x.level * 50)
-
-                if x.getTier() == 1:
-                    x.addcoin(20 * x.level)
-                elif x.getTier() == 2:
-                    x.addcoin(50 * x.level)
-                elif x.getTier() == 3:
-                    x.addcoin(70 * x.level)
-                elif x.getTier() == 4:
-                    x.addcoin(120 * x.level)
-                elif x.getTier() == 5:
-                    x.addcoin(150 * x.level)
-                else:
-                    x.addcoin(300 * x.level)
+                await self.leveling(x)
             
             return True
 
+        elif val:
+            await self.leveling(x)
+
         else:
             return False
-            
+
+    async def leveling(self, x):
+        x.xpthresh += 30
+        x.level += 1
+        x.health += randint(3, 8)
+        x.mindmg += randint(1, 4)
+        x.maxdmg += randint(3, 8)
+        if x.hasreborn():
+            x.addcoin(x.level * 50)
+
+        if x.getTier() == 1:
+            x.addcoin(20 * x.level)
+        elif x.getTier() == 2:
+            x.addcoin(50 * x.level)
+        elif x.getTier() == 3:
+            x.addcoin(70 * x.level)
+        elif x.getTier() == 4:
+            x.addcoin(120 * x.level)
+        elif x.getTier() == 5:
+            x.addcoin(150 * x.level)
+        else:
+            x.addcoin(300 * x.level)
 
     async def lost(self, arg):
         if arg in enemy:
@@ -2663,6 +2693,12 @@ Stat names are the names that you see in the above embed, with the exception of 
             
             await ctx.send(f"Returned roles to all members in {server.name}")
 
+    @commands.command()
+    @commands.is_owner()
+    async def savefight(self, ctx):
+        await self.updlist()
+        await ctx.send("Saved")
+
 
     # Isaiah
 
@@ -2689,7 +2725,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             json.dump(dumped, f, indent=4)
 
         print("Updated")
-        # print("Save is off")
+        # print("Save is off")   
 
     async def updateteam(self):
         dumped = []
@@ -2904,6 +2940,16 @@ Stat names are the names that you see in the above embed, with the exception of 
         if user.getTier() < arg.tierz:
             return "You are too weak to wield this item"
 
+        if arg.tierz == 6 and arg.typeobj.lower() != "item":
+            _,_f, sword2, shield2 = user.getallgear()
+            if arg.typeobj.lower() == "weapon":
+                if sword2.tierz == 6:
+                    return "You already have a Tier 6 weapon"
+
+            if arg.typeobj.lower() == "armour":
+                if shield2.tierz == 6:
+                    return "You already have Tier 6 Armour"
+            
         if user.pcoin >= arg.cost:
             if arg.typeobj.lower() == "weapon":
                 user.weapon = arg.tag

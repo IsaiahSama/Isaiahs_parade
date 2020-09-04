@@ -91,7 +91,6 @@ back = MyHelp("Misc", "Back", "<>back", "Used to announce your return from being
 resetnick = MyHelp("Misc", "Resetnick", "<>resetnick", "Used to reset your nickname for that server")
 suggest = MyHelp("Misc", "Suggest", "<>suggest [suggestion]", "Used to make a suggestion for the bot")
 emoji = MyHelp("Misc", "Emoji", "<>emoji [emoji name]", "Useless... but hey. Requires exact emoji name")
-me = MyHelp("Misc", "Me", "<>me message", "Used to send your message as an embed >:)")
 mentioned = MyHelp("Misc", "Mentioned", "<>mentioned", "Looks through the last 700 messages to see if you were pinged\
 If true, then it sends the message in which you were pinged")
 nohide = MyHelp("Misc", "Nohide", "<>nohide", "Cheeky little command that show a deleted message within 3 minutes")
@@ -148,6 +147,7 @@ use = MyHelp("Battle", "Use", "<>use itemid", "Uses the buff item/potion")
 reborn = MyHelp("Battle", "Reborn", "<>reborn", "Must be tier 6. Allows you to go back to tier 1 and progress again. You keep 1% hp and 3% of other stats added on to the base. Crit and Healchance remain unaffected")
 expfor = MyHelp("Battle", "Exp for", "<>expfor level", "Shows the amount of exp needed to reach the level you request")
 exp = MyHelp("Battle", "EXP", "<>exp", "Shows all of the exp you have gained.")
+raider = MyHelp("Battle", "Raider", "<>raider", "Only usable Within The Parade. Gives you the Raider role which will notify you of all raids")
 
 startgame = MyHelp("Gaming", "Start Game", "<>startgame", "Used to start a game of hangman")
 endgame = MyHelp("Gaming", "End Game", "<>endgame", "Used to end a hangman game early")
@@ -216,16 +216,17 @@ socialprofile = MyHelp("Social", "Social profile", "<>socialprofile", "Displays 
 nickpet = MyHelp("Social", "Nick pet", "<>nickpet name", "Gives your pet a nickname")
 
 mycommands = [barrage, blush, clown, condescend, cry, dance, fistbump, flex, hug, kiss, pat, poke, pose, punch,
-slap, afk, back, resetnick, suggest, intercom, endcall, accept, active, adventure, buy, createprofile,
-deny, fight, gear, gods, grant, invite, job, kickmember, leaveteam, myteam, paradecoins, paraid,
-paraid6, passive, powprofile, profile, quest, quest6, raid, readd, rebase, register, reward, search, sell, shop,
-switch, teams, tier, togglefight, upgrade, upgrade2, upgrade3, view, endgame, endstory, startgame, startstory, wordadd, wordremove,
-wordshow, add, modulus, subtract, multiply, divide, allseeing, chosenone,  heavens_door, me,  no, online, timer, yes,
-gcall, gjoin, gleave, emoji, mentioned, nohide, ping, deathnote, freeze3, ger, ger_rtz, 
-impactrevive, killerqueen, kingcrimson, mute, relog, shadowrealm, wipein, wipestartswith, wipeendswith, zahando, zawarudo, namegen, soulmate,
-profane, acceptbff, acceptfr, acceptlove, acceptparent, addfriend, addlove, createsocial, delpet, denybff,
-denylove, denyparent, dump, feed, getpet, newbff, newchild, pet, play, showfriends, socialprofile,
-updatesocial, parade, use, nickpet, reborn, tmsg, tmsg2, exp, expfor]
+slap,
+afk, back, resetnick, suggest, emoji, mentioned, nohide, ping, intercom, endcall, gcall, gjoin, gleave, namegen, soulmate, parade,
+accept, active, adventure, buy, createprofile, deny, fight, gear, gods, grant, invite, job, kickmember, leaveteam, myteam, paradecoins, paraid,
+paraid6, passive, powprofile, profile, quest, quest6, raid, readd, rebase, register, reward, search, sell, shop, switch, teams, tier, togglefight, upgrade, upgrade2, upgrade3, 
+view, use, reborn, expfor, exp, raider,
+startgame, endgame, startstory, endstory, wordadd, wordremove, wordshow,
+add, subtract, multiply, divide, modulus, allseeing, heavens_door, me, no, yes, timer, chosenone, online,
+deathnote, freeze3, ger, ger_rtz, impactrevive, killerqueen, kingcrimson, mute, relog, shadowrealm, wipein, wipestartswith, wipeendswith, zahando, zawarudo,
+profane, tmsg, tmsg2,
+acceptbff, acceptfr, acceptlove, acceptparent, addfriend, addlove, createsocial, delpet, denybff, denyfr,
+denylove, denyparent, dump, feed, getpet, newbff, newchild, pet, play, showfriends, updatesocial, socialprofile, nickpet]
 
 
 def setup(bot):
