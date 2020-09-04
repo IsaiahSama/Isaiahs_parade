@@ -161,6 +161,7 @@ add = MyHelp("General", "Add", "<>add number1 number2", "Adds the 2 numbers")
 subtract = MyHelp("General", "Subtract", "<>subtract number1 number2", "Subtracts the 2 numbers")
 divide = MyHelp("General", "Divide", "<>divide number1 number2", "Divides the 2 numbers")
 multiply = MyHelp("General", "Multiply", "<>multiply number1 number2", "Multiplies the 2 numbers")
+modulus = MyHelp("General", "Modulus", "<>modulus number1 number2", "Returns the remainder when dividing 2 numbers")
 allseeing = MyHelp("General", "All Seeing", "<>allseeing", "Shows information on server you are in")
 heavens_door = MyHelp("General", "Heaven's Door", "<>heavens_door @mention", "Used to show information on the person you mention")
 me = MyHelp("General", "Me", "<>me message", "Used to send your message as an embed")
@@ -219,7 +220,7 @@ slap, afk, back, resetnick, suggest, intercom, endcall, accept, active, adventur
 deny, fight, gear, gods, grant, invite, job, kickmember, leaveteam, myteam, paradecoins, paraid,
 paraid6, passive, powprofile, profile, quest, quest6, raid, readd, rebase, register, reward, search, sell, shop,
 switch, teams, tier, togglefight, upgrade, upgrade2, upgrade3, view, endgame, endstory, startgame, startstory, wordadd, wordremove,
-wordshow, add, allseeing, chosenone, divide, heavens_door, me, multiply, no, online, subtract, timer, yes,
+wordshow, add, modulus, subtract, multiply, divide, allseeing, chosenone,  heavens_door, me,  no, online, timer, yes,
 gcall, gjoin, gleave, emoji, mentioned, nohide, ping, deathnote, freeze3, ger, ger_rtz, 
 impactrevive, killerqueen, kingcrimson, mute, relog, shadowrealm, wipein, wipestartswith, wipeendswith, zahando, zawarudo, namegen, soulmate,
 profane, acceptbff, acceptfr, acceptlove, acceptparent, addfriend, addlove, createsocial, delpet, denybff,
