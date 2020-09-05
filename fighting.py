@@ -35,8 +35,13 @@ emojiz = ["🤔", "🤫", "🤨", "🤯", "😎", "😓", "🤡", "💣", "🧛"
 class FullFight(commands.Cog):
     users = []
     if os.path.exists("fightdata.json"):
-        with open("fightdata.json") as h:
-            data = json.load(h)
+        try:
+            with open("fightdata.json") as h:
+                data = json.load(h)
+        except json.JSONDecodeError:
+            with open("backups/fightdata.json") as bh:
+                data = json.load(bh)
+                print("Fightdata was corrupted.")
 
         for k in data:
             u = Fighter(k["name"], k["tag"], k["level"], k['curxp'], k['health'], k['mindmg'], k['maxdmg'], k['wins'], k['losses'], k['pcoin'])
@@ -62,9 +67,13 @@ class FullFight(commands.Cog):
         #users = loadedacc
 
     if os.path.exists("Teams.json"):
-        with open("Teams.json") as t:
-
-            data = json.load(t)
+        try:
+            with open("Teams.json") as t:
+                data = json.load(t)
+        except json.JSONDecodeError:
+            with open("backups/Teams.json") as bt:
+                data = json.load(bt)
+                print("Teams Data was Corrupt")
 
         buildingteam = []
         
@@ -1066,7 +1075,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             if defender.mincoin > defender.maxcoin:
                 defender.mincoin, defender.maxcoin = defender.maxcoin, defender.mincoin
             coin = randint(defender.mincoin, defender.maxcoin)
-            coin *= 1.3
+            coin *= 2
 
             attacker.addcoin(round(coin))
             await ctx.send(f"{attacker.name}: You have received {coin} Parade Coins for defeating {defender.name}")
@@ -1121,7 +1130,7 @@ Stat names are the names that you see in the above embed, with the exception of 
     @commands.command()
     @commands.cooldown(1, 1200, commands.BucketType.guild)
     async def paraid(self, ctx):
-        if self.raidon:
+        if self.raidon or self.raiding:
             await ctx.send("A raid is already in progress")
             return
 
@@ -1994,7 +2003,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         await channel.send("We have info on the beast. 30 seconds remain")
         if channel != channel2:
             currole2 = discord.utils.get(guild2.roles, name="Raider")
-            await channel2.send(f"{currole2.mention} 30 Seconds remain and we have our info")
+            await channel2.send(f"{currole2.name} 30 Seconds remain and we have our info")
         
         await self.spawnraid(user)
         beastembed = discord.Embed(
@@ -2102,6 +2111,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                 value = await self.expgain(player, self.raidbeast)
                 player = await self.getmain(player)
                 coin = randint(self.raidbeast.mincoin, self.raidbeast.maxcoin)
+                coin *= 2
                 player.addcoin(coin)
                 if value:
                     await channel.send(f"{player.name} has leveled up")
@@ -2451,8 +2461,6 @@ Stat names are the names that you see in the above embed, with the exception of 
         if winner.hasbuff():
             if winner.curbuff == 402:
                 exp += 0.20 * exp
-            
-        exp *= 2
         
         winner.curxp += math.floor(exp)
         

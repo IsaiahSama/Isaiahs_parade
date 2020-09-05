@@ -18,8 +18,13 @@ class Relamain(commands.Cog):
 
     # Getting People
     if os.path.exists("relausers.json"):
-        with open("relausers.json") as h:
-            data = json.load(h)
+        try:
+            with open("relausers.json") as h:
+                data = json.load(h)
+        except json.JSONDecodeError:
+            with open("backups/relausers.json") as bh:
+                data = json.load(bh)
+                print("Relausers data was corrupt")
 
         tempuser = []
         
