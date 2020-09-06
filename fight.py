@@ -130,6 +130,8 @@ suffocation = Ability("Suffocation", "Ability of Trxsh. Has 4 in 10 chance of pr
 nklk = Passive("No Kill Like Overkill", "A sacred ability belonging to Trxsh. All extra damage done to him is added on to his power for his next turn",
 "NO KILL LIKE OVERKILL", "stole all extra power and overkilled", 1, 0, 0, 0, 0)
 
+tob = Passive("Tide Of Battle", "A Passive sprung from love of battle, and dominance on the battlefield. Increases min and max dmg by 3% every turn",
+"The battle shifts in my tide", "Increases min and max dmg by 3%",0,0,0,0,0)
 # Raid Enemies
 bebebeslam = Ability("BBB slam!", "Giant King B B B, belly flops dealing 1.3x dmg and hitting 3 people", "BE BE BE... SLAM!", 
 "belly flops dealing 1.3x dmg, healing for 10hp", 1.3, 0, 10, 0, 0)
@@ -143,7 +145,7 @@ allabilities = [plague, psusanoo, czw, suffocation]
 for thing in abilities:
     allabilities.append(thing)
 
-passives = [dodge, counter, regeneration, rage, sharpeye, sboost, critblock, nlove, chubz]
+passives = [dodge, counter, regeneration, rage, sharpeye, sboost, critblock, nlove, chubz, tob]
 allpassives = [haohaki, balancepride, nklk]
 for thing in passives:
     allpassives.append(thing)
@@ -615,7 +617,7 @@ class Fighter:
         weapon = [w for w in allweapons if w.tag == self.weapon]
         armor = [t for t in allarmor if t.tag == self.armour]
 
-        return weapon[0], armor[0]
+        return copy.copy(weapon[0]), copy.copy(armor[0])
 
     def getallgear(self):
         weapon = [w for w in allweapons if w.tag == self.weapon]
@@ -623,7 +625,7 @@ class Fighter:
         weapon2 = [w for w in allweapons if w.tag == self.weapon2]
         armor2 = [t for t in allarmor if t.tag == self.armour2]
 
-        return weapon[0], armor[0], weapon2[0], armor2[0]
+        return copy.copy(weapon[0]), copy.copy(armor[0]), copy.copy(weapon2[0]), copy.copy(armor2[0])
 
     def getTier(self):
         if self.level >= 0 and self.level < 50:
@@ -819,8 +821,26 @@ class FightMe(Fighter):
         weapon, armour = self.getgear()
 
         self.weapon, self.armour = copy.copy(weapon), copy.copy(armour)
+        if self.reborn > 0:
+            self.incstats()
 
         self.buffup()
+
+    def incstats(self):
+        toinc = (3 + self.reborn) / 100
+        twep = self.weapon.__dict__
+        for k,v in twep.items():
+            if type(v) == int:
+                if k in ["tag", "cost", "tierz"]: continue
+                twep[k] = math.ceil(v + (v * toinc))
+            else: continue
+
+        tarm = self.armour.__dict__
+        for k,v in tarm.items():
+            if type(v) == int:
+                if k in ["tag", "cost", "tierz"]: continue
+                tarm[k] = math.ceil(v + (v * toinc))
+            else: continue
 
     def buffup(self):
         self.attackmsg = self.weapon.effect

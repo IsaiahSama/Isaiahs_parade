@@ -538,21 +538,21 @@ Stat names are the names that you see in the above embed, with the exception of 
         await ctx.send(msg)      
         
     @commands.command()
+    @commands.cooldown(1, 3600, commands.BucketType.user)
     async def reward(self, ctx):
         if await self.ismember(ctx.author):
             user = await self.getmember(ctx.author)
-            if user.tag in self.hadreward:
-                await ctx.send("You already had a reward. Only once every Hour, check back later")
-                return
-            
-            self.hadreward.append(user.tag)
-            
+
             msg = await self.getreward(user)
+            if not msg:
+                item = random.choice(allpotlist)
+                if len(user.inventory) < 25:
+                    user.inventory.append(item.tag)
+                    msg = f"You have received {item.name}. Return in 1 hour"
             await ctx.send(f"{msg}. Come back in 1 hour")
             await asyncio.sleep(60 * 60)
 
             await ctx.send(f"{ctx.author.mention}, you can now get another reward")
-            self.hadreward.remove(user.tag)
             return
 
         else:
@@ -834,13 +834,21 @@ Stat names are the names that you see in the above embed, with the exception of 
                     elif attacker.weapon.name == "Conqueror Haki":
                         power = await self.canhaki(defender, attacker, power, battlebed)
                     
-                    else:
-                        pass
+                if attacker.passive.name == "Tide Of Battle":
+                    attacker.mindmg += math.ceil(0.03 * attacker.mindmg)     
+                    attacker.maxdmg += math.ceil(0.03 * attacker.maxdmg)     
+                    battlebed.add_field(name=f"{attacker.name}: {attacker.passive.usename}", value=f"{attacker.passive.effect}")  
 
                 if attacker.passive.name == "Pride of Balance":
                     if attacker.armour.haspair():
                         if attacker.armour.name == "Yang":
                             power = await self.canbalance(defender, attacker, power, battlebed)
+
+            if defender.hasPassive():
+                if defender.passive.name == "Tide Of Battle":
+                    defender.mindmg += math.ceil(0.03 * defender.mindmg)     
+                    defender.maxdmg += math.ceil(0.03 * defender.maxdmg)     
+                    battlebed.add_field(name=f"{defender.name}: {defender.passive.usename}", value=f"{defender.passive.effect}")
 
             
             if attacker.hasActive():
@@ -1075,7 +1083,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             if defender.mincoin > defender.maxcoin:
                 defender.mincoin, defender.maxcoin = defender.maxcoin, defender.mincoin
             coin = randint(defender.mincoin, defender.maxcoin)
-            coin *= 2
+            # coin *= 2
 
             attacker.addcoin(round(coin))
             await ctx.send(f"{attacker.name}: You have received {coin} Parade Coins for defeating {defender.name}")
@@ -1220,6 +1228,13 @@ Stat names are the names that you see in the above embed, with the exception of 
             title=f"Gear for {user.name}",
             color=randint(0, 0xffffff)
         )
+        if user.reborn > 0:
+            tuser = await self.fightuser(user)
+            sword.damage = tuser.weapon.damage
+            sword.critplus = tuser.weapon.critplus
+            sword.healplus = tuser.weapon.healplus
+            shield.hpup = tuser.armour.hpup
+            shield.pup = tuser.armour.pup
 
         thing.add_field(name=f"Weapon: {sword.name}", value=f"Damage: +{sword.damage}, Critchance: +{sword.critplus}%, Lifesteal: +{sword.healplus}",
         inline=False)
@@ -1740,9 +1755,10 @@ Stat names are the names that you see in the above embed, with the exception of 
         if await self.ismember(ctx.author):
             user = await self.getmember(ctx.author)
             _, _, s2, ss2 = user.getallgear()
-            if s2.tierz == 6 or ss2.tierz == 6 and user.getTier() < (6 - user.reborn):
-                await ctx.send(f"You have not yet reached the ability to wield god gear. You must be Tier {6 - user.reborn}")
-                return
+            if user.hasreborn():
+                if [s2.tierz == 6, ss2.tierz == 6] and user.getTier() < (6 - user.reborn):
+                    await ctx.send(f"You have not yet reached the ability to wield god gear. You must be Tier {6 - user.reborn}")
+                    return
                 
             user.weapon, user.armour, user.weapon2, user.armour2 = user.weapon2, user.armour2, user.weapon, user.armour
             await ctx.send("Successfully switched your gear")
@@ -2111,7 +2127,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                 value = await self.expgain(player, self.raidbeast)
                 player = await self.getmain(player)
                 coin = randint(self.raidbeast.mincoin, self.raidbeast.maxcoin)
-                coin *= 2
+                # coin *= 2
                 player.addcoin(coin)
                 if value:
                     await channel.send(f"{player.name} has leveled up")
@@ -2202,7 +2218,12 @@ Stat names are the names that you see in the above embed, with the exception of 
                     if player.armour.haspair():
                         if player.armour.name == "Yang":
                             power = await self.canbalance(self.raidbeast, player, power, raidbed)
-            
+
+                if player.passive.name == "Tide Of Battle":
+                    player.mindmg += math.ceil(0.10 * player.mindmg)     
+                    player.maxdmg += math.ceil(0.10 * player.maxdmg)     
+                    raidbed.add_field(name=f"{player.name}: {player.passive.usename}", value=f"{player.passive.effect}")
+        
             power = player.maxdmg
             critnum = randint(0, 100)
             healnum = randint(0, 100)
@@ -2410,7 +2431,12 @@ Stat names are the names that you see in the above embed, with the exception of 
             if target.passive.name == "Chubby":
                 power -= 50
                 raidbed.add_field(inline=False,name=f"{target.passive.usename}", value=f"{target.passive.effect}")
-            
+
+            if target.passive.name == "Tide Of Battle":
+                target.mindmg += math.ceil(0.03 * target.mindmg)     
+                target.maxdmg += math.ceil(0.03 * target.maxdmg)     
+                raidbed.add_field(name=f"{target.name}: {target.passive.usename}", value=f"{target.passive.effect}")
+    
         power = math.floor(power)
        
         target.attack(power)
@@ -2461,6 +2487,8 @@ Stat names are the names that you see in the above embed, with the exception of 
         if winner.hasbuff():
             if winner.curbuff == 402:
                 exp += 0.20 * exp
+
+        exp *= 2
         
         winner.curxp += math.floor(exp)
         
@@ -2470,13 +2498,13 @@ Stat names are the names that you see in the above embed, with the exception of 
 
         if levelup:
             return True
-        elif winner.hasbuff():
+        if winner.hasbuff():
             if winner.curbuff == 402:
                 irl = await self.getirl(winner)
                 return f"{irl.mention} has gained an increased {exp} exp points from defeating {loser.name}"
-        else:
-            irl = await self.getirl(winner)
-            return f"{irl.mention} has gained {exp} exp points from defeating {loser.name}"    
+
+        irl = await self.getirl(winner)
+        return f"{irl.mention} has gained {exp} exp points from defeating {loser.name}"    
 
     async def getirl(self, user):
         everyone = self.bot.get_all_members()
@@ -2572,7 +2600,6 @@ Stat names are the names that you see in the above embed, with the exception of 
         
         return villain
 
-    hadreward = []
     # Daily
 
     async def getreward(self, user):
@@ -2840,7 +2867,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         person = FightMe(account.name, account.tag, account.level, account.curxp, account.health, account.mindmg, account.maxdmg, 
         account.wins, account.losses, account.pcoin, account.critchance, account.healchance, account.ability,
         account.passive, account.weapon, account.armour, account.xpthresh, account.typeobj, account.canfight, 
-        curbuff=account.curbuff, bdur=account.bdur)
+        curbuff=account.curbuff, bdur=account.bdur, reborn=account.reborn)
         person.instantize()
         return person
         
