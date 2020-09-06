@@ -16,6 +16,7 @@ class Ability:
     abilcd: int = 4
     tempcd: abilcd = 4
     perhealth: int = 0
+    reborn: bool=False
 
     def oncd(self):
         if self.abilcd == self.tempcd:
@@ -36,6 +37,9 @@ class Ability:
     def use(self):
         return self.power, self.powertick, self.health, self.lodmg, self.hidmg, self.perhealth
 
+    def isreborn(self):
+        return self.reborn
+
 class Passive(Ability):
     def use(self):
         return self.power, self.powertick, self.health, self.lodmg, self.hidmg, self.perhealth
@@ -53,9 +57,9 @@ blast = Ability("Blast", "Blasts the enemy with a powerful attack increasing dmg
  "Outer... BLAST!", "'s health is reduced by 40. Power increased by x1.75 and +5 extra damage. Summons a powerful blast and blasts", 1.75, 5, -40,
  0, 0)
 
-deadlygrasp = Ability("Deadly Grasp", "Reaches for the enemy with hands of death dealing an extra 70 damage, and healing for 15 hp",
-"Let me grab you with death itself", "'s hands of death emerge, increasing health by 15, and dealing +70 damage to",
-1, 70, 15, 0, 0)
+deadlygrasp = Ability("Deadly Grasp", "Reaches for the enemy with hands of death dealing an extra 150 damage, and healing for 15 hp",
+"Let me grab you with death itself", "'s hands of death emerge, increasing health by 15, and dealing +150 damage to",
+1, 150, 15, 0, 0)
 
 critstrike = Ability("Critical Strike", "Is a guaranteed critical hit that does 2x damage instead of 1.5", "Scared of my Guaranteed critical hit?",
 "raises their crit chance to 100% and does double damage to", 2, 0, 0, 0, 0)
@@ -131,7 +135,7 @@ nklk = Passive("No Kill Like Overkill", "A sacred ability belonging to Trxsh. Al
 "NO KILL LIKE OVERKILL", "stole all extra power and overkilled", 1, 0, 0, 0, 0)
 
 tob = Passive("Tide Of Battle", "A Passive sprung from love of battle, and dominance on the battlefield. Increases min and max dmg by 3% every turn",
-"The battle shifts in my tide", "Increases min and max dmg by 3%",0,0,0,0,0)
+"The battle shifts in my tide", "Increases health, min and max dmg by 3%",0,0,0,0,0, reborn=True)
 # Raid Enemies
 bebebeslam = Ability("BBB slam!", "Giant King B B B, belly flops dealing 1.3x dmg and hitting 3 people", "BE BE BE... SLAM!", 
 "belly flops dealing 1.3x dmg, healing for 10hp", 1.3, 0, 10, 0, 0)
@@ -165,7 +169,7 @@ class Weapons:
     typeobj: str="Weapon"
 
     def islifesteal(self):
-        if self.healplus >= 1:
+        if self.healplus != 0:
             return True
         return False
 
@@ -275,7 +279,7 @@ elitist = Armour("Elitist", 2015, "Said to be made for the elites", 150, 40, 100
 hierro = Armour("Hierro", 2016, "Hard", 200, 50, 50000, 10, tierz=3)
 plaguearm = Armour("Plague Doctors Uniform", 2017, "A copy of the original owned by ...?", 200, 50, 50000, 4, tierz=3)
 wood = Armour("Wooden", 2018, "Pfft, you *wood* n't get it. Gains set bonus with The Vibe Check", 260, 45, 90000, 7, vibechk, 3)
-vknight = Armour("Valhalla Knight", 2019, "Again, Don't ask where I got this from", 100, 30, 500000, 18, tierz=4)
+vknight = Armour("Valhalla Knight", 2019, "Again, Don't ask where I got this from", 100, 30, 500000, 20, tierz=4)
 shadowflame = Armour("Shadow Flame", 2020,
 "A sorcerer's creation created by shadows and flames of darkness. Gains set bonus with Shadow Flame Knife",
 510, 200, 500000, 5, sfknife, 4)
@@ -795,11 +799,21 @@ def buffing(tobuff):
 
     elif tobuff.armour.name == "Loincloth":
         tobuff.ability = deadlygrasp
-        msg = "Grants you the ability of deadly grasp."
+        msg = "Grants you the ability of deadly grasp and increases it's power."
 
     elif tobuff.armour.tag == 4003:
         tobuff.ability = suffocation
-        msg = "Now... Suffocate them"
+        tobuff.armour.hpup += 150
+        tobuff.armour.pup += 150
+        tobuff.weapon.damage += 150
+        msg = "Now... Suffocate them. Increases all damage/health stats by 150"
+
+    elif tobuff.armour.tag == 4004:
+        tobuff.ability = czw
+        tobuff.armour.hpup += 100
+        tobuff.armour.pup += 100
+        tobuff.weapon.damage += 100
+        msg = "Awaken to your ZA WARUDO. Increases all stats by 100"
 
     else:
         msg = "Something went wrong"

@@ -393,7 +393,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         await ctx.send(msg)
 
     @commands.command()
-    async def passive(self, ctx, arg=False, *, nop=None):
+    async def passive(self, ctx, arg=False, *, name_of_passive=None):
         user = await self.getmember(ctx.author)
 
         if user == None:
@@ -426,19 +426,24 @@ Stat names are the names that you see in the above embed, with the exception of 
             return
 
         if user.hasPassive() and arg:
-            if nop == None:
+            if name_of_passive == None:
                 await ctx.send("You did not enter the name of the passive you wanted")
                 return
             value = None
             for passi in passives:
-                if nop.lower() == passi.name.lower():
+                if name_of_passive.lower() == passi.name.lower():
                     value = passi
                     break
+            
+            if value.isreborn():
+                if not user.hasreborn():
+                    await ctx.send("You can't have that until you reborn")
+                    return
 
             if value == None:
                 await ctx.send(f"{value} is not a Passive, or is not available")
                 return
-            
+     
             msg = user.passchange(value)
 
             await ctx.send(msg)
@@ -799,7 +804,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                     attacker.passive.name = None
                 if attacker.ability.name == "Ultra Heal":
                     attacker.ability.name = None
-                await ctx.send("All regen has been Disabled")
+                await ctx.send(f"All regen has been Disabled for {attacker.name}")
 
             if attacker.mindmg > attacker.maxdmg:
                 attacker.mindmg, attacker.maxdmg = attacker.maxdmg, attacker.mindmg
@@ -836,7 +841,8 @@ Stat names are the names that you see in the above embed, with the exception of 
                     
                 if attacker.passive.name == "Tide Of Battle":
                     attacker.mindmg += math.ceil(0.03 * attacker.mindmg)     
-                    attacker.maxdmg += math.ceil(0.03 * attacker.maxdmg)     
+                    attacker.maxdmg += math.ceil(0.03 * attacker.maxdmg)
+                    attacker.health += math.ceil(0.03 * attacker.health)
                     battlebed.add_field(name=f"{attacker.name}: {attacker.passive.usename}", value=f"{attacker.passive.effect}")  
 
                 if attacker.passive.name == "Pride of Balance":
@@ -847,7 +853,8 @@ Stat names are the names that you see in the above embed, with the exception of 
             if defender.hasPassive():
                 if defender.passive.name == "Tide Of Battle":
                     defender.mindmg += math.ceil(0.03 * defender.mindmg)     
-                    defender.maxdmg += math.ceil(0.03 * defender.maxdmg)     
+                    defender.maxdmg += math.ceil(0.03 * defender.maxdmg) 
+                    defender.health += math.ceil(0.03 * defender.health)
                     battlebed.add_field(name=f"{defender.name}: {defender.passive.usename}", value=f"{defender.passive.effect}")
 
             
@@ -866,8 +873,9 @@ Stat names are the names that you see in the above embed, with the exception of 
                         power, abilname = await self.canability(defender, attacker, power, battlebed)
                         if abilname == "Stop Time":
                             ts = True
-                            if abilname == "Celestial's ZA WARUDO":
-                                cts = True
+                        if abilname == "Celestial's ZA WARUDO":
+                            ts = True
+                            cts = True
                         if abilname == "The Plague":
                             psned.append(defender)
                             psn = True
@@ -1142,6 +1150,10 @@ Stat names are the names that you see in the above embed, with the exception of 
             await ctx.send("A raid is already in progress")
             return
 
+        if self.aboutupdate:
+            await ctx.send("An update is about to begin. So hold your raid until after")
+            return
+
         if ctx.guild == None:
             await ctx.send("You can't use that command here")
             return
@@ -1289,6 +1301,8 @@ Stat names are the names that you see in the above embed, with the exception of 
             armorbed.add_field(name="Description:", value=f"{item.desc}")
             armorbed.add_field(name="Health Up:", value=f"+{item.hpup}")
             armorbed.add_field(name="Max Dmg Up:", value=f"+{item.pup}")
+            if item.regen != 0:
+                armorbed.add_field(name="Regen Amount:", value=f"{item.regen}%")
             armorbed.add_field(name="Cost:", value=f"{item.cost} Parade Coins")
             armorbed.add_field(name="Tier:", value=f"{item.tierz}")
 
@@ -1950,7 +1964,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                         target.armour = 4003
                     if target.passive != "No Kill Like Overkill":
                         target.passive = "No Kill Like Overkill" 
-                    await ctx.send("Now... Embrace your true power")
+                        await ctx.send("Now... Embrace your true power")
        
         elif target.tag == 527111518479712256:
                 if target.level < 300 and not target.hasreborn():
@@ -2221,7 +2235,8 @@ Stat names are the names that you see in the above embed, with the exception of 
 
                 if player.passive.name == "Tide Of Battle":
                     player.mindmg += math.ceil(0.10 * player.mindmg)     
-                    player.maxdmg += math.ceil(0.10 * player.maxdmg)     
+                    player.maxdmg += math.ceil(0.10 * player.maxdmg)
+                    player.health += math.ceil(0.10 * player.health)
                     raidbed.add_field(name=f"{player.name}: {player.passive.usename}", value=f"{player.passive.effect}")
         
             power = player.maxdmg
@@ -2249,6 +2264,9 @@ Stat names are the names that you see in the above embed, with the exception of 
                         power, abilname = await self.canability(self.raidbeast, player, power, raidbed)
                         if abilname == "Stop Time":
                             self.rts = True
+                        if abilname == "Celestial's Za Warudo":
+                            self.rts = True
+                            cts = True
                         if abilname == "The Plague":
                                 self.rpsned.append(self.raidbeast)
                                 self.rpsn = True
@@ -2265,6 +2283,15 @@ Stat names are the names that you see in the above embed, with the exception of 
                 healnum = randint(0, 100)
 
                 power += player.weapon.damage
+                if cts:
+                    self.raidbeast.attack(power)
+                    raidbed.add_field(name=player.ability.usename, value=player.ability.effect)
+                    power = player.maxdmg
+                    critnum = randint(0, 100)
+                    healnum = randint(0, 100)
+
+                    power += player.weapon.damage
+                    cts = False
                 self.rts = False
 
             if power >= 1:
@@ -2434,7 +2461,8 @@ Stat names are the names that you see in the above embed, with the exception of 
 
             if target.passive.name == "Tide Of Battle":
                 target.mindmg += math.ceil(0.03 * target.mindmg)     
-                target.maxdmg += math.ceil(0.03 * target.maxdmg)     
+                target.maxdmg += math.ceil(0.03 * target.maxdmg)
+                target.health += math.ceil(0.03 * target.health)
                 raidbed.add_field(name=f"{target.name}: {target.passive.usename}", value=f"{target.passive.effect}")
     
         power = math.floor(power)
@@ -2815,7 +2843,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         embed.add_field(name=f"{attacker.passive.usename}:", value=f"{attacker.name} {attacker.passive.effect}")
         if defender.level <= attacker.level - 30:
             defender.health -= 100
-            embed.add_field(name=f"{attacker.passive.usename}:", value=f"{defender.name} lost 100 health to {attacker.passive.usename}")
+            embed.add_field(name=f"{attacker.passive.usename}:", value=f"{defender.name} lost 100 health to {attacker.passive.name}")
         
         return power
 
