@@ -121,6 +121,9 @@ haohaki = Passive("Haoshoku Haki", "Needs: Conqueror's Haki: Increases min and m
 balancepride = Passive("Pride of Balance", "Requires: Yin Blade and Yang Armour set. Increases power of attack by 100 (100 True Damage) and heals for 100 hp on user's turn. Otherwise: No Effect"
 ,"The emodiment of Balance I am", "Increases power by 100. Heals for 200", 1, 100, 200, 0, 0)
 
+tob = Passive("Tide Of Battle", "A Passive sprung from love of battle, and dominance on the battlefield. Increases min and max dmg by 3% every turn",
+"The battle shifts in my tide", "Increases health, min and max dmg by 3%",0,0,0,0,0, reborn=True)
+
 # Unique
 plague = Ability("The Plague", "...?'s special abiltiy which poisons the victim. Has a base damage of 100 increases by 50 for 3 turns, Unique to ...?",
  "wishes death upon You", "Summons The Plague and infects",1, 100, 0, 0, 0)
@@ -131,11 +134,16 @@ czw = Ability("Celestial's ZA WARUDO", "CelestialG's special ability which stops
 suffocation = Ability("Suffocation", "Ability of Trxsh. Has 4 in 10 chance of proccing. Removes 5% of opponents health for 4 turns",
 "SHINE... BAKAYARO", "Removes 5% of health from",1, 0, 0, 0, 0, cooldown=5)
 
+massinc = Ability("Mass increase", "The big one's ability... Bigger and bigger... Doubles damage and heals for 10% hp",
+"BIGGUMS... BIG!!!", "enlarges, doubles power, then attacks", 2.5, 0, 0, 0, 0, 10)
+
 nklk = Passive("No Kill Like Overkill", "A sacred ability belonging to Trxsh. All extra damage done to him is added on to his power for his next turn",
 "NO KILL LIKE OVERKILL", "stole all extra power and overkilled", 1, 0, 0, 0, 0)
 
-tob = Passive("Tide Of Battle", "A Passive sprung from love of battle, and dominance on the battlefield. Increases min and max dmg by 3% every turn",
-"The battle shifts in my tide", "Increases health, min and max dmg by 3%",0,0,0,0,0, reborn=True)
+bproc = Passive("Belly Protection", "Won't be hurting this chub. Decreases all damage above 10k by 30% and heals for 4%hp",
+"Jigglessss", "heals for 3%hp and reduces damage by 30%", 0, 0, 0, 0, 0, 3)
+
+
 # Raid Enemies
 bebebeslam = Ability("BBB slam!", "Giant King B B B, belly flops dealing 1.3x dmg and hitting 3 people", "BE BE BE... SLAM!", 
 "belly flops dealing 1.3x dmg, healing for 10hp", 1.3, 0, 10, 0, 0)
@@ -145,12 +153,12 @@ bellybump = Ability("Belly Belly Bounce", "Massive user dashes at an immense spe
 "charges gaining x1.4 strength increasing min and max damage by 10, and then bounces", 1.4, 0, 0, 10, 10)
 
 abilities = [theworld, swarm, blast, deadlygrasp, critstrike, pickelize, sonic, jajanken, uheal, slag, ssuck, nmareterror]
-allabilities = [plague, psusanoo, czw, suffocation]
+allabilities = [plague, psusanoo, czw, suffocation, massinc]
 for thing in abilities:
     allabilities.append(thing)
 
 passives = [dodge, counter, regeneration, rage, sharpeye, sboost, critblock, nlove, chubz, tob]
-allpassives = [haohaki, balancepride, nklk]
+allpassives = [haohaki, balancepride, nklk, bproc]
 for thing in passives:
     allpassives.append(thing)
 
@@ -228,9 +236,10 @@ pds = Weapons("Plague Doctors Scepter", 3001, "Soulbound to ...?", "infects", 0,
 parblade = Weapons("Staff of the Parade", 3002, "The Chosen weapon of the Parade Creator", "moderates", 5000, 20, 25, 0, 6)
 uth = Weapons("『Unravel the Heavens』", 3003, "He's just standing there, menacingly, with the power of ∞ and ∅!", "shine barrages",
 4200, 0, 10, 0, 6)
-diowep = Weapons("Celestial's Dio", 3004, "The power of ZA WARUDO is overflowing", "poses then brutally barrages", 4000, 2, 15, 0, 6)
+diowep = Weapons("Celestial's Dio", 3004, "The power of ZA WARUDO is overflowing", "poses then brutally barrages", 3800, 2, 15, 0, 6)
+bhammer = Weapons("Biggums Sledge Hammer", 3005, "It's like a sledge hammer... But Bigger", "slams", 3500, 15, tierz=6)
 
-allweapons = [pds, parblade, uth, diowep]
+allweapons = [pds, parblade, uth, diowep, bhammer]
 for weapon in weaponlist:
     allweapons.append(weapon)
 
@@ -309,11 +318,12 @@ chand = Armour("Crazy Hand", 2029, "A mysterious floating with seemingly immense
 
 
 # unique
-paraders = Armour("Parade Creators Outfit", 4001, "The cloak donned by the Creator of Isaiah's Parade", 5900, 3370, 0, 10, parblade, 6)
+paraders = Armour("Parade Creators Outfit", 4001, "The cloak donned by the Creator of Isaiah's Parade", 5900, 4000, 0, 10, parblade, 6)
 pdr = Armour("True Plague Doctors Uniform", 4002, "You don't want him doing your autopsy", 4050, 1900, 0, 25, pds, 6)
 loin = Armour("Unusual Loincloth", 4003, "Wait, is that a monkey tail?", 5000, 2000, 0, 4, uth, 6)
 jotarowep = Armour("Celestial Platinum", 4004, "The physical manifestation of CelestialG's fighting spirit",
 5000, 1700, 0, 5, diowep, 6)
+bigbel = Armour("Biggums' Belly", 4005, "It's so chubby.", 5500, 2000)
 
 armorlist = [linen, chain, hunters, iron, gold, slimearm, assas, valkryie, diamond, saiyanguc, 
 abyss, paladium, cranger,
@@ -322,7 +332,7 @@ vknight, shadowflame, artillery, sranger,
 vampcloak, nightmare, hshield, blastgear, vmaster, loincloth, susanoo1,
 mkgear, haki, yang, ymr, chand]
 
-allarmor = [paraders, pdr, loin, jotarowep]
+allarmor = [paraders, pdr, loin, jotarowep, bigbel]
 for thing in armorlist:
     allarmor.append(thing)
 
@@ -699,15 +709,6 @@ def buffing(tobuff):
         tobuff.weapon.damage += 15
         tobuff.weapon.critplus += 4
         msg = "Increased Health by 20, increased Damage of Baby Slime by 15, and increased crit chance by 4"
-
-    elif tobuff.armour.name == "Parade Creators Outfit":
-        tobuff.health += 60
-        tobuff.weapon.damage += 40
-        tobuff.weapon.critplus += 2
-        tobuff.weapon.lifesteal += 2
-        tobuff.mindmg += 40
-        tobuff.maxdmg += 40
-        msg = "Increased Health by 60. Increased Min, max and weapon damage by 40. Increased Crit Chance and heal% by 2%"
         
     elif tobuff.armour.name == "Master General":
         tobuff.health += 220
@@ -800,6 +801,15 @@ def buffing(tobuff):
     elif tobuff.armour.name == "Loincloth":
         tobuff.ability = deadlygrasp
         msg = "Grants you the ability of deadly grasp and increases it's power."
+
+    elif tobuff.armour.name == "Parade Creators Outfit":
+        tobuff.health += 60
+        tobuff.weapon.damage += 40
+        tobuff.weapon.critplus += 2
+        tobuff.weapon.lifesteal += 2
+        tobuff.mindmg += 40
+        tobuff.maxdmg += 40
+        msg = "Increased Health by 60. Increased Min, max and weapon damage by 40. Increased Crit Chance and heal% by 2%"
 
     elif tobuff.armour.tag == 4003:
         tobuff.ability = suffocation

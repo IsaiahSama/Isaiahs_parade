@@ -38,6 +38,8 @@ fsash = Item("Sash of FOCUS", 401, "A sash worn around the forehead that helps y
 10000, "Ripped sash and survived an OHKO", 6666, 4, 0, 0, 0, 0, 0, "item")
 boe = Item("Band Of Experience", 402, "A band said to increase exp gain by 20% from all sources",
 50000, "Increases exp gain by 20% from all sources", 5, 4, 0, 0, 0,0, 0, "item")
+lc = Item("Lucky Coin", 501, "A coin which increases money earned by 1.5", 200000, "increases money gain by 1.5x",
+5,5, 0,0,0,0,0, "item")
 ohkoscarf = Item("OHKO scarf", 601, "A sacred scarf that gives you a 5/100 chance to OHKO an enemy on first turn. Lasts until activated",
 1200000, "Ripped scarf and One Hit KO enemy", 66666, 6, 0, 0, 0, 0, 0, "item")
 
@@ -48,8 +50,8 @@ ksc = Item("Kevin's Secret Candy", 999, "A rare item said to increase your level
 potlist = [ppot, hpot, lblet, 
 mpot, sring, mcloak,
 gpapple, 
-fsash,
-boe,
+fsash, boe,
+lc,
 ohkoscarf]
 allpotlist = [ksc]
 for t in potlist:

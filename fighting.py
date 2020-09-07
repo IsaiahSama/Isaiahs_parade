@@ -111,7 +111,7 @@ class FullFight(commands.Cog):
             x, y = x[0], y[0]
             person.weapon, person.armour = x, y"""
 
-    modlist = [347513030516539393, 527111518479712256, 493839592835907594, 315619611724742656]
+    modlist = [347513030516539393, 527111518479712256, 493839592835907594, 315619611724742656, 302071862769221635]
     
 
     # Commands
@@ -961,6 +961,12 @@ Stat names are the names that you see in the above embed, with the exception of 
                     except AttributeError:
                         pass
 
+            if power >= 10000:
+                if defender.hasPassive():
+                    if defender.passive.name == "Belly Protecion":
+                        power -= 0.30 * power
+                        battlebed.add_field(name=defender.passive.usename, value=defender.passive.effect)
+
             defender.attack(power)
 
             if defender.hasPassive():
@@ -1091,6 +1097,13 @@ Stat names are the names that you see in the above embed, with the exception of 
             if defender.mincoin > defender.maxcoin:
                 defender.mincoin, defender.maxcoin = defender.maxcoin, defender.mincoin
             coin = randint(defender.mincoin, defender.maxcoin)
+
+            if attacker.hasbuff():
+                buffitem = await self.getbuff(attacker.curbuff)
+                if buffitem.tag == 501:
+                    coin *= 1.5
+                    await ctx.send(f"{buffitem.name}: {buffitem.effect}")
+
             # coin *= 2
 
             attacker.addcoin(round(coin))
@@ -1960,8 +1973,8 @@ Stat names are the names that you see in the above embed, with the exception of 
                     await ctx.send("Hello Trxsh. Reach level 300 to achieve your True Power")
                 else:
                     if not target.armour == 4003 and not target.armour2 == 4003:
-                        target.weapon = 3003
-                        target.armour = 4003
+                        target.weapon2 = 3003
+                        target.armour2 = 4003
                     if target.passive != "No Kill Like Overkill":
                         target.passive = "No Kill Like Overkill" 
                         await ctx.send("Now... Embrace your true power")
@@ -1971,18 +1984,29 @@ Stat names are the names that you see in the above embed, with the exception of 
                     await ctx.send("Congratulations on being the first non-mod to reach Tier 5. Now just reach Tier 6 >:).")
                 else:
                     if not target.weapon == 3004 and not target.weapon2 == 3004:
-                        await ctx.send("It's about time you reached level 300. Now... Take what you have earnt")
-                        target.weapon = 3004
-                        target.armour = 4004
+                        await ctx.send("So back into power I see CelestialG")
+                        target.weapon2 = 3004
+                        target.armour2 = 4004
 
         elif target.tag == 493839592835907594:
-            if not target.hasreborn() and target.level < 300:
-                await ctx.send("Reach level 300 for your mod gear")
+            if not target.hasreborn() and target.getTier() != 6:
+                await ctx.send("Reach Tier 6 for your mod gear")
             else:
                 if not target.weapon == 3002 and not target.weapon2 == 3002:
-                    await ctx.send("Welcome my Parader")
-                    target.weapon = 3002
-                    target.armour = 4001
+                    await ctx.send("Welcome my Parade Creator")
+                    target.weapon2 = 3002
+                    target.armour2 = 4001
+
+        elif target.tag == 302071862769221635:
+            if not target.hasreborn() and target.getTier() != 6 :
+                await ctx.send("Reach Tier 6 for your God Gear")
+            else:
+                if not target.weapon == 3005 and not target.weapon2 == 3005:
+                    await ctx.send("Well Biggums. Let's get Bigger")
+                    target.weapon2 = 3005
+                    target.armour2 = 4005
+                    target.ability = "Mass increase"
+                    target.passive = "Belly Protection"       
 
 
     async def buffuse(self, user):
@@ -2141,6 +2165,11 @@ Stat names are the names that you see in the above embed, with the exception of 
                 value = await self.expgain(player, self.raidbeast)
                 player = await self.getmain(player)
                 coin = randint(self.raidbeast.mincoin, self.raidbeast.maxcoin)
+                if player.hasbuff():
+                    buffitem = await self.getbuff(player.curbuff)
+                    if buffitem.tag == 501:
+                        coin *= 1.5
+                        await channel.send(f"{buffitem.name}: {buffitem.effect}")
                 # coin *= 2
                 player.addcoin(coin)
                 if value:
@@ -2464,7 +2493,13 @@ Stat names are the names that you see in the above embed, with the exception of 
                 target.maxdmg += math.ceil(0.03 * target.maxdmg)
                 target.health += math.ceil(0.03 * target.health)
                 raidbed.add_field(name=f"{target.name}: {target.passive.usename}", value=f"{target.passive.effect}")
-    
+            
+            if power >= 10000:
+                if target.hasPassive():
+                    if target.passive.name == "Belly Protecion":
+                        power -= 0.30 * power
+                        raidbed.add_field(name=f"{target.name}: {target.passive.usename}", value=target.passive.effect)
+        
         power = math.floor(power)
        
         target.attack(power)
@@ -2516,7 +2551,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             if winner.curbuff == 402:
                 exp += 0.20 * exp
 
-        exp *= 2
+        # exp *= 2
         
         winner.curxp += math.floor(exp)
         
