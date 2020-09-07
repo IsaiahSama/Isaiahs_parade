@@ -393,6 +393,28 @@ Stat names are the names that you see in the above embed, with the exception of 
         await ctx.send(msg)
 
     @commands.command()
+    async def mypassive(self, ctx):
+        if await self.ismember(ctx.author):
+            user = await self.getmember(ctx.author)
+            if user.hasPassive():
+                embed = discord.Embed(
+                    title="Passive",
+                    description=f"Showing Passive for {user.name}",
+                    color=randint(0, 0xffffff)
+                )
+                abil = [x for x in allpassives if x.name == user.passive]
+                if abil:
+                    abil = abil[0]
+                    embed.add_field(name=abil.name, value=abil.description)
+                    await ctx.send(embed=embed)
+
+                else:
+                    await ctx.send("Something went wrong")
+            
+        else:
+            await self.denied(ctx.channel, ctx.author)
+
+    @commands.command()
     async def passive(self, ctx, arg=False, *, name_of_passive=None):
         user = await self.getmember(ctx.author)
 
@@ -417,7 +439,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                 color=randint(0, 0xffffff)
             )
 
-            for passi in allpassives:
+            for passi in passives:
                 passconfirm.add_field(name=f"{passi.name}:", value=f"{passi.description}")
 
             passconfirm.set_footer(text="Continue... If you wish to continue, use <>passive True {Name of Passive}")
@@ -448,6 +470,27 @@ Stat names are the names that you see in the above embed, with the exception of 
 
             await ctx.send(msg)
 
+    @commands.command(aliases=["myactive"])
+    async def myability(self, ctx):
+        if await self.ismember(ctx.author):
+            user = await self.getmember(ctx.author)
+            if user.hasActive():
+                embed = discord.Embed(
+                    title="Ability",
+                    description=f"Showing Ability for {user.name}",
+                    color=randint(0, 0xffffff)
+                )
+                abil = [x for x in allabilities if x.name == user.ability]
+                if abil:
+                    abil = abil[0]
+                    embed.add_field(name=abil.name, value=abil.description)
+                    await ctx.send(embed=embed)
+
+                else:
+                    await ctx.send("Something went wrong")
+            
+        else:
+            await self.denied(ctx.channel, ctx.author)
 
     @commands.command(aliases=["ability"])
     async def active(self, ctx, arg=False, *, act=None):
@@ -474,7 +517,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                 color=randint(0, 0xffffff)
             )
 
-            for acci in allabilities:
+            for acci in abilities:
                 accheck.add_field(name=f"{acci.name}", value=f"{acci.description}")
 
             accheck.set_footer(text="\nContinue... If you wish to continue, use <>active True {Name of Active}")
@@ -1413,7 +1456,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             return
 
         if selly and arg == None:
-            await ctx.send(f"Do <>sell True armour or <>sell True weapon to sell your armour or weapon resepectively")
+            await ctx.send(f"Do <>sell True armour/weapon/itemid to sell your armour or weapon resepectively")
             return
 
         if selly:
@@ -1430,8 +1473,26 @@ Stat names are the names that you see in the above embed, with the exception of 
                 user.weapon = 1001
 
             else:
-                await ctx.send(f"{arg} is neither 'armour', 'armor' or 'weapon'")
-                return
+                try:
+                    arg = int(arg)
+                except ValueError: pass
+                
+                if type(arg) == int:
+                    tosell = [x for x in user.inventory if x == arg]
+                    if not tosell:
+                        await ctx.send("You do not have an item matching that id")
+                        return
+                    else:
+                        tosell = tosell[0]
+                        buffitem = await self.getbuff(tosell)
+                        cost = math.ceil((3/4) * buffitem.cost)
+                        user.inventory.remove(tosell)
+                        user.addcoin(cost)
+                        await ctx.send(f"Sold {buffitem.name} for {cost} Parade coins")
+
+                else:
+                    await ctx.send(f"{arg} is neither 'armour', 'armor', 'weapon' or itemid")
+                    return
 
             await ctx.send("Completed")
 

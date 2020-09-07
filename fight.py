@@ -79,8 +79,8 @@ uheal = Ability("Ultra Heal", "A sacred technique used to heal for 10% of your m
 ssuck = Ability("Soul Sucker", "A powerful move which sucks the soul of the enemy dealing 2x dmg and healing for 15hp", "SOUL SUCKER!",
 "sucks the soul of", 2, 0, 15, 0, 0)
 
-nmareterror = Ability("Nightmare Terror", "Finds the targets worse nightmare and strikes them with it dealing massive damage", 
-"Know the terror of nightmares", "Casts a sleep spell then causes nightmares to", 1.6, 20, 0, 0, 0)
+nmareterror = Ability("Nightmare Terror", "Finds the targets worse nightmare and strikes them with it dealing 1.6x damage + 50 damage", 
+"Know the terror of nightmares", "Casts a sleep spell then causes nightmares to", 1.6, 50, 0, 0, 0)
 
 slag = Ability("Slag", "Has a 1 in 6 chance of applying Slag to the target, causing them to take 1.5x damage for 2 turns",
 "You... have been slagged", "now takes 1.5x damage for the next", 1.5, 0, 0, 0, 0)
@@ -122,7 +122,7 @@ balancepride = Passive("Pride of Balance", "Requires: Yin Blade and Yang Armour 
 ,"The emodiment of Balance I am", "Increases power by 100. Heals for 200", 1, 100, 200, 0, 0)
 
 tob = Passive("Tide Of Battle", "A Passive sprung from love of battle, and dominance on the battlefield. Increases min and max dmg by 3% every turn",
-"The battle shifts in my tide", "Increases health, min and max dmg by 3%",0,0,0,0,0, reborn=True)
+"The battle shifts in my favour", "Increases health, min and max dmg by 3%",0,0,0,0,0, reborn=True)
 
 # Unique
 plague = Ability("The Plague", "...?'s special abiltiy which poisons the victim. Has a base damage of 100 increases by 50 for 3 turns, Unique to ...?",
@@ -1081,7 +1081,7 @@ tmaster = BeastFight("Tank Master", 9300, 1000, 1200, 58000, 64000, "have you ev
 blast, sharpeye, "Summons his tank, aims it, and fires", tsummon, artillery, 310)
 rebdio = BeastFight("DIO Reborn", 10000, 1600, 1800, 64000, 67000, "It's like he never dies.", 4638, 20,5, uheal, regeneration,
 "flash freezes then drains", evampknife, vampcloak, 320)
-minmegu = BeastFight("Minmegu", 9600, 3000, 4000, 70000, 72000, "ECKS-PLOH-SHUN!!!", 4914, 10, 4, jajanken, counter, "EXPLOSION!!!",
+minmegu = BeastFight("Minmegu", 9600, 3000, 4000, 70000, 72000, "ECKS-PLOH-SHUN!!!", 4914, 10, 4, jajanken, counter, "quick casts an explosion and blows up",
 bomb, blastgear, 350)
 dmaster = BeastFight("Dream Master", 8500, 3500, 4200, 68000, 72000, "Your worst nightmare??", 5258, 5, 3, nmareterror, nlove, "gathers nightmares and strikes",
 dreamsword, nightmare, 400)

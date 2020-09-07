@@ -105,7 +105,8 @@ soulmate = MyHelp("Misc", "Soulmate", "<>soulmate", "Reveals the first letter of
 parade = MyHelp("Misc", "Parade", "<>parade", "Gets the invite link to the bot's discord")
 
 accept = MyHelp("Battle", "accept", "<>accept teamname", "Used to accept a team invite")
-active = MyHelp("Battle", "Active", "<>active", "Used to view the Ability table.", "ability")
+active = MyHelp("Battle", "Active", "<>active", "Used to view the Ability table.", "<>ability")
+myactive = MyHelp("Battle", "My Active", "<>myactive", "Used to view your ability", "<>myability")
 adventure = MyHelp("Battle", "Adventure", "<>adventure", "Currently only available for the leader of a team. Invites teammates to take part in adventures")
 buy = MyHelp("Battle", "Buy", "<>buy itemname", "Used to purchase an item")
 createprofile = MyHelp("Battle", "Create Profile", "<>createprofile", "Used to create a profile to use Battle Commands")
@@ -123,6 +124,7 @@ paradecoins = MyHelp("Battle", "Parade Coins", "<>paradecoins", "used to view yo
 paraid = MyHelp("Battle", "Paraid", "<>paraid", "Used by anyone above level 40 to start a raid", cooldown="20 minutes per guild")
 paraid6 = MyHelp("Battle", "Paraid6", "<>paraid6", "Usable by all members in Tier 6. Starts a raid", cooldown="10 minutes")
 passive = MyHelp("Battle", "Passive", "<>passive", "Used to view the passive table")
+mypassive = MyHelp("Battle", "MyPassive", "<>mypassive", "Used to view your passive")
 powprofile = MyHelp("Battle", "Power Profile", "<>powprofile", "Used to view your profile in it's buffed state as it would be during a fight")
 profile = MyHelp("Battle", "Profile", "<>profile", "Used to view your stat profile")
 quest = MyHelp("Battle", "Quest", "<>quest", "Used to do a quest for exp and cash", "<>q", "3 minutes")
@@ -220,7 +222,7 @@ slap,
 afk, back, resetnick, suggest, emoji, mentioned, nohide, ping, intercom, endcall, gcall, gjoin, gleave, namegen, soulmate, parade,
 accept, active, adventure, buy, createprofile, deny, fight, gear, gods, grant, invite, job, kickmember, leaveteam, myteam, paradecoins, paraid,
 paraid6, passive, powprofile, profile, quest, quest6, raid, readd, rebase, register, reward, search, sell, shop, switch, teams, tier, togglefight, upgrade, upgrade2, upgrade3, 
-view, use, reborn, expfor, exp, raider,
+view, use, reborn, expfor, exp, raider, myactive, mypassive,
 startgame, endgame, startstory, endstory, wordadd, wordremove, wordshow,
 add, subtract, multiply, divide, modulus, allseeing, heavens_door, me, no, yes, timer, chosenone, online,
 deathnote, freeze3, ger, ger_rtz, impactrevive, killerqueen, kingcrimson, mute, relog, shadowrealm, wipein, wipestartswith, wipeendswith, zahando, zawarudo,
