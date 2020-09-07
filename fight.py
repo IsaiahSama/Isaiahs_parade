@@ -5,21 +5,21 @@ import copy
 @dataclass
 class Ability:
     name: str
-    desc: str
+    description: str
     usename: str
     effect: str
     power: int
     powertick: int
     health: int
-    lodmg: int
-    hidmg: int
-    abilcd: int = 4
-    tempcd: abilcd = 4
+    min_dmg_up: int
+    max_dmg_up: int
     perhealth: int = 0
     reborn: bool=False
+    cooldown: int = 4
+    tempcd: cooldown = 4
 
     def oncd(self):
-        if self.abilcd == self.tempcd:
+        if self.cooldown == self.tempcd:
             return False
         else:
             return True
@@ -27,22 +27,22 @@ class Ability:
     def cdreduce(self):
         self.tempcd -= 1
         if self.tempcd == 0:
-            self.tempcd = self.abilcd
+            self.tempcd = self.cooldown
 
 
     def reset(self):
-        self.tempcd = self.abilcd
+        self.tempcd = self.cooldown
 
 
     def use(self):
-        return self.power, self.powertick, self.health, self.lodmg, self.hidmg, self.perhealth
+        return self.power, self.powertick, self.health, self.min_dmg_up, self.max_dmg_up, self.perhealth
 
     def isreborn(self):
         return self.reborn
 
 class Passive(Ability):
     def use(self):
-        return self.power, self.powertick, self.health, self.lodmg, self.hidmg, self.perhealth
+        return self.power, self.powertick, self.health, self.min_dmg_up, self.max_dmg_up, self.perhealth
 
 # Actives
 
@@ -129,7 +129,7 @@ czw = Ability("Celestial's ZA WARUDO", "CelestialG's special ability which stops
 "THIS IS MY ZA WARUDO!", "has stopped time, and attacked", 1, 20, 0, 0, 0)
 
 suffocation = Ability("Suffocation", "Ability of Trxsh. Has 4 in 10 chance of proccing. Removes 5% of opponents health for 4 turns",
-"SHINE... BAKAYARO", "Removes 5% of health from",1, 0, 0, 0, 0, 5)
+"SHINE... BAKAYARO", "Removes 5% of health from",1, 0, 0, 0, 0, cooldown=5)
 
 nklk = Passive("No Kill Like Overkill", "A sacred ability belonging to Trxsh. All extra damage done to him is added on to his power for his next turn",
 "NO KILL LIKE OVERKILL", "stole all extra power and overkilled", 1, 0, 0, 0, 0)
@@ -159,17 +159,17 @@ for thing in passives:
 class Weapons:
     name: str
     tag: int
-    desc: str
+    description: str
     effect: str
     damage: int= 0
     critplus: int=0
-    healplus: int=0
+    lifesteal: int=0
     cost: int=0
     tierz: int=1
     typeobj: str="Weapon"
 
     def islifesteal(self):
-        if self.healplus != 0:
+        if self.lifesteal != 0:
             return True
         return False
 
@@ -239,7 +239,7 @@ for weapon in weaponlist:
 class Armour:
     name: str
     tag: int
-    desc: str
+    description: str
     hpup: int=0
     pup: int=0
     cost: int=0
@@ -664,7 +664,7 @@ def buffing(tobuff):
         tobuff.health += 100
         tobuff.weapon.damage += 45
         tobuff.critchance += 5
-        tobuff.weapon.healplus += 6
+        tobuff.weapon.lifesteal += 6
         msg = "Increased Damage of Plague Doctors Scepter by 45. Increased Health by 100. Increased Critchance by 5%. Increased lifesteal by 6%"
 
     elif tobuff.armour.name == "Valkryie":
@@ -704,7 +704,7 @@ def buffing(tobuff):
         tobuff.health += 60
         tobuff.weapon.damage += 40
         tobuff.weapon.critplus += 2
-        tobuff.weapon.healplus += 2
+        tobuff.weapon.lifesteal += 2
         tobuff.mindmg += 40
         tobuff.maxdmg += 40
         msg = "Increased Health by 60. Increased Min, max and weapon damage by 40. Increased Crit Chance and heal% by 2%"
@@ -718,7 +718,7 @@ def buffing(tobuff):
         tobuff.health += 150
         tobuff.critchance += 15
         tobuff.weapon.damage += 15
-        tobuff.weapon.healplus += 3
+        tobuff.weapon.lifesteal += 3
         msg = "Increased health by 150. Increased Critchance and weapon damage by 15. Increased weapon lifesteal by 3%"
         
     elif tobuff.armour.name == "Vibe Master":
@@ -728,7 +728,7 @@ def buffing(tobuff):
 
     elif tobuff.armour.name == "Vampiric Cloak":
         tobuff.health += 200
-        tobuff.weapon.healplus += 5
+        tobuff.weapon.lifesteal += 5
         tobuff.armour.regen += 2
         tobuff.weapon.damage += 40
         msg = "Increased Health by 200, lifesteal on ENC Vamp Knives by 5%, damage on ENC Vamp Knives by 40 and regen on Vamp Cloak by 2%"
@@ -742,7 +742,7 @@ def buffing(tobuff):
     elif tobuff.armour.name == "Haki":
         tobuff.health += 500
         tobuff.weapon.damage += 400
-        tobuff.weapon.healplus += 4
+        tobuff.weapon.lifesteal += 4
         tobuff.armour.regen += 4
         tobuff.critchance += 10
         tobuff.mindmg += 20
@@ -753,7 +753,7 @@ def buffing(tobuff):
     elif tobuff.armour.name == "Yang":
         tobuff.health += 500
         tobuff.weapon.damage += 400
-        tobuff.weapon.healplus += 4
+        tobuff.weapon.lifesteal += 4
         tobuff.armour.regen += 4
         tobuff.critchance += 10
         tobuff.mindmg += 50
@@ -787,14 +787,14 @@ def buffing(tobuff):
 
     elif tobuff.armour.name == "YareYare Mirror":
         tobuff.weapon.damage += 100
-        tobuff.weapon.healplus = 5
+        tobuff.weapon.lifesteal = 5
         tobuff.ability = psusanoo
         msg = "You have awakened the ability of Perfect Susanoo. Tatsuki blade no longer harms you, but instead heals you and has +100 dmg"
 
     elif tobuff.armour.name == "Imperfect Susanoo":
         tobuff.health += 200
         tobuff.weapon.damage += 50
-        tobuff.weapon.healplus += 2
+        tobuff.weapon.lifesteal += 2
         msg = "Increases Health by 200, increases weapon damage by 50. Increased lifesteal of energy mace by 2%"
 
     elif tobuff.armour.name == "Loincloth":
@@ -878,24 +878,24 @@ class FightMe(Fighter):
     
 
     def abiluse(self, power):
-        powerinc, powerticinc, healthinc, lodmginc, hidmginc, perhealth = self.ability.use()
+        powerinc, powerticinc, healthinc, min_dmg_upinc, max_dmg_upinc, perhealth = self.ability.use()
         power *= powerinc
         power += powerticinc
         self.health += healthinc
-        self.mindmg += lodmginc
-        self.maxdmg += hidmginc
+        self.mindmg += min_dmg_upinc
+        self.maxdmg += max_dmg_upinc
         perhealth = math.ceil((perhealth/ 100) * self.health)
         self.health += perhealth
 
         return power
 
     def passuse(self, power):
-        powerinc, powerticinc, healthinc, lodmginc, hidmginc, perhealth = self.passive.use()
+        powerinc, powerticinc, healthinc, min_dmg_upinc, max_dmg_upinc, perhealth = self.passive.use()
         power *= powerinc
         power += powerticinc
         self.health += healthinc
-        self.mindmg += lodmginc
-        self.maxdmg += hidmginc
+        self.mindmg += min_dmg_upinc
+        self.maxdmg += max_dmg_upinc
         perhealth = math.ceil((perhealth/ 100) * self.health)
         self.health += perhealth
 
@@ -946,24 +946,24 @@ class FightingBeast(BeastFight):
         self.health = self.health - dmg
 
     def abiluse(self, power):
-        powerinc, tickpow, healthinc, lodmginc, hidmginc, perhealth= self.ability.use()
+        powerinc, tickpow, healthinc, min_dmg_upinc, max_dmg_upinc, perhealth= self.ability.use()
         power *= powerinc
         power += tickpow
         self.health += healthinc
-        self.mindmg += lodmginc
-        self.maxdmg += hidmginc
+        self.mindmg += min_dmg_upinc
+        self.maxdmg += max_dmg_upinc
         perhealth = math.ceil((perhealth/ 100) * self.health)
         self.health += perhealth
 
         return power
 
     def passuse(self, power):
-        powerinc, powerticinc, healthinc, lodmginc, hidmginc, perhealth = self.passive.use()
+        powerinc, powerticinc, healthinc, min_dmg_upinc, max_dmg_upinc, perhealth = self.passive.use()
         power *= powerinc
         power += powerticinc
         self.health += healthinc
-        self.mindmg += lodmginc
-        self.maxdmg += hidmginc
+        self.mindmg += min_dmg_upinc
+        self.maxdmg += max_dmg_upinc
         perhealth = math.ceil((perhealth/ 100) * self.health)
         self.health += perhealth
 

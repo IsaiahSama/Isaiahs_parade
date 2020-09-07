@@ -5,10 +5,13 @@ import asyncio
 import random
 from random import randint
 import os
+import sqlite3
 from dotenv import load_dotenv
 load_dotenv()
 
 
+"""con = sqlite3.connect("paradedb.sqlite")
+cur = con.cursor()"""
 
 # Set Client
 bot = commands.Bot(command_prefix='<>', case_insensitive=True)

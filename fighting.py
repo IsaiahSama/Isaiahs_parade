@@ -357,13 +357,13 @@ class FullFight(commands.Cog):
             statembed.add_field(name=f"Crit_chance: {user.critchance}%", value=f"+2% = {user.critchanceprice()} Parade Coins")
             statembed.add_field(name=f"Heal_Chance: {user.healchance}%", value=f"+3% = {user.healchanceprice()} Parade Coins", inline=False)
             if user.hasPassive():
-                statembed.add_field(name=f"Passive: {user2.passive.name}", value=f"{user2.passive.desc}")
+                statembed.add_field(name=f"Passive: {user2.passive.name}", value=f"{user2.passive.description}")
             elif user.level >= 40 and not user.hasPassive():
                 statembed.add_field(name="Passive:", value="You are strong enough to wield a passive. Get one with <>passive")
             else:
                 statembed.add_field(name="Passive:", value="Unlocked at level 40")
             if user.hasActive():
-                statembed.add_field(name=f"Active Ability: {user2.ability.name}", value=f"{user2.ability.desc}")
+                statembed.add_field(name=f"Active Ability: {user2.ability.name}", value=f"{user2.ability.description}")
             elif user.level >= 60 and not user.hasActive():
                 statembed.add_field(name="Active:", value="You are strong enough to wield an ability. Get one with <>active")
             else:
@@ -418,7 +418,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             )
 
             for passi in allpassives:
-                passconfirm.add_field(name=f"{passi.name}:", value=f"{passi.desc}")
+                passconfirm.add_field(name=f"{passi.name}:", value=f"{passi.description}")
 
             passconfirm.set_footer(text="Continue... If you wish to continue, use <>passive True {Name of Passive}")
 
@@ -475,7 +475,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             )
 
             for acci in allabilities:
-                accheck.add_field(name=f"{acci.name}", value=f"{acci.desc}")
+                accheck.add_field(name=f"{acci.name}", value=f"{acci.description}")
 
             accheck.set_footer(text="\nContinue... If you wish to continue, use <>active True {Name of Active}")
 
@@ -798,7 +798,7 @@ Stat names are the names that you see in the above embed, with the exception of 
 
 
             if attacker.health >= 65000:
-                attacker.weapon.healplus = 0
+                attacker.weapon.lifesteal = 0
                 attacker.armour.regen = 0
                 if attacker.passive.name == "Regeneration":
                     attacker.passive.name = None
@@ -899,7 +899,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                 
                 if cts:
                     defender.attack(power)
-                    battlebed.add_field(name="In Stopped Time", value=f"{attacker.name} {attacker.attackmsg} {defender.name}")
+                    battlebed.add_field(name="In Stopped Time", value=f"{attacker.name} {attacker.attackmsg} {defender.name} for {power} damage")
                 ts = False
                 cts = False
 
@@ -970,7 +970,7 @@ Stat names are the names that you see in the above embed, with the exception of 
 
             if power >= 1:
                 if attacker.weapon.islifesteal():
-                    x = math.floor((attacker.weapon.healplus / 100) * power)
+                    x = math.floor((attacker.weapon.lifesteal / 100) * power)
                     attacker.heal(x)
                     battlebed.add_field(name=f"{attacker.weapon.name}", value=f"heals {attacker.name} for {x} hp")
 
@@ -1244,11 +1244,11 @@ Stat names are the names that you see in the above embed, with the exception of 
             tuser = await self.fightuser(user)
             sword.damage = tuser.weapon.damage
             sword.critplus = tuser.weapon.critplus
-            sword.healplus = tuser.weapon.healplus
+            sword.lifesteal = tuser.weapon.lifesteal
             shield.hpup = tuser.armour.hpup
             shield.pup = tuser.armour.pup
 
-        thing.add_field(name=f"Weapon: {sword.name}", value=f"Damage: +{sword.damage}, Critchance: +{sword.critplus}%, Lifesteal: +{sword.healplus}",
+        thing.add_field(name=f"Weapon: {sword.name}", value=f"Damage: +{sword.damage}, Critchance: +{sword.critplus}%, Lifesteal: +{sword.lifesteal}",
         inline=False)
         thing.add_field(name=f"Armour: {shield.name}", value=f"Health up: +{shield.hpup}, Power Up: +{shield.pup}")
         if shield.haspair():
@@ -1281,10 +1281,10 @@ Stat names are the names that you see in the above embed, with the exception of 
             )
             
             weaponbed.add_field(name="Name:", value=f"{item.name}")
-            weaponbed.add_field(name="Description:", value=f"{item.desc}")
+            weaponbed.add_field(name="Description:", value=f"{item.description}")
             weaponbed.add_field(name="Damage:", value=f"+{item.damage}")
             weaponbed.add_field(name="Crit Chance:", value=f"+{item.critplus}% chance")
-            weaponbed.add_field(name="Lifesteal:",value=f"+{item.healplus}%")
+            weaponbed.add_field(name="Lifesteal:",value=f"+{item.lifesteal}%")
             weaponbed.add_field(name="Cost:", value=f"{item.cost} Parade Coins")
             weaponbed.add_field(name="Tier:", value=f"{item.tierz}")
             
@@ -1298,7 +1298,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             )
 
             armorbed.add_field(name="Name:", value=f"{item.name}")
-            armorbed.add_field(name="Description:", value=f"{item.desc}")
+            armorbed.add_field(name="Description:", value=f"{item.description}")
             armorbed.add_field(name="Health Up:", value=f"+{item.hpup}")
             armorbed.add_field(name="Max Dmg Up:", value=f"+{item.pup}")
             if item.regen != 0:
@@ -1316,7 +1316,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             )
 
             infobed.add_field(name="Name:", value=f"{item.name}")
-            infobed.add_field(name="Description:", value=f"{item.desc}")
+            infobed.add_field(name="Description:", value=f"{item.description}")
             infobed.add_field(name="ID:", value=f"{item.tag}")
             infobed.add_field(name="Health Up:", value=f"+{item.hup}")
             infobed.add_field(name="Min Dmg Up:", value=f"+{item.minup}")
@@ -1795,7 +1795,7 @@ Stat names are the names that you see in the above embed, with the exception of 
 
                 for item in user.inventory:
                     x = await self.getbuff(item)
-                    invenbed.add_field(name=f"{x.name}", value=f"{x.desc} ID: {x.tag}\n")
+                    invenbed.add_field(name=f"{x.name}", value=f"{x.description} ID: {x.tag}\n")
 
                 await ctx.send(embed=invenbed)
 
@@ -2296,7 +2296,7 @@ Stat names are the names that you see in the above embed, with the exception of 
 
             if power >= 1:
                 if player.weapon.islifesteal():
-                    x = math.floor((player.weapon.healplus / 100) * power)
+                    x = math.floor((player.weapon.lifesteal / 100) * power)
                     player.heal(x)
                     raidbed.add_field(name=f"{player.weapon.name}", value=f"heals {player.name} for {x} hp")
             
@@ -2993,7 +2993,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         )
         
         for valuable in potlist:
-            itembed.add_field(name=f"{valuable.name}", value=f"{valuable.desc} \nCost: {valuable.cost}\nTier:{valuable.tierz}")
+            itembed.add_field(name=f"{valuable.name}", value=f"{valuable.description} \nCost: {valuable.cost}\nTier:{valuable.tierz}")
                 
         await ctx.send(embed=itembed)
 

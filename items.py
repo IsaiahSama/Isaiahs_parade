@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 class Item:
     name: str
     tag: int
-    desc: str
+    description: str
     cost: int
     effect: str
     duration: int
@@ -19,7 +19,7 @@ class Item:
     
 
 # Buff Potions
-# name, tag, desc, cost, effect, duration, tier, healthup, powerup, minup, maxup, critup, untype(pot or item)
+# name, tag, description, cost, effect, duration, tier, healthup, powerup, minup, maxup, critup, untype(pot or item)
 ppot = Item("Power Potion", 100, "A basic potion which increases your attack power by 20 for 3 fights",
 500, "increases attack power by 20", 3, 1, 0, 20, 0, 0, 0, "pot")
 hpot = Item("Health Potion", 101, "A basic health potion which increases your health by 30 for 2 fights",
