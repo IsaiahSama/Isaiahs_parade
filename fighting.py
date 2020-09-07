@@ -963,7 +963,7 @@ Stat names are the names that you see in the above embed, with the exception of 
 
             if power >= 10000:
                 if defender.hasPassive():
-                    if defender.passive.name == "Belly Protecion":
+                    if defender.passive.name == "Belly Protection":
                         power -= 0.30 * power
                         battlebed.add_field(name=defender.passive.usename, value=defender.passive.effect)
 
@@ -2496,7 +2496,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             
             if power >= 10000:
                 if target.hasPassive():
-                    if target.passive.name == "Belly Protecion":
+                    if target.passive.name == "Belly Protection":
                         power -= 0.30 * power
                         raidbed.add_field(name=f"{target.name}: {target.passive.usename}", value=target.passive.effect)
         
