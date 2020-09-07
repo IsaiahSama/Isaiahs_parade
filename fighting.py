@@ -214,6 +214,8 @@ class FullFight(commands.Cog):
                         await ctx.author.add_roles(role)
                         await ctx.send("You Have received your role of The Reborn")
 
+        await self.fixvalues(target)
+
         profileEmbed.add_field(name="Name:", value=f"{target.name}")
         profileEmbed.add_field(name="Level:", value=f"{target.level}")
         profileEmbed.add_field(name="Tier:", value=f"{target.getTier()}")
@@ -304,6 +306,10 @@ class FullFight(commands.Cog):
             await self.denied(ctx.channel, ctx.author)
             return
 
+        if user.tag in self.channeling:
+            await ctx.send("Cannot quest now as you are channeling")
+            return
+
         tier = user.getTier()
 
         embed = discord.Embed(
@@ -348,6 +354,8 @@ class FullFight(commands.Cog):
                 title=f"Stat Table for {ctx.author.display_name}",
                 color=randint(0, 0xffffff)
             )
+
+            await self.fixvalues(user)
 
             statembed.add_field(name="Tier:", value=f"{user.getTier()}")
             statembed.add_field(name="Level:", value=f"{user.level}", inline=False)
@@ -568,6 +576,10 @@ Stat names are the names that you see in the above embed, with the exception of 
             await self.denied(ctx.channel, ctx.author)
             return
 
+        if user.tag in self.channeling:
+            await ctx.send("You cannot join a raid now since you are channeling")
+            return
+
         if not self.raidon:
             await ctx.send("There is no Raid going on currently. You will know when one is occurring")
             return
@@ -598,9 +610,6 @@ Stat names are the names that you see in the above embed, with the exception of 
                     user.inventory.append(item.tag)
                     msg = f"You have received {item.name}. Return in 1 hour"
             await ctx.send(f"{msg}. Come back in 1 hour")
-            await asyncio.sleep(60 * 60)
-
-            await ctx.send(f"{ctx.author.mention}, you can now get another reward")
             return
 
         else:
@@ -702,6 +711,10 @@ Stat names are the names that you see in the above embed, with the exception of 
             elif user1.getTier() < user2.getTier():
                 await ctx.send("I hope you know what you are getting yourself into. They are out of your tier... literally")
 
+            if user1.tag in self.channeling or user2.tag in self.channeling:
+                await ctx.send("You can not fight as you are channeling")
+                return
+
             self.infight.append(user1.tag)
             self.infight.append(user2.tag)
 
@@ -755,7 +768,8 @@ Stat names are the names that you see in the above embed, with the exception of 
         defender = user2
 
         fighting = True
-  
+
+        
         
         # Checking for Armour Weapon Pairs
         if attacker.armour.haspair():
@@ -1130,7 +1144,11 @@ Stat names are the names that you see in the above embed, with the exception of 
         if attacker.typeobj == "player" and defender.typeobj == "player":
             attacker = await self.getmain(attacker)
             defender = await self.getmain(defender)
-            coin = randint(math.floor(defender.pcoin / 10), math.floor(defender.pcoin / 3))
+            try:
+                coin = randint(math.floor(defender.pcoin / 10), math.floor(defender.pcoin / 3))
+            except ValueError:
+                coin = 100
+                await ctx.send(f"{defender.name} is a bit poor... so just take this 100 coins")
             await ctx.send(f"{attacker.name}: You have received {coin} Parade Coins from {defender.name}")
             attacker.addcoin(coin)
             defender.takecoin(coin)
@@ -1950,12 +1968,13 @@ Stat names are the names that you see in the above embed, with the exception of 
                     return
                 
                 await ctx.send("Heading back to Tier 1... Best of luck progressing again")
-                user.rtz()
-                sword1, shield1, sword2, shield2 = await user.getallgear()
+                sword1, shield1, sword2, shield2 = user.getallgear()
                 if sword1.tierz == 6:
                     sword1, sword2 = sword2, sword1
                 if shield1.tierz == 6:
                     shield1, shield2 = shield2, shield1
+
+                user.rtz()
 
                 await ctx.send("And it was done")
             else:
@@ -2013,8 +2032,49 @@ Stat names are the names that you see in the above embed, with the exception of 
                 await ctx.send("You now have Raider role")
         else:
             await ctx.send("This command cannot be used outside of The Parade. Get the link with <>parade")
+    channeling = []
+    @commands.command()
+    @commands.cooldown(2, 3600, commands.BucketType.user)
+    async def channel(self, ctx):
+        if await self.ismember(ctx.author):
+            user = await self.getmember(ctx.author)
+            if user.reborn < 2:
+                await ctx.send("You must be reborn level 2 in order to channel")
+                return
+            if user.tag in self.channeling:
+                self.channeling.remove(user.tag)
+                await ctx.send(f"{user.name} has finished channeling.")
+                return
+            else:
+                self.channeling.append(user.tag)
+                await ctx.send(f"{user.name} has started channeling")
+
+            if user.tag in self.channeling:
+                while user.tag in self.channeling:
+                    user.mindmg += 5
+                    user.maxdmg += 5
+                    user.health += 5
+                    await asyncio.sleep(60)
+                    if user.reborn > 2:
+                        user.curxp += 10
+                    if user.reborn > 3:
+                        user.mindmg += 2
+                        user.maxdmg += 2
+                        user.health += 2
+                        user.curxp += 5
+                        user.pcoin += 20
+
+        else:
+            await self.denied(ctx.channel, ctx.author)
 
     # Functions
+
+    async def fixvalues(self, user):
+        user.health = math.ceil(user.health)
+        user.mindmg = math.ceil(user.mindmg)
+        user.maxdmg = math.ceil(user.maxdmg)
+        user.pcoin = math.ceil(user.pcoin)
+        user.curxp = math.ceil(user.curxp)
 
     async def getcurxp(self, level, curxp):
         base = 50
