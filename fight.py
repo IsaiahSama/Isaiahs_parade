@@ -382,11 +382,13 @@ class Fighter:
         self.level = 0
         self.curxp = 0
         self.xpthresh = 50
-        self.health = 170 + ((0.01 + self.reborn) * self.health)
-        self.mindmg = 10 + ((0.03 + self.reborn) * self.mindmg)
-        self.maxdmg = 20 + ((0.03 + self.reborn) * self.maxdmg)
+        self.health = 170 + ((0.01 + (self.reborn / 100)) * self.health)
+        self.mindmg = 10 + ((0.03 + (self.reborn / 100)) * self.mindmg)
+        self.maxdmg = 20 + ((0.03 + (self.reborn / 100)) * self.maxdmg)
         self.reborn += 1
-        self.pcoin = (1/15 * self.pcoin) 
+        self.pcoin = ((1/50) * self.pcoin) 
+        self.weapon = 1001
+        self.armour = 2001
 
     def hasreborn(self):
         if self.reborn == 0:
@@ -427,7 +429,8 @@ class Fighter:
         else:
             cost = 400 + (self.health * 1.5)
 
-        cost -= 500
+        if self.hasreborn():
+            cost -= ((10 + (self.reborn * 2)) / 100) * cost
         
         return cost
 
@@ -438,7 +441,9 @@ class Fighter:
             cost = 150000 + (self.mindmg * 1.5)
         else:
             cost = 200 + (self.mindmg * 1.5)
-        cost -= 400
+        
+        if self.hasreborn():
+            cost -= ((10 + (self.reborn * 2)) / 100) * cost
         return cost
 
     def maxdmgprice(self):
@@ -448,7 +453,8 @@ class Fighter:
             cost = 180000 + (self.maxdmg * 1.5)
         else:
             cost = 220 + (self.maxdmg * 1.75)
-        cost -= 450
+        if self.hasreborn():
+            cost -= ((10 + (self.reborn * 2)) / 100) * cost
         return cost
 
     def critchanceprice(self):
@@ -462,14 +468,15 @@ class Fighter:
     def uphealth(self, narg):
         cost = self.healthprice()
 
-        if self.getTier() == 1 and self.health + 20 > 130 * 1.3:
-            return "Reach Tier 2 to upgrade your health further"
-        if self.getTier() == 2 and self.health + 20 > 345 * 1.3:
-            return "Reach Tier 3 to upgrade your health further"
-        if self.getTier() == 3 and self.health + 20 > 949 * 1.3:
-            return "Reach Tier 4 to upgrade your health further"
-        if self.getTier() == 4 and self.health + 20 > 2800 * 1.3:
-            return "Reach Tier 5 to upgrade your health further"
+        if not self.hasreborn():
+            if self.getTier() == 1 and self.health + 20 > 130 * 1.3:
+                return "Reach Tier 2 to upgrade your health further"
+            if self.getTier() == 2 and self.health + 20 > 345 * 1.3:
+                return "Reach Tier 3 to upgrade your health further"
+            if self.getTier() == 3 and self.health + 20 > 949 * 1.3:
+                return "Reach Tier 4 to upgrade your health further"
+            if self.getTier() == 4 and self.health + 20 > 2800 * 1.3:
+                return "Reach Tier 5 to upgrade your health further"
 
         cando = self.cashchk(cost)
         at = 0
@@ -493,20 +500,21 @@ class Fighter:
     def upmin(self, narg):
         cost = self.mindmgprice()
 
-        if self.mindmg + 5 > 50 * 1.5 and self.getTier() == 1:
-            return "Reach Tier 2 to upgrade some more"
+        if not self.hasreborn():
+            if self.mindmg + 5 > 50 * 1.5 and self.getTier() == 1:
+                return "Reach Tier 2 to upgrade some more"
 
-        elif self.mindmg + 5 > 160 * 1.5 and self.getTier() == 2:
-            return "Reach Tier 3 to upgrade some more"
+            elif self.mindmg + 5 > 160 * 1.5 and self.getTier() == 2:
+                return "Reach Tier 3 to upgrade some more"
 
-        elif self.mindmg + 5 > 600 * 1.5 and self.getTier() == 3:
-            return "Reach Tier 4 to upgrade some more"
+            elif self.mindmg + 5 > 600 * 1.5 and self.getTier() == 3:
+                return "Reach Tier 4 to upgrade some more"
 
-        elif self.mindmg + 5 > 1700 * 1.5 and self.getTier() == 4:
-            return "Reach Tier 5 in order to upgrade your min damage some more"
-        
-        elif self.mindmg + 5 > 3500 * 1.5 and self.getTier() == 5:
-            return "Reach Tier 6 in order to upgrade your min damage further"
+            elif self.mindmg + 5 > 1700 * 1.5 and self.getTier() == 4:
+                return "Reach Tier 5 in order to upgrade your min damage some more"
+            
+            elif self.mindmg + 5 > 3500 * 1.5 and self.getTier() == 5:
+                return "Reach Tier 6 in order to upgrade your min damage further"
 
         cando = self.cashchk(cost)
         at = 0
@@ -532,20 +540,21 @@ class Fighter:
     def upmax(self, narg):
         cost = self.maxdmgprice()
 
-        if self.maxdmg + 5 > 90 * 1.5 and self.getTier() == 1:
-            return "Reach Tier 2 to upgrade some more"
+        if not self.hasreborn():
+            if self.maxdmg + 5 > 90 * 1.5 and self.getTier() == 1:
+                return "Reach Tier 2 to upgrade some more"
 
-        elif self.maxdmg + 5 > 190 * 1.5 and self.getTier() == 2:
-            return "Reach Tier 3 to upgrade some more"
+            elif self.maxdmg + 5 > 190 * 1.5 and self.getTier() == 2:
+                return "Reach Tier 3 to upgrade some more"
 
-        elif self.maxdmg + 5 > 700 * 1.5 and self.getTier() == 3:
-            return "Reach Tier 4 to upgrade some more"
+            elif self.maxdmg + 5 > 700 * 1.5 and self.getTier() == 3:
+                return "Reach Tier 4 to upgrade some more"
 
-        if self.maxdmg + 5 > 1800 * 1.5 and self.getTier() == 4:
-            return "Reach Tier 5 in order to upgrade your max damage some more"
+            if self.maxdmg + 5 > 1800 * 1.5 and self.getTier() == 4:
+                return "Reach Tier 5 in order to upgrade your max damage some more"
 
-        if self.maxdmg + 5 > 4200 * 1.5 and self.getTier() == 5:
-            return "Reach Tier 6 in order to upgrade your max damage some more"
+            if self.maxdmg + 5 > 4200 * 1.5 and self.getTier() == 5:
+                return "Reach Tier 6 in order to upgrade your max damage some more"
 
         cando = self.cashchk(cost)
         at = 0
@@ -1076,7 +1085,7 @@ sfass = BeastFight("Shadow Flame Assassin", 6000, 1300, 1400, 40000, 44000, "You
 kdono = BeastFight("Kevin not Kevin", 8000, 1000, 1200, 58000, 64000, "KEVIN!!!", 2382, 5, 20, uheal, regeneration,
 "menacingly approaches", hcard, vknight, 280)
 herian = BeastFight("The Herorian", 7000, 1600, 1900, 20000, 21000, "The Herorian from Heroria?", 2953,
-20, 10, slag, dodge, "expertly spins his top and throws it at", herorian, vknight, 300)
+20, 10, slag, dodge, "expertly spins his top and throws it at", herorian, hshield, 300)
 tmaster = BeastFight("Tank Master", 9300, 1000, 1200, 58000, 64000, "have you ever seen a tank up close?", 3734, 5,3,
 blast, sharpeye, "Summons his tank, aims it, and fires", tsummon, artillery, 310)
 rebdio = BeastFight("DIO Reborn", 10000, 1600, 1800, 64000, 67000, "It's like he never dies.", 4638, 20,5, uheal, regeneration,
