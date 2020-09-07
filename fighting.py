@@ -128,6 +128,7 @@ class FullFight(commands.Cog):
 
     
     @commands.command()
+    @commands.cooldown(1, 3600, commands.BucketType.user)
     async def grant(self, ctx, member: discord.Member, arg: int):
         if arg <= 0:
             await ctx.send(f"You can't give {member.display_name} {arg} Parade Coins... Baka.")
@@ -147,6 +148,10 @@ class FullFight(commands.Cog):
             user1.takecoin(arg)
             user2.addcoin(1/2 * arg)
             await ctx.send("Successful... But it seems you dropped and lost some in the process")
+
+        if len(str(arg)) > user2.getTier() + 1:
+            await ctx.send("You are trying to give too much money for that person's tier :face_with_monocle:")
+            return
 
         if user1.pcoin >= arg:
             user1.takecoin(arg)
@@ -2032,6 +2037,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                 await ctx.send("You now have Raider role")
         else:
             await ctx.send("This command cannot be used outside of The Parade. Get the link with <>parade")
+    
     channeling = []
     @commands.command()
     @commands.cooldown(2, 3600, commands.BucketType.user)
