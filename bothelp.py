@@ -150,6 +150,8 @@ reborn = MyHelp("Battle", "Reborn", "<>reborn", "Must be tier 6. Allows you to g
 expfor = MyHelp("Battle", "Exp for", "<>expfor level", "Shows the amount of exp needed to reach the level you request")
 exp = MyHelp("Battle", "EXP", "<>exp", "Shows all of the exp you have gained.")
 raider = MyHelp("Battle", "Raider", "<>raider", "Only usable Within The Parade. Gives you the Raider role which will notify you of all raids")
+channel = MyHelp("Battle", "Channel", "<>channel", "For those who have reborned at least twice. Increases Stats by 5 every minute. Cannot do quests or raids",
+cooldown="1 hour")
 
 startgame = MyHelp("Gaming", "Start Game", "<>startgame", "Used to start a game of hangman")
 endgame = MyHelp("Gaming", "End Game", "<>endgame", "Used to end a hangman game early")
@@ -222,7 +224,7 @@ slap,
 afk, back, resetnick, suggest, emoji, mentioned, nohide, ping, intercom, endcall, gcall, gjoin, gleave, namegen, soulmate, parade,
 accept, active, adventure, buy, createprofile, deny, fight, gear, gods, grant, invite, job, kickmember, leaveteam, myteam, paradecoins, paraid,
 paraid6, passive, powprofile, profile, quest, quest6, raid, readd, rebase, register, reward, search, sell, shop, switch, teams, tier, togglefight, upgrade, upgrade2, upgrade3, 
-view, use, reborn, expfor, exp, raider, myactive, mypassive,
+view, use, reborn, expfor, exp, raider, myactive, mypassive, channel,
 startgame, endgame, startstory, endstory, wordadd, wordremove, wordshow,
 add, subtract, multiply, divide, modulus, allseeing, heavens_door, me, no, yes, timer, chosenone, online,
 deathnote, freeze3, ger, ger_rtz, impactrevive, killerqueen, kingcrimson, mute, relog, shadowrealm, wipein, wipestartswith, wipeendswith, zahando, zawarudo,
