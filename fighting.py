@@ -290,10 +290,10 @@ class FullFight(commands.Cog):
     async def quest6(self, ctx):
         if await self.ismember(ctx.author):
             user = await self.getmember(ctx.author)
-            if user.getTier() != 6:
-                await ctx.send("You can not use this as you are not tier 6")
-            else:
+            if user.hasreborn() or user.getTier() == 6:
                 await self.quest(ctx)
+            else:
+                await ctx.send("You can not use this as you are not tier 6")
         else:
             await self.denied(ctx.channel, ctx.author)
             return
@@ -1240,7 +1240,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         ismem = await self.ismember(ctx.author)
         if ismem:
             user = await self.getmember(ctx.author)
-            if user.level >= 40:
+            if user.hasreborn() or user.level >= 40 :
                 self.raidon = True
                 if ctx.guild == self.homeguild:
                     ctx.channel = ctx.guild.get_channel(740764507655110666)
@@ -2040,12 +2040,15 @@ Stat names are the names that you see in the above embed, with the exception of 
     
     channeling = []
     @commands.command()
-    @commands.cooldown(2, 3600, commands.BucketType.user)
+    @commands.cooldown(1, 3600, commands.BucketType.user)
     async def channel(self, ctx):
         if await self.ismember(ctx.author):
             user = await self.getmember(ctx.author)
             if user.reborn < 2:
                 await ctx.send("You must be reborn level 2 in order to channel")
+                return
+            if user.mindmg < 3000 and user.maxdmg < 3000 and user.health < 6000:
+                await ctx.send("Health must be at least 6000 and Mindmg and Maxdmg must be at least 3000 in order to channel")
                 return
             if user.tag in self.channeling:
                 self.channeling.remove(user.tag)
@@ -2056,19 +2059,26 @@ Stat names are the names that you see in the above embed, with the exception of 
                 await ctx.send(f"{user.name} has started channeling")
 
             if user.tag in self.channeling:
+                timer = 0
                 while user.tag in self.channeling:
-                    user.mindmg += 5
-                    user.maxdmg += 5
-                    user.health += 5
+                    user.mindmg += 15
+                    user.maxdmg += 15
+                    user.health += 15
                     await asyncio.sleep(60)
+                    timer += 1
                     if user.reborn > 2:
-                        user.curxp += 10
+                        user.curxp += 100
                     if user.reborn > 3:
-                        user.mindmg += 2
-                        user.maxdmg += 2
-                        user.health += 2
-                        user.curxp += 5
-                        user.pcoin += 20
+                        user.mindmg += 5
+                        user.maxdmg += 5
+                        user.health += 5
+                        user.curxp += 10
+                        user.pcoin += 100
+
+                    if timer == 30:
+                        self.channeling.remove(user.tag)
+                        await ctx.send(f"{user.name} has finished channeling")
+                        break
 
         else:
             await self.denied(ctx.channel, ctx.author)
@@ -2353,6 +2363,7 @@ Stat names are the names that you see in the above embed, with the exception of 
     rslagged = False
 
     async def turngo(self, channel):
+        cts = None
         for player in self.raiders:
             raidbed = discord.Embed(
             title=f"Raid battle against {self.raidbeast.name}",
@@ -2882,7 +2893,12 @@ Stat names are the names that you see in the above embed, with the exception of 
         await self.teammsg(squad, f"Seems like adventure will take around {timetocomplete} minutes to complete")
         await asyncio.sleep(timetocomplete * 60)
         suceeded = randint(1, 10)
-        if suceeded >= 2 and suceeded <= 4:
+        end = 4
+        for person in squad.inadv:
+            end += 1
+        if end > 9:
+            end = 9
+        if suceeded >= 1 and suceeded <= end:
             await self.teammsg(squad, "Congratulationsss, You have passed. You will now receive your rewards")
             for person in squad.inadv:
                 nperson = self.bot.get_user(person)
