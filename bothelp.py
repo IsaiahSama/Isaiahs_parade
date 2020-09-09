@@ -150,7 +150,7 @@ reborn = MyHelp("Battle", "Reborn", "<>reborn", "Must be tier 6. Allows you to g
 expfor = MyHelp("Battle", "Exp for", "<>expfor level", "Shows the amount of exp needed to reach the level you request")
 exp = MyHelp("Battle", "EXP", "<>exp", "Shows all of the exp you have gained.")
 raider = MyHelp("Battle", "Raider", "<>raider", "Only usable Within The Parade. Gives you the Raider role which will notify you of all raids")
-channel = MyHelp("Battle", "Channel", "<>channel", "For those who have reborned at least twice. Increases Stats by 5 every minute. Cannot do quests or raids",
+channel = MyHelp("Battle", "Channel", "<>channel", "For those who have reborned at least twice. Increases Stats by 15 every minute. Cannot do quests or raids for 30 minutes",
 cooldown="1 hour")
 
 startgame = MyHelp("Gaming", "Start Game", "<>startgame", "Used to start a game of hangman")
