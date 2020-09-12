@@ -46,9 +46,13 @@ Available categories are Action, Battle, Mod, Misc, gaming, general and social""
         categ = [x for x in mycommands if x.category.lower() == param.lower()] 
         templist = []
 
+        counter = 0
         if categ:
             for thing in categ:
+                counter += 1
                 tosend.append(f"{thing.name}. Usage: {thing.usage}. Aliases: {thing.alias}")
+
+                if counter == 25: break
             
             tosend = '\n# '.join(tosend)
             

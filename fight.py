@@ -122,7 +122,7 @@ balancepride = Passive("Pride of Balance", "Requires: Yin Blade and Yang Armour 
 ,"The emodiment of Balance I am", "Increases power by 100. Heals for 200", 1, 100, 200, 0, 0)
 
 tob = Passive("Tide Of Battle", "A Passive sprung from love of battle, and dominance on the battlefield. Increases min and max dmg by 3% every turn",
-"The battle shifts in my favour", "Increases health, min and max dmg by 3%",0,0,0,0,0, reborn=True)
+"The battle shifts in my favour", "Increases health, min and max dmg",0,0,0,0,0, reborn=True)
 
 # Unique
 plague = Ability("The Plague", "...?'s special abiltiy which poisons the victim. Has a base damage of 100 increases by 50 for 3 turns, Unique to ...?",

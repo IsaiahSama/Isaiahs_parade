@@ -290,8 +290,8 @@ class FullFight(commands.Cog):
     async def quest6(self, ctx):
         if await self.ismember(ctx.author):
             user = await self.getmember(ctx.author)
-            if user.hasreborn() or user.getTier() == 6:
-                await self.quest(ctx)
+            if user.reborn > 1 or user.getTier() == 6:
+                await self.quest(ctx, True)
             else:
                 await ctx.send("You can not use this as you are not tier 6")
         else:
@@ -301,7 +301,7 @@ class FullFight(commands.Cog):
     inquest = []
     @commands.command(aliases=["q"])
     @commands.cooldown(1, 180, commands.BucketType.user)
-    async def quest(self, ctx):
+    async def quest(self, ctx, q6=False):
         if self.aboutupdate:
             await ctx.send("Cannot Do a Quest/Fight Right now as bot is about to go offine")
             return
@@ -327,10 +327,19 @@ class FullFight(commands.Cog):
             await ctx.send("You are already in a quest, please wait for it to complete")
             return
 
+        
+        if user.reborn > 1 and not q6:
+            await ctx.send("You can no longer do these quests. Do <>quest6 Instead")
+            return
+
+
         self.inquest.append(user.tag)
     
         await ctx.send(embed=embed)
-        await self.fight(ctx, None, False, True)
+        if q6:
+            await self.fight(ctx, None, False, True, True)
+        else:
+            await self.fight(ctx, None, False, True)
 
     
     @commands.command()
@@ -647,7 +656,7 @@ Stat names are the names that you see in the above embed, with the exception of 
     aboutupdate = False
     @commands.command()
     @commands.cooldown(1, 30, commands.BucketType.user)
-    async def fight(self, ctx, member: discord.Member=None, isbot=False, isquest=False):
+    async def fight(self, ctx, member: discord.Member=None, isbot=False, isquest=False, q6=False):
         if self.aboutupdate:
             await ctx.send("Cannot Do a Quest/Fight Right now as bot is about to go offine")
             return
@@ -727,7 +736,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         if isquest:
             temp = await self.getmain(user1)
             tier = temp.getTier()
-            user2 = await self.get_enemy(tier)          
+            user2 = await self.get_enemy(user1, tier, q6)          
 
             questembed = discord.Embed(
                 title=f"Fighting {user2.name}",
@@ -902,10 +911,11 @@ Stat names are the names that you see in the above embed, with the exception of 
                         power = await self.canhaki(defender, attacker, power, battlebed)
                     
                 if attacker.passive.name == "Tide Of Battle":
-                    attacker.mindmg += math.ceil(0.03 * attacker.mindmg)     
-                    attacker.maxdmg += math.ceil(0.03 * attacker.maxdmg)
-                    attacker.health += math.ceil(0.03 * attacker.health)
-                    battlebed.add_field(name=f"{attacker.name}: {attacker.passive.usename}", value=f"{attacker.passive.effect}")  
+                    tob = 0.02 + (attacker.reborn / 100)
+                    attacker.mindmg += math.ceil(tob * attacker.mindmg)     
+                    attacker.maxdmg += math.ceil(tob * attacker.maxdmg)
+                    attacker.health += math.ceil(tob * attacker.health)
+                    battlebed.add_field(name=f"{attacker.name}: {attacker.passive.usename}", value=f"{attacker.passive.effect} by {tob * 100}%")
 
                 if attacker.passive.name == "Pride of Balance":
                     if attacker.armour.haspair():
@@ -914,10 +924,11 @@ Stat names are the names that you see in the above embed, with the exception of 
 
             if defender.hasPassive():
                 if defender.passive.name == "Tide Of Battle":
-                    defender.mindmg += math.ceil(0.03 * defender.mindmg)     
-                    defender.maxdmg += math.ceil(0.03 * defender.maxdmg) 
-                    defender.health += math.ceil(0.03 * defender.health)
-                    battlebed.add_field(name=f"{defender.name}: {defender.passive.usename}", value=f"{defender.passive.effect}")
+                    tob = 0.02 + (defender.reborn / 100)
+                    defender.mindmg += math.ceil(tob * defender.mindmg)     
+                    defender.maxdmg += math.ceil(tob * defender.maxdmg)
+                    defender.health += math.ceil(tob * defender.health)
+                    battlebed.add_field(name=f"{defender.name}: {defender.passive.usename}", value=f"{defender.passive.effect} by {tob * 100}%")
 
             
             if attacker.hasActive():
@@ -2045,40 +2056,42 @@ Stat names are the names that you see in the above embed, with the exception of 
         if await self.ismember(ctx.author):
             user = await self.getmember(ctx.author)
             if user.reborn < 2:
-                await ctx.send("You must be reborn level 2 in order to channel")
+                await ctx.send("You must be reborn level 2 or higher in order to channel")
                 return
-            if user.mindmg < 3000 and user.maxdmg < 3000 and user.health < 6000:
+            if user.mindmg > 3000 and user.maxdmg > 3000 and user.health > 6000:
+                if user.tag in self.channeling:
+                    self.channeling.remove(user.tag)
+                    await ctx.send(f"{user.name} has finished channeling.")
+                    return
+                else:
+                    self.channeling.append(user.tag)
+                    await ctx.send(f"{user.name} has started channeling")
+
+                if user.tag in self.channeling:
+                    timer = 0
+                    while user.tag in self.channeling:
+                        user.mindmg += 15
+                        user.maxdmg += 15
+                        user.health += 15
+                        await asyncio.sleep(60)
+                        timer += 1
+                        if user.reborn > 2:
+                            user.curxp += 100
+                        if user.reborn > 3:
+                            user.mindmg += 5
+                            user.maxdmg += 5
+                            user.health += 5
+                            user.curxp += 10
+                            user.pcoin += 100
+
+                        if timer == 30:
+                            self.channeling.remove(user.tag)
+                            await ctx.send(f"{user.name} has finished channeling")
+                            break
+
+            else:
                 await ctx.send("Health must be at least 6000 and Mindmg and Maxdmg must be at least 3000 in order to channel")
                 return
-            if user.tag in self.channeling:
-                self.channeling.remove(user.tag)
-                await ctx.send(f"{user.name} has finished channeling.")
-                return
-            else:
-                self.channeling.append(user.tag)
-                await ctx.send(f"{user.name} has started channeling")
-
-            if user.tag in self.channeling:
-                timer = 0
-                while user.tag in self.channeling:
-                    user.mindmg += 15
-                    user.maxdmg += 15
-                    user.health += 15
-                    await asyncio.sleep(60)
-                    timer += 1
-                    if user.reborn > 2:
-                        user.curxp += 100
-                    if user.reborn > 3:
-                        user.mindmg += 5
-                        user.maxdmg += 5
-                        user.health += 5
-                        user.curxp += 10
-                        user.pcoin += 100
-
-                    if timer == 30:
-                        self.channeling.remove(user.tag)
-                        await ctx.send(f"{user.name} has finished channeling")
-                        break
 
         else:
             await self.denied(ctx.channel, ctx.author)
@@ -2401,10 +2414,11 @@ Stat names are the names that you see in the above embed, with the exception of 
                             power = await self.canbalance(self.raidbeast, player, power, raidbed)
 
                 if player.passive.name == "Tide Of Battle":
-                    player.mindmg += math.ceil(0.10 * player.mindmg)     
-                    player.maxdmg += math.ceil(0.10 * player.maxdmg)
-                    player.health += math.ceil(0.10 * player.health)
-                    raidbed.add_field(name=f"{player.name}: {player.passive.usename}", value=f"{player.passive.effect}")
+                    tob = 0.02 + (player.reborn / 100)
+                    player.mindmg += math.ceil(tob * player.mindmg)     
+                    player.maxdmg += math.ceil(tob * player.maxdmg)
+                    player.health += math.ceil(tob * player.health)
+                    raidbed.add_field(name=f"{player.name}: {player.passive.usename}", value=f"{player.passive.effect} by {tob * 100}%")
         
             power = player.maxdmg
             critnum = randint(0, 100)
@@ -2627,10 +2641,11 @@ Stat names are the names that you see in the above embed, with the exception of 
                 raidbed.add_field(inline=False,name=f"{target.passive.usename}", value=f"{target.passive.effect}")
 
             if target.passive.name == "Tide Of Battle":
-                target.mindmg += math.ceil(0.03 * target.mindmg)     
-                target.maxdmg += math.ceil(0.03 * target.maxdmg)
-                target.health += math.ceil(0.03 * target.health)
-                raidbed.add_field(name=f"{target.name}: {target.passive.usename}", value=f"{target.passive.effect}")
+                tob = 0.02 + (target.reborn / 100)
+                target.mindmg += math.ceil(tob * target.mindmg)     
+                target.maxdmg += math.ceil(tob * target.maxdmg)
+                target.health += math.ceil(tob * target.health)
+                raidbed.add_field(name=f"{target.name}: {target.passive.usename}", value=f"{target.passive.effect} by {tob * 100}%")
             
             if power >= 10000:
                 if target.hasPassive():
@@ -2758,7 +2773,7 @@ Stat names are the names that you see in the above embed, with the exception of 
 
         user.losses += 1
 
-    async def get_enemy(self, tier):
+    async def get_enemy(self,user, tier, q6):
         yes = []
         if tier == 1:
             min = 0
@@ -2778,15 +2793,21 @@ Stat names are the names that you see in the above embed, with the exception of 
 
         elif tier == 5:
             min = 200
-            max = 399
-        
-        elif tier == 6:
-            min = 400
-            max = 999999
+            max = 299
         
         else:
             min = 0
             max = 200
+
+        if q6:
+            min = 250
+
+        if tier == 6:
+            min = 300
+            max = 999999
+
+        if min > max:
+            min, max = max, min
 
         for vanillian in enemy:
             if vanillian.level >= min and vanillian.level <= max:
