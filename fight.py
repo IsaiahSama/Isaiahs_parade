@@ -121,7 +121,7 @@ haohaki = Passive("Haoshoku Haki", "Needs: Conqueror's Haki: Increases min and m
 balancepride = Passive("Pride of Balance", "Requires: Yin Blade and Yang Armour set. Increases power of attack by 100 (100 True Damage) and heals for 100 hp on user's turn. Otherwise: No Effect"
 ,"The emodiment of Balance I am", "Increases power by 100. Heals for 200", 1, 100, 200, 0, 0)
 
-tob = Passive("Tide Of Battle", "A Passive sprung from love of battle, and dominance on the battlefield. Increases min and max dmg by 3% every turn",
+tob = Passive("Tide Of Battle", "A Passive sprung from love of battle, and dominance on the battlefield. Increases min and max dmg by 3%(base) every turn",
 "The battle shifts in my favour", "Increases health, min and max dmg",0,0,0,0,0, reborn=True)
 
 # Unique
