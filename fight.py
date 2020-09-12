@@ -1159,7 +1159,7 @@ loc = BeastFight("Lord Of Creation and Destruction", 100000, 6000, 8000, 100000,
 10000, 40, 30, None, balancepride, "manipulates the existence of", yin, yang, 1000)
 
 
-raidingmonster = [bebebe, giggeng, biggums, oogabooga, anansi, pdoctor, slimeraid, loc, ruffy]
+raidingmonster = [bebebe, giggeng, biggums, oogabooga, anansi, pdoctor, slimeraid, loc, ruffy, dizawarudo]
 
 # Quest Prompts
 
