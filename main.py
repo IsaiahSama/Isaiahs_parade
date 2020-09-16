@@ -306,17 +306,6 @@ async def help2(ctx, *, category=None):
         channel = discord.utils.get(guild.text_channels, name="actions-help")
         await channel.send(embed=actions)
         await ctx.send("They have been updated")"""
-    
-
-        
-
-@bot.command()
-async def parade(ctx):
-    await ctx.send("Here is the invite link to my Official Discord Server")
-    await ctx.send("https://discord.gg/Zy29kub")
-
-
-
 
 yes=os.getenv("key")
 bot.run(yes)

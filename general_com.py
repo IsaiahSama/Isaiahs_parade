@@ -345,20 +345,6 @@ class Afkmake(commands.Cog):
         for afkthing in self.isafk:
             if afkthing.user in message.mentions and afkthing.guild is message.guild:
                 await message.channel.send(f"{afkthing.user.name} went afk saying \"{afkthing.message}\"")
-        
-    @commands.command()
-    @commands.is_owner()
-    async def leaveguild(self, ctx, guild: int):
-        guild = self.bot.get_guild(guild)
-        role = discord.utils.get(guild.roles, name="Parader")
-        if role == None:
-            pass
-        else:
-            await role.delete()
-        channel = discord.utils.get(guild.text_channels, name="parade-room")
-        await channel.delete()
-        await guild.leave()
-        await ctx.send(f"Left: {guild.name}")
 
     @commands.command()
     async def resetnick(self, ctx):

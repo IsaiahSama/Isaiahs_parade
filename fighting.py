@@ -878,7 +878,8 @@ Stat names are the names that you see in the above embed, with the exception of 
                 await ctx.send(f"All regen has been Disabled for {attacker.name}")
 
             if attacker.mindmg > attacker.maxdmg:
-                attacker.mindmg, attacker.maxdmg = attacker.maxdmg, attacker.mindmg
+                attacker.mindmg = attacker.maxdmg - 1
+                
             power = randint(round(attacker.mindmg), round(attacker.maxdmg))
 
             critnum = randint(0, 100)
@@ -2426,7 +2427,7 @@ Stat names are the names that you see in the above embed, with the exception of 
 
             if self.rslagged == True:
                 power *= 1.5
-                raidbed.add_field(name=f"{player.ability.usename}", value=f"{self.raidbeast.name} takes 1.5x dmg because of slag ")
+                raidbed.add_field(name=f"Slag is in effect", value=f"{self.raidbeast.name} takes 1.5x dmg because of slag ")
 
 
             power += player.weapon.damage
@@ -3301,6 +3302,7 @@ Stat names are the names that you see in the above embed, with the exception of 
 
 
     @commands.command()
+    @commands.is_owner()
     async def botrestart(self, ctx):
         await ctx.message.delete()
         self.aboutupdate = True
