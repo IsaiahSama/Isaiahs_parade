@@ -286,7 +286,7 @@ class FullFight(commands.Cog):
             await ctx.author.add_roles(role)
 
     @commands.command(aliases=["q6"])
-    @commands.cooldown(2, 120, commands.BucketType.user)
+    @commands.cooldown(2, 300, commands.BucketType.user)
     async def quest6(self, ctx):
         if await self.ismember(ctx.author):
             user = await self.getmember(ctx.author)
@@ -2705,7 +2705,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             if winner.curbuff == 402:
                 exp += 0.20 * exp
 
-        # exp *= 2
+        exp *= 2
         
         winner.curxp += math.floor(exp)
         
@@ -3292,6 +3292,7 @@ Stat names are the names that you see in the above embed, with the exception of 
     async def result(self, user, jobbed, yes, reward, loss):
         jobbed.add_field(name="Done", value=f"{yes}")
         if yes.lower() == "success":
+                reward *= 1.5
                 jobbed.add_field(name="Here is your payment", value=f"You received {reward} parade coins")
                 jobbed.add_field(name="Woop woop", value=f"{random.choice(jobs.responses)}")
                 user.addcoin(reward)
