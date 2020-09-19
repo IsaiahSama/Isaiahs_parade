@@ -5,7 +5,7 @@ import random
 import os
 from random import randint
 from images import hugs, punches, kisses, slaps, knock, poses, flexes
-from fight import FightMe, Fighter, questpro, enemy, FightingBeast, abilities, allabilities, passives, allpassives, raidingmonster, weaponlist, armorlist, gear, lilgear, allarmor, allweapons
+from fight import FightMe, Fighter, questpro, enemy, FightingBeast, abilities, allabilities, passives, allpassives, raidingmonster, weaponlist, armorlist, gear, lilgear, allarmor, allweapons, BeastFight
 from items import Item, potlist, allpotlist
 import json
 import math
@@ -1976,12 +1976,16 @@ Stat names are the names that you see in the above embed, with the exception of 
             return
 
     @commands.command()
-    async def reborn(self, ctx, confirm=False):
+    async def reborn(self, ctx, confirm=False, x="No"):
         if await self.ismember(ctx.author):
             user = await self.getmember(ctx.author)
             if user.getTier() == 6:
                 if not confirm:
                     await ctx.send("This will send you back to tier 1. Do <>reborn True to confirm")
+                    return
+
+                if user.reborn == 4 and x == "No":
+                    await ctx.send("Warning. From reborn 5 forward, all enemies will scale based on your stats. And will all have tier 5+ weapons. Therefore, if you haven't already, I strongly recommend purchasing god gear, as you will be able to access it from the start")
                     return
                 
                 await ctx.send("Heading back to Tier 1... Best of luck progressing again")
@@ -2774,7 +2778,7 @@ Stat names are the names that you see in the above embed, with the exception of 
 
         user.losses += 1
 
-    async def get_enemy(self,user, tier, q6):
+    async def get_enemy(self, user, tier, q6):
         yes = []
         if tier == 1:
             min = 0
@@ -2816,12 +2820,50 @@ Stat names are the names that you see in the above embed, with the exception of 
 
         villain = random.choice(yes)
 
+        if user.reborn >= 5:
+            villain = await self.getmirror(user)
+
 
         villain = FightingBeast(villain.name, villain.health, villain.mindmg, villain.maxdmg, 
         villain.mincoin, villain.maxcoin, villain.entrymessage, villain.minxp, villain.critchance, villain.healchance,
         villain.ability, villain.passive, villain.attackmsg, villain.weapon, villain.armour, villain.level, villain.typeobj)
         
         return villain
+
+    async def getmirror(self, user):
+        name = f"{user.name}'s Dark Copy"
+        health = await self.vary(user.health)
+        mindmg = await self.vary(user.mindmg)
+        maxdmg = await self.vary(user.maxdmg)
+        mincoin = await self.vary((user.pcoin/3) - 30)
+        maxcoin = await self.vary(user.pcoin + 100)
+        entrymessage = "Your Dark Copy Has Arrived"
+        minxp = (user.curxp / 10)
+        critchance = user.critchance
+        healchance = user.healchance
+        ability = random.choice(allabilities)
+        passive = random.choice(allpassives)
+        weapons = [x for x in allweapons if x.tierz >= 5]
+        armors = [x for x in allarmor if x.tierz >= 5]
+        weapon = random.choice(weapons)
+        armour = random.choice(armors)
+        attackmsg = weapon.effect
+        level = await self.vary(user.level)
+        
+        villain = BeastFight(name, health, mindmg, maxdmg, mincoin, maxcoin, entrymessage, minxp,
+        critchance, healchance, ability, passive, attackmsg, weapon, armour, level)
+
+        return villain
+
+    async def vary(self, value):
+        num = randint(10, 50)
+        pon = randint(1, 2)
+        if pon == 1:
+            value -= num
+        else:
+            value += num
+
+        return value
 
     # Daily
 
