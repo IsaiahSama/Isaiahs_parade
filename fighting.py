@@ -1152,7 +1152,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             else:
                 await ctx.send(f"{lvl}")
             rnum = randint(0, 100)
-            if rnum in [5, 45, 64]:
+            if rnum in [5, 45, 64, 88, 3, 10, 69, 99]:
                 umain = await self.getmain(attacker)
                 if len(umain.inventory) < 25:
                     umain.inventory.append(999)
@@ -1888,7 +1888,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         else:
             await self.denied(ctx.channel, ctx.author)
 
-    @commands.command()
+    @commands.command(aliases=["i"])
     async def inventory(self, ctx):
         if await self.ismember(ctx.author):
             user = await self.getmember(ctx.author)
@@ -2056,21 +2056,20 @@ Stat names are the names that you see in the above embed, with the exception of 
     
     channeling = []
     @commands.command()
-    @commands.cooldown(1, 3600, commands.BucketType.user)
-    async def channel(self, ctx):
+    @commands.cooldown(1, 7200, commands.BucketType.user)
+    async def channel(self, ctx, conf=False):
         if await self.ismember(ctx.author):
             user = await self.getmember(ctx.author)
             if user.reborn < 2:
                 await ctx.send("You must be reborn level 2 or higher in order to channel")
                 return
             if user.mindmg > 3000 and user.maxdmg > 3000 and user.health > 6000:
-                if user.tag in self.channeling:
-                    self.channeling.remove(user.tag)
-                    await ctx.send(f"{user.name} has finished channeling.")
+                if user.reborn > 4 and not conf:
+                    await ctx.send("Channeling above reborn 4 lasts for 1 hour instead of 30 minutes. Do <>channel true to confirm.")
                     return
-                else:
-                    self.channeling.append(user.tag)
-                    await ctx.send(f"{user.name} has started channeling")
+
+                self.channeling.append(user.tag)
+                await ctx.send(f"{user.name} has started channeling")
 
                 if user.tag in self.channeling:
                     timer = 0
@@ -2081,13 +2080,21 @@ Stat names are the names that you see in the above embed, with the exception of 
                         await asyncio.sleep(60)
                         timer += 1
                         if user.reborn > 2:
-                            user.curxp += 100
+                            user.curxp += 10
+                        
                         if user.reborn > 3:
                             user.mindmg += 5
                             user.maxdmg += 5
                             user.health += 5
                             user.curxp += 10
                             user.pcoin += 100
+
+                        if user.reborn > 4:
+                            user.curxp += 20
+                            user.pcoin += 200
+                            user.health += 20
+                            user.maxdmg += 25
+                            user.mindmg += 25
 
                         if timer == 30:
                             self.channeling.remove(user.tag)
@@ -2709,7 +2716,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             if winner.curbuff == 402:
                 exp += 0.20 * exp
 
-        exp *= 2
+        # exp *= 2
         
         winner.curxp += math.floor(exp)
         
@@ -3334,7 +3341,6 @@ Stat names are the names that you see in the above embed, with the exception of 
     async def result(self, user, jobbed, yes, reward, loss):
         jobbed.add_field(name="Done", value=f"{yes}")
         if yes.lower() == "success":
-                reward *= 1.5
                 jobbed.add_field(name="Here is your payment", value=f"You received {reward} parade coins")
                 jobbed.add_field(name="Woop woop", value=f"{random.choice(jobs.responses)}")
                 user.addcoin(reward)
