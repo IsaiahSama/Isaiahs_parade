@@ -137,7 +137,7 @@ suffocation = Ability("Suffocation", "Ability of Trxsh. Has 4 in 10 chance of pr
 massinc = Ability("Mass increase", "The big one's ability... Bigger and bigger... Doubles damage and heals for 10% hp",
 "BIGGUMS... BIG!!!", "enlarges, doubles power, then attacks", 2.5, 0, 0, 0, 0, 10)
 
-nklk = Passive("No Kill Like Overkill", "A sacred ability belonging to Trxsh. All extra damage done to him is added on to his power for his next turn",
+nklo = Passive("No Kill Like Overkill", "A sacred ability belonging to Trxsh. All extra damage done to him is added on to his power for his next turn",
 "NO KILL LIKE OVERKILL", "stole all extra power and overkilled", 1, 0, 0, 0, 0)
 
 bproc = Passive("Belly Protection", "Won't be hurting this chub. Decreases all damage above 10k by 30% and heals for 4%hp",
@@ -158,7 +158,7 @@ for thing in abilities:
     allabilities.append(thing)
 
 passives = [dodge, counter, regeneration, rage, sharpeye, sboost, critblock, nlove, chubz, tob]
-allpassives = [haohaki, balancepride, nklk, bproc]
+allpassives = [haohaki, balancepride, nklo, bproc]
 for thing in passives:
     allpassives.append(thing)
 
@@ -1158,8 +1158,23 @@ None, haohaki, "gomi gomi no PUNCHU!", cqhaki, haki, 1000)
 loc = BeastFight("Lord Of Creation and Destruction", 100000, 6000, 8000, 100000, 400000, "1 force descends from heaven, the other from the underworld. Now... they are one",
 10000, 40, 30, None, balancepride, "manipulates the existence of", yin, yang, 1000)
 
+pd2 = BeastFight("...?", 130000, 4000, 5000, 2600000, 2700000, "Yes...",  100000, 30, 70, plague, dodge, pds.effect, pds, pdr, 1200)
 
-raidingmonster = [bebebe, giggeng, biggums, oogabooga, anansi, pdoctor, slimeraid, loc, ruffy, dizawarudo]
+trxsh = BeastFight("₉⁹₉ Ŧꝛ×ƨẖ ₉⁹₉", 150000, 7000, 8200, 2650000, 2730000, "They call me Dirt", 120000, 40, 20, slag, nklo, uth.effect,
+uth, loin, 1300)
+
+biggums2 = BeastFight("Biggums Act 2", 200000, 6000, 7000, 2600000, 2680000, "Me Big", 98000, 15, 20, massinc, bproc,
+bhammer.effect, bhammer, bigbel, 1100)
+
+cg = BeastFight("CelestialG", 140000, 8300, 9000, 2700000, 2800000, "JOTARO... DIO!!", 200000, 10, 30, czw, sboost,
+diowep.effect, diowep, jotarowep, 1400)
+
+isaiah = BeastFight("Servent of the Parade", 300000, 10000, 13000, 4000000, 5000000, "Allow me to Moderate You", 
+500000, 30, 30, jajanken, critblock, parblade.effect, parblade, paraders, 3000)
+
+
+raidingmonster = [bebebe, giggeng, biggums, oogabooga, anansi, pdoctor, slimeraid, loc, ruffy, dizawarudo,
+pd2, trxsh, biggums2, cg, isaiah]
 
 # Quest Prompts
 

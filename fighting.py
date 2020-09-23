@@ -2245,7 +2245,12 @@ Stat names are the names that you see in the above embed, with the exception of 
                 if player.hasActive():
                     player.ability.reset()
                 player.oghealth = player.health
+                if player.weapon.name == "Plague Doctors Scepter":
+                    player.weapon.damage = math.floor(player.maxdmg * 0.5)
 
+            if self.raidbeast.weapon.name == "Plague Doctors Scepter":
+                self.raidbeast.weapon.damage = math.floor(self.raidbeast.maxdmg * 0.5)
+            
             self.raidbeast.oghealth = self.raidbeast.health
             await self.raidStart(channel)
         
@@ -2296,6 +2301,12 @@ Stat names are the names that you see in the above embed, with the exception of 
 
         if self.raidbeast.hasActive():
             self.raidbeast.ability.reset()
+
+        if self.raidbeast.armour.haspair():
+            if self.raidbeast.weapon.name == self.raidbeast.armour.pairs.name:
+                msg = self.raidbeast.buff()
+                await channel.send(f"Set Bonus {msg}")
+                await asyncio.sleep(2)
         
         while self.raiding:
 
@@ -2356,7 +2367,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             rbeast = random.choice(raidingmonster)
         
         elif user.getTier() == 6:
-            strong = [beast for beast in raidingmonster if beast.health >= 75000]
+            strong = [beast for beast in raidingmonster if beast.level >= 800]
             rbeast = random.choice(strong)
         
         rbeast = FightingBeast(rbeast.name, rbeast.health, rbeast.mindmg, rbeast.maxdmg, 
