@@ -59,7 +59,9 @@ Available categories are Action, Battle, Mod, Misc, gaming, general and social""
             await ctx.send(f"""```md\n{tosend}\n```""")
 
         else:
-            zacmd = [x for x in mycommands if param.lower() in x.name.lower() or param.lower() in x.usage.lower()]
+            zacmd = [x for x in mycommands if param.lower() == x.name.lower()]
+            if not zacmd:
+                zacmd = [x for x in mycommands if param.lower() in x.name.lower() or param.lower() in x.usage.lower()]
             if zacmd:
                 for thing in zacmd:
                     tosend.append(thing.info())
@@ -109,7 +111,7 @@ soulmate = MyHelp("Misc", "Soulmate", "<>soulmate", "Reveals the first letter of
 parade = MyHelp("Misc", "Parade", "<>parade", "Gets the invite link to the bot's discord")
 
 accept = MyHelp("Battle", "accept", "<>accept teamname", "Used to accept a team invite")
-active = MyHelp("Battle", "Active", "<>active", "Used to view the Ability table.", "<>ability")
+active = MyHelp("Battle", "Active", "<>active / <>ractive", "Used to view the Ability table.", "<>ability")
 myactive = MyHelp("Battle", "My Active", "<>myactive", "Used to view your ability", "<>myability")
 adventure = MyHelp("Battle", "Adventure", "<>adventure", "Currently only available for the leader of a team. Invites teammates to take part in adventures")
 buy = MyHelp("Battle", "Buy", "<>buy itemname", "Used to purchase an item")
@@ -127,7 +129,7 @@ myteam = MyHelp("Battle", "My team", "<>myteam", "Used to view your team", "<>te
 paradecoins = MyHelp("Battle", "Parade Coins", "<>paradecoins", "used to view your parade coins. The currency of Battle", "pcoins")
 paraid = MyHelp("Battle", "Paraid", "<>paraid", "Used by anyone above level 40 to start a raid", cooldown="20 minutes per guild")
 paraid6 = MyHelp("Battle", "Paraid6", "<>paraid6", "Usable by all members in Tier 6. Starts a raid", cooldown="10 minutes")
-passive = MyHelp("Battle", "Passive", "<>passive", "Used to view the passive table")
+passive = MyHelp("Battle", "Passive", "<>passive / <>rpassive", "Used to view the passive table")
 mypassive = MyHelp("Battle", "MyPassive", "<>mypassive", "Used to view your passive")
 powprofile = MyHelp("Battle", "Power Profile", "<>powprofile", "Used to view your profile in it's buffed state as it would be during a fight")
 profile = MyHelp("Battle", "Profile", "<>profile", "Used to view your stat profile")

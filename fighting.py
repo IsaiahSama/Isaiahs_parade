@@ -437,7 +437,19 @@ Stat names are the names that you see in the above embed, with the exception of 
             await self.denied(ctx.channel, ctx.author)
 
     @commands.command()
-    async def passive(self, ctx, arg=False, *, name_of_passive=None):
+    async def rpassive(self, ctx):
+        if await self.ismember(ctx.author):
+            user = await self.getmember(ctx.author)
+            if user.hasreborn():
+                await self.passive(ctx, rb=True)
+            else:
+                await ctx.send("You are not reborn")
+        else:
+            await self.denied(ctx.channel, ctx.author)
+            return
+
+    @commands.command()
+    async def passive(self, ctx, arg=False, *, name_of_passive=None, rb=False):
         user = await self.getmember(ctx.author)
 
         if user == None:
@@ -461,7 +473,12 @@ Stat names are the names that you see in the above embed, with the exception of 
                 color=randint(0, 0xffffff)
             )
 
-            for passi in passives:
+            if rb:
+                lowpass = [passi for passi in passives if passi.reborn]
+            else:
+                lowpass = [passi for passi in passives if not passi.reborn]
+ 
+            for passi in lowpass:
                 passconfirm.add_field(name=f"{passi.name}:", value=f"{passi.description}")
 
             passconfirm.set_footer(text="Continue... If you wish to continue, use <>passive True {Name of Passive}")
@@ -514,8 +531,22 @@ Stat names are the names that you see in the above embed, with the exception of 
         else:
             await self.denied(ctx.channel, ctx.author)
 
+    @commands.command(aliases=["ractive"])
+    async def rability(self, ctx):
+        user = await self.getmember(ctx.author)
+        if user is None:
+            await self.denied(ctx.channel, ctx.author)
+            return
+
+        if user.hasreborn():
+            await self.active(ctx, rb=True)
+            return
+
+        else:
+            await ctx.send("You are not reborn")
+
     @commands.command(aliases=["ability"])
-    async def active(self, ctx, arg=False, *, act=None):
+    async def active(self, ctx, arg=False, *, act=None, rb=False):
         user = await self.getmember(ctx.author)
 
         if user == None:
@@ -539,7 +570,12 @@ Stat names are the names that you see in the above embed, with the exception of 
                 color=randint(0, 0xffffff)
             )
 
-            for acci in abilities:
+            if not rb:
+                abils = [acci for acci in abilities if not acci.reborn]
+            else:
+                abils = [acci for acci in abilities if acci.reborn]
+                
+            for acci in abils:
                 accheck.add_field(name=f"{acci.name}", value=f"{acci.description}")
 
             accheck.set_footer(text="\nContinue... If you wish to continue, use <>active True {Name of Active}")
@@ -1021,13 +1057,14 @@ Stat names are the names that you see in the above embed, with the exception of 
                     defender.cursuf -= 1
                 if defender.cursuf == 0:
                     del defender.cursuf
+            
             except AttributeError:
                 pass
 
             if attacker.hasPassive():
                 if attacker.passive.name == "No Kill Like Overkill":
                     attacker.dmgdone = power
-                    battlebed.add_field(name=attacker.passive.name, value="Damage done has been Noted")
+                    battlebed.add_field(name=attacker.passive.usename, value="Damage done has been Noted")
                     try:
                         if attacker.dmgtaken > attacker.dmgdone:
                             power += attacker.dmgtaken - attacker.dmgdone
@@ -1035,7 +1072,12 @@ Stat names are the names that you see in the above embed, with the exception of 
                     except AttributeError:
                         pass
 
-            if power >= 10000:
+                if attacker.passive.name == "Harvest":
+                    value = attacker.maxdmg - attacker.mindmg
+                    power += value
+                    battlebed.add_field(name=attacker.passive.usename, value=f"{attacker.passive.effect} {value}")
+
+            if power >= 7000:
                 if defender.hasPassive():
                     if defender.passive.name == "Belly Protection":
                         power -= 0.30 * power
@@ -2642,7 +2684,6 @@ Stat names are the names that you see in the above embed, with the exception of 
             else:
                 power = self.raidbeast.passuse(power)
                 raidbed.add_field(name=f"{self.raidbeast.passive.usename}", value=f"{self.raidbeast.name} {self.raidbeast.passive.effect} {target.name}", inline=False)
-
 
         if critnum > 0 and critnum <= self.raidbeast.critchance:
             raidbed.add_field(inline=False,name="Critical Hit", value=f"{self.raidbeast.name} got a crit")

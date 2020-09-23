@@ -98,7 +98,7 @@ dodge = Passive("Dodge", "Has a 25% chance to dodge the attack of an enemy.", "Y
 counter = Passive("Counter", "Loses 30 hp. Attacks the enemy on their turn dealing 0.75x the damage they gave you. 15% chance", "FULL COUNTER",
 "Lost 30 hp, but sent 1.3x the damage received to", 0.75, 0 , -30, 0, 0)
 
-regeneration = Passive("Regeneration", "Gains 10% hp at the end of every turn", "Regen go brr", "Gained 10% hp", 0, 0, 0, 0, 0, 10)
+regeneration = Passive("Regeneration", "Gains 10% hp at the end of every turn", "Regen go brr", "Gained 10% hp", 1, 0, 0, 0, 0, 10)
 
 rage = Passive("Rage", "Increases min damage and max damage by 25 each turn when hp is below 1/3 of their hp and heals for 5%", "GRRRR... NOW I'm ANGRY", "increased min and max damage by 25 and healed for 5% hp", 1, 0, 0, 25, 25,5)
 
@@ -122,7 +122,10 @@ balancepride = Passive("Pride of Balance", "Requires: Yin Blade and Yang Armour 
 ,"The emodiment of Balance I am", "Increases power by 100. Heals for 200", 1, 100, 200, 0, 0)
 
 tob = Passive("Tide Of Battle", "A Passive sprung from love of battle, and dominance on the battlefield. Increases min and max dmg by 3%(base) every turn",
-"The battle shifts in my favour", "Increases health, min and max dmg",0,0,0,0,0, reborn=True)
+"The battle shifts in my favour", "Increases health, min and max dmg", 1,0,0,0,0, reborn=True)
+
+harvest = Passive("Harvest", "Takes half of the difference between your max and min damage, and adds it to the power of your attacks. Caps at +6000 power",
+"This is my Harvest", "Increases attack power by", 1,0,0,0,0, reborn=True)
 
 # Unique
 plague = Ability("The Plague", "...?'s special abiltiy which poisons the victim. Has a base damage of 100 increases by 50 for 3 turns, Unique to ...?",
@@ -141,7 +144,7 @@ nklo = Passive("No Kill Like Overkill", "A sacred ability belonging to Trxsh. Al
 "NO KILL LIKE OVERKILL", "stole all extra power and overkilled", 1, 0, 0, 0, 0)
 
 bproc = Passive("Belly Protection", "Won't be hurting this chub. Decreases all damage above 10k by 30% and heals for 4%hp",
-"Jigglessss", "heals for 3%hp and reduces damage by 30%", 0, 0, 0, 0, 0, 3)
+"Jigglessss", "heals for 3%hp and reduces damage by 30%", 1, 0, 0, 0, 0, 3)
 
 
 # Raid Enemies
@@ -157,7 +160,7 @@ allabilities = [plague, psusanoo, czw, suffocation, massinc]
 for thing in abilities:
     allabilities.append(thing)
 
-passives = [dodge, counter, regeneration, rage, sharpeye, sboost, critblock, nlove, chubz, tob]
+passives = [dodge, counter, regeneration, rage, sharpeye, sboost, critblock, nlove, chubz, tob, harvest]
 allpassives = [haohaki, balancepride, nklo, bproc]
 for thing in passives:
     allpassives.append(thing)
@@ -1158,23 +1161,25 @@ None, haohaki, "gomi gomi no PUNCHU!", cqhaki, haki, 1000)
 loc = BeastFight("Lord Of Creation and Destruction", 100000, 6000, 8000, 100000, 400000, "1 force descends from heaven, the other from the underworld. Now... they are one",
 10000, 40, 30, None, balancepride, "manipulates the existence of", yin, yang, 1000)
 
-pd2 = BeastFight("...?", 130000, 4000, 5000, 2600000, 2700000, "Yes...",  100000, 30, 70, plague, dodge, pds.effect, pds, pdr, 1200)
+pd2 = BeastFight("...?", 130000, 14000, 15000, 2600000, 2700000, "Yes...",  100000, 30, 70, plague, dodge, pds.effect, pds, pdr, 1200)
 
-trxsh = BeastFight("₉⁹₉ Ŧꝛ×ƨẖ ₉⁹₉", 150000, 7000, 8200, 2650000, 2730000, "They call me Dirt", 120000, 40, 20, slag, nklo, uth.effect,
+trxsh = BeastFight("₉⁹₉ Ŧꝛ×ƨẖ ₉⁹₉", 150000, 27000, 28200, 2650000, 2730000, "They call me Dirt", 120000, 40, 20, slag, nklo, uth.effect,
 uth, loin, 1300)
 
-biggums2 = BeastFight("Biggums Act 2", 200000, 6000, 7000, 2600000, 2680000, "Me Big", 98000, 15, 20, massinc, bproc,
+biggums2 = BeastFight("Biggums Act 2", 200000, 36000, 37000, 2600000, 2680000, "Me Big", 98000, 15, 20, massinc, bproc,
 bhammer.effect, bhammer, bigbel, 1100)
 
-cg = BeastFight("CelestialG", 140000, 8300, 9000, 2700000, 2800000, "JOTARO... DIO!!", 200000, 10, 30, czw, sboost,
+cg = BeastFight("CelestialG", 140000, 48300, 49000, 2700000, 2800000, "JOTARO... DIO!!", 200000, 10, 30, czw, sboost,
 diowep.effect, diowep, jotarowep, 1400)
 
-isaiah = BeastFight("Servent of the Parade", 300000, 10000, 13000, 4000000, 5000000, "Allow me to Moderate You", 
+isaiah = BeastFight("Servent of the Parade", 300000, 50000, 53000, 4000000, 5000000, "Allow me to Moderate You", 
 500000, 30, 30, jajanken, critblock, parblade.effect, parblade, paraders, 3000)
 
 
 raidingmonster = [bebebe, giggeng, biggums, oogabooga, anansi, pdoctor, slimeraid, loc, ruffy, dizawarudo,
 pd2, trxsh, biggums2, cg, isaiah]
+
+# raidingmonster = [biggums2]
 
 # Quest Prompts
 
