@@ -121,12 +121,6 @@ haohaki = Passive("Haoshoku Haki", "Needs: Conqueror's Haki: Increases min and m
 balancepride = Passive("Pride of Balance", "Requires: Yin Blade and Yang Armour set. Increases power of attack by 100 (100 True Damage) and heals for 100 hp on user's turn. Otherwise: No Effect"
 ,"The emodiment of Balance I am", "Increases power by 100. Heals for 200", 1, 100, 200, 0, 0)
 
-tob = Passive("Tide Of Battle", "A Passive sprung from love of battle, and dominance on the battlefield. Increases min and max dmg by 3%(base) every turn",
-"The battle shifts in my favour", "Increases health, min and max dmg", 1,0,0,0,0, reborn=True)
-
-harvest = Passive("Harvest", "Takes half of the difference between your max and min damage, and adds it to the power of your attacks. Caps at +6000 power",
-"This is my Harvest", "Increases attack power by", 1,0,0,0,0, reborn=True)
-
 # Unique
 plague = Ability("The Plague", "...?'s special abiltiy which poisons the victim. Has a base damage of 100 increases by 50 for 3 turns, Unique to ...?",
  "wishes death upon You", "Summons The Plague and infects",1, 100, 0, 0, 0)
@@ -155,7 +149,22 @@ bebebeslam = Ability("BBB slam!", "Giant King B B B, belly flops dealing 1.3x dm
 bellybump = Ability("Belly Belly Bounce", "Massive user dashes at an immense speed and bounces the enemy", "Belly... Belly... BOUNCE!",
 "charges gaining x1.4 strength increasing min and max damage by 10, and then bounces", 1.4, 0, 0, 10, 10)
 
-abilities = [theworld, swarm, blast, deadlygrasp, critstrike, pickelize, sonic, jajanken, uheal, slag, ssuck, nmareterror]
+
+# Reborn Abilities
+tog = Ability("Tower Of God",
+"Summons the fabeled Tower Of God and draws it's sacred energy, increasing min and max damage by 60 (+20 for each reborn) and health by 300 (+50 for each reborn)",
+"Tower Of God... Bless me", "Draws sacred energy from the power of god increasing health, min and max damage", 1, 0, 300, 60, 60, 0, True)
+
+
+# Reborn Passives
+tob = Passive("Tide Of Battle", "A Passive sprung from love of battle, and dominance on the battlefield. Increases min and max dmg by 3%(base) every turn",
+"The battle shifts in my favour", "Increases health, min and max dmg", 1,0,0,0,0, reborn=True)
+
+harvest = Passive("Harvest", "Takes half of the difference between your max and min damage, and adds it to the power of your attacks. Caps at +6000 power",
+"This is my Harvest", "Increases attack power by", 1,0,0,0,0, reborn=True)
+
+
+abilities = [theworld, swarm, blast, deadlygrasp, critstrike, pickelize, sonic, jajanken, uheal, slag, ssuck, nmareterror, tog]
 allabilities = [plague, psusanoo, czw, suffocation, massinc]
 for thing in abilities:
     allabilities.append(thing)
@@ -164,6 +173,7 @@ passives = [dodge, counter, regeneration, rage, sharpeye, sboost, critblock, nlo
 allpassives = [haohaki, balancepride, nklo, bproc]
 for thing in passives:
     allpassives.append(thing)
+
 
 # Weapons
 @dataclass

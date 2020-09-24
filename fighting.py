@@ -495,14 +495,13 @@ Stat names are the names that you see in the above embed, with the exception of 
                 if name_of_passive.lower() == passi.name.lower():
                     value = passi
                     break
-            
-            if value.isreborn():
-                if not user.hasreborn():
-                    await ctx.send("You can't have that until you reborn")
-                    return
 
             if value == None:
                 await ctx.send(f"{value} is not a Passive, or is not available")
+                return
+
+            if value.isreborn() and not user.hasreborn():
+                await ctx.send("You are trying to get an ability which is for one who has reborn.")
                 return
      
             msg = user.passchange(value)
@@ -596,6 +595,10 @@ Stat names are the names that you see in the above embed, with the exception of 
             
             if target == None:
                 await ctx.send(f"That is either not an active ability, or must be obtained by special means")
+                return
+
+            if thing.isreborn() and not user.hasreborn():
+                await ctx.send("You are trying to get an ability which is for one who has reborn.")
                 return
 
             msg = user.actichange(target)
@@ -996,6 +999,18 @@ Stat names are the names that you see in the above embed, with the exception of 
                                     battlebed.add_field(name=f"{attacker.ability.usename}", value="Having armour set increases damage by 1.3 + 70")
                                     power *= 1.3
                                     power += 70
+
+                        if abilname == "Tower Of God":
+                            extradmg = 0
+                            extrahp = 0
+                            for _ in range(attacker.reborn): extradmg += 20
+                            for _ in range(attacker.reborn): extrahp += 50
+
+                            attacker.mindmg += extradmg
+                            attacker.maxdmg += extradmg
+                            attacker.health += extrahp
+                            battlebed.add_field(name=attacker.ability.usename, value=f"Increased Min and Max damage by {extradmg} and health by {extrahp}")
+
 
             if ts:
                 defender.attack(power)       
@@ -2518,9 +2533,26 @@ Stat names are the names that you see in the above embed, with the exception of 
                                 self.rpsn = True
                                 self.rpsndmg = 100
 
+                        if abilname == "Tower Of God":
+                            extradmg = 0
+                            extrahp = 0
+                            for _ in range(player.reborn): extradmg += 20
+                            for _ in range(player.reborn): extrahp += 50
+
+                            player.mindmg += extradmg
+                            player.maxdmg += extradmg
+                            player.health += extrahp
+                            raidbed.add_field(name=player.ability.usename, value=f"Increased Min and Max damage by {extradmg} and health by {extrahp}")
+
+
             if player.hasPassive():
                 if player.passive.name == "Sharp Eye":
                     power = await self.cansharpeye(self.raidbeast, player, power, raidbed)
+
+                if player.passive.name == "Harvest":
+                    value = player.maxdmg - player.mindmg
+                    power += value
+                    raidbed.add_field(name=player.passive.usename, value=f"{player.passive.effect} {value}")
 
             if self.rts:
                 self.raidbeast.attack(power)
@@ -2641,12 +2673,22 @@ Stat names are the names that you see in the above embed, with the exception of 
                 self.raidbeast.ability.cdreduce()
             else:
                 power, abilname = await self.canability(target, self.raidbeast, power, raidbed)
-                if abilname == "Stop Time":
+                if abilname in ["Stop Time", "Celestial's ZA WARUDO"]:
                     self.rts = True
                 if abilname == "The Plague":
                     self.rpsned.append(target)
                     self.rpsn = True
                     self.rpsndmg = 100
+
+                if abilname == "Tower Of God":
+                    extradmg = 100
+                    extrahp = 100
+
+                    self.raidbeast.mindmg += extradmg
+                    self.raidbeast.maxdmg += extradmg
+                    self.raidbeast.health += extrahp
+                    battlebed.add_field(name=self.raidbeast.ability.usename, value=f"Increased Min and Max damage by {extradmg} and health by {extrahp}")
+
 
 
         if self.rts:
