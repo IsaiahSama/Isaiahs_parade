@@ -14,7 +14,6 @@ from teams import Team, ToAdv
 
 emojiz = ["🤔", "🤫", "🤨", "🤯", "😎", "😓", "🤡", "💣", "🧛", "🧟‍♂️", "🏋️‍♂️", "⛹", "🏂"]
 
-
 # Evolution of Fighter class
 
 # def __init__(self, name, tag, level, health, mindmg, maxdmg, wins, losses, attackmsg=None):
@@ -841,7 +840,7 @@ Stat names are the names that you see in the above embed, with the exception of 
 
 
         if defender.hasPassive():
-                if defender.passive.tag == 7006:
+                if defender.passive.name == "Speed Boost":
                     attacker, defender = defender, attacker
                     await ctx.send(f"{attacker.name} attacks first because of speed boost")
 
@@ -901,7 +900,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             
             if attacker.hasPassive():
                 if attacker.health <= (attacker.oghealth / 3):
-                    if attacker.passive.tag == 7004:
+                    if attacker.passive.name == "Rage":
                         attacker.passuse(0)
                         await ctx.send(f"New mindamage is {attacker.mindmg}")
                         await ctx.send(f"New Max Damage is {attacker.maxdmg}")
@@ -911,7 +910,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             if attacker.health >= 65000:
                 attacker.weapon.lifesteal = 0
                 attacker.armour.regen = 0
-                if attacker.passive.tag == 7003:
+                if attacker.passive.name == "Regeneration":
                     attacker.passive.name = None
                 if attacker.ability.name == "Ultra Heal":
                     attacker.ability.name = None
@@ -938,11 +937,11 @@ Stat names are the names that you see in the above embed, with the exception of 
 
             if turns == 1:
                 if attacker.hasPassive():
-                    if attacker.passive.tag == 7006:
+                    if attacker.passive.name == "Speed Boost":
                         power *= 1.5
                         
             if attacker.hasPassive():
-                if attacker.passive.tag == 7010:
+                if attacker.passive.name == "Haoshoku Haki":
                     if attacker.armour.name == "Haki":
                         if attacker.armour.haspair():
                             if attacker.weapon.name == attacker.armour.pairs.name:
@@ -951,7 +950,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                     elif attacker.weapon.name == "Conqueror Haki":
                         power = await self.canhaki(defender, attacker, power, battlebed)
                     
-                if attacker.passive.tag == 9101:
+                if attacker.passive.name == "Tide Of Battle":
                     tob = 0.02 + (attacker.reborn / 100)
                     attacker.mindmg += math.ceil(tob * attacker.mindmg)     
                     attacker.maxdmg += math.ceil(tob * attacker.maxdmg)
@@ -964,7 +963,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                             power = await self.canbalance(defender, attacker, power, battlebed)
 
             if defender.hasPassive():
-                if defender.passive.tag == 9101:
+                if defender.passive.name == "Tide Of Battle":
                     tob = 0.02 + (defender.reborn / 100)
                     defender.mindmg += math.ceil(tob * defender.mindmg)     
                     defender.maxdmg += math.ceil(tob * defender.maxdmg)
@@ -984,24 +983,24 @@ Stat names are the names that you see in the above embed, with the exception of 
                             battlebed.add_field(name=f"{attacker.ability.usename}", value=f"{defender.name} {attacker.ability.effect} {defender.slag} turns")
                    
                     else:
-                        power, abiltag = await self.canability(defender, attacker, power, battlebed)
-                        if abiltag == 5001:
+                        power, abilname = await self.canability(defender, attacker, power, battlebed)
+                        if abilname == "Stop Time":
                             ts = True
-                        if abiltag == 6002:
+                        if abilname == "Celestial's ZA WARUDO":
                             ts = True
                             cts = True
-                        if abiltag == 6001:
+                        if abilname == "The Plague":
                             psned.append(defender)
                             psn = True
                             psndmg = 100
-                        if abiltag == 5004:
+                        if abilname == "Deadly Grasp":
                             if attacker.armour.haspair():
                                 if attacker.weapon.name == attacker.armour.pairs.name:
                                     battlebed.add_field(name=f"{attacker.ability.usename}", value="Having armour set increases damage by 1.3 + 70")
                                     power *= 1.3
                                     power += 70
 
-                        if abiltag == 9001:
+                        if abilname == "Tower Of God":
                             extradmg = 0
                             extrahp = 0
                             for _ in range(attacker.reborn): extradmg += 20
@@ -1030,14 +1029,14 @@ Stat names are the names that you see in the above embed, with the exception of 
                 cts = False
 
             if attacker.hasPassive():
-                if attacker.passive.tag == 7005:
+                if attacker.passive.name == "Sharp Eye":
                     power = await self.cansharpeye(defender, attacker, power, battlebed)
 
             if critnum > 0 and critnum <= attacker.critchance:
                 battlebed.add_field(name="Critical Hit", value=f"{attacker.name} got a crit")
                 power *= 1.5
                 if defender.hasPassive():
-                    if defender.passive.tag == 7007:
+                    if defender.passive.name == "Critical Guard":
                         power = await self.cancritblock(defender, attacker, power, battlebed)
 
             if healnum > 0 and healnum <= attacker.healchance:
@@ -1046,7 +1045,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                 attacker.heal(healin)
 
             if defender.hasPassive():
-                if defender.passive.tag == 7001:
+                if defender.passive.name == "Dodge":
                     power = await self.candodge(defender, attacker, power, battlebed)
 
             if attacker.typeobj == "player":
@@ -1078,7 +1077,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                 pass
 
             if attacker.hasPassive():
-                if attacker.passive.tag == 8001:
+                if attacker.passive.name == "No Kill Like Overkill":
                     attacker.dmgdone = power
                     battlebed.add_field(name=attacker.passive.usename, value="Damage done has been Noted")
                     try:
@@ -1088,21 +1087,21 @@ Stat names are the names that you see in the above embed, with the exception of 
                     except AttributeError:
                         pass
 
-                if attacker.passive.tag == 9102:
+                if attacker.passive.name == "Harvest":
                     value = attacker.maxdmg - attacker.mindmg
                     power += value
                     battlebed.add_field(name=attacker.passive.usename, value=f"{attacker.passive.effect} {value}")
 
             if power >= 7000:
                 if defender.hasPassive():
-                    if defender.passive.tag == 8002:
+                    if defender.passive.name == "Belly Protection":
                         power -= 0.30 * power
                         battlebed.add_field(name=defender.passive.usename, value=defender.passive.effect)
 
             defender.attack(power)
 
             if defender.hasPassive():
-                if defender.passive.tag == 8001:
+                if defender.passive.name == "No Kill Like Overkill":
                     defender.dmgtaken = power
                     battlebed.add_field(name=defender.passive.name, value="Your damage has been noted")
 
@@ -1150,11 +1149,11 @@ Stat names are the names that you see in the above embed, with the exception of 
                 break
 
             if defender.hasPassive():
-                if defender.passive.tag == 7002:
+                if defender.passive.name == "Counter":
                     await self.cancounter(defender, attacker, power, battlebed)
             
             if attacker.hasPassive():
-                if attacker.passive.tag == 7003:
+                if attacker.passive.name == "Regeneration":
                     await self.canregen(attacker, battlebed)
 
             if attacker.armour.hasregen():
@@ -2465,7 +2464,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         )
 
             if self.raidbeast.hasPassive():
-                if self.raidbeast.passive.tag == 7006:
+                if self.raidbeast.passive.name == "Speed Boost":
                     raidbed.add_field(name=f"{self.raidbeast.name}", value=f"attacks first because of speed boost")
                     await self.turngo2(channel)
                     self.raidbeast.passive = None
@@ -2473,11 +2472,11 @@ Stat names are the names that you see in the above embed, with the exception of 
             
             if player.hasPassive():
                 if player.health <= (player.oghealth / 3):
-                    if player.passive.tag == 7004:
+                    if player.passive.name == "Rage":
                         player.passuse(0)
                         raidbed.add_field(name=f"{player.name}", value=f"{player.passive.usename}: {player.passive.effect}")
 
-                if player.passive.tag == 7010:
+                if player.passive.name == "Haoshoku Haki":
                     if player.armour.name == "Haki":
                         if player.armour.haspair():
                             if player.weapon.name == player.armour.pairs.name:
@@ -2494,7 +2493,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                         if player.armour.name == "Yang":
                             power = await self.canbalance(self.raidbeast, player, power, raidbed)
 
-                if player.passive.tag == 9101:
+                if player.passive.name == "Tide Of Battle":
                     tob = 0.02 + (player.reborn / 100)
                     player.mindmg += math.ceil(tob * player.mindmg)     
                     player.maxdmg += math.ceil(tob * player.maxdmg)
@@ -2523,18 +2522,18 @@ Stat names are the names that you see in the above embed, with the exception of 
                             self.raidbeast.slag = 2
                             raidbed.add_field(name=f"{player.ability.usename}", value=f"{self.raidbeast.name} {player.ability.effect} {self.raidbeast.slag} turns")
                     else:
-                        power, abiltag = await self.canability(self.raidbeast, player, power, raidbed)
-                        if abiltag == 5001:
+                        power, abilname = await self.canability(self.raidbeast, player, power, raidbed)
+                        if abilname == "Stop Time":
                             self.rts = True
-                        if abiltag == "Celestial's Za Warudo":
+                        if abilname == "Celestial's Za Warudo":
                             self.rts = True
                             cts = True
-                        if abiltag == 6001:
+                        if abilname == "The Plague":
                                 self.rpsned.append(self.raidbeast)
                                 self.rpsn = True
                                 self.rpsndmg = 100
 
-                        if abiltag == 9001:
+                        if abilname == "Tower Of God":
                             extradmg = 0
                             extrahp = 0
                             for _ in range(player.reborn): extradmg += 20
@@ -2547,10 +2546,10 @@ Stat names are the names that you see in the above embed, with the exception of 
 
 
             if player.hasPassive():
-                if player.passive.tag == 7005:
+                if player.passive.name == "Sharp Eye":
                     power = await self.cansharpeye(self.raidbeast, player, power, raidbed)
 
-                if player.passive.tag == 9102:
+                if player.passive.name == "Harvest":
                     value = player.maxdmg - player.mindmg
                     power += value
                     raidbed.add_field(name=player.passive.usename, value=f"{player.passive.effect} {value}")
@@ -2584,7 +2583,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                 raidbed.add_field(inline=False,name="Critical Hit", value=f"{player.name} got a crit")
                 power *= 1.5
                 if self.raidbeast.hasPassive():
-                    if self.raidbeast.passive.tag == 7007:
+                    if self.raidbeast.passive.name == "Critical Guard":
                         power = await self.cancritblock(self.raidbeast, player, power, raidbed)
 
             if healnum > 0 and healnum <= player.healchance:
@@ -2593,7 +2592,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                 player.heal(healin)
 
             if self.raidbeast.hasPassive():
-                if self.raidbeast.passive.tag == 7008:
+                if self.raidbeast.passive.name == "Chubby":
                     power -= 50
                     raidbed.add_field(inline=False,name=f"{self.raidbeast.passive.usename}", value=f"{self.raidbeast.passive.effect}")
 
@@ -2613,14 +2612,14 @@ Stat names are the names that you see in the above embed, with the exception of 
                             self.rpsn = False
 
             if self.raidbeast.hasPassive():
-                if self.raidbeast.passive.tag == 7002:
+                if self.raidbeast.passive.name == "Counter":
                     await self.cancounter(self.raidbeast, player, power, raidbed)
                 
-                if self.raidbeast.passive.tag == 7003:
+                if self.raidbeast.passive.name == "Regeneration":
                     await self.canregen(self.raidbeast, raidbed)
             
             if player.hasPassive():
-                if player.passive.tag == 7003:
+                if player.passive.name == "Regeneration":
                     await self.canregen(player, raidbed)
 
             if player.armour.hasregen():
@@ -2673,15 +2672,15 @@ Stat names are the names that you see in the above embed, with the exception of 
             if self.raidbeast.ability.oncd():
                 self.raidbeast.ability.cdreduce()
             else:
-                power, abiltag = await self.canability(target, self.raidbeast, power, raidbed)
-                if abiltag in ["Stop Time", "Celestial's ZA WARUDO"]:
+                power, abilname = await self.canability(target, self.raidbeast, power, raidbed)
+                if abilname in ["Stop Time", "Celestial's ZA WARUDO"]:
                     self.rts = True
-                if abiltag == 6001:
+                if abilname == "The Plague":
                     self.rpsned.append(target)
                     self.rpsn = True
                     self.rpsndmg = 100
 
-                if abiltag == 9001:
+                if abilname == "Tower Of God":
                     extradmg = 100
                     extrahp = 100
 
@@ -2702,12 +2701,12 @@ Stat names are the names that you see in the above embed, with the exception of 
             self.rts = False
 
         if self.raidbeast.hasPassive():
-            if self.raidbeast.passive.tag == 7004:
+            if self.raidbeast.passive.name == "Rage":
                 if self.raidbeast.health <= 500:
                     self.raidbeast.passuse(0)
                     raidbed.add_field(name=f"{self.raidbeast.name}", value=f"{self.raidbeast.passive.usename}: {self.raidbeast.passive.effect}")
             
-            if self.raidbeast.passive.tag == 7010:
+            if self.raidbeast.passive.name == "Haoshoku Haki":
                 if self.raidbeast.armour.name == "Haki":
                     if self.raidbeast.armour.haspair():
                         if self.raidbeast.weapon.name == self.raidbeast.armour.pairs.name:
@@ -2732,7 +2731,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             raidbed.add_field(inline=False,name="Critical Hit", value=f"{self.raidbeast.name} got a crit")
             power *= 1.5
             if target.hasPassive():
-                    if target.passive.tag == 7007:
+                    if target.passive.name == "Critical Guard":
                         power = await self.cancritblock(target, self.raidbeast, power, raidbed)
 
         if healnum > 0 and healnum <= self.raidbeast.healchance:
@@ -2741,13 +2740,13 @@ Stat names are the names that you see in the above embed, with the exception of 
             self.raidbeast.heal(healin)
 
         if target.hasPassive():
-            if target.passive.tag == 7001:
+            if target.passive.name == "Dodge":
                 power = await self.candodge(target, self.raidbeast, power, raidbed)
-            if target.passive.tag == 7008:
+            if target.passive.name == "Chubby":
                 power -= 50
                 raidbed.add_field(inline=False,name=f"{target.passive.usename}", value=f"{target.passive.effect}")
 
-            if target.passive.tag == 9101:
+            if target.passive.name == "Tide Of Battle":
                 tob = 0.02 + (target.reborn / 100)
                 target.mindmg += math.ceil(tob * target.mindmg)     
                 target.maxdmg += math.ceil(tob * target.maxdmg)
@@ -2756,7 +2755,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             
             if power >= 10000:
                 if target.hasPassive():
-                    if target.passive.tag == 8002:
+                    if target.passive.name == "Belly Protection":
                         power -= 0.30 * power
                         raidbed.add_field(name=f"{target.name}: {target.passive.usename}", value=target.passive.effect)
         
@@ -2768,13 +2767,13 @@ Stat names are the names that you see in the above embed, with the exception of 
             self.raiders.remove(target)
 
         if target.hasPassive():
-            if target.passive.tag == 7002:
+            if target.passive.name == "Counter":
                 await self.cancounter(target, self.raidbeast, power, raidbed)
                 
             if self.raidbeast.health <= 0:
                 return
                 
-            if target.passive.tag == 7003:
+            if target.passive.name == "Regeneration":
                 await self.canregen(target, raidbed)
 
             raidbed.add_field(inline=False,name="Notif:", value= f"{self.raidbeast.name} {self.raidbeast.attackmsg} {target.name} for {power} damage")
@@ -2786,7 +2785,7 @@ Stat names are the names that you see in the above embed, with the exception of 
 
             await asyncio.sleep(3)
         if self.raidbeast.hasPassive():
-            if self.raidbeast.passive.tag == 7003:
+            if self.raidbeast.passive.name == "Regeneration":
                 await self.canregen(self.raidbeast, raidbed)
 
         
@@ -3168,7 +3167,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                 if attacker.ability.name == "Suffocation":
                     defender.sufturn = 4
                 embed.add_field(name=f"{attacker.ability.usename}", value=f"{attacker.name} {attacker.ability.effect} {defender.name} for {power} damage",inline=False)
-                return power, attacker.ability.tag
+                return power, attacker.ability.name
                 
             else:
                 embed.add_field(name="Ability Failed", value=f"{attacker.name} tried to use their ability. But it's on Cooldown", inline=False)

@@ -2,11 +2,9 @@ import math
 from dataclasses import dataclass, field
 import copy
 
-
 @dataclass
 class Ability:
     name: str
-    tag: int
     description: str
     usename: str
     effect: str
@@ -48,121 +46,121 @@ class Passive(Ability):
 
 # Actives
 
-theworld = Ability("Stop Time", 5001, "An ability which freezes time and allows the user to attack twice",
+theworld = Ability("Stop Time", "An ability which freezes time and allows the user to attack twice",
 "ZA WARUDO!", "has stopped time, and attacked", 1, 0, 0, 0, 0)
 
-swarm = Ability("Swarm", 5002, "Creates multiple versions of the user, and increases their power by x1.5 and their health by +30",
+swarm = Ability("Swarm", "Creates multiple versions of the user, and increases their power by x1.5 and their health by +30",
 "KAGE BUNSHIN NO JUTSU", "'s Shadow clones have arrived. Power increased by x1.5, and health increased by +30. Attacks",
 1.5, 0, 30, 0, 0)
 
-blast = Ability("Blast", 5003, "Blasts the enemy with a powerful attack increasing dmg by 1.75 and dealing an extra 5 tick dmg. Health reduced by 40",
+blast = Ability("Blast", "Blasts the enemy with a powerful attack increasing dmg by 1.75 and dealing an extra 5 tick dmg. Health reduced by 40",
  "Outer... BLAST!", "'s health is reduced by 40. Power increased by x1.75 and +5 extra damage. Summons a powerful blast and blasts", 1.75, 5, -40,
  0, 0)
 
-deadlygrasp = Ability("Deadly Grasp", 5004, "Reaches for the enemy with hands of death dealing an extra 150 damage, and healing for 15 hp",
+deadlygrasp = Ability("Deadly Grasp", "Reaches for the enemy with hands of death dealing an extra 150 damage, and healing for 15 hp",
 "Let me grab you with death itself", "'s hands of death emerge, increasing health by 15, and dealing +150 damage to",
 1, 150, 15, 0, 0)
 
-critstrike = Ability("Critical Strike", 5005, "Is a guaranteed critical hit that does 2x damage instead of 1.5", "Scared of my Guaranteed critical hit?",
+critstrike = Ability("Critical Strike", "Is a guaranteed critical hit that does 2x damage instead of 1.5", "Scared of my Guaranteed critical hit?",
 "raises their crit chance to 100% and does double damage to", 2, 0, 0, 0, 0)
 
-pickelize = Ability("Pickelize", 5006, "Stole Rick's Formula. Now turn into a pickle, heal up, and roll over enemies for x1.5 +10 dmg",
+pickelize = Ability("Pickelize", "Stole Rick's Formula. Now turn into a pickle, heal up, and roll over enemies for x1.5 +10 dmg",
 "IT'S PICKLE RICK", "turns into a giant pickle, heals 5 hp, increases dmg by x1.5 + 10 then rolls over", 1.5, 10, 5, 0,0)
 
-sonic = Ability("Pocket Ring", 5007, "Learnt from the Hedgehog Sonic himself. Increases min and max dmg by 20", "Gotta go fast", 
+sonic = Ability("Pocket Ring", "Learnt from the Hedgehog Sonic himself. Increases min and max dmg by 20", "Gotta go fast", 
 "increases their min and max dmg by 20 and hit", 1, 5, 0, 20, 20)
 
-jajanken = Ability("Jajanken", 5008, "After 5 months of training with Gon, you have now achieved a weaker jajanken. Increases damage by x2.3, but does 500 damage to the user.",
+jajanken = Ability("Jajanken", "After 5 months of training with Gon, you have now achieved a weaker jajanken. Increases damage by x2.3, but does 500 damage to the user.",
 "SAISHO WA GUU... JAN... KEN...", "sacrifices 500 hp and blasts", 2.3, 0, -500, 0, 0)
 
-uheal = Ability("Ultra Heal", 5009, "A sacred technique used to heal for 10% of your max health", "The gods have blessed me", "regains 10% of their max health and didn't attack",
+uheal = Ability("Ultra Heal", "A sacred technique used to heal for 10% of your max health", "The gods have blessed me", "regains 10% of their max health and didn't attack",
 1, 0, 0, 0, 0, 10)
 
-ssuck = Ability("Soul Sucker", 5010, "A powerful move which sucks the soul of the enemy dealing 2x dmg and healing for 15hp", "SOUL SUCKER!",
+ssuck = Ability("Soul Sucker", "A powerful move which sucks the soul of the enemy dealing 2x dmg and healing for 15hp", "SOUL SUCKER!",
 "sucks the soul of", 2, 0, 15, 0, 0)
 
-nmareterror = Ability("Nightmare Terror", 5011, "Finds the targets worse nightmare and strikes them with it dealing 1.6x damage + 50 damage", 
+nmareterror = Ability("Nightmare Terror", "Finds the targets worse nightmare and strikes them with it dealing 1.6x damage + 50 damage", 
 "Know the terror of nightmares", "Casts a sleep spell then causes nightmares to", 1.6, 50, 0, 0, 0)
 
-slag = Ability("Slag", 5012, "Has a 1 in 6 chance of applying Slag to the target, causing them to take 1.5x damage for 2 turns",
+slag = Ability("Slag", "Has a 1 in 6 chance of applying Slag to the target, causing them to take 1.5x damage for 2 turns",
 "You... have been slagged", "now takes 1.5x damage for the next", 1.5, 0, 0, 0, 0)
 
-psusanoo = Ability("Perfect Susanoo", 5013, "The perfected susanoo. Increases power of attack by 2.5x but reduces min and max damage by 20",
+psusanoo = Ability("Perfect Susanoo", "The perfected susanoo. Increases power of attack by 2.5x but reduces min and max damage by 20",
 "Know the power, of my Perfect Susanoo", "exponentially increases power, steals 20 min and max damage from you then attacks", 2.5, 0, 0, 
 20, 20)
 
 
 # Passives
 
-dodge = Passive("Dodge", 7001, "Has a 25% chance to dodge the attack of an enemy.", "You didn't miss me... I dodged it", "dodged",
+dodge = Passive("Dodge", "Has a 25% chance to dodge the attack of an enemy.", "You didn't miss me... I dodged it", "dodged",
 0, 0, 0, 0 , 0)
 
-counter = Passive("Counter", 7002, "Loses 30 hp. Attacks the enemy on their turn dealing 0.75x the damage they gave you. 15% chance", "FULL COUNTER",
+counter = Passive("Counter", "Loses 30 hp. Attacks the enemy on their turn dealing 0.75x the damage they gave you. 15% chance", "FULL COUNTER",
 "Lost 30 hp, but sent 1.3x the damage received to", 0.75, 0 , -30, 0, 0)
 
-regeneration = Passive("Regeneration", 7003, "Gains 10% hp at the end of every turn", "Regen go brr", "Gained 10% hp", 1, 0, 0, 0, 0, 10)
+regeneration = Passive("Regeneration", "Gains 10% hp at the end of every turn", "Regen go brr", "Gained 10% hp", 1, 0, 0, 0, 0, 10)
 
-rage = Passive("Rage", 7004, "Increases min damage and max damage by 25 each turn when hp is below 1/3 of their hp and heals for 5%", "GRRRR... NOW I'm ANGRY", "increased min and max damage by 25 and healed for 5% hp", 1, 0, 0, 25, 25,5)
+rage = Passive("Rage", "Increases min damage and max damage by 25 each turn when hp is below 1/3 of their hp and heals for 5%", "GRRRR... NOW I'm ANGRY", "increased min and max damage by 25 and healed for 5% hp", 1, 0, 0, 25, 25,5)
 
-sharpeye = Passive("Sharp Eye", 7005, "25% Proc Chance. Deals a critical hit for x1.2 damage. Can stack with regular crit", "Sharp Eye",
+sharpeye = Passive("Sharp Eye", "25% Proc Chance. Deals a critical hit for x1.2 damage. Can stack with regular crit", "Sharp Eye",
 "has tightened their focus, increased their power by x1.2, then attacks", 1.2, 0,0,0,0)
 
-sboost = Passive("Speed Boost", 7006, "Goes First and deals 1.2x dmg on first hit", "Speed Boost", "Attacks first and deals bonus dmg to", 1, 0, 0, 0, 0)
+sboost = Passive("Speed Boost", "Goes First and deals 1.2x dmg on first hit", "Speed Boost", "Attacks first and deals bonus dmg to", 1, 0, 0, 0, 0)
 
-critblock = Passive("Critical Guard", 7007, "All critical hits against you deal x0.75 instead of x1.5. 2 in 3 chance of occuring", "Critical Guard","Reduces your critical damage to only 0.75x the original", 0.75,0,0,0,0)
+critblock = Passive("Critical Guard", "All critical hits against you deal x0.75 instead of x1.5. 2 in 3 chance of occuring", "Critical Guard","Reduces your critical damage to only 0.75x the original", 0.75,0,0,0,0)
 
-chubz = Passive("Chubby", 7008, "large size acts as a shock absorber, and enemy attacks do -50 damage", "Absorbs 50 damage", "Feel my chubzzz",
+chubz = Passive("Chubby", "large size acts as a shock absorber, and enemy attacks do -50 damage", "Absorbs 50 damage", "Feel my chubzzz",
 1, -50, 0, 0, 0)
 
-nlove = Passive("Nightmare Lover", 7009, "Feeds off of the memories of your nightmares and heals itself. Increases it's max damage by 5 each time",
+nlove = Passive("Nightmare Lover", "Feeds off of the memories of your nightmares and heals itself. Increases it's max damage by 5 each time",
 "Lover of Nightmares", "gets energies from nightmares within", 1, 0, 10, 5, 5, 0)
 
-haohaki = Passive("Haoshoku Haki", 7010, "Needs: Conqueror's Haki: Increases min and max damage by 20 (30 with set bonus) for each passing turn.\nSet Bonus: Anyone below 500 hp of the user loses 100 hp every turn\nOtherwise. No effect"
+haohaki = Passive("Haoshoku Haki", "Needs: Conqueror's Haki: Increases min and max damage by 20 (30 with set bonus) for each passing turn.\nSet Bonus: Anyone below 500 hp of the user loses 100 hp every turn\nOtherwise. No effect"
 , "Know the power of one who is worthy", "Increases min and max damage by 20(30 with set bonus)", 1, 0, 0, 50, 50)
 
-balancepride = Passive("Pride of Balance", 7011, "Requires: Yin Blade and Yang Armour set. Increases power of attack by 100 (100 True Damage) and heals for 100 hp on user's turn. Otherwise: No Effect"
+balancepride = Passive("Pride of Balance", "Requires: Yin Blade and Yang Armour set. Increases power of attack by 100 (100 True Damage) and heals for 100 hp on user's turn. Otherwise: No Effect"
 ,"The emodiment of Balance I am", "Increases power by 100. Heals for 200", 1, 100, 200, 0, 0)
 
 # Unique
-plague = Ability("The Plague", 6001, "...?'s special abiltiy which poisons the victim. Has a base damage of 100 increases by 50 for 3 turns, Unique to ...?",
+plague = Ability("The Plague", "...?'s special abiltiy which poisons the victim. Has a base damage of 100 increases by 50 for 3 turns, Unique to ...?",
  "wishes death upon You", "Summons The Plague and infects",1, 100, 0, 0, 0)
 
-czw = Ability("Celestial's ZA WARUDO", 6002, "CelestialG's special ability which stops time for 3 turns",
+czw = Ability("Celestial's ZA WARUDO", "CelestialG's special ability which stops time for 3 turns",
 "THIS IS MY ZA WARUDO!", "has stopped time, and attacked", 1, 20, 0, 0, 0)
 
-suffocation = Ability("Suffocation", 6003, "Ability of Trxsh. Has 4 in 10 chance of proccing. Removes 5% of opponents health for 4 turns",
+suffocation = Ability("Suffocation", "Ability of Trxsh. Has 4 in 10 chance of proccing. Removes 5% of opponents health for 4 turns",
 "SHINE... BAKAYARO", "Removes 5% of health from",1, 0, 0, 0, 0, cooldown=5)
 
-massinc = Ability("Mass increase", 6004, "The big one's ability... Bigger and bigger... Doubles damage and heals for 10% hp",
+massinc = Ability("Mass increase", "The big one's ability... Bigger and bigger... Doubles damage and heals for 10% hp",
 "BIGGUMS... BIG!!!", "enlarges, doubles power, then attacks", 2.5, 0, 0, 0, 0, 10)
 
-nklo = Passive("No Kill Like Overkill", 8001, "A sacred ability belonging to Trxsh. All extra damage done to him is added on to his power for his next turn",
+nklo = Passive("No Kill Like Overkill", "A sacred ability belonging to Trxsh. All extra damage done to him is added on to his power for his next turn",
 "NO KILL LIKE OVERKILL", "stole all extra power and overkilled", 1, 0, 0, 0, 0)
 
-bproc = Passive("Belly Protection", 8002, "Won't be hurting this chub. Decreases all damage above 10k by 30% and heals for 4%hp",
+bproc = Passive("Belly Protection", "Won't be hurting this chub. Decreases all damage above 10k by 30% and heals for 4%hp",
 "Jigglessss", "heals for 3%hp and reduces damage by 30%", 1, 0, 0, 0, 0, 3)
 
 
 # Raid Enemies
-bebebeslam = Ability("BBB slam!", 6005, "Giant King B B B, belly flops dealing 1.3x dmg and hitting 3 people", "BE BE BE... SLAM!", 
+bebebeslam = Ability("BBB slam!", "Giant King B B B, belly flops dealing 1.3x dmg and hitting 3 people", "BE BE BE... SLAM!", 
 "belly flops dealing 1.3x dmg, healing for 10hp", 1.3, 0, 10, 0, 0)
 
 # Biggums
-bellybump = Ability("Belly Belly Bounce", 6006, "Massive user dashes at an immense speed and bounces the enemy", "Belly... Belly... BOUNCE!",
+bellybump = Ability("Belly Belly Bounce", "Massive user dashes at an immense speed and bounces the enemy", "Belly... Belly... BOUNCE!",
 "charges gaining x1.4 strength increasing min and max damage by 10, and then bounces", 1.4, 0, 0, 10, 10)
 
 
 # Reborn Abilities
-tog = Ability("Tower Of God", 9001,
+tog = Ability("Tower Of God",
 "Summons the fabeled Tower Of God and draws it's sacred energy, increasing min and max damage by 60 (+20 for each reborn) and health by 300 (+50 for each reborn)",
 "Tower Of God... Bless me", "Draws sacred energy from the power of god increasing health, min and max damage", 1, 0, 300, 60, 60, 0, True)
 
 
 # Reborn Passives
-tob = Passive("Tide Of Battle", 9101, "A Passive sprung from love of battle, and dominance on the battlefield. Increases min and max dmg by 3%(base) every turn",
+tob = Passive("Tide Of Battle", "A Passive sprung from love of battle, and dominance on the battlefield. Increases min and max dmg by 3%(base) every turn",
 "The battle shifts in my favour", "Increases health, min and max dmg", 1,0,0,0,0, reborn=True)
 
-harvest = Passive("Harvest", 9102, "Takes half of the difference between your max and min damage, and adds it to the power of your attacks. Caps at +6000 power",
+harvest = Passive("Harvest", "Takes half of the difference between your max and min damage, and adds it to the power of your attacks. Caps at +6000 power",
 "This is my Harvest", "Increases attack power by", 1,0,0,0,0, reborn=True)
 
 
