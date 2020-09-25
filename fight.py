@@ -178,6 +178,13 @@ allpassives = [haohaki, balancepride, nklo, bproc]
 for thing in passives:
     allpassives.append(thing)
 
+passingabil = []
+for thing in allabilities:
+    passingabil.append(thing)
+
+for thing in allpassives:
+    passingabil.append(thing)
+
 
 # Weapons
 @dataclass
@@ -663,7 +670,7 @@ class Fighter:
     def passchange(self, chg):
         if self.pcoin >= 15000:
             self.pcoin -= 15000
-            self.passive = chg.name
+            self.passive = chg.tag
             return "Successful... Check with <>profile or <>passive"
 
         else:
@@ -672,7 +679,7 @@ class Fighter:
     def actichange(self, chg):
         if self.pcoin >= 25000:
             self.pcoin -= 15000
-            self.ability = chg.name
+            self.ability = chg.tag
             return "Successful... Check with <>profile or <>active"
 
         else:
@@ -713,6 +720,14 @@ class Fighter:
         else:
             print("Something went wrong with the tiers")
             return 0
+
+    def getabilpass(self, tag):
+        toreturn = [x for x in passingabil if tag == x.tag]
+        return toreturn[0]
+
+    def getabilpassname(self, tag):
+        toreturn = [x.name for x in passingabil if tag == x.tag]
+        return toreturn[0]
 
 def buffing(tobuff):
     if tobuff.armour.name == "Solar Flare":
@@ -890,12 +905,12 @@ class FightMe(Fighter):
 
     def instantize(self):
         if self.ability != None:
-            value = [x for x in allabilities if x.name == self.ability]
+            value = [x for x in allabilities if x.tag == self.ability]
             self.ability = value[0]
         
 
         if self.passive != None:
-            value = [x for x in allpassives if x.name == self.passive]
+            value = [x for x in allpassives if x.tag == self.passive]
             self.passive = value[0]
 
         weapon, armour = self.getgear()

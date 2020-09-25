@@ -250,13 +250,13 @@ class FullFight(commands.Cog):
             profileEmbed.add_field(name="Weapon:", value=f"{sword.name}")
             profileEmbed.add_field(name="Armour:", value=f"{shield.name}")
             if target.hasActive():
-                profileEmbed.add_field(name=f"Ability:", value=f"{target.ability}")
+                profileEmbed.add_field(name=f"Ability:", value=f"{target.getabilpassname(target.ability)}")
             else:
                 profileEmbed.add_field(name="Ability:", value=f"None... Yet")
 
             if target.hasPassive():
 
-                profileEmbed.add_field(name=f"Passive:", value=f"{target.passive}")
+                profileEmbed.add_field(name=f"Passive:", value=f"{target.getabilpassname(target.passive)}")
             else:
                 profileEmbed.add_field(name="Passive:", value=f"None... Yet")
             
@@ -425,7 +425,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                     description=f"Showing Passive for {user.name}",
                     color=randint(0, 0xffffff)
                 )
-                abil = [x for x in allpassives if x.name == user.passive]
+                abil = [x for x in allpassives if x.tag == user.passive]
                 if abil:
                     abil = abil[0]
                     embed.add_field(name=abil.name, value=abil.description)
@@ -464,12 +464,12 @@ Stat names are the names that you see in the above embed, with the exception of 
         if not user.hasPassive():
             pash = random.choice(passives)
             await ctx.send(f"Congratulations, your passive ability is {pash.name}. Check with <>profile")
-            user.passive = pash.name
+            user.passive = pash.tag
             return
 
         if user.hasPassive() and not arg:
             passconfirm = discord.Embed(
-                title=f"Passive Change. Your passive is {user.passive}",
+                title=f"Passive Change. Your passive is {user.getabilpassname(user.passive)}",
                 description="This will allow you to choose your passive. It will cost you dearly... 15 000 Parade Coins to be exact",
                 color=randint(0, 0xffffff)
             )
@@ -519,7 +519,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                     description=f"Showing Ability for {user.name}",
                     color=randint(0, 0xffffff)
                 )
-                abil = [x for x in allabilities if x.name == user.ability]
+                abil = [x for x in allabilities if x.tag == user.ability]
                 if abil:
                     abil = abil[0]
                     embed.add_field(name=abil.name, value=abil.description)
@@ -565,7 +565,7 @@ Stat names are the names that you see in the above embed, with the exception of 
 
         if user.hasActive() and not arg:
             accheck = discord.Embed(
-                title=f"Your ability is {user.ability}",
+                title=f"Your ability is {user.getabilpassname(user.ability)}",
                 description="Going any further with this command will cost you 25 000 Parade Coins and will allow you to choose your ability",
                 color=randint(0, 0xffffff)
             )
@@ -1090,6 +1090,7 @@ Stat names are the names that you see in the above embed, with the exception of 
 
                 if attacker.passive.tag == 9102:
                     value = attacker.maxdmg - attacker.mindmg
+                    if value > 6000: value = 6000
                     power += value
                     battlebed.add_field(name=attacker.passive.usename, value=f"{attacker.passive.effect} {value}")
 
@@ -2043,7 +2044,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                     return
 
                 if user.reborn == 4 and x == "No":
-                    await ctx.send("Warning. From reborn 5 forward, all enemies will scale based on your stats. And will all have tier 5+ weapons. Therefore, if you haven't already, I strongly recommend purchasing god gear, as you will be able to access it from the start")
+                    await ctx.send("Warning. From reborn 5 forward, all enemies will scale based on your stats. And will all have tier 5+ weapons. Therefore, if you haven't already, I strongly recommend purchasing god gear, as you will be able to access it from the start. Do <>reborn True {something of your choice} to continue")
                     return
                 
                 await ctx.send("Heading back to Tier 1... Best of luck progressing again")
@@ -2195,8 +2196,8 @@ Stat names are the names that you see in the above embed, with the exception of 
                     if not target.armour == 4603 and not target.armour2 == 4603:
                         target.weapon2 = 3603
                         target.armour2 = 4603
-                    if target.passive != "No Kill Like Overkill":
-                        target.passive = "No Kill Like Overkill" 
+                    if target.passive != 8001:
+                        target.passive = 8001 
                         await ctx.send("Now... Embrace your true power")
        
         elif target.tag == 527111518479712256:
@@ -2925,7 +2926,6 @@ Stat names are the names that you see in the above embed, with the exception of 
         if user.reborn >= 5:
             villain = await self.getmirror(user)
 
-
         villain = FightingBeast(villain.name, villain.health, villain.mindmg, villain.maxdmg, 
         villain.mincoin, villain.maxcoin, villain.entrymessage, villain.minxp, villain.critchance, villain.healchance,
         villain.ability, villain.passive, villain.attackmsg, villain.weapon, villain.armour, villain.level, villain.typeobj)
@@ -2934,7 +2934,7 @@ Stat names are the names that you see in the above embed, with the exception of 
 
     async def getmirror(self, user):
         name = f"{user.name}'s Dark Copy"
-        health = await self.vary(user.health)
+        health = await self.vary(max(user.mindmg, user.health, user.maxdmg))
         mindmg = await self.vary(user.mindmg)
         maxdmg = await self.vary(user.maxdmg)
         mincoin = await self.vary((user.pcoin/3) - 30)
