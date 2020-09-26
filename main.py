@@ -1,6 +1,6 @@
 # imports
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 import asyncio
 import random
 from random import randint
@@ -8,6 +8,7 @@ import os
 import sqlite3
 from dotenv import load_dotenv
 load_dotenv()
+import json
 
 
 """con = sqlite3.connect("paradedb.sqlite")
@@ -39,7 +40,24 @@ async def on_ready():
     # Sets Discord Status
     activity = discord.Activity(name='<>help', type=discord.ActivityType.watching)
     await bot.change_presence(activity=activity)
+    backup.start()
     # , status=discord.Status.dnd
+
+@tasks.loop(hours=1)
+async def backup(self):
+    lis = ["fightdata.json", "relausers.json", "jltracking.json", "teams.json"]
+    for files in lis:
+        try:
+            with open(files) as fdata:
+                dataf = json.load(fdata)
+        except json.JSONDecodeError:
+            print("One of the Files Are Corrupt and therefore will not be backed up")
+            return
+        
+        with open(f"backups/{files}", "w") as t:
+            json.dump(dataf, t, indent=4)
+
+    print("Backed up")    
 
 @bot.command()
 @commands.is_owner()

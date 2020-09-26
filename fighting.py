@@ -480,7 +480,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                 lowpass = [passi for passi in passives if not passi.reborn]
  
             for passi in lowpass:
-                passconfirm.add_field(name=f"{passi.name}:", value=f"{passi.description}")
+                passconfirm.add_field(name=f"{passi.name}:", value=f"{passi.description}. Reborn: {passi.reborn}")
 
             passconfirm.set_footer(text="Continue... If you wish to continue, use <>passive True {Name of Passive}")
 
@@ -501,9 +501,10 @@ Stat names are the names that you see in the above embed, with the exception of 
                 await ctx.send(f"{value} is not a Passive, or is not available")
                 return
 
-            if value.isreborn() and not user.hasreborn():
-                await ctx.send("You are trying to get an ability which is for one who has reborn.")
-                return
+            if value.isreborn():
+                if not user.reborn >= value.reborn:
+                    await ctx.send("This passive requires a higher reborn level to get.")
+                    return
      
             msg = user.passchange(value)
 
@@ -576,7 +577,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                 abils = [acci for acci in abilities if acci.reborn]
                 
             for acci in abils:
-                accheck.add_field(name=f"{acci.name}", value=f"{acci.description}")
+                accheck.add_field(name=f"{acci.name}", value=f"{acci.description}. Reborn: {acci.reborn}")
 
             accheck.set_footer(text="\nContinue... If you wish to continue, use <>active True {Name of Active}")
 
@@ -598,9 +599,10 @@ Stat names are the names that you see in the above embed, with the exception of 
                 await ctx.send(f"That is either not an active ability, or must be obtained by special means")
                 return
 
-            if thing.isreborn() and not user.hasreborn():
-                await ctx.send("You are trying to get an ability which is for one who has reborn.")
-                return
+            if thing.isreborn():
+                if not user.reborn >= thing.reborn:
+                    await ctx.send("Your reborn Levels are too low for this ability.")
+                    return
 
             msg = user.actichange(target)
 
@@ -774,9 +776,7 @@ Stat names are the names that you see in the above embed, with the exception of 
 
 
         if isquest:
-            temp = await self.getmain(user1)
-            tier = temp.getTier()
-            user2 = await self.get_enemy(user1, tier, q6)          
+            user2 = await self.get_enemy(user1, q6)          
 
             questembed = discord.Embed(
                 title=f"Fighting {user2.name}",
@@ -952,7 +952,10 @@ Stat names are the names that you see in the above embed, with the exception of 
                         power = await self.canhaki(defender, attacker, power, battlebed)
                     
                 if attacker.passive.tag == 9101:
-                    tob = 0.02 + (attacker.reborn / 100)
+                    if attacker.typeobj == "player":
+                        tob = 0.02 + (attacker.reborn / 100)
+                    else:
+                        tob = 0.03
                     attacker.mindmg += math.ceil(tob * attacker.mindmg)     
                     attacker.maxdmg += math.ceil(tob * attacker.maxdmg)
                     attacker.health += math.ceil(tob * attacker.health)
@@ -965,6 +968,10 @@ Stat names are the names that you see in the above embed, with the exception of 
 
             if defender.hasPassive():
                 if defender.passive.tag == 9101:
+                    if defender.typeobj == "player":
+                        tob = 0.02 + (defender.reborn / 100)
+                    else:
+                        tob = 0.03
                     tob = 0.02 + (defender.reborn / 100)
                     defender.mindmg += math.ceil(tob * defender.mindmg)     
                     defender.maxdmg += math.ceil(tob * defender.maxdmg)
@@ -1004,8 +1011,12 @@ Stat names are the names that you see in the above embed, with the exception of 
                         if abiltag == 9001:
                             extradmg = 0
                             extrahp = 0
-                            for _ in range(attacker.reborn): extradmg += 20
-                            for _ in range(attacker.reborn): extrahp += 50
+                            if attacker.typeobj == "player":
+                                for _ in range(attacker.reborn): extradmg += 20
+                                for _ in range(attacker.reborn): extrahp += 50
+                            else:
+                                extradmg += 50
+                                extrahp += 100
 
                             attacker.mindmg += extradmg
                             attacker.maxdmg += extradmg
@@ -1099,6 +1110,12 @@ Stat names are the names that you see in the above embed, with the exception of 
                     if defender.passive.tag == 8002:
                         power -= 0.30 * power
                         battlebed.add_field(name=defender.passive.usename, value=defender.passive.effect)
+            
+            if attacker.weapon.tag == 1606:
+                num = randint(1, 100)
+                if num in range(20, 40):
+                    power += 0.10 * power
+                    battlebed.add_field(name=attacker.weapon.name, value=f"Cursed flames increase damage by 10% dealing {power} damage")
 
             defender.attack(power)
 
@@ -1141,6 +1158,14 @@ Stat names are the names that you see in the above embed, with the exception of 
                             temp = await self.getmain(defender)
                             temp.curbuff = None
                             temp.bdur = 0
+
+            if defender.hasActive():
+                if defender.ability.tag == 9002:
+                    if defender.health >= 1000 and defender.health <= 0:
+                        battlebed.add_field(name=defender.ability.usename, value=defender.ability.effect)
+                        defender.health = 8000
+                        defender.mindmg -= 0.40 * defender.mindmg
+                        defender.maxdmg -= 0.40 * defender.maxdmg
 
             if defender.health <= 0:
                 fighting = False
@@ -1211,7 +1236,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             else:
                 await ctx.send(f"{lvl}")
             rnum = randint(0, 100)
-            if rnum in [5, 45, 64, 88, 3, 10, 69, 99]:
+            if rnum in [5, 45, 68]:
                 umain = await self.getmain(attacker)
                 if len(umain.inventory) < 25:
                     umain.inventory.append(999)
@@ -2167,6 +2192,26 @@ Stat names are the names that you see in the above embed, with the exception of 
         else:
             await self.denied(ctx.channel, ctx.author)
 
+    @commands.command()
+    async def enemies(self, ctx):
+        user = await self.getmember(ctx.author)
+        if user is None:
+            await self.denied(ctx.channel, ctx.author)
+            return
+        
+        else:
+            targets = await self.get_enemy(user, False, True)
+            embed = discord.Embed(
+                title=f"Showing Enemies in {user.getTier()}",
+                color=randint(0, 0xffffff)
+            )
+
+            for enemy in targets:
+                embed.add_field(name=enemy.name, value=f"Health: {enemy.health}, Min Damage: {enemy.mindmg}, Max Damage: {enemy.maxdmg}")
+            
+            await ctx.send(embed=embed)
+            
+
     # Functions
 
     async def fixvalues(self, user):
@@ -2431,7 +2476,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         
         rbeast = FightingBeast(rbeast.name, rbeast.health, rbeast.mindmg, rbeast.maxdmg, 
         rbeast.mincoin, rbeast.maxcoin, rbeast.entrymessage, rbeast.minxp, rbeast.critchance, rbeast.healchance,
-        rbeast.ability, rbeast.passive, rbeast.attackmsg, rbeast.weapon, rbeast.armour, rbeast.level)
+        rbeast.ability, rbeast.passive, rbeast.attackmsg, rbeast.weapon, rbeast.armour, rbeast.level, rbeast.tier)
         
         self.raidbeast = rbeast
         self.raidbeast.slag = 0
@@ -2881,45 +2926,17 @@ Stat names are the names that you see in the above embed, with the exception of 
 
         user.losses += 1
 
-    async def get_enemy(self, user, tier, q6):
+    async def get_enemy(self, user, q6, checkin=False):
         yes = []
-        if tier == 1:
-            min = 0
-            max = 49
-            
-        elif tier == 2:
-            min = 50
-            max = 99
 
-        elif tier == 3:
-            min = 100
-            max = 149
-
-        elif tier == 4:
-            min = 150
-            max = 199
-
-        elif tier == 5:
-            min = 200
-            max = 299
         
-        else:
-            min = 0
-            max = 200
-
-        if q6:
-            min = 250
-
-        if tier == 6:
-            min = 300
-            max = 999999
-
-        if min > max:
-            min, max = max, min
-
         for vanillian in enemy:
-            if vanillian.level >= min and vanillian.level <= max:
-                yes.append(vanillian)
+            if not q6:
+                if vanillian.tier == user.getTier(): yes.append(vanillian)
+            else:
+                if vanillian.tier >= 4: yes.append(vanillian)
+
+        if checkin: return yes
 
         villain = random.choice(yes)
 
@@ -2928,7 +2945,7 @@ Stat names are the names that you see in the above embed, with the exception of 
 
         villain = FightingBeast(villain.name, villain.health, villain.mindmg, villain.maxdmg, 
         villain.mincoin, villain.maxcoin, villain.entrymessage, villain.minxp, villain.critchance, villain.healchance,
-        villain.ability, villain.passive, villain.attackmsg, villain.weapon, villain.armour, villain.level, villain.typeobj)
+        villain.ability, villain.passive, villain.attackmsg, villain.weapon, villain.armour, villain.level, villain.tier, villain.typeobj)
         
         return villain
 
@@ -3089,19 +3106,6 @@ Stat names are the names that you see in the above embed, with the exception of 
         rewardcash = (toreward.pcoin / 10)
         return rewardxp, rewardcash
 
-        
-    @commands.command()
-    @commands.is_owner()
-    async def meadd(self, ctx):
-        for server in self.bot.guilds:
-            role = discord.utils.get(server.roles, name="Parader")
-            for member in server.members:
-                if await self.ismember(member):
-                    await member.add_roles(role)
-                else:
-                    pass
-            
-            await ctx.send(f"Returned roles to all members in {server.name}")
 
     @commands.command()
     @commands.is_owner()
@@ -3162,6 +3166,8 @@ Stat names are the names that you see in the above embed, with the exception of 
         if useabil >= 25 and useabil <= 50:
             if not attacker.ability.oncd():
                 attacker.ability.cdreduce()
+                if attacker.ability.tag == 9002:
+                    return power, None
                 power = attacker.abiluse(power)
                 if attacker.ability.name == "The Plague":
                     defender.ptime = 3
