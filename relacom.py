@@ -6,7 +6,6 @@ from random import randint
 from relastatus import relauser, egg, allpets, petlist
 import json
 import os
-import traceback
 import copy
 
 
@@ -645,31 +644,6 @@ class Relamain(commands.Cog):
 
         if message.author == self.bot.user:
             return
-
-
-    @commands.Cog.listener()
-    async def on_command_error(self, ctx, error):
-        # get data from exception
-        etype = type(error)
-        trace = error.__traceback__
-
-        # the verbosity is how large of a traceback to make
-        # more specifically, it's the amount of levels up the traceback goes from the exception source
-        verbosity = 4
-
-        # 'traceback' is the stdlib module, `import traceback`.
-        lines = traceback.format_exception(etype, error, trace, verbosity)
-
-        # format_exception returns a list with line breaks embedded in the lines, so let's just stitch the elements together
-        traceback_text = ''.join(lines)
-
-        # now we can send it to the user
-        # it would probably be best to wrap this in a codeblock via e.g. a Paginator
-        print(traceback_text)
-
-           
-
-    
 
 def setup(bot):
     bot.add_cog(Relamain(bot))

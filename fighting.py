@@ -2202,7 +2202,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         else:
             targets = await self.get_enemy(user, False, True)
             embed = discord.Embed(
-                title=f"Showing Enemies in {user.getTier()}",
+                title=f"Showing Enemies in Tier {user.getTier()}",
                 color=randint(0, 0xffffff)
             )
 

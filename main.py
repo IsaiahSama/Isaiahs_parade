@@ -44,7 +44,7 @@ async def on_ready():
     # , status=discord.Status.dnd
 
 @tasks.loop(hours=1)
-async def backup(self):
+async def backup():
     lis = ["fightdata.json", "relausers.json", "jltracking.json", "teams.json"]
     for files in lis:
         try:
