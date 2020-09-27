@@ -990,7 +990,7 @@ class FightMe(Fighter):
         return power
 
 class BeastFight:
-    def __init__(self, name, health, mindmg, maxdmg, mincoin, maxcoin, entrymessage, minxp, critchance=5, healchance=3, ability=None, passive=None, attackmsg=None, weapon=fist, armour=linen, level=1, tier=1, typeobj="npc"):
+    def __init__(self, name, health, mindmg, maxdmg, mincoin, maxcoin, entrymessage, minxp, critchance=5, healchance=3, ability=None, passive=None, attackmsg=None, weapon=fist, armour=linen, level=1, tier=1, reborn=0,typeobj="npc"):
         self.name = name
         self.health = health
         self.mindmg = mindmg 
@@ -1009,6 +1009,7 @@ class BeastFight:
         self.armour = copy.copy(armour)
         self.level = level
         self.tier = tier
+        self.reborn = reborn
         self.typeobj = typeobj
 
     def hasPassive(self):

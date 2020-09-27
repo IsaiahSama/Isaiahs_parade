@@ -2971,9 +2971,10 @@ Stat names are the names that you see in the above embed, with the exception of 
         armour = random.choice(armors)
         attackmsg = weapon.effect
         level = await self.vary(user.level)
+        reborn = user.reborn
         
         villain = BeastFight(name, health, mindmg, maxdmg, mincoin, maxcoin, entrymessage, minxp,
-        critchance, healchance, ability, passive, attackmsg, weapon, armour, level)
+        critchance, healchance, ability, passive, attackmsg, weapon, armour, level, reborn)
 
         return villain
 
