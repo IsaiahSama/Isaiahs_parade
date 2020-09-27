@@ -2934,7 +2934,10 @@ Stat names are the names that you see in the above embed, with the exception of 
             if not q6:
                 if vanillian.tier == user.getTier(): yes.append(vanillian)
             else:
-                if vanillian.tier >= 4: yes.append(vanillian)
+                if user.getTier() < 6:
+                    if vanillian.tier >= 4: yes.append(vanillian)
+                else:
+                    if vanillian.tier >= 5: yes.append(vanillian)
 
         if checkin: return yes
 
@@ -2957,7 +2960,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         mincoin = await self.vary((user.pcoin/3) - 30)
         maxcoin = await self.vary(user.pcoin + 100)
         entrymessage = "Your Dark Copy Has Arrived"
-        minxp = (user.curxp / 10)
+        minxp = (user.xpthresh / 10)
         critchance = user.critchance
         healchance = user.healchance
         ability = random.choice(allabilities)
