@@ -952,10 +952,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                         power = await self.canhaki(defender, attacker, power, battlebed)
                     
                 if attacker.passive.tag == 9101:
-                    if attacker.typeobj == "player":
-                        tob = 0.02 + (attacker.reborn / 100)
-                    else:
-                        tob = 0.03
+                    tob = 0.02 + (attacker.reborn / 100)
                     attacker.mindmg += math.ceil(tob * attacker.mindmg)     
                     attacker.maxdmg += math.ceil(tob * attacker.maxdmg)
                     attacker.health += math.ceil(tob * attacker.health)
@@ -968,10 +965,6 @@ Stat names are the names that you see in the above embed, with the exception of 
 
             if defender.hasPassive():
                 if defender.passive.tag == 9101:
-                    if defender.typeobj == "player":
-                        tob = 0.02 + (defender.reborn / 100)
-                    else:
-                        tob = 0.03
                     tob = 0.02 + (defender.reborn / 100)
                     defender.mindmg += math.ceil(tob * defender.mindmg)     
                     defender.maxdmg += math.ceil(tob * defender.maxdmg)
@@ -2412,6 +2405,9 @@ Stat names are the names that you see in the above embed, with the exception of 
                 await channel.send(f"Set Bonus {msg}")
                 await asyncio.sleep(2)
         
+        if self.raidbeast.weapon.tag == 3601:
+            self.raidbeast.weapon.damage = 0.5 * self.raidbeast.maxdmg
+
         while self.raiding:
 
             await self.turngo(channel)
@@ -2957,8 +2953,8 @@ Stat names are the names that you see in the above embed, with the exception of 
         health = await self.vary(max(user.mindmg, user.health, user.maxdmg))
         mindmg = await self.vary(user.mindmg)
         maxdmg = await self.vary(user.maxdmg)
-        mincoin = await self.vary((user.pcoin/3) - 30)
-        maxcoin = await self.vary(user.pcoin + 100)
+        mincoin = await self.vary(40000)
+        maxcoin = await self.vary(80000)
         entrymessage = "Your Dark Copy Has Arrived"
         minxp = (user.xpthresh / 10)
         critchance = user.critchance
@@ -2971,10 +2967,11 @@ Stat names are the names that you see in the above embed, with the exception of 
         armour = random.choice(armors)
         attackmsg = weapon.effect
         level = await self.vary(user.level)
+        tier = user.getTier()
         reborn = user.reborn
         
         villain = BeastFight(name, health, mindmg, maxdmg, mincoin, maxcoin, entrymessage, minxp,
-        critchance, healchance, ability, passive, attackmsg, weapon, armour, level, reborn)
+        critchance, healchance, ability, passive, attackmsg, weapon, armour, level, tier, reborn)
 
         return villain
 

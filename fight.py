@@ -485,7 +485,7 @@ class Fighter:
         if self.getTier() in [4, 5]:
             cost = 16000 + (self.health * 1.5)
         elif self.getTier() == 6:
-            cost = 200000 + (self.health * 1.5)
+            cost = 100000 + (self.health * 1.5)
 
         else:
             cost = 400 + (self.health * 1.5)
@@ -499,7 +499,7 @@ class Fighter:
         if self.getTier() in [4, 5]:
             cost = 13000 + (self.mindmg * 1.5)
         elif self.getTier() == 6:
-            cost = 150000 + (self.mindmg * 1.5)
+            cost = 50000 + (self.mindmg * 1.5)
         else:
             cost = 200 + (self.mindmg * 1.5)
         
@@ -511,7 +511,7 @@ class Fighter:
         if self.getTier() in [4, 5]:
             cost = 14000 + (self.maxdmg * 1.5)
         elif self.getTier() == 6:
-            cost = 180000 + (self.maxdmg * 1.5)
+            cost = 80000 + (self.maxdmg * 1.5)
         else:
             cost = 220 + (self.maxdmg * 1.75)
         if self.hasreborn():
