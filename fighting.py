@@ -973,51 +973,42 @@ Stat names are the names that you see in the above embed, with the exception of 
 
             
             if attacker.hasActive():
-                if attacker.ability.oncd():
-                    attacker.ability.cdreduce()
-                else:
-                    if attacker.ability.name == "Slag":
-                        num = randint(1,6)
-                        if num == 3:
-                            slagged = True
-                            defender.slag = 2
-                            battlebed.add_field(name=f"{attacker.ability.usename}", value=f"{defender.name} {attacker.ability.effect} {defender.slag} turns")
-                   
+                power, abiltag = await self.useability(defender, attacker, power, battlebed)
+                if abiltag == 5012:
+                    slagged = True
+
+                if abiltag == 5001:
+                    ts = True
+                if abiltag == 6002:
+                    ts = True
+                    cts = True
+                if abiltag == 6001:
+                    psned.append(defender)
+                    psn = True
+                    psndmg = 100
+                if abiltag == 5004:
+                    if attacker.armour.haspair():
+                        if attacker.weapon.name == attacker.armour.pairs.name:
+                            battlebed.add_field(name=f"{attacker.ability.usename}", value="Having armour set increases damage by 1.3 + 70")
+                            power *= 1.3
+                            power += 70
+
+                if abiltag == 9001:
+                    extradmg = 0
+                    extrahp = 0
+                    if attacker.typeobj == "player":
+                        for _ in range(attacker.reborn): extradmg += 20
+                        for _ in range(attacker.reborn): extrahp += 50
                     else:
-                        power, abiltag = await self.canability(defender, attacker, power, battlebed)
-                        if abiltag == 5001:
-                            ts = True
-                        if abiltag == 6002:
-                            ts = True
-                            cts = True
-                        if abiltag == 6001:
-                            psned.append(defender)
-                            psn = True
-                            psndmg = 100
-                        if abiltag == 5004:
-                            if attacker.armour.haspair():
-                                if attacker.weapon.name == attacker.armour.pairs.name:
-                                    battlebed.add_field(name=f"{attacker.ability.usename}", value="Having armour set increases damage by 1.3 + 70")
-                                    power *= 1.3
-                                    power += 70
+                        extradmg += 50
+                        extrahp += 100
 
-                        if abiltag == 9001:
-                            extradmg = 0
-                            extrahp = 0
-                            if attacker.typeobj == "player":
-                                for _ in range(attacker.reborn): extradmg += 20
-                                for _ in range(attacker.reborn): extrahp += 50
-                            else:
-                                extradmg += 50
-                                extrahp += 100
+                        attacker.mindmg += extradmg
+                        attacker.maxdmg += extradmg
+                        attacker.health += extrahp
+                        battlebed.add_field(name=attacker.ability.usename, value=f"Increased Min and Max damage by {extradmg} and health by {extrahp}")
 
-                            attacker.mindmg += extradmg
-                            attacker.maxdmg += extradmg
-                            attacker.health += extrahp
-                            battlebed.add_field(name=attacker.ability.usename, value=f"Increased Min and Max damage by {extradmg} and health by {extrahp}")
-
-
-            if ts:
+            if ts or hasattr(defender, "flinch"):
                 defender.attack(power)       
                 power = randint(attacker.mindmg, attacker.maxdmg)
                 critnum = randint(0, 100)
@@ -1025,13 +1016,19 @@ Stat names are the names that you see in the above embed, with the exception of 
 
                 power += attacker.weapon.damage
 
-                battlebed.add_field(name="In Stopped Time", value=f"{attacker.name} {attacker.attackmsg} {defender.name}")
+                if hasattr(defender, "flinch"):
+                    battlebed.add_field(name=attacker.ability.usename, value=f"{attacker.name} rolled a 4 and caused {defender.name} to flinch")
+                else:
+                    battlebed.add_field(name="In Stopped Time", value=f"{attacker.name} {attacker.attackmsg} {defender.name}")
                 
                 if cts:
                     defender.attack(power)
                     battlebed.add_field(name="In Stopped Time", value=f"{attacker.name} {attacker.attackmsg} {defender.name} for {power} damage")
                 ts = False
                 cts = False
+                
+                if hasattr(defender, "flinch"):
+                    delattr(defender, "flinch")
 
             if attacker.hasPassive():
                 if attacker.passive.tag == 7005:
@@ -1109,6 +1106,12 @@ Stat names are the names that you see in the above embed, with the exception of 
                 if num in range(20, 40):
                     power += 0.10 * power
                     battlebed.add_field(name=attacker.weapon.name, value=f"Cursed flames increase damage by 10% dealing {power} damage")
+
+            if defender.hasActive():
+                if defender.ability.tag == 9003:
+                    num = random.choice([1, 2, 3, 6])
+                    power = await self.dicing(attacker, defender, power, battlebed, num)
+
 
             defender.attack(power)
 
@@ -2207,6 +2210,36 @@ Stat names are the names that you see in the above embed, with the exception of 
 
     # Functions
 
+    async def dicing(self, defender, attacker, power, embed, num):
+        if num == 1:
+            embed.add_field(name=attacker.ability.usename, value=f"{attacker.name} rolled a 1... But nothing Happened")
+
+        elif num == 2:
+            power /= 2
+            power = int(power)
+            embed.add_field(name=attacker.ability.usename, value=f"{attacker.name} rolled a 2... Reduced incoming damage by 50%")
+
+        elif num == 3:
+            power = 0
+            embed.add_field(name=attacker.ability.usename, value=f"{attacker.name} rolled a 3... Dodged all incoming damage")
+        
+        elif num == 4:
+            setattr(defender, "flinch", True)
+
+        elif num == 5:
+            power *= 2
+            embed.add_field(name=attacker.ability.usename, value=f"{attacker.name} rolled a 5, and doubled their power")
+        
+        elif num == 6:
+            if not attacker.health >= 0.75 * attacker.oghealth:
+                attacker.health = 0.75 * attacker.oghealth
+                embed.add_field(name=attacker.ability.usename, value=f"{attacker.name} rolled a 6 and healed to 3/4 health")
+
+
+        return power
+
+
+
     async def fixvalues(self, user):
         user.health = math.ceil(user.health)
         user.mindmg = math.ceil(user.mindmg)
@@ -2555,9 +2588,6 @@ Stat names are the names that you see in the above embed, with the exception of 
             power += player.weapon.damage
 
             if player.hasActive():
-                if player.ability.oncd():
-                    player.ability.cdreduce()
-                else:
                     if player.ability.name == "Slag":
                         num = randint(1,6)
                         if num == 3:
@@ -2565,7 +2595,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                             self.raidbeast.slag = 2
                             raidbed.add_field(name=f"{player.ability.usename}", value=f"{self.raidbeast.name} {player.ability.effect} {self.raidbeast.slag} turns")
                     else:
-                        power, abiltag = await self.canability(self.raidbeast, player, power, raidbed)
+                        power, abiltag = await self.useability(self.raidbeast, player, power, raidbed)
                         if abiltag == 5001:
                             self.rts = True
                         if abiltag == "Celestial's Za Warudo":
@@ -2597,13 +2627,19 @@ Stat names are the names that you see in the above embed, with the exception of 
                     power += value
                     raidbed.add_field(name=player.passive.usename, value=f"{player.passive.effect} {value}")
 
-            if self.rts:
+            if self.rts or hasattr(self.raidbeast, "flinch"):
                 self.raidbeast.attack(power)
                 power = player.maxdmg
                 critnum = randint(0, 100)
                 healnum = randint(0, 100)
 
                 power += player.weapon.damage
+                
+                if hasattr(self.raidbeast, "flinch"):
+                    player.ability.effect = f"Caused {self.raidbeast.name} to flinch"
+                    delattr(self.raidbeast, "flinch")
+
+                raidbed.add_field(name=player.ability.usename, value=player.ability.effect)
                 if cts:
                     self.raidbeast.attack(power)
                     raidbed.add_field(name=player.ability.usename, value=player.ability.effect)
@@ -2715,7 +2751,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             if self.raidbeast.ability.oncd():
                 self.raidbeast.ability.cdreduce()
             else:
-                power, abiltag = await self.canability(target, self.raidbeast, power, raidbed)
+                power, abiltag = await self.useability(target, self.raidbeast, power, raidbed)
                 if abiltag in ["Stop Time", "Celestial's ZA WARUDO"]:
                     self.rts = True
                 if abiltag == 6001:
@@ -2968,7 +3004,10 @@ Stat names are the names that you see in the above embed, with the exception of 
         attackmsg = weapon.effect
         level = await self.vary(user.level)
         tier = user.getTier()
-        reborn = user.reborn
+        try:
+            reborn = int(user.reborn)
+        except ValueError:
+            reborn = 5
         
         villain = BeastFight(name, health, mindmg, maxdmg, mincoin, maxcoin, entrymessage, minxp,
         critchance, healchance, ability, passive, attackmsg, weapon, armour, level, tier, reborn)
@@ -3162,23 +3201,38 @@ Stat names are the names that you see in the above embed, with the exception of 
         self.users.append(ParadeMaster)
         await ctx.send(f"Successfully Created Profile for {bott.display_name}")
 
-    async def canability(self, defender, attacker, power, embed):
-        useabil = randint(0, 100)
-        if useabil >= 25 and useabil <= 50:
-            if not attacker.ability.oncd():
-                attacker.ability.cdreduce()
-                if attacker.ability.tag == 9002:
-                    return power, None
-                power = attacker.abiluse(power)
-                if attacker.ability.name == "The Plague":
-                    defender.ptime = 3
-                if attacker.ability.name == "Suffocation":
-                    defender.sufturn = 4
-                embed.add_field(name=f"{attacker.ability.usename}", value=f"{attacker.name} {attacker.ability.effect} {defender.name} for {power} damage",inline=False)
-                return power, attacker.ability.tag
-                
+    async def useability(self, defender, attacker, power, embed):
+        if attacker.ability.tag == 9003:
+            num = random.choice([1, 4, 5, 6])
+            power = await self.dicing(defender, attacker, power, embed, num)
+            return power, 9003
+
+        elif not attacker.ability.oncd():
+            attacker.ability.cdreduce()
+            if attacker.ability.tag == 5012:
+                num = randint(1,6)
+                if num == 3:
+                    defender.slag = 2
+                    embed.add_field(name=f"{attacker.ability.usename}", value=f"{defender.name} {attacker.ability.effect} {defender.slag} turns")
+                    return power, attacker.ability.tag
+                return power, 6969
+
             else:
-                embed.add_field(name="Ability Failed", value=f"{attacker.name} tried to use their ability. But it's on Cooldown", inline=False)
+                useabil = randint(0, 100)
+                if useabil >= 25 and useabil <= 50:
+                    if attacker.ability.tag == 9002:
+                        return power, None
+                    power = attacker.abiluse(power)
+                    if attacker.ability.name == "The Plague":
+                        defender.ptime = 3
+                    if attacker.ability.name == "Suffocation":
+                        defender.sufturn = 4
+                    embed.add_field(name=f"{attacker.ability.usename}", value=f"{attacker.name} {attacker.ability.effect} {defender.name} for {power} damage",inline=False)
+                    return power, attacker.ability.tag
+            
+        else:
+            attacker.ability.cdreduce()
+            embed.add_field(name="Ability Failed", value=f"{attacker.name} tried to use their ability. But it's on Cooldown", inline=False)
 
         return power, None
         
