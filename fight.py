@@ -18,7 +18,7 @@ class Ability:
     perhealth: int = 0
     reborn: int=0
     cooldown: int = 4
-    tempcd: cooldown = 4
+    tempcd: int=cooldown + 1
 
     def oncd(self):
         if self.cooldown == self.tempcd:

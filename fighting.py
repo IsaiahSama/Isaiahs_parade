@@ -2675,6 +2675,8 @@ Stat names are the names that you see in the above embed, with the exception of 
                     power -= 50
                     raidbed.add_field(inline=False,name=f"{self.raidbeast.passive.usename}", value=f"{self.raidbeast.passive.effect}")
 
+                if self.raidbeast.passive.tag == 7001:
+                    power = await self.candodge(self.raidbeast, player, power, raidbed)
             
             self.raidbeast.attack(power)
             if self.rpsn:
@@ -2801,10 +2803,6 @@ Stat names are the names that you see in the above embed, with the exception of 
                     if self.raidbeast.armour.haspair():
                         if self.raidbeast.armour.name == "Yang":
                             power = await self.canbalance(target, self.raidbeast, power, raidbed)
-            
-            else:
-                power = self.raidbeast.passuse(power)
-                raidbed.add_field(name=f"{self.raidbeast.passive.usename}", value=f"{self.raidbeast.name} {self.raidbeast.passive.effect} {target.name}", inline=False)
 
         if critnum > 0 and critnum <= self.raidbeast.critchance:
             raidbed.add_field(inline=False,name="Critical Hit", value=f"{self.raidbeast.name} got a crit")
