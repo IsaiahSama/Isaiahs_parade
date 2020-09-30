@@ -2184,7 +2184,12 @@ Stat names are the names that you see in the above embed, with the exception of 
                             user.maxdmg += 35
                             user.mindmg += 35
 
-                        if timer == 30:
+                        if timer == 30 and user.reborn < 5:
+                            self.channeling.remove(user.tag)
+                            await ctx.send(f"{user.name} has finished channeling")
+                            break
+
+                        if timer == 60 and user.reborn >= 5:
                             self.channeling.remove(user.tag)
                             await ctx.send(f"{user.name} has finished channeling")
                             break
@@ -3006,7 +3011,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         mincoin = await self.vary(40000)
         maxcoin = await self.vary(80000)
         entrymessage = "Your Dark Copy Has Arrived"
-        minxp = (user.xpthresh / 4)
+        minxp = int(user.xpthresh / 4)
         critchance = user.critchance
         healchance = user.healchance
         ability = random.choice(allabilities)
