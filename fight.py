@@ -157,7 +157,7 @@ bellybump = Ability("Belly Belly Bounce", 6006, "Massive user dashes at an immen
 # Reborn Abilities
 tog = Ability("Tower Of God", 9001,
 "Summons the fabeled Tower Of God and draws it's sacred energy, increasing min and max damage by 60 (+20 for each reborn) and health by 300 (+50 for each reborn)",
-"Tower Of God... Bless me", "Draws sacred energy from the power of god increasing health, min and max damage", 1, 0, 300, 60, 60, 0, 1)
+"Tower Of God... Bless me", "Draws sacred energy from the power of god increasing health, min and max damage", 1, 0, 300, 60, 60, 0, 2)
 
 rbd = Ability("Return By Death", 9002,
 "After being reborned, a witch has offered you a chance to gain the ability Return By Death. This ability prevents you from dying, unless you have below -1000 hp",
