@@ -2135,6 +2135,12 @@ Stat names are the names that you see in the above embed, with the exception of 
             await ctx.send("This command cannot be used outside of The Parade. Get the link with <>parade")
     
     channeling = []
+
+    @commands.command()
+    @commands.cooldown(1, 7200, commands.BucketType.user)
+    async def rchannel(self, ctx):
+        await self.channel(ctx.author, True)
+        
     @commands.command()
     @commands.cooldown(1, 7200, commands.BucketType.user)
     async def channel(self, ctx, conf=False):
@@ -2145,7 +2151,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                 return
             if user.mindmg > 3000 and user.maxdmg > 3000 and user.health > 6000:
                 if user.reborn > 4 and not conf:
-                    await ctx.send("Channeling above reborn 4 lasts for 1 hour instead of 30 minutes. Do <>channel true to confirm.")
+                    await ctx.send("Channeling above reborn 4 lasts for 1 hour instead of 30 minutes. Do <>rchannel to confirm.")
                     return
 
                 self.channeling.append(user.tag)

@@ -11,9 +11,6 @@ load_dotenv()
 import json
 
 
-"""con = sqlite3.connect("paradedb.sqlite")
-cur = con.cursor()"""
-
 # Set Client
 bot = commands.Bot(command_prefix='<>', case_insensitive=True)
 bot.help_command = None
