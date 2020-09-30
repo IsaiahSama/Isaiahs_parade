@@ -2505,7 +2505,8 @@ Stat names are the names that you see in the above embed, with the exception of 
         
         rbeast = FightingBeast(rbeast.name, rbeast.health, rbeast.mindmg, rbeast.maxdmg, 
         rbeast.mincoin, rbeast.maxcoin, rbeast.entrymessage, rbeast.minxp, rbeast.critchance, rbeast.healchance,
-        rbeast.ability, rbeast.passive, rbeast.attackmsg, rbeast.weapon, rbeast.armour, rbeast.level, rbeast.tier)
+        rbeast.ability, rbeast.passive, rbeast.attackmsg, rbeast.weapon, rbeast.armour, rbeast.level, rbeast.tier,
+        rbeast.reborn, rbeast.typeobj)
         
         self.raidbeast = rbeast
         self.raidbeast.slag = 0
@@ -2978,7 +2979,8 @@ Stat names are the names that you see in the above embed, with the exception of 
 
         villain = FightingBeast(villain.name, villain.health, villain.mindmg, villain.maxdmg, 
         villain.mincoin, villain.maxcoin, villain.entrymessage, villain.minxp, villain.critchance, villain.healchance,
-        villain.ability, villain.passive, villain.attackmsg, villain.weapon, villain.armour, villain.level, villain.tier, villain.typeobj)
+        villain.ability, villain.passive, villain.attackmsg, villain.weapon, villain.armour, villain.level, villain.tier,
+        villain.reborn, villain.typeobj)
         
         return villain
 
@@ -3206,7 +3208,6 @@ Stat names are the names that you see in the above embed, with the exception of 
             return power, 9003
 
         elif not attacker.ability.oncd():
-            attacker.ability.cdreduce()
             if attacker.ability.tag == 5012:
                 num = randint(1,6)
                 if num == 3:
@@ -3227,10 +3228,13 @@ Stat names are the names that you see in the above embed, with the exception of 
                         defender.sufturn = 4
                     embed.add_field(name=f"{attacker.ability.usename}", value=f"{attacker.name} {attacker.ability.effect} {defender.name} for {power} damage",inline=False)
                     return power, attacker.ability.tag
-            
+                    attacker.ability.cdreduce()
+ 
         else:
             attacker.ability.cdreduce()
             embed.add_field(name="Ability Failed", value=f"{attacker.name} tried to use their ability. But it's on Cooldown", inline=False)
+            if attacker.ability.tempcd == 0:
+                attacker.ability.reset()
 
         return power, None
         
