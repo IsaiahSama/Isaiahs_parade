@@ -2139,7 +2139,7 @@ Stat names are the names that you see in the above embed, with the exception of 
     @commands.command()
     @commands.cooldown(1, 7200, commands.BucketType.user)
     async def rchannel(self, ctx):
-        await self.channel(ctx.author, True)
+        await self.channel(ctx, True)
         
     @commands.command()
     @commands.cooldown(1, 7200, commands.BucketType.user)
@@ -2595,34 +2595,34 @@ Stat names are the names that you see in the above embed, with the exception of 
             power += player.weapon.damage
 
             if player.hasActive():
-                    if player.ability.name == "Slag":
-                        num = randint(1,6)
-                        if num == 3:
-                            self.rslagged = True
-                            self.raidbeast.slag = 2
-                            raidbed.add_field(name=f"{player.ability.usename}", value=f"{self.raidbeast.name} {player.ability.effect} {self.raidbeast.slag} turns")
-                    else:
-                        power, abiltag = await self.useability(self.raidbeast, player, power, raidbed)
-                        if abiltag == 5001:
-                            self.rts = True
-                        if abiltag == "Celestial's Za Warudo":
-                            self.rts = True
-                            cts = True
-                        if abiltag == 6001:
-                                self.rpsned.append(self.raidbeast)
-                                self.rpsn = True
-                                self.rpsndmg = 100
+                if player.ability.name == "Slag":
+                    num = randint(1,6)
+                    if num == 3:
+                        self.rslagged = True
+                        self.raidbeast.slag = 2
+                        raidbed.add_field(name=f"{player.ability.usename}", value=f"{self.raidbeast.name} {player.ability.effect} {self.raidbeast.slag} turns")
+                else:
+                    power, abiltag = await self.useability(self.raidbeast, player, power, raidbed)
+                    if abiltag == 5001:
+                        self.rts = True
+                    if abiltag == "Celestial's Za Warudo":
+                        self.rts = True
+                        cts = True
+                    if abiltag == 6001:
+                            self.rpsned.append(self.raidbeast)
+                            self.rpsn = True
+                            self.rpsndmg = 100
 
-                        if abiltag == 9001:
-                            extradmg = 0
-                            extrahp = 0
-                            for _ in range(player.reborn): extradmg += 20
-                            for _ in range(player.reborn): extrahp += 50
+                    if abiltag == 9001:
+                        extradmg = 0
+                        extrahp = 0
+                        for _ in range(player.reborn): extradmg += 20
+                        for _ in range(player.reborn): extrahp += 50
 
-                            player.mindmg += extradmg
-                            player.maxdmg += extradmg
-                            player.health += extrahp
-                            raidbed.add_field(name=player.ability.usename, value=f"Increased Min and Max damage by {extradmg} and health by {extrahp}")
+                        player.mindmg += extradmg
+                        player.maxdmg += extradmg
+                        player.health += extrahp
+                        raidbed.add_field(name=player.ability.usename, value=f"Increased Min and Max damage by {extradmg} and health by {extrahp}")
 
 
             if player.hasPassive():
