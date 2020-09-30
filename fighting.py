@@ -3227,8 +3227,8 @@ Stat names are the names that you see in the above embed, with the exception of 
                     if attacker.ability.name == "Suffocation":
                         defender.sufturn = 4
                     embed.add_field(name=f"{attacker.ability.usename}", value=f"{attacker.name} {attacker.ability.effect} {defender.name} for {power} damage",inline=False)
-                    return power, attacker.ability.tag
                     attacker.ability.cdreduce()
+                    return power, attacker.ability.tag
  
         else:
             attacker.ability.cdreduce()
