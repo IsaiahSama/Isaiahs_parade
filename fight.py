@@ -163,8 +163,8 @@ rbd = Ability("Return By Death", 9002,
 "After being reborned, a witch has offered you a chance to gain the ability Return By Death. This ability prevents you from dying, unless you have below -1000 hp",
 "RETURN BY DEATH!", "Increases health to 8000, and decreases min and max damage by 40%", 1, 0, 0, 0, 0, 0, 2)
 
-dice = Ability("Supa Dice", 9003, "Rolls a 6 sided die with various effects based on the number rolled", "I roll the Supa Dice.",
-"", 1, 0, 0, 0, 0, 0, 2, 1, 1)
+dice = Ability("Die of Fate", 9003, "Rolls a 6 sided die with various effects based on the number rolled", "I roll the Supa Dice.",
+"", 1, 0, 0, 0, 0, 0, 4, 1, 1)
 
 # Reborn Passives
 tob = Passive("Tide Of Battle", 9101, "A Passive sprung from love of battle, and dominance on the battlefield. Increases min and max dmg by 3%(base) every turn",

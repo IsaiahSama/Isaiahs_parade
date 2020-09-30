@@ -1009,6 +1009,18 @@ Stat names are the names that you see in the above embed, with the exception of 
                         battlebed.add_field(name=attacker.ability.usename, value=f"Increased Min and Max damage by {extradmg} and health by {extrahp}")
 
             if ts or hasattr(defender, "flinch"):
+                
+                if hasattr(defender, "flinch"):
+                    battlebed.add_field(name=attacker.ability.usename, value=f"{attacker.name} rolled a 4 and caused {defender.name} to flinch and did {power} damage.")
+                else:
+                    battlebed.add_field(name="In Stopped Time", value=f"{attacker.name} {attacker.attackmsg} {defender.name} for {power} damage")
+                
+                if cts:
+                    defender.attack(power)
+                    battlebed.add_field(name="In Stopped Time", value=f"{attacker.name} {attacker.attackmsg} {defender.name} for {power} damage")
+                ts = False
+                cts = False
+
                 defender.attack(power)       
                 power = randint(attacker.mindmg, attacker.maxdmg)
                 critnum = randint(0, 100)
@@ -1016,16 +1028,6 @@ Stat names are the names that you see in the above embed, with the exception of 
 
                 power += attacker.weapon.damage
 
-                if hasattr(defender, "flinch"):
-                    battlebed.add_field(name=attacker.ability.usename, value=f"{attacker.name} rolled a 4 and caused {defender.name} to flinch")
-                else:
-                    battlebed.add_field(name="In Stopped Time", value=f"{attacker.name} {attacker.attackmsg} {defender.name}")
-                
-                if cts:
-                    defender.attack(power)
-                    battlebed.add_field(name="In Stopped Time", value=f"{attacker.name} {attacker.attackmsg} {defender.name} for {power} damage")
-                ts = False
-                cts = False
                 
                 if hasattr(defender, "flinch"):
                     delattr(defender, "flinch")
@@ -2209,7 +2211,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             )
 
             for enemy in targets:
-                embed.add_field(name=enemy.name, value=f"Health: {enemy.health}, Min Damage: {enemy.mindmg}, Max Damage: {enemy.maxdmg}")
+                embed.add_field(name=enemy.name, value=f"Health: {enemy.health}\n Min Damage: {enemy.mindmg}\n Max Damage: {enemy.maxdmg}")
             
             await ctx.send(embed=embed)
             
@@ -2380,6 +2382,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             for player in self.raiders:
                 if player.hasActive():
                     player.ability.reset()
+
                 player.oghealth = player.health
                 if player.weapon.name == "Plague Doctors Scepter":
                     player.weapon.damage = math.floor(player.maxdmg * 0.5)
@@ -2415,6 +2418,8 @@ Stat names are the names that you see in the above embed, with the exception of 
     
     async def battlestart(self, channel):
         for person in self.raiders:
+            if person.hasActive():
+                person.ability.reset()
         # Checking for Armour Weapon Pairs
             if person.armour.haspair():
                 if person.weapon.name == person.armour.pairs.name:
@@ -2971,7 +2976,10 @@ Stat names are the names that you see in the above embed, with the exception of 
             if not q6:
                 if vanillian.tier == user.getTier(): yes.append(vanillian)
             else:
-                if user.getTier() < 6:
+                if user.getTier() == 6 and user.reborn >= 3:
+                    if vanillian.tier == 6: yes.append(vanillian)
+
+                elif user.getTier() < 6:
                     if vanillian.tier >= 4: yes.append(vanillian)
                 else:
                     if vanillian.tier >= 5: yes.append(vanillian)
@@ -3213,7 +3221,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             power = await self.dicing(defender, attacker, power, embed, num)
             return power, 9003
 
-        elif not attacker.ability.oncd():
+        if not attacker.ability.oncd():
             if attacker.ability.tag == 5012:
                 num = randint(1,6)
                 if num == 3:
