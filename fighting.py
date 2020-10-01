@@ -818,9 +818,9 @@ Stat names are the names that you see in the above embed, with the exception of 
         user1.slag = 0
         user2.slag = 0
 
-        users = set(list(user1, user2))
-        attacker = users[0]
-        defender = users[1]
+        users = [user1, user2]
+        attacker = users.pop(user.index(random.choice(users)))
+        defender = users.pop(user.index(random.choice(users)))
 
         fighting = True
 
