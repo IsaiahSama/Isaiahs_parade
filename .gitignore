@@ -1,8 +1,6 @@
 .env
 .vscode
-music_com.py
 special_com.py
 ./backups
 *.json
-paradedb*
 extra/
