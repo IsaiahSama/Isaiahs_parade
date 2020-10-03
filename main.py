@@ -12,7 +12,8 @@ import json
 
 
 # Set Client
-bot = commands.Bot(command_prefix='<>', case_insensitive=True)
+intents = discord.Intents.all()
+bot = commands.Bot(command_prefix='<>', case_insensitive=True, intents=intents)
 bot.help_command = None
 
 
