@@ -4,6 +4,8 @@ from random import randint
 import asyncio
 import random
 import math
+
+
 class General(commands.Cog):
 
     def __init__(self, bot):
@@ -16,8 +18,8 @@ class General(commands.Cog):
 
         rolecolor = user_role.color
         print(rolecolor)
-        
-        embed=discord.Embed(
+
+        embed = discord.Embed(
             title=f"{ctx.author.display_name}:",
             description=f"{arg}",
             color=rolecolor
@@ -40,11 +42,12 @@ class General(commands.Cog):
 
     # Heavens Door
     @commands.command()
-    async def heavens_door(self, ctx, member: discord.Member=None):
+    async def heavens_door(self, ctx, member: discord.Member = None):
         if member == None:
             member = ctx.author
         file = discord.File("images/hd1.gif", filename="hd1.gif")
-        user_roles = ", ".join([role.name for role in member.roles if role != ctx.guild.default_role])
+        user_roles = ", ".join(
+            [role.name for role in member.roles if role != ctx.guild.default_role])
         if member.activity is None:
             actividad = "None"
         else:
@@ -61,8 +64,10 @@ class General(commands.Cog):
         embed.add_field(name='Current Activity:', value=f"{actividad}")
         embed.add_field(name='Current Status:', value=f"{member.status}")
         embed.add_field(name='On Mobile:', value=f"{member.is_on_mobile()}")
-        embed.add_field(name='Date Joined Server:', value=f'{member.joined_at.strftime("%d/%m/%y")}')
-        embed.add_field(name='Date Account Created:', value=f'{member.created_at.strftime("%d/%m/%y")}')
+        embed.add_field(name='Date Joined Server:',
+                        value=f'{member.joined_at.strftime("%d/%m/%y")}')
+        embed.add_field(name='Date Account Created:',
+                        value=f'{member.created_at.strftime("%d/%m/%y")}')
         embed.add_field(name='Highest Role:', value=f"{member.top_role}")
         embed.add_field(name='Roles:', value=f"{user_roles}")
 
@@ -75,9 +80,10 @@ class General(commands.Cog):
         if ctx.author.id == 493839592835907594:
             for server in self.bot.guilds:
                 role = discord.utils.get(server.roles, name="Parader")
-                channel = discord.utils.get(server.text_channels, name="parade-room")
+                channel = discord.utils.get(
+                    server.text_channels, name="parade-room")
                 await channel.send(f"{role.name} I have returned.")
-        
+
         await ctx.send("I am indeed online")
 
 
@@ -90,26 +96,29 @@ class General(commands.Cog):
 
         guilded = discord.Embed(
             title="BILL! LET'S MAKE A DEAL",
-            description= "I summon The All Seeing Eye",
+            description="I summon The All Seeing Eye",
             color=randint(0, 0xffffff)
         )
 
         guilded.set_thumbnail(url=guild.icon_url)
-        guilded.set_image(url="https://media1.tenor.com/images/2d1a5e1389e8a85a5d394b529b06c52d/tenor.gif?itemid=4864289")
+        guilded.set_image(
+            url="https://media1.tenor.com/images/2d1a5e1389e8a85a5d394b529b06c52d/tenor.gif?itemid=4864289")
         guilded.add_field(name="Guild Name", value=f"{guild.name}")
-        guilded.add_field(name="Date Created", value=f"{guild.created_at.strftime('%d/%m/%y')}")
+        guilded.add_field(name="Date Created",
+                          value=f"{guild.created_at.strftime('%d/%m/%y')}")
         guilded.add_field(name="Guild Region", value=f"{guild.region}")
         guilded.add_field(name="Guild Owner", value=f"{guild.owner}")
-        guilded.add_field(name="Number of Members", value=f"{guild.member_count}")
+        guilded.add_field(name="Number of Members",
+                          value=f"{guild.member_count}")
         guilded.add_field(name="Number of Channels", value=f"{numchan}")
         guilded.add_field(name="Number of roles", value=f"{rolnum}")
 
         await ctx.send(embed=guilded)
 
-
     # Timer
+
     @commands.command()
-    async def timer(self, ctx, lot: int=None):
+    async def timer(self, ctx, lot: int = None):
         if lot == None:
             await ctx.send("You did not specify a time in minutes")
             return False
@@ -127,8 +136,8 @@ class General(commands.Cog):
         await asyncio.sleep(lot)
         await ctx.send(f"{ctx.author.mention}. Your time is up :thumbsup:")
 
-
     # Member of the day
+
     @commands.command()
     async def chosenone(self, ctx):
         guild = ctx.guild
@@ -136,7 +145,6 @@ class General(commands.Cog):
         await ctx.send("Congratulations, The chosen member is...")
         await asyncio.sleep(3)
         await ctx.send(f"{chosen.display_name}")
-
 
     @commands.command()
     async def divide(self, ctx, arg1, arg2):
@@ -157,7 +165,7 @@ class General(commands.Cog):
         except TypeError:
             await ctx.send("Invalid value was passed")
             return
-        
+
         await ctx.send(round(arg1 * arg2))
 
     @commands.command()
@@ -170,7 +178,7 @@ class General(commands.Cog):
             return
 
         await ctx.send(round(arg1 + arg2))
-    
+
     @commands.command()
     async def subtract(self, ctx, arg1, arg2):
         try:
@@ -200,7 +208,8 @@ class Namegen(commands.Cog):
         self.bot = bot
 
     # List of all Letters in the Alphabet
-    letters = ["a", "b", "c", "d","e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
+    letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l",
+               "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
 
     # List of Vowels
     vowels = ["a", "e", "i", "o", "u", "h"]
@@ -222,8 +231,6 @@ class Namegen(commands.Cog):
         choice = random.choice(self.letters)
         await ctx.send(f"The person who will become your soulmate. Their name... begins with {choice}")
 
-
-    
     @commands.command()
     async def namegen(self, ctx, length: int):
         if length <= 1:
@@ -241,11 +248,10 @@ class Namegen(commands.Cog):
         else:
             return False
 
-
     def makename(self, length):
         # Creates empty list which will store the name as it is created
         genname = []
-        
+
         # Loops through the length of the name, and creates letters based on logic
         for number in range(length):
             # Selects a random letter from the alphabet
@@ -254,7 +260,7 @@ class Namegen(commands.Cog):
             # For the first letter, just add it to genname
             if number == 0:
                 genname.append(letter.upper())
-            
+
             else:
                 # Creates a variable called prevletter, which takes the value of the previous letter
                 prevletter = genname[number-1].lower()
@@ -267,7 +273,7 @@ class Namegen(commands.Cog):
                     if prevletter == "h":
                         while letter == "h":
                             letter = random.choice(self.vowels)
-                    
+
                     if prevletter == "q":
                         letter = "u"
                 else:
@@ -278,18 +284,18 @@ class Namegen(commands.Cog):
         genname = "".join(genname)
         return genname
 
+
 class afkuser:
-        def __init__(self, user, id, guild, message):
-            self.user = user
-            self.id = id
-            self.guild = guild
-            self.message = message
+    def __init__(self, user, id, guild, message):
+        self.user = user
+        self.id = id
+        self.guild = guild
+        self.message = message
 
 
 class Afkmake(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-
 
     isafk = []
 
@@ -300,7 +306,7 @@ class Afkmake(commands.Cog):
             if ctx.author.id == afkperson.id and ctx.guild == afkperson.guild:
                 await ctx.send("You are already afk. Simply do <>back to let me know that you have returned")
                 return
-        
+
         afkman = afkuser(ctx.author, ctx.author.id, ctx.guild, afkmsg)
         self.isafk.append(afkman)
         await ctx.send(f"Goodbye {ctx.author.mention}, we eagerly await your return")
@@ -309,8 +315,8 @@ class Afkmake(commands.Cog):
         else:
             pass
 
-
     # back
+
     @commands.command()
     async def back(self, ctx):
         for afkperson in self.isafk:
@@ -329,8 +335,7 @@ class Afkmake(commands.Cog):
             await ctx.author.edit(nick=f"{name}")
 
         await ctx.send("Look at you pretending that you were gone")
-        
-     
+
     @commands.Cog.listener()
     async def on_message(self, message):
         if message.author == self.bot.user:
@@ -360,7 +365,7 @@ class Afkmake(commands.Cog):
             return
 
         channel = self.bot.get_channel(739248905379643422)
-        
+
         embed = discord.Embed(
             title=f"{ctx.author.name} from {ctx.guild}:",
             description=content,
@@ -369,7 +374,7 @@ class Afkmake(commands.Cog):
         msg = await channel.send(embed=embed)
         await msg.add_reaction("\U00002b50")
         await ctx.send("Your suggesstion was made")
-        
+
 
 def setup(bot):
     bot.add_cog(General(bot))

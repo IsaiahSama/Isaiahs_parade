@@ -819,8 +819,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         user2.slag = 0
 
         users = [user1, user2]
-        attacker = users.pop(user.index(random.choice(users)))
-        defender = users.pop(user.index(random.choice(users)))
+        attacker, defender = random.sample(users, 2)
 
         fighting = True
 
@@ -995,19 +994,15 @@ Stat names are the names that you see in the above embed, with the exception of 
                             power += 70
 
                 if abiltag == 9001:
-                    extradmg = 0
-                    extrahp = 0
-                    if attacker.typeobj == "player":
-                        for _ in range(attacker.reborn): extradmg += 20
-                        for _ in range(attacker.reborn): extrahp += 50
-                    else:
-                        extradmg += 50
-                        extrahp += 100
+                    extradmg = 60
+                    extrahp = 300
+                    for _ in range(attacker.reborn): extradmg += 20
+                    for _ in range(attacker.reborn): extrahp += 50
 
-                        attacker.mindmg += extradmg
-                        attacker.maxdmg += extradmg
-                        attacker.health += extrahp
-                        battlebed.add_field(name=attacker.ability.usename, value=f"Increased Min and Max damage by {extradmg} and health by {extrahp}")
+                    attacker.mindmg += extradmg
+                    attacker.maxdmg += extradmg
+                    attacker.health += extrahp
+                    battlebed.add_field(name=attacker.ability.usename, value=f"Increased Min and Max damage by {extradmg} and health by {extrahp}")
 
             if ts or hasattr(defender, "flinch"):
                 
@@ -1112,7 +1107,7 @@ Stat names are the names that you see in the above embed, with the exception of 
 
             if defender.hasActive():
                 if defender.ability.tag == 9003:
-                    num = random.choice([1, 2, 3, 6])
+                    num = random.choice([1, 2, 3, 0, 0, 6])
                     power = await self.dicing(attacker, defender, power, battlebed, num)
 
 
@@ -2225,7 +2220,10 @@ Stat names are the names that you see in the above embed, with the exception of 
     # Functions
 
     async def dicing(self, defender, attacker, power, embed, num):
-        if num == 1:
+        if num == 0:
+            embed.add_field(name=attacker.ability.usename, value=f"{attacker.name} couldn't get a valid dice roll")
+        
+        elif num == 1:
             embed.add_field(name=attacker.ability.usename, value=f"{attacker.name} rolled a 1... But nothing Happened")
 
         elif num == 2:
@@ -2625,8 +2623,8 @@ Stat names are the names that you see in the above embed, with the exception of 
                             self.rpsndmg = 100
 
                     if abiltag == 9001:
-                        extradmg = 0
-                        extrahp = 0
+                        extradmg = 60
+                        extrahp = 300
                         for _ in range(player.reborn): extradmg += 20
                         for _ in range(player.reborn): extrahp += 50
 
@@ -2780,7 +2778,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                     self.rpsndmg = 100
 
                 if abiltag == 9001:
-                    extradmg = 100
+                    extradmg = 300
                     extrahp = 100
 
                     self.raidbeast.mindmg += extradmg
@@ -3223,7 +3221,7 @@ Stat names are the names that you see in the above embed, with the exception of 
 
     async def useability(self, defender, attacker, power, embed):
         if attacker.ability.tag == 9003:
-            num = random.choice([1, 4, 5, 6])
+            num = random.choice([1, 0, 0, 4, 5, 6])
             power = await self.dicing(defender, attacker, power, embed, num)
             return power, 9003
 
