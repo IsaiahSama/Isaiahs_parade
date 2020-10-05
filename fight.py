@@ -133,7 +133,7 @@ czw = Ability("Celestial's ZA WARUDO", 6002, "CelestialG's special ability which
 "THIS IS MY ZA WARUDO!", "has stopped time, and attacked", 1, 20, 0, 0, 0)
 
 suffocation = Ability("Suffocation", 6003, "Ability of Trxsh. Has 4 in 10 chance of proccing. Removes 5% of opponents health for 4 turns",
-"SHINE... BAKAYARO", "Removes 5% of health from",1, 0, 0, 0, 0, cooldown=5)
+"SHINE... BAKAYARO", "Removes 5% of health from",1, 0, 0, 0, 0)
 
 massinc = Ability("Mass increase", 6004, "The big one's ability... Bigger and bigger... Doubles damage and heals for 10% hp",
 "BIGGUMS... BIG!!!", "enlarges, doubles power, then attacks", 2.5, 0, 0, 0, 0, 10)
@@ -491,9 +491,11 @@ class Fighter:
 
         else:
             cost = 400 + (self.health * 1.5)
+    
 
         if self.hasreborn():
-            cost -= ((10 + (self.reborn * 2)) / 100) * cost
+            cost -= ((10 + (self.reborn * 10)) / 100) * cost
+
         
         return cost
 
@@ -506,7 +508,7 @@ class Fighter:
             cost = 200 + (self.mindmg * 1.5)
         
         if self.hasreborn():
-            cost -= ((10 + (self.reborn * 2)) / 100) * cost
+            cost -= ((10 + (self.reborn * 10)) / 100) * cost
         return cost
 
     def maxdmgprice(self):
@@ -517,7 +519,7 @@ class Fighter:
         else:
             cost = 220 + (self.maxdmg * 1.75)
         if self.hasreborn():
-            cost -= ((10 + (self.reborn * 2)) / 100) * cost
+            cost -= ((10 + (self.reborn * 10)) / 100) * cost
         return cost
 
     def critchanceprice(self):

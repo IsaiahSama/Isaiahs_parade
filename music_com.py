@@ -18,6 +18,7 @@ class Music(commands.Cog):
         try:
             await vc.channel.connect()
             await ctx.send(f"Successfully connected to {vc.channel.name}")
+            await ctx.voice_client.play(discord.FFmpegOpusAudio("isehjoin.mp3"))
         except:
             await ctx.send(f"You in the wrong channel bruv... I'm in {ctx.voice_client.channel.name}")
 

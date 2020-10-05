@@ -46,8 +46,9 @@ class General(commands.Cog):
         if member == None:
             member = ctx.author
         file = discord.File("images/hd1.gif", filename="hd1.gif")
-        user_roles = ", ".join(
-            [role.name for role in member.roles if role != ctx.guild.default_role])
+        user_roles = ", ".join([role.mention for role in member.roles if role != ctx.guild.default_role])
+        if not user_roles:
+            user_roles = "No Roles"
         if member.activity is None:
             actividad = "None"
         else:
