@@ -4,6 +4,8 @@ from random import randint
 import asyncio
 import random
 import math
+from googletrans import Translator
+import googletrans
 
 
 class General(commands.Cog):
@@ -167,7 +169,7 @@ class General(commands.Cog):
             await ctx.send("Invalid value was passed")
             return
 
-        await ctx.send(round(arg1 * arg2))
+        await ctx.send(arg1 * arg2)
 
     @commands.command()
     async def add(self, ctx, arg1, arg2):
@@ -178,7 +180,7 @@ class General(commands.Cog):
             await ctx.send("Invalid value was passed")
             return
 
-        await ctx.send(round(arg1 + arg2))
+        await ctx.send(arg1 + arg2)
 
     @commands.command()
     async def subtract(self, ctx, arg1, arg2):
@@ -189,7 +191,7 @@ class General(commands.Cog):
             await ctx.send("Invalid value was passed")
             return
 
-        await ctx.send(round(arg1 - arg2))
+        await ctx.send(arg1 - arg2)
 
     @commands.command()
     async def modulus(self, ctx, arg1, arg2):
@@ -201,6 +203,37 @@ class General(commands.Cog):
             return
 
         await ctx.send(arg1 % arg2)
+
+    @commands.command()
+    async def translate(self, ctx, *, text):
+        translator = Translator()
+        result = translator.translate(text)
+        await ctx.send(result.text)
+
+    @commands.command()
+    async def translateto(self, ctx, lang, *, text):
+        if type(lang) != str:
+            await ctx.send("Invalid language")
+            return
+
+        lang = lang.lower()
+        languages = googletrans.LANGUAGES
+
+        lang_to_trans = await self.getlang(lang, languages)
+        if not lang_to_trans: 
+            await ctx.send(f"{lang} could not be found")
+            return
+
+        translator = Translator()
+        result = translator.translate(text, dest=languages[lang_to_trans])
+        await ctx.send(result.text)
+        
+    async def getlang(self, lang, languages):
+        for k, v in languages.items():
+            if lang in [k, v]: return k
+
+        return None
+
 
 
 class Namegen(commands.Cog):
@@ -242,6 +275,9 @@ class Namegen(commands.Cog):
             pass
         name = self.makename(length)
         await ctx.send(f"Your name is {name}")
+
+
+    # Functions    
 
     def consonantchk(self, x):
         if x in self.consonants:

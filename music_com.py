@@ -10,6 +10,7 @@ class Music(commands.Cog):
         self.bot = bot
 
     @commands.command()
+    @commands.is_owner()
     async def joinme(self, ctx):
         vc = ctx.author.voice
         if vc == None:
@@ -18,7 +19,7 @@ class Music(commands.Cog):
         try:
             await vc.channel.connect()
             await ctx.send(f"Successfully connected to {vc.channel.name}")
-            await ctx.voice_client.play(discord.FFmpegOpusAudio("isehjoin.mp3"))
+            # await ctx.voice_client.play(discord.FFmpegOpusAudio("isehjoin.mp3"))
         except:
             await ctx.send(f"You in the wrong channel bruv... I'm in {ctx.voice_client.channel.name}")
 
@@ -112,7 +113,6 @@ class Music(commands.Cog):
     async def playmore(self, ctx, content, amount=1):
         link = random.choice(content)
         for x in range(amount):
-            await ctx.send(f"Now Playing: Number {x}: {link}")
             if type(link) != str:
                 source = link
             else:
@@ -124,14 +124,16 @@ class Music(commands.Cog):
                 except discord.errors.ClientException:
                     await asyncio.sleep(5)
                     continue
+                except AttributeError: return
                 except TypeError:
                     break
 
             if type(link) != str:
                 continue
+
+            await ctx.send(f"Now Playing: Number {x}: {link}")
             
             link = random.choice(content)
-            await ctx.send(f"Next: Number {x}: {link}")
         return
 
             

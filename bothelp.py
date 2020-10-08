@@ -182,6 +182,8 @@ yes = MyHelp("General", "Yes", "<>yes", "Also has it's uses")
 timer = MyHelp("General", "Timer", "<>timer time", "Sets a timer for the specified amount of minutes. Bot Still restarts fairly often, so don't set one for too long")
 chosenone = MyHelp("General", "Chosen One", "<>choseone", "Picks a random person from the server you are in")
 online = MyHelp("General", "Online", "<>online", "Used to check if the bot is online")
+translateto = MyHelp("General", "Translate to", "<>translateto {language} {text to translate}", "Translates your text into the language specified")
+translate = MyHelp("General", "Translate", "<>translate {text to translate}", "Translates text to english")
 
 deathnote = MyHelp("Mod", "Deathnote", "<>deathnote @mention", "Kicks the mentioned user.")
 freeze3 = MyHelp("Mod", "3 Freeze", "<>freeze3 time", "Turns on slowmode for the channel in the intervals specified by 'time'. So <>freeze3 5 will allow a user to send messages once every 5 seconds")
@@ -234,7 +236,7 @@ accept, active, adventure, buy, createprofile, deny, fight, gear, gods, grant, i
 paraid6, passive, powprofile, profile, quest, quest6, raid, readd, rebase, register, reward, search, sell, shop, switch, teams, tier, togglefight, upgrade, upgrade2, upgrade3, 
 view, use, reborn, expfor, exp, raider, myactive, mypassive, channel, inventory, enemies,
 startgame, endgame, startstory, endstory, wordadd, wordremove, wordshow,
-add, subtract, multiply, divide, modulus, allseeing, heavens_door, me, no, yes, timer, chosenone, online,
+add, subtract, multiply, divide, modulus, allseeing, heavens_door, me, no, yes, timer, chosenone, online, translate, translateto,
 deathnote, freeze3, ger, ger_rtz, impactrevive, killerqueen, kingcrimson, mute, relog, shadowrealm, wipein, wipestartswith, wipeendswith, zahando, zawarudo,
 profane, tmsg, tmsg2,
 acceptbff, acceptfr, acceptlove, acceptparent, addfriend, addlove, createsocial, delpet, denybff, denyfr,
