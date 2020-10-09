@@ -104,16 +104,12 @@ class FullFight(commands.Cog):
 
     async def async_init(self):
         await self.bot.wait_until_ready()
-        self.homeguild = self.bot.get_guild(739229902921793637)
+        self.homeguild = self.bot.get_guild(739229902921793637
+
         self.updlist.start()
-        """for person in self.users:
-            x = [w.tag for w in allweapons if w.name == person.weapon]
-            y = [a.tag for a in allarmor if a.name == person.armour]
-            x, y = x[0], y[0]
-            person.weapon, person.armour = x, y"""
 
     modlist = [347513030516539393, 527111518479712256, 493839592835907594, 315619611724742656, 302071862769221635]
-    
+          
 
     # Commands
 

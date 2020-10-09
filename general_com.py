@@ -212,27 +212,25 @@ class General(commands.Cog):
 
     @commands.command()
     async def translateto(self, ctx, lang, *, text):
-        if type(lang) != str:
+        if lang.isdigit():
             await ctx.send("Invalid language")
             return
 
         lang = lang.lower()
         languages = googletrans.LANGUAGES
 
-        lang_to_trans = await self.getlang(lang, languages)
+        lang_to_trans = [k for k, v in languages.items() if lang.lower() in [k, v]]
+        await self.getlang(lang, languages)
         if not lang_to_trans: 
             await ctx.send(f"{lang} could not be found")
             return
+
+        lang_to_trans = lang_to_trans[0]
 
         translator = Translator()
         result = translator.translate(text, dest=languages[lang_to_trans])
         await ctx.send(result.text)
         
-    async def getlang(self, lang, languages):
-        for k, v in languages.items():
-            if lang in [k, v]: return k
-
-        return None
 
 
 
