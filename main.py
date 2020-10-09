@@ -87,7 +87,16 @@ async def on_guild_join(guild):
 
     mchan = bot.get_channel(740414745252986970)
     await mchan.send(f"I have been invited to {guild.name}. {role.name} and {channel.name} Have been created successfully")
+    
 
+    role = discord.utils.get(guild.roles, name="The Silent Ones")
+    if not role: 
+        role = await server.create_role(name="The Silent Ones")
+    for channel in server.text_channels:
+        overwrites = {role: discord.PermissionOverwrite(send_messages=False)}
+        await channel.edit(overwrites=overwrites)
+        
+        print(f"{server} roles set up")
     joinbed = discord.Embed(
         title="I have Arrived",
         description=f"Thanks for inviting me to {guild.name}. I look forward to spending time with all of you",

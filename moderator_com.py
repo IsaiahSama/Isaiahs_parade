@@ -236,14 +236,13 @@ class Moderator(commands.Cog):
 
     # Overwrites channel permissions to stop @everyone from talking in chat
     @commands.command()
-    @commands.has_permissions(manage_channels=True)
-    @commands.has_permissions(manage_roles=True)
+    @commands.has_permissions(manage_channels=True, manage_roles=True)
     async def zawarudo(self, ctx, seconds: int=10):
         guild = ctx.guild
 
         role = discord.utils.get(guild.roles, name="The Silent Ones")
 
-        for member in guild.members: member.add_roles(role)
+        for member in guild.members: await member.add_roles(role)
 
         file = discord.File("./images/zawarudo.gif", filename="zawarudo.gif")
         embed = discord.Embed(
@@ -261,9 +260,7 @@ class Moderator(commands.Cog):
         await asyncio.sleep(seconds)
         await ctx.send("*Jikan desu... (Channel unfrozen)*")
 
-        for member in guild.members: member.remove_roles(role)
-
-
+        for member in guild.members: await member.remove_roles(role)
 
 
     # Reverses zawarudo and 3freeze
@@ -283,9 +280,10 @@ class Moderator(commands.Cog):
         embed.set_image(url="attachment://goldenexp.gif")
         await ctx.send(file=file, embed=embed)
         await ctx.channel.edit(slowmode_delay=0)
-        for role in ctx.guild.roles:
-            if role.name == "The Silent Ones":
-                await role.delete()
+        role = discord.utils.get(ctx.guild.roles, name="The Silent Ones")
+        for member in ctx.guild.members: 
+            if role in member.roles:
+                await member.remove_roles(role)
 
 
     # Kicks a user
@@ -343,7 +341,7 @@ class Moderator(commands.Cog):
         role = discord.utils.get(ctx.guild.roles, name="The Silent Ones")
         if not role: await ctx.send("Role does 'The Silent Ones' does not exist"); return
 
-        for channel in server.text_channels:
+        for channel in ctx.guild.text_channels:
             overwrites = {role: discord.PermissionOverwrite(send_messages=False)}
             await channel.edit(overwrites=overwrites)
 
