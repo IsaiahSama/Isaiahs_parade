@@ -220,7 +220,6 @@ class General(commands.Cog):
         languages = googletrans.LANGUAGES
 
         lang_to_trans = [k for k, v in languages.items() if lang.lower() in [k, v]]
-        await self.getlang(lang, languages)
         if not lang_to_trans: 
             await ctx.send(f"{lang} could not be found")
             return

@@ -104,7 +104,7 @@ class FullFight(commands.Cog):
 
     async def async_init(self):
         await self.bot.wait_until_ready()
-        self.homeguild = self.bot.get_guild(739229902921793637
+        self.homeguild = self.bot.get_guild(739229902921793637)
 
         self.updlist.start()
 
