@@ -47,7 +47,7 @@ class General(commands.Cog):
     async def heavens_door(self, ctx, member: discord.Member = None):
         if member == None:
             member = ctx.author
-        file = discord.File("images/hd1.gif", filename="hd1.gif")
+        file = discord.File("./images/hd1.gif", filename="hd1.gif")
         user_roles = ", ".join([role.mention for role in member.roles if role != ctx.guild.default_role])
         if not user_roles:
             user_roles = "No Roles"

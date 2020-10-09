@@ -240,9 +240,12 @@ class Moderator(commands.Cog):
     @commands.has_permissions(manage_roles=True)
     async def zawarudo(self, ctx, seconds: int=10):
         guild = ctx.guild
-        new_role = await guild.create_role(name="The Silent Ones")
 
-        file = discord.File("images/zawarudo.gif", filename="zawarudo.gif")
+        role = discord.utils.get(guild.roles, name="The Silent Ones")
+
+        for member in guild.members: member.add_roles(role)
+
+        file = discord.File("./images/zawarudo.gif", filename="zawarudo.gif")
         embed = discord.Embed(
             title="ZA... WARUDO!",
             description=f"""TOKI WO TOMARE!! 
@@ -253,32 +256,14 @@ class Moderator(commands.Cog):
         embed.set_thumbnail(url=self.bot.user.avatar_url)
         embed.set_image(url="attachment://zawarudo.gif")
 
-        silence_member = []
-        for member in ctx.guild.members:
-            if not member.guild_permissions.manage_channels:
-                silence_member.append(member)
-
-        overwrite = discord.PermissionOverwrite(send_messages=False)
-
-        await ctx.channel.set_permissions(new_role, overwrite=overwrite)
-
         await ctx.send(file=file, embed=embed)
 
-        overcheck = ctx.channel.overwrites_for(new_role)
-
-        overcheck.update(send_messages=False)
-        for role in guild.roles:
-            if role.name == "The Silent Ones":
-                for member in silence_member:
-                    try:
-                        await member.add_roles(role)
-                    except:
-                        continue
         await asyncio.sleep(seconds)
         await ctx.send("*Jikan desu... (Channel unfrozen)*")
-        for role in guild.roles:
-            if role.name == "The Silent Ones":
-                await role.delete()
+
+        for member in guild.members: member.remove_roles(role)
+
+
 
 
     # Reverses zawarudo and 3freeze
@@ -332,19 +317,10 @@ class Moderator(commands.Cog):
     async def mute(self, ctx, member: discord.Member, time=5, *, reason="They should know"):
         guild = ctx.guild
 
-        role = discord.utils.get(guild.roles, name="The Silent One")
+        role = discord.utils.get(guild.roles, name="The Silent Ones")
         if role == None:
-            role = await guild.create_role(name="The Silent One")
-
-
-        overwrite = discord.PermissionOverwrite(send_messages=False)
-
-        for channel in ctx.guild.text_channels:
-            await channel.set_permissions(role, overwrite=overwrite)
-
-            overcheck = channel.overwrites_for(role)
-
-            overcheck.update(send_messages=False)
+            await ctx.send("Could not get role 'The Silent Ones'. Create it and do <>silentnow")
+            return
         
         await member.add_roles(role)
         mutebed = discord.Embed(
@@ -360,6 +336,16 @@ class Moderator(commands.Cog):
         
         await ctx.send(f"{member.mention}. You have been Unmuted. Do your best to not have to be muted again")
         await member.remove_roles(role)
+
+    @commands.command()
+    @commands.has_permissions(manage_channels=True, manage_roles=True)
+    async def silentnow(self, ctx):
+        role = discord.utils.get(ctx.guild.roles, name="The Silent Ones")
+        if not role: await ctx.send("Role does 'The Silent Ones' does not exist"); return
+
+        for channel in server.text_channels:
+            overwrites = {role: discord.PermissionOverwrite(send_messages=False)}
+            await channel.edit(overwrites=overwrites)
 
     @commands.command()
     @commands.is_owner()
