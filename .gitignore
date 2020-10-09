@@ -2,6 +2,6 @@
 .vscode
 special_com.py
 ./backups
-*.json
 extra/
 isehjoin.mp3
+music_com.py

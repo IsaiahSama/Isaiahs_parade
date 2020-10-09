@@ -66,7 +66,7 @@ class Music(commands.Cog):
         if ctx.voice_client.is_connected():
             await ctx.send(f"Playing {link}")
             source = discord.FFmpegOpusAudio(link)
-            await ctx.voice_client.play(source)    
+            ctx.voice_client.play(source)    
 
     @commands.command()
     @commands.is_owner()
@@ -135,8 +135,48 @@ class Music(commands.Cog):
             
             link = random.choice(content)
         return
-
             
+    @commands.command()
+    @commands.is_owner()
+    async def alarm(self, ctx, time: int):
+        await ctx.send(f"Set an alarm for {time} minutes")
+        # time *= 60
+        await asyncio.sleep(time)
+        
+            
+
+    @commands.command()
+    @commands.is_owner()
+    async def jazzclock(self, ctx, member:discord.Member):
+        await ctx.send(f"Waiting for {member.name} to come online")
+        while member.status == discord.Status.offline: 
+            await asyncio.sleep(20)
+            
+        await asyncio.sleep(5)
+        vc = ctx.author.voice
+        await vc.channel.connect()
+        os.chdir("C:\\Users\\zelda\\onedrive\\music")
+        content = os.listdir()
+        song = [x for x in content if "everything will freeze" in x.lower()]
+        link = song[0]
+        source = discord.FFmpegOpusAudio(link)
+        counter = 0
+        await member.send("Welcome to the realm of online my jazz >:)")
+        await ctx.author.send("hey hey... awaken")
+        await ctx.send(f"{ctx.author.mention} awaken my good sir")
+        while True:
+            counter += 1
+            try:
+                ctx.voice_client.play(source)
+                while ctx.voice_client.is_playing(): 
+                    await asyncio.sleep(10)
+                    continue
+            except AttributeError:
+                break
+            if counter == 10: break
+
+
+
 
     @commands.command()
     @commands.is_owner()
