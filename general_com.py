@@ -344,9 +344,9 @@ class Afkmake(commands.Cog):
         afkman = afkuser(ctx.author, ctx.author.id, ctx.guild, afkmsg)
         self.isafk.append(afkman)
         await ctx.send(f"Goodbye {ctx.author.mention}, we eagerly await your return")
-        if ctx.author is not ctx.guild.owner:
+        try:
             await ctx.author.edit(nick=f"[AFK] {ctx.author.display_name}")
-        else:
+        except discord.errors.Forbidden:
             pass
 
     # back
@@ -355,18 +355,19 @@ class Afkmake(commands.Cog):
     async def back(self, ctx):
         for afkperson in self.isafk:
             if ctx.author.id == afkperson.id and ctx.guild == afkperson.guild:
-                if ctx.author == ctx.guild.owner:
-                    pass
-                else:
+                try:
                     name = ctx.author.display_name.strip("[AFK]")
                     await ctx.author.edit(nick=f"{name}")
+                except discord.errors.Forbidden: pass
                 self.isafk.remove(afkperson)
                 await ctx.send(f"Welcome back {ctx.author.mention}, you were missed... By me at least")
             return
 
         if ctx.author.display_name.startswith("[AFK] "):
-            name = ctx.author.display_name.strip("[AFK] ")
-            await ctx.author.edit(nick=f"{name}")
+            try:
+                name = ctx.author.display_name.strip("[AFK] ")
+                await ctx.author.edit(nick=f"{name}")
+            except discord.errors.Forbidden: pass
 
         await ctx.send("Look at you pretending that you were gone")
 
