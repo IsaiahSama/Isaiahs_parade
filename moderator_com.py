@@ -535,7 +535,7 @@ class ProfanFilter(commands.Cog):
         msg = msg.replace("fuck", "fack")
         msg = msg.replace("shit", "shiz")
         msg = msg.replace("bitch", "beech")
-        msg = msg.replace("cum", "excrete my sexual fluid")
+        msg = msg.replace("cum ", "excrete my sexual fluid")
         msg = msg.replace("nigger", "handsome black person")
         return msg
         
