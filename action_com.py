@@ -56,7 +56,7 @@ class Action(commands.Cog):
 
         true_flex = random.choice(flexes)
         flex_message = random.choice(flexmsg)
-        file = discord.File(f"poses/{true_flex}", filename=true_flex)
+        file = discord.File(f"./poses/{true_flex}", filename=true_flex)
         poseuse = discord.Embed(
             title="Is that... a jojo Reference?",
             description=flex_message,
@@ -87,7 +87,7 @@ class Action(commands.Cog):
         else:
             msg = f"{ctx.author.display_name} hugs {member.display_name}... Isn't that sweet?"
 
-        file = discord.File(f"images/{embrace}", filename=embrace)
+        file = discord.File(f"./images/{embrace}", filename=embrace)
         bumping = discord.Embed(
             title="HUGS!",
             description=f"{msg}",
@@ -108,7 +108,7 @@ class Action(commands.Cog):
         if member == None:
             member = random.choice(ctx.guild.members)
 
-        file = discord.File(f"images/{hit}", filename=f"{hit}")
+        file = discord.File(f"./images/{hit}", filename=f"{hit}")
         bumping = discord.Embed(
             title="Ouch...",
             description=f"{ctx.author.display_name} slaps {member.display_name}... oh me oh my?",
@@ -129,7 +129,7 @@ class Action(commands.Cog):
         bumpfist = random.choice(knock)
         if member == None:
             member = random.choice(ctx.guild.members)
-        file = discord.File(f"images/{bumpfist}", filename=bumpfist)
+        file = discord.File(f"./images/{bumpfist}", filename=bumpfist)
         bumping = discord.Embed(
             title="Fists Have been bumped",
             description=f"{ctx.author.display_name} and {member.display_name} bump fists... Brotherhood",
@@ -149,7 +149,7 @@ class Action(commands.Cog):
         attack = random.choice(punches)
         if member == None:
             member = random.choice(ctx.guild.members)
-        file = discord.File(f"images/{attack}", filename=attack)
+        file = discord.File(f"./images/{attack}", filename=attack)
         bumping = discord.Embed(
             title="Omae wa mou...",
             description=f"{ctx.author.display_name} gives {member.display_name} a taste of their fist... but... but why?",
@@ -169,7 +169,7 @@ class Action(commands.Cog):
         smooch = random.choice(kisses)
         if member == None:
             member = random.choice(ctx.guild.members)
-        file = discord.File(f"images/{smooch}", filename=smooch)
+        file = discord.File(f"./images/{smooch}", filename=smooch)
         bumping = discord.Embed(
             title="Love has been spread",
             description=f"{member.display_name} is kissed by {ctx.author.display_name}... much love",

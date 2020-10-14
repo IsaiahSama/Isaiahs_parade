@@ -129,7 +129,7 @@ class Moderator(commands.Cog):
         await ctx.message.delete()
         await ctx.channel.purge(limit=amount)
         await asyncio.sleep(0.5)
-        file=discord.File("images/zahando.gif", filename="zahando.gif")
+        file=discord.File("./images/zahando.gif", filename="zahando.gif")
 
         deleted = discord.Embed(
             title="Messages Cleared",
@@ -196,7 +196,7 @@ class Moderator(commands.Cog):
         # def checking(m):
         #    return m.author == member
         # await ctx.channel.purge(limit=arg, check=checking)
-        file = discord.File("images/kc.gif", filename="kc.gif")
+        file = discord.File("./images/kc.gif", filename="kc.gif")
         counter = 0
         for m in await ctx.channel.history().flatten():
             if counter < amount:
@@ -220,7 +220,7 @@ class Moderator(commands.Cog):
     @commands.command()
     @commands.has_permissions(manage_channels=True)
     async def freeze3(self, ctx, second: int):
-        file = discord.File("images/3_freeze.gif", filename="3_freeze.gif")
+        file = discord.File("./images/3_freeze.gif", filename="3_freeze.gif")
         embed = discord.Embed(
             title="3 FREEZE",
             description=f"Messages have been slowed down to {second} second intervals",
@@ -267,7 +267,7 @@ class Moderator(commands.Cog):
     @commands.command()
     @commands.has_permissions(manage_channels=True)
     async def ger(self, ctx):
-        file = discord.File("images/goldenexp.gif")
+        file = discord.File("./images/goldenexp.gif")
 
         embed = discord.Embed(
             title="GOLDEN EXPERIENCE REQUIEM",
@@ -291,7 +291,7 @@ class Moderator(commands.Cog):
     @commands.has_permissions(kick_members=True)
     async def deathnote(self, ctx, member: discord.Member):
         await ctx.send(content="***You're name has been written in my notebook... Now you have 5 seconds left...***",
-        file=discord.File("images/deathnote.gif"))
+        file=discord.File("./images/deathnote.gif"))
         await asyncio.sleep(1)
         await ctx.send(f"***It is done... goodbye {member.mention}. You were pathetic compared to L***")
         await asyncio.sleep(5)
