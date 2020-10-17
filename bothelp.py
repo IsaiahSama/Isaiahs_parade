@@ -181,7 +181,7 @@ online = MyHelp("General", "Online", "<>online", "Used to check if the bot is on
 translateto = MyHelp("General", "Translate to", "<>translateto {language} {text to translate}", "Translates your text into the language specified")
 translate = MyHelp("General", "Translate", "<>translate {text to translate}", "Translates text to english")
 
-deathnote = MyHelp("Mod", "Deathnote", "<>deathnote @mention", "Kicks the mentioned user.")
+deathnote = MyHelp("Mod", "Deathnote", "<>deathnote @mention", "Kicks the mentioned user.", "<>kick")
 freeze3 = MyHelp("Mod", "3 Freeze", "<>freeze3 time", "Turns on slowmode for the channel in the intervals specified by 'time'. So <>freeze3 5 will allow a user to send messages once every 5 seconds", "<>slow")
 ger = MyHelp("Mod", "Golden Experience Requiem", "<>ger", "Used to turn off slowmode and unfreeze a channel muted with <>zawaurdo")
 ger_rtz = MyHelp("Mod", "Golden Experience Requiem, Return to zero",
