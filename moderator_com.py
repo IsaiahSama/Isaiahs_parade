@@ -93,7 +93,7 @@ class Moderator(commands.Cog):
 
 
     # Bans
-    @commands.command()
+    @commands.command(aliases=["ban"])
     @commands.has_permissions(ban_members=True)
     async def shadowrealm(self, ctx, member: discord.Member, *, reason=None):
         embed = discord.Embed(
@@ -108,7 +108,7 @@ class Moderator(commands.Cog):
         await member.ban(reason=reason)
 
 
-    @commands.command()
+    @commands.command(aliases=["unban"])
     @commands.has_permissions(ban_members=True)
     async def impactrevive(self, ctx, user: int, reason=None):
         user = await self.bot.fetch_user(user)
@@ -123,7 +123,7 @@ class Moderator(commands.Cog):
 
 
     # Delete Messages
-    @commands.command()
+    @commands.command(aliases=["purge"])
     @commands.has_permissions(manage_messages=True)
     async def zahando(self, ctx, amount: int):
         await ctx.message.delete()
@@ -217,7 +217,7 @@ class Moderator(commands.Cog):
 
 
     # Enables Slowmode
-    @commands.command()
+    @commands.command(aliases=["slow"])
     @commands.has_permissions(manage_channels=True)
     async def freeze3(self, ctx, second: int):
         file = discord.File("./images/3_freeze.gif", filename="3_freeze.gif")
@@ -235,7 +235,7 @@ class Moderator(commands.Cog):
 
 
     # Overwrites channel permissions to stop @everyone from talking in chat
-    @commands.command()
+    @commands.command(aliases=["pause"])
     @commands.has_permissions(manage_channels=True, manage_roles=True)
     async def zawarudo(self, ctx, seconds: int=10):
         guild = ctx.guild
@@ -287,7 +287,7 @@ class Moderator(commands.Cog):
 
 
     # Kicks a user
-    @commands.command()
+    @commands.command(aliases=["kick"])
     @commands.has_permissions(kick_members=True)
     async def deathnote(self, ctx, member: discord.Member):
         await ctx.send(content="***You're name has been written in my notebook... Now you have 5 seconds left...***",

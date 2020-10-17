@@ -3,11 +3,7 @@ from discord.ext import commands
 import asyncio
 import random
 from random import randint
-from dataclasses import dataclass
 
-
-
-@dataclass
 class MyHelp:
     def __init__(self, category, name, usage, desc, alias=None, cooldown=None):
         self.category = category
@@ -186,21 +182,21 @@ translateto = MyHelp("General", "Translate to", "<>translateto {language} {text 
 translate = MyHelp("General", "Translate", "<>translate {text to translate}", "Translates text to english")
 
 deathnote = MyHelp("Mod", "Deathnote", "<>deathnote @mention", "Kicks the mentioned user.")
-freeze3 = MyHelp("Mod", "3 Freeze", "<>freeze3 time", "Turns on slowmode for the channel in the intervals specified by 'time'. So <>freeze3 5 will allow a user to send messages once every 5 seconds")
+freeze3 = MyHelp("Mod", "3 Freeze", "<>freeze3 time", "Turns on slowmode for the channel in the intervals specified by 'time'. So <>freeze3 5 will allow a user to send messages once every 5 seconds", "<>slow")
 ger = MyHelp("Mod", "Golden Experience Requiem", "<>ger", "Used to turn off slowmode and unfreeze a channel muted with <>zawaurdo")
 ger_rtz = MyHelp("Mod", "Golden Experience Requiem, Return to zero",
 "<>ger_rtz @mention", "Used to strip a user of all of their roles")
-impactrevive = MyHelp("Mod", "Impact Revive", "<>impactrevive userid", "Used to unban a user. You must get their id and use it in the command")
+impactrevive = MyHelp("Mod", "Impact Revive", "<>impactrevive userid", "Used to unban a user. You must get their id and use it in the command", "<>unban")
 killerqueen = MyHelp("Mod", "Killer Queen", "<>killerqueen @mention duration", "Strips the mentioned user of their roles for the duration specified. After duration, the mentioned user will get back their roles 1 by 1 in minute intervals")
 kingcrimson = MyHelp("Mod", "King Crimson", "<>kingcrimson @mention amount", "Deletes the amount of messages by the person mentioned")
 mute = MyHelp("Mod", "Mute", "<>mute @mention", "Mutes the mentioned user")
 relog = MyHelp("Mod", "Relog", "<>relog amount", "Creates a channel called logs, if it does not exist already, and sends the history of the audit log up to the specified amount")
-shadowrealm = MyHelp("Mod", "Shadow realm", "<>shadowrealm @mention", "Bans the mentioned user from your server")
+shadowrealm = MyHelp("Mod", "Shadow realm", "<>shadowrealm @mention", "Bans the mentioned user from your server", "<>ban")
 wipein = MyHelp("Mod", "Wipe has", "<>wipehas amount text", "Deletes messages containing the text you specify")
 wipestartswith = MyHelp("Mod", "Wipe Starts with", "<>wipestartswith amount text", "Deletes messages beginning with the text you specify")
 wipeendswith = MyHelp("Mod", "Wipe Ends With", "<>wipeendswith amount text", "Deletes messages ending with the text you specify")
-zahando = MyHelp("Mod", "Za Hando", "<>zahando amount", "Deletes the amount of messages you specify")
-zawarudo = MyHelp("Mod", "ZA WARUDO", "<>zawarudo time", "Stops everyone without manage channel permissions from speaking in the channel for that duration. Essentially a channel mute")
+zahando = MyHelp("Mod", "Za Hando", "<>zahando amount", "Deletes the amount of messages you specify", "<>purge")
+zawarudo = MyHelp("Mod", "ZA WARUDO", "<>zawarudo time", "Stops everyone without manage channel permissions from speaking in the channel for that duration. Essentially a channel mute", "<>pause")
 profane = MyHelp("Mod", "Profane", "<>profane", "Used to toggle whether you want profanity moderated or not")
 tmsg = MyHelp("Mod", "Track Joins and Leaves", "<>trackjoins", "Used to toggle whether I will track join and leaves or not")
 tmsg2 = MyHelp("Mod", "Track Joins and Leaves", "<>trackjoins message", "Used when toggling to set a message to send when a user joins")
