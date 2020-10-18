@@ -235,7 +235,7 @@ class Moderator(commands.Cog):
 
 
     # Overwrites channel permissions to stop @everyone from talking in chat
-    @commands.command(aliases=["pause"])
+    @commands.command(aliases=["shhh"])
     @commands.has_permissions(manage_channels=True, manage_roles=True)
     async def zawarudo(self, ctx, seconds: int=10):
         guild = ctx.guild
