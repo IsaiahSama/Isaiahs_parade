@@ -473,30 +473,13 @@ class Moderator(commands.Cog):
 
             await ctx.send(f"You are on Cooldown for {math.floor(error.retry_after)} seconds")
 
-        elif isinstance(error, commands.MissingPermissions):
-            
-            await ctx.send(error)
-        
-        elif isinstance(error, commands.CommandNotFound):
-            
-            await ctx.send(error)
-
-        elif isinstance(error, commands.NotOwner):
-            
-            await ctx.send(error)
-
-        elif isinstance(error, commands.MissingRequiredArgument):
-            
-            await ctx.send(error)     
-
-        elif isinstance(error, commands.BadArgument):
+        else: 
 
             await ctx.send(error)    
 
-        else:
-            channel = self.bot.get_channel(740337325971603537)
-            await channel.send(f"{ctx.author.name}: {error}")
-            print(error)
+        channel = self.bot.get_channel(740337325971603537)
+        await channel.send(f"{ctx.author.name}: {error}")
+        print(error)
 
     # Functions
     async def getguildobj(self, gid):

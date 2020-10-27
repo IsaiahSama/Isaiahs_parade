@@ -86,16 +86,20 @@ class Gaming(commands.Cog):
             else:
                 tempoword = tempword.lower()
                 self.word_list.append(tempoword)
-                with open("hangwords.txt", "w") as w:
-                    x = ', '.join(self.word_list)
-                    w.write(x)
+        
+        with open("hangwords.txt", "w") as w:
+            x = ', '.join(self.word_list)
+            w.write(x)
 
         await ctx.send("Words have been added :thumbsup:")
 
 
     @commands.command()
     async def wordshow(self, ctx):
-        x = ', '.join(self.word_list)
+        if not self.word_list:
+            await ctx.send("No words to send")
+            return
+        x = ', '.join(self.word_list[:150])
         await ctx.send(x)
 
 
@@ -103,16 +107,19 @@ class Gaming(commands.Cog):
     @commands.command()
     async def wordremove(self, ctx, *, words):
         words = words.split(', ')
+        if not self.word_list:
+            await ctx.send("There are no words to remove")
+            return
         for word in words:
             if word in self.word_list:
                 self.word_list.remove(word)
             else:
                 await ctx.send(f"{word} was not found in word list")
-                with open("hangwords.txt", "w") as w:
-                    x = ', '.join(self.word_list)
-                    w.write(x)
+        with open("hangwords.txt", "w") as w:
+            x = ', '.join(self.word_list)
+            w.write(x)
 
-                await ctx.send("Succesfully removed words")
+        await ctx.send("Succesfully removed words")
 
 
     # Start hang game
@@ -230,8 +237,6 @@ class Gaming(commands.Cog):
                 if message.author.id == self.isaiah:
                     await message.channel.send("What??")
             
-           
-
         else:
             chanobj = await self.getobj(message.channel.id)
             if chanobj.mode == "story":
