@@ -17,6 +17,7 @@ class Tracking:
 
 
 class Moderator(commands.Cog):
+    """Commands for all moderators"""
     def __init__(self, bot):
         self.bot = bot
 
@@ -471,7 +472,7 @@ class Moderator(commands.Cog):
 
         if isinstance(error, commands.CommandOnCooldown):
 
-            await ctx.send(f"You are on Cooldown for {math.floor(error.retry_after)} seconds")
+            await ctx.send(f"Just take it easy {ctx.author.name}. You are on Cooldown for {math.floor(error.retry_after)} more seconds")
 
         else: 
 
@@ -480,6 +481,15 @@ class Moderator(commands.Cog):
         channel = self.bot.get_channel(740337325971603537)
         await channel.send(f"{ctx.author.name}: {error}")
         print(error)
+
+    @commands.Cog.listener()
+    async def on_error(self, ctx, error):
+        if isinstance(error, FileNotFoundError):
+            os.chdir('C:\\Users\\zelda\\onedrive\\programs\\code\\python\\discord\\iparade')
+            await ctx.send("Some error occured... Please run the command again :pray:")
+
+        else:
+            await ctx.send(error)
 
     # Functions
     async def getguildobj(self, gid):

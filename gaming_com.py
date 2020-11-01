@@ -8,6 +8,7 @@ import os
 
 
 class Gaming(commands.Cog):
+    """A list of gaming commands """
 
     def __init__(self, bot):
         self.bot = bot
@@ -27,7 +28,7 @@ class Gaming(commands.Cog):
 
     channels = []
 
-    @commands.command()
+    @commands.command(brief="Use this to start a story", help="Use this to start a story with your friends, and tell it one word at a time for fun.")
     async def startstory(self, ctx):
         
         if await self.chancheck(ctx.channel.id):
@@ -42,7 +43,7 @@ class Gaming(commands.Cog):
         BEGIN!""")
 
 
-    @commands.command()
+    @commands.command(brief="Use this to end a story that has begun and show it off", help="Ends a story started with <>startstory and displays it.")
     async def endstory(self, ctx):
         if not await self.chancheck(ctx.channel.id):
             await ctx.send("You haven't started a story as yet. Do so with <>startstory")
@@ -77,7 +78,8 @@ class Gaming(commands.Cog):
 
 
     # Adds words for hangman
-    @commands.command()
+    @commands.command(brief="Adds words to be used in the hangman game", help="Use this to add words to be used in the hangman. Cooldown 30 seconds:", usage="words_to_add_separated_by_commas")
+    @commands.cooldown(1, 30, commands.BucketType.user)
     async def wordadd(self, ctx, *, words):
         words = words.split(", ")
         for tempword in words:
@@ -94,7 +96,7 @@ class Gaming(commands.Cog):
         await ctx.send("Words have been added :thumbsup:")
 
 
-    @commands.command()
+    @commands.command(brief="Shows all words currently in the hang man's mind", help="Shows all words that have been added to and are available for Hangman to choose from")
     async def wordshow(self, ctx):
         if not self.word_list:
             await ctx.send("No words to send")
@@ -104,7 +106,8 @@ class Gaming(commands.Cog):
 
 
     # Clears words from hangman
-    @commands.command()
+    @commands.command(brief="Removes a word from hangman's memory", help="Use this to clear a word that is available for Hangman to use. Cooldown: 2 minutes", usage="words_to_remove_separated_by_commas")
+    @commands.cooldown(1, 120, commands.BucketType.user)
     async def wordremove(self, ctx, *, words):
         words = words.split(', ')
         if not self.word_list:
@@ -123,7 +126,7 @@ class Gaming(commands.Cog):
 
 
     # Start hang game
-    @commands.command()
+    @commands.command(brief="Starts a hangman game", help="Begins a hangman game in the current channel")
     async def startgame(self, ctx):
         if len(self.word_list) < 2:
             await ctx.send("Not enough words. Add with <>wordadd {words}")
@@ -143,7 +146,7 @@ class Gaming(commands.Cog):
 
 
 
-    @commands.command()
+    @commands.command(brief="Ends a hangman game early", help="Used to end a hangman game early")
     async def endgame(self, ctx):
         if await self.chancheck(ctx.channel.id):
             hangobj = await self.getobj(ctx.channel.id)

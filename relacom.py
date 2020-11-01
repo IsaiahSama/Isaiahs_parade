@@ -9,7 +9,8 @@ import os
 import copy
 
 
-class Relamain(commands.Cog):
+class Social(commands.Cog):
+    """A list of commands for Social Interactions"""
     # Initializes the bot
     def __init__(self, bot):
         self.bot = bot
@@ -46,7 +47,7 @@ class Relamain(commands.Cog):
     else:
         allusers = []
 
-    @commands.command()
+    @commands.command(brief="Creates a social profile", help="Creates a social proile which will be used for main social commands")
     async def createsocial(self, ctx):
         for users in self.allusers:
             if ctx.author.id == users.tag:
@@ -58,25 +59,7 @@ class Relamain(commands.Cog):
         await ctx.send("User Account made Successfully. View with \"<>socialprofile\" or <>sp")
 
 
-    @commands.command()
-    async def viewall(self, ctx):
-        allembed = discord.Embed(
-            title="List of all Users",
-            description="Just testing for now",
-            color=randint(0, 0xffffff)
-        )
-
-        if len(self.allusers) == 0:
-            await ctx.send("No users exist as yet")
-            return
-
-        for person in self.allusers:
-            allembed.add_field(name=f"{person.name}", value=f"Member of {person.guild}")
-
-        await ctx.send(embed=allembed)
-
-
-    @commands.command(aliases=["sp"])
+    @commands.command(aliases=["sp"], brief="Views your social profile, or the profile of someone else", help="Used for viewing someone's social profile", usage="optional[@user]")
     async def socialprofile(self, ctx, member: discord.Member=None):
         if member == None:
             x = await self.isuser(ctx.author)
@@ -132,7 +115,7 @@ class Relamain(commands.Cog):
 
 
     # Adding A Friend
-    @commands.command()
+    @commands.command(brief="Sends a social friend request", help="Used to request someone to be your friend", usage='@user')
     async def addfriend(self, ctx, member: discord.Member=None):
         if ctx.author == member:
             await ctx.send("I'm glad to see you love yourself")
@@ -152,7 +135,7 @@ class Relamain(commands.Cog):
             user2.pendingfr = user1.tag
 
 
-    @commands.command()
+    @commands.command(brief="Accepts friend request", help="Accepts the pending friend request. One person can only have 1 pending friend request at a time.")
     async def acceptfr(self, ctx):
         yes = await self.isuser(ctx.author)
         if yes:
@@ -182,7 +165,7 @@ class Relamain(commands.Cog):
         else:
             await ctx.send("You Aren't a user. Become one with <>createsocial")
 
-    @commands.command()
+    @commands.command(brief="Denies a friend request", help="Used to deny a pending friend request.")
     async def denyfr(self, ctx):
         yes = await self.isuser(ctx.author)
         if yes:
@@ -201,7 +184,7 @@ class Relamain(commands.Cog):
             await ctx.send("Try creating a profile before rejecting someone. Do so with <>createsocial")
 
 
-    @commands.command()
+    @commands.command(brief="Shows your friends", help="Shows a max of 25 of your friends")
     async def showfriends(self, ctx):
         yes = await self.isuser(ctx.author)
         if yes:
@@ -210,16 +193,16 @@ class Relamain(commands.Cog):
                 color=randint(0, 0xffffff)
             )
             user = await self.getuser(ctx.author)
-            for friend in user.friends:
+            for friend in list(set(user.friends))[:25]:
                 tuser = await self.reget(friend)
-                allfrembed.add_field(name=f"{tuser.name}", value="A friend")
+                allfrembed.add_field(value=f"{tuser.name}", name="A friend")
 
             await ctx.send(embed=allfrembed)
 
         else:
             await ctx.send("Not a member my good sir. become one with <>createsocial")
 
-    @commands.command()
+    @commands.command(brief="Sends a love request", help="Requests someone to be your love", usage="@user")
     async def addlove(self, ctx, member:discord.Member=None):
         if ctx.author == member:
             await ctx.send("I'm glad to see you love yourself")
@@ -245,7 +228,7 @@ class Relamain(commands.Cog):
         else:
             await ctx.send("Do <>createsocial first before jumping into such deep things")
 
-    @commands.command()
+    @commands.command(brief="'Breaks up' from your loved one", help="Dumps the person you are in a relationship with")
     async def dump(self, ctx):
         if await self.isuser(ctx.author):
             user = await self.getuser(ctx.author)
@@ -265,38 +248,33 @@ class Relamain(commands.Cog):
 
 
     
-    @commands.command()
-    async def acceptlove(self, ctx, member: discord.Member):
+    @commands.command(brief="Accepts a love request", help="Accepts a love request")
+    async def acceptlove(self, ctx):
         if await self.isuser(ctx.author):
             user = await self.getuser(ctx.author)
 
-            if await self.isuser(member):
+            if user.pendinglove != None:
+                sender = await self.reget(user.pendinglove)
 
-                if user.pendinglove != None:
-                    sender = await self.reget(user.pendinglove)
+                user.pid = sender.tag
+                sender.pid = user.tag
 
-                    user.pid = sender.tag
-                    sender.pid = user.tag
+                mainuser = self.bot.get_user(user.tag)
+                await mainuser.send(f"Congratualions. You are now {sender.name}'s lover")
+                user.rela = True
+                mainuser2 = self.bot.get_user(sender.tag)
+                await mainuser2.send(f"Congratualions. You are now {user.name}'s lover")
+                sender.rela = True
 
-                    mainuser = self.bot.get_user(user.tag)
-                    await mainuser.send(f"Congratualions. You are now {sender.name}'s lover")
-                    user.rela = True
-                    mainuser2 = self.bot.get_user(sender.tag)
-                    await mainuser2.send(f"Congratualions. You are now {user.name}'s lover")
-                    sender.rela = True
+                user.pendinglove = None
 
-                    user.pendinglove = None
-
-                else:
-                    await ctx.send("You don't have any incoming love requests")
-            
             else:
-                await ctx.send("This person does not have a profile")
+                await ctx.send("You don't have any incoming love requests")
 
         else:
             await ctx.send("Missing a few steps. Create a Social Profile first with <>createsocial")
 
-    @commands.command()
+    @commands.command(brief="Denies a love request", help="Denies a love request")
     async def denylove(self, ctx):
         if await self.isuser(ctx.author):
             user = await self.getuser(ctx.author)
@@ -311,7 +289,7 @@ class Relamain(commands.Cog):
             await ctx.send("Missing a few steps. Create a Social Profile first with <>createsocial")
 
 
-    @commands.command()
+    @commands.command(brief="Requests someone to be your best friend", help="Use this to add someone as your one and only best friend", usage="@user")
     async def newbff(self, ctx, member: discord.Member=None):
         if ctx.author == member:
             await ctx.send("I'm glad to see you love yourself")
@@ -329,7 +307,7 @@ class Relamain(commands.Cog):
         else:
             await ctx.send("You or the person you mentioned does not have a profile")
 
-    @commands.command()
+    @commands.command(brief="Accepts a best friend request", help="Used to accept a pending best friend request")
     async def acceptbff(self, ctx):
         if await self.isuser(ctx.author):
             user = await self.getuser(ctx.author)
@@ -352,7 +330,7 @@ class Relamain(commands.Cog):
         else:
             await ctx.send("No best friends until you create an account with <>createsocial")
 
-    @commands.command()
+    @commands.command(brief="Deny a best friend request", help="Used to deny a pending best friend request")
     async def denybff(self, ctx):
         if await self.isuser(ctx.author):
             user = await self.getuser(ctx.author)
@@ -367,7 +345,7 @@ class Relamain(commands.Cog):
         else:
             await ctx.send("No best friends until you create an account with <>createsocial")
 
-    @commands.command()
+    @commands.command(brief="Add someone to be your child", help="Invites someone to be your child", usage="@user")
     async def newchild(self, ctx, member: discord.Member):
         if ctx.author == member:
             await ctx.send("Uh... what?")
@@ -392,7 +370,7 @@ class Relamain(commands.Cog):
         else:
             await ctx.send("You or the person you mentioned, does not have a Social Profile")
 
-    @commands.command()
+    @commands.command(brief="Accepts someone as your parent", help="Used to accept a pending parent request")
     async def acceptparent(self, ctx):
         if await self.isuser(ctx.author):
             user = await self.getuser(ctx.author)
@@ -419,7 +397,7 @@ class Relamain(commands.Cog):
         else:
             await ctx.send("You must create a social profile with <>createsocial")
 
-    @commands.command()
+    @commands.command(brief="Denies a parent request", help="Denies a pending parent request")
     async def denyparent(self, ctx):
         if await self.isuser(ctx.author):
             user = await self.getuser(ctx.author)
@@ -440,7 +418,7 @@ class Relamain(commands.Cog):
             await ctx.send("Become one of us with <>createsocial first")
 
     # I WANT TO MAKE PETS. THEREFORE I SHALLLLLLL
-    @commands.command()
+    @commands.command(breif="Grants you an egg", help="Grants you an egg.")
     async def getpet(self, ctx):
         if await self.isuser(ctx.author):
             user = await self.getuser(ctx.author)
@@ -449,13 +427,13 @@ class Relamain(commands.Cog):
                 return
             else:
                 user.petid = egg.tag
-                await ctx.send("CONGRATULATIONS. YOU HAVE RECEIVED YOUR FIRST PET!!! View with <>pet")
+                await ctx.send("CONGRATULATIONS. YOU HAVE RECEIVED AN EGG!!! View with <>pet")
         else:
             await ctx.send("Please create an account first. Use <>help socials")
             return
 
     # Pet
-    @commands.command()
+    @commands.command(brief="Shows information on your pet", help="Shows information on your current pet")
     async def pet(self, ctx):
 
         if await self.isuser(ctx.author):
@@ -483,7 +461,7 @@ class Relamain(commands.Cog):
             
         await ctx.send("You don't have pet. Get one with <>getpet.")
 
-    @commands.command()
+    @commands.command(brief="Changes your profile's guild to the one you are currently in", help="Used to switch your profile's guild to the one you are currently in")
     async def updatesocial(self, ctx):
         if await self.isuser(ctx.author):
             user = await self.getuser(ctx.author)
@@ -494,7 +472,7 @@ class Relamain(commands.Cog):
         else:
             await ctx.send("You don't even have a profile to update")
 
-    @commands.command()
+    @commands.command(brief="Plays with your pet", help="Plays with your pet for exp. Cooldown: 3 minutes, 20 Seconds")
     @commands.cooldown(1, 200, commands.BucketType.user)
     async def play(self, ctx):
         if await self.isuser(ctx.author):
@@ -513,7 +491,7 @@ class Relamain(commands.Cog):
         else:
             await ctx.send("Become one of us with <>createsocial")
 
-    @commands.command()
+    @commands.command(brief="Deletes your pet", help="Gets rid of your pet... for a cost")
     async def delpet(self, ctx, confirm=False):
         if await self.isuser(ctx.author):
             user = await self.getuser(ctx.author)
@@ -529,6 +507,7 @@ class Relamain(commands.Cog):
                     user.petid = None
                     user.petnick = None
                     await self.socialprofile(ctx)
+                    await self.getpetnames()
             
             else:
                 await ctx.send("You don't even have a pet and want to get rid of it?")
@@ -536,7 +515,7 @@ class Relamain(commands.Cog):
         else:
             await ctx.send("Not a member. Become one with <>createsocial")
 
-    @commands.command()
+    @commands.command(brief="Feeds your pet", help="Feeds your pet for pet exp Cooldown 2 minutes")
     @commands.cooldown(1, 120, commands.BucketType.user)
     async def feed(self, ctx):
         if await self.isuser(ctx.author):
@@ -558,8 +537,8 @@ class Relamain(commands.Cog):
         self.updateusers.restart()
         print("Updated profile")
 
-    @commands.command()
-    async def nickpet(self, ctx, name):
+    @commands.command(brief="Gives your pet a nickname", help="Give your pet a nickname. Carries on from one pet to the next, until you change it", usage="name")
+    async def nickpet(self, ctx,*, name):
         if len(name) >= 15:
             await ctx.send("That name is too long")
             return
@@ -589,12 +568,13 @@ class Relamain(commands.Cog):
             if user.tag == target.id:
                 return user
 
-    async def getpetid(self, target, channel):
+    async def getpetid(self, target, channel=None):
         pett = [x for x in allpets if x.tag == target]
         try:
             pett = pett[0]
             return copy.copy(pett)
         except IndexError:
+            if not channel: return
             await channel.send("Something went wrong getting your pet")
 
     async def reget(self, tagtoget):
@@ -614,12 +594,12 @@ class Relamain(commands.Cog):
 
         print("Updated Successfully")
 
-    @commands.command()
-    async def getpetnames(self, ctx):
+
+    async def getpetnames(self):
         for acc in self.allusers:
             if acc.haspet():
                 if acc.petnick == None:
-                    x = await self.getpetid(acc.petid, ctx.channel)
+                    x = await self.getpetid(acc.petid)
                     acc.petnick = x.name
 
 
@@ -646,4 +626,4 @@ class Relamain(commands.Cog):
             return
 
 def setup(bot):
-    bot.add_cog(Relamain(bot))
+    bot.add_cog(Social(bot))

@@ -14,7 +14,8 @@ class delemsg:
     def getobj(self):
         return self.msgobj
 
-class Miscgen(commands.Cog):
+class Misc(commands.Cog):
+    """Misc commands for Misc uses"""
     def __init__(self, bot):
         self.bot = bot
 
@@ -22,13 +23,18 @@ class Miscgen(commands.Cog):
     delmsg = []
     @commands.Cog.listener()
     async def on_message_delete(self, message):
+        if message.author.bot: return
         istnce = delemsg(message.channel, message)
         print(f"{message.author}: {message.content}")
+        test = [dmsg for dmsg in self.delmsg if dmsg.channel == message.channel]
+        if test: self.delmsg.remove(test)
         self.delmsg.append(istnce)
-        await asyncio.sleep(90)
-        self.delmsg.remove(istnce)
+        await asyncio.sleep(120)
+        try:
+            self.delmsg.remove(istnce)
+        except ValueError: pass
 
-    @commands.command()
+    @commands.command(brief="Shows a message which has been deleted.", help="Shows a message that has been deleted within the last 2 minutes")
     async def nohide(self, ctx):
         
         for dething in self.delmsg:
@@ -49,7 +55,7 @@ class Miscgen(commands.Cog):
 
 
     # Secret messages
-    @commands.command()
+    @commands.command(brief="Like Me... but hidden", help="Sends your message as an embed, but doesn't say who sent it... scary")
     async def hme(self, ctx, *, arg):
         msgembed = discord.Embed(
             title="Hidden user said:",
@@ -61,7 +67,7 @@ class Miscgen(commands.Cog):
         await ctx.message.delete()
 
     # Fake deathnote
-    @commands.command()
+    @commands.command(brief="A fake <>deathnote command.", help="Like deathnote, but doesn't kick anyone")
     async def fdeathnote(self, ctx, member: discord.Member):
         await ctx.send("***Now that I have my potato chips... you only have 60 seconds to live...***")
         await ctx.send(file=discord.File("images/pchip.gif"))
@@ -70,9 +76,9 @@ class Miscgen(commands.Cog):
         await asyncio.sleep(25)
         await ctx.send(f"***It is done... goodbye {member.display_name}. You were pathetic compared to L***")
         await asyncio.sleep(15)
-        await ctx.send(f"*I was only kidding you are good {member.display_name}*")
+        await ctx.send(f"*Whoops... seems like I have the wrong deathnote :thinking:*")
 
-    @commands.command()
+    @commands.command(brief="Shows the bot's ping", help="Shows the bot's latency")
     async def ping(self, ctx):
         x = round(self.bot.latency * 1000)
         if x <= 100:
@@ -82,12 +88,12 @@ class Miscgen(commands.Cog):
         else:
             await ctx.send(f"{x}ms. I don't feel to good, sorry for any delay")
 
-    @commands.command()
+    @commands.command(brief="Sends an emoji but...", help="Enter the name of an emoji to have the bot send it. Example: <>emoji man_bowing", usage="emoji_name")
     async def emoji(self, ctx, arg):
         await ctx.message.delete()
-        await ctx.send(f"{ctx.author.display_name}: :{arg}:")
+        await ctx.send(f":{arg}:")
 
-    @commands.command()
+    @commands.command(brief="Attempts to find the last time you were pinged.", help="Searches for the last time you were pinged in the last 700 messages. This only picks up @user not role pings")
     async def mentioned(self, ctx):
         msgcount = 0
         for m in await ctx.channel.history().flatten():
@@ -153,4 +159,4 @@ class Miscgen(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(Miscgen(bot))
+    bot.add_cog(Misc(bot))

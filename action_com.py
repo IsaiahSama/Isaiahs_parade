@@ -7,10 +7,11 @@ from images import hugs, punches, kisses, slaps, knock, poses, flexes
 
 
 class Action(commands.Cog):
+    """A list of action commands"""
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
+    @commands.command(brief="Use this when someone clowns", help="Someone clowning around?, just use this on them")
     async def clown(self, ctx):
         clownbed = discord.Embed(
             title="Worthy of this clown award",
@@ -22,7 +23,7 @@ class Action(commands.Cog):
         await ctx.send(embed=clownbed)
     # Pose       
 
-    @commands.command()
+    @commands.command(brief="JOJO... POSE!", help="Pose... Yes")
     async def pose(self, ctx):
         posemsg = [f"{ctx.author.display_name} is posing on ZA WARUDO",
                 f"Look out {ctx.author.display_name} is striking a powerful pose", f"{ctx.author.display_name} has started posing",
@@ -44,7 +45,7 @@ class Action(commands.Cog):
 
 
     # flexing
-    @commands.command()
+    @commands.command(brief="JOJO... FLEX", help="Flex... Yes", usage="@user")
     async def flex(self, ctx, member: discord.Member=None):
         if member == None:
             member = random.choice(ctx.guild.members)
@@ -71,19 +72,13 @@ class Action(commands.Cog):
     isaiah = 493839592835907594
 
     # Hug
-    @commands.command()
+    @commands.command(brief="Love and affection", help="Give someone a hug. Even yourself why don't ya.", usage="@user")
     async def hug(self, ctx, member: discord.Member=None):
         if member == None:
             member = random.choice(ctx.guild.members)
         embrace = random.choice(hugs)
         if ctx.author.id == 510282144828882944:
             msg = f"{ctx.author.display_name} has given {member.display_name} a loving hug :hatched_chick:"
-        elif member.id == 510282144828882944 and ctx.author.id == self.isaiah:
-            msg = "Ah Isaiah is hugging Rayln, that's some father-daughter love right there :hatched_chick:"
-        elif member.id == 510282144828882944:
-            msg = f""":hatched_chick: {member.display_name} is being hugged by {ctx.author.display_name}...
-    Does Isaiah-Sama agree with that though?"""
-
         else:
             msg = f"{ctx.author.display_name} hugs {member.display_name}... Isn't that sweet?"
 
@@ -102,7 +97,7 @@ class Action(commands.Cog):
 
 
     # Slap
-    @commands.command()
+    @commands.command(brief="I mean like... Slap", help="No help needed... just slap em", usage="@user")
     async def slap(self, ctx, member: discord.Member=None):
         hit = random.choice(slaps)
         if member == None:
@@ -124,7 +119,7 @@ class Action(commands.Cog):
 
 
     # Fist Bump
-    @commands.command()
+    @commands.command(breif="Bumpfist...", help="Fistbump...", usage="@user")
     async def fistbump(self, ctx, member: discord.Member=None):
         bumpfist = random.choice(knock)
         if member == None:
@@ -144,7 +139,7 @@ class Action(commands.Cog):
 
 
     # Punch
-    @commands.command()
+    @commands.command(brief="PUNCH!!", help="PUNCH!!!", usage="@user")
     async def punch(self, ctx, member: discord.Member=None):
         attack = random.choice(punches)
         if member == None:
@@ -164,7 +159,7 @@ class Action(commands.Cog):
 
 
     # kiss
-    @commands.command()
+    @commands.command(brief="More love and affection", help="Kissy kissy?", usage="@user")
     async def kiss(self, ctx, member: discord.Member=None):
         smooch = random.choice(kisses)
         if member == None:
@@ -183,7 +178,7 @@ class Action(commands.Cog):
         await ctx.message.delete()
 
     # Dance
-    @commands.command()
+    @commands.command(brief="EXPRESS YOURSELF!!", help="Dance... only my favourite one tho.")
     async def dance(self, ctx):
         embed = discord.Embed(
             title=f"{ctx.author.display_name} is dancing",
@@ -202,7 +197,8 @@ class Action(commands.Cog):
     "https://i.pinimg.com/originals/40/54/5c/40545c887023ba16e26f094bdb335271.gif",
     "https://media.giphy.com/media/hRQ6OBek0erPG/giphy.gif",
     "https://media1.tenor.com/images/8fe23ec8e2c5e44964e5c11983ff6f41/tenor.gif?itemid=5600215"]
-    @commands.command()
+    
+    @commands.command(brief="Just give someone a poke", help="Good for getting attention", usage="@user")
     async def poke(self, ctx, member: discord.Member=None):
         if member == None:
             member = random.choice(ctx.guild.members)
@@ -225,7 +221,7 @@ class Action(commands.Cog):
     "https://i.pinimg.com/originals/45/24/f5/4524f5214e0821f736a4a6e410f6faa0.gif",
     "https://media.giphy.com/media/M3a51DMeWvYUo/giphy.gif",
     "https://thumbs.gfycat.com/PositiveWelloffDeviltasmanian-size_restricted.gif"]
-    @commands.command()
+    @commands.command(brief="mhm yes... head rub", help="There there. Give someone a pat", usage="@user")
     async def pat(self, ctx, member: discord.Member=None):
         if member == None:
             member = random.choice(ctx.guild.members)
@@ -244,7 +240,7 @@ class Action(commands.Cog):
 
 
     # cry
-    @commands.command()
+    @commands.command(brief="Feeling sad... don't hold back", help="Good if you are feeling sad... just let it out ya know?")
     async def cry(self, ctx):
         crygif = ["https://media1.tenor.com/images/87faf9d8d78a73d65488589ccaff0ac6/tenor.gif?itemid=14065929",
                 "https://media.tenor.com/images/8e1148a41d17ec823bbfc7036fa3754e/tenor.gif",
@@ -267,7 +263,7 @@ class Action(commands.Cog):
 
 
     # Barrage
-    @commands.command()
+    @commands.command(usage="@user", brief="JOJO... BARRAGE", help="ORA ORA ORA ORA")
     async def barrage(self, ctx, member: discord.Member=None):
         barrageimg = ["https://media1.tenor.com/images/8a87bc787cf5579892d7bfe4e3769901/tenor.gif?itemid=14161814",
                     "http://pa1.narvii.com/6738/346988680e878b4d3ae6e9a3eeb96de7aed69713_00.gif",
@@ -288,7 +284,7 @@ class Action(commands.Cog):
 
 
     # blush
-    @commands.command()
+    @commands.command(brief="\"Stahp it... I'm blushing\"", help="*blushing noises")
     async def blush(self, ctx):
         blushgif = ["https://media.discordapp.net/attachments/722220169480634369/722850078951473202/image0.gif",
                     "https://media.discordapp.net/attachments/722220169480634369/722850079119114310/image1.gif",
@@ -310,7 +306,7 @@ class Action(commands.Cog):
 
 
     # Condescending
-    @commands.command()
+    @commands.command(usage="@user", brief="Just give them the look...", help="Some people just deserve it... right")
     async def condescend(self, ctx, member: discord.Member=None):
         if member == None:
             member = random.choice(ctx.guild.members)

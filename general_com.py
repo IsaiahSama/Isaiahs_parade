@@ -8,18 +8,27 @@ from googletrans import Translator
 import googletrans
 
 
+class afkuser:
+    def __init__(self, user, id, guild, message):
+        self.user = user
+        self.id = id
+        self.guild = guild
+        self.message = message
+
 class General(commands.Cog):
+    """General commands for general usage"""
 
     def __init__(self, bot):
         self.bot = bot
 
     # General
-    @commands.command()
+    @commands.command(brief="Sends your message as an embed", help="Sends a message as an embed", usage="message")
     async def me(self, ctx, *, arg):
         user_role = ctx.author.roles[-1]
 
         rolecolor = user_role.color
-        print(rolecolor)
+        if not rolecolor:
+            rolecolor = randint(0, 0xffffff)
 
         embed = discord.Embed(
             title=f"{ctx.author.display_name}:",
@@ -31,19 +40,19 @@ class General(commands.Cog):
         await ctx.message.delete()
 
     # Grants the user affirmation
-    @commands.command()
+    @commands.command(brief="Yes", help="Still Yes")
     async def yes(self, ctx):
         await ctx.message.delete()
         await ctx.send("```I absolutely, 10 billion% , agree with your statement.```")
 
     # Grant the NO!
-    @commands.command()
+    @commands.command(brief="No", help="Still no")
     async def no(self, ctx):
         await ctx.message.delete()
         await ctx.send("I know you didn't really just say that '-'")
 
     # Heavens Door
-    @commands.command()
+    @commands.command(brief="Shows detail information on a user", help="Shows detailed information on a user", usage="optional[@user]")
     async def heavens_door(self, ctx, member: discord.Member = None):
         if member == None:
             member = ctx.author
@@ -77,10 +86,10 @@ class General(commands.Cog):
         await ctx.send(file=file, embed=embed)
 
     # Check for bot being online
-    @commands.command()
-    async def online(self, ctx):
+    @commands.command(brief="Displays if the bot is online or not", help="Useful for checking if the bot is online or not")
+    async def online(self, ctx, conf="No"):
         await ctx.message.delete()
-        if ctx.author.id == 493839592835907594:
+        if ctx.author.id == 493839592835907594 and conf.lower() == "yes":
             for server in self.bot.guilds:
                 role = discord.utils.get(server.roles, name="Parader")
                 channel = discord.utils.get(
@@ -90,7 +99,7 @@ class General(commands.Cog):
         await ctx.send("I am indeed online")
 
 
-    @commands.command()
+    @commands.command(brief="Shows information on the current server", help="Shows information about the current server")
     async def allseeing(self, ctx):
         guild = ctx.guild
         numchan = len(ctx.guild.channels)
@@ -120,7 +129,7 @@ class General(commands.Cog):
 
     # Timer
 
-    @commands.command()
+    @commands.command(brief="starts a timer for x minutes", help="Use this to set a timer for a specified amount of time.", usage="time")
     async def timer(self, ctx, lot: int = None):
         if lot == None:
             await ctx.send("You did not specify a time in minutes")
@@ -141,7 +150,7 @@ class General(commands.Cog):
 
     # Member of the day
 
-    @commands.command()
+    @commands.command(brief="Picks a random member", help="Selects a random member")
     async def chosenone(self, ctx):
         guild = ctx.guild
         chosen = random.choice(guild.members)
@@ -149,71 +158,16 @@ class General(commands.Cog):
         await asyncio.sleep(3)
         await ctx.send(f"{chosen.display_name}")
 
-    @commands.command()
-    async def divide(self, ctx, arg1, arg2):
-        try:
-            arg1 = float(arg1)
-            arg2 = float(arg2)
-        except TypeError:
-            await ctx.send("Invalid value was passed")
-            return
-
-        await ctx.send(arg1/arg2)
-
-    @commands.command()
-    async def multiply(self, ctx, arg1, arg2):
-        try:
-            arg1 = float(arg1)
-            arg2 = float(arg2)
-        except TypeError:
-            await ctx.send("Invalid value was passed")
-            return
-
-        await ctx.send(arg1 * arg2)
-
-    @commands.command()
-    async def add(self, ctx, arg1, arg2):
-        try:
-            arg1 = float(arg1)
-            arg2 = float(arg2)
-        except TypeError:
-            await ctx.send("Invalid value was passed")
-            return
-
-        await ctx.send(arg1 + arg2)
-
-    @commands.command()
-    async def subtract(self, ctx, arg1, arg2):
-        try:
-            arg1 = float(arg1)
-            arg2 = float(arg2)
-        except TypeError:
-            await ctx.send("Invalid value was passed")
-            return
-
-        await ctx.send(arg1 - arg2)
-
-    @commands.command()
-    async def modulus(self, ctx, arg1, arg2):
-        try:
-            arg1 = float(arg1)
-            arg2 = float(arg2)
-        except TypeError:
-            await ctx.send("Invalid value was passed")
-            return
-
-        await ctx.send(arg1 % arg2)
-
-    @commands.command()
+    @commands.command(brief="Translates any given text into english", help="Translates any given text to english", usage="non-english_text")
     async def translate(self, ctx, *, text):
         translator = Translator()
         result = translator.translate(text)
         await ctx.send(result.text)
 
-    @commands.command()
+    @commands.command(brief="Translates any given text to language specified", help='Translates any given text to the language specified', usage="language text_to_translate")
     async def translateto(self, ctx, lang, *, text):
         if lang.isdigit():
-            await ctx.send("Invalid language")
+            await ctx.send("Not a language")
             return
 
         lang = lang.lower()
@@ -229,14 +183,6 @@ class General(commands.Cog):
         translator = Translator()
         result = translator.translate(text, dest=languages[lang_to_trans])
         await ctx.send(result.text)
-        
-
-
-
-class Namegen(commands.Cog):
-
-    def __init__(self, bot):
-        self.bot = bot
 
     # List of all Letters in the Alphabet
     letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l",
@@ -257,12 +203,11 @@ class Namegen(commands.Cog):
             consonants.append(letter)
 
     # Random Letter
-    @commands.command()
+    @commands.command(brief="Mhm... Soulmate", help="Displays the first letter of the name of your soulmate... probably")
     async def soulmate(self, ctx):
-        choice = random.choice(self.letters)
-        await ctx.send(f"The person who will become your soulmate. Their name... begins with {choice}")
+        await ctx.send(f"The person who will become your soulmate. Their name... begins with {random.choice(self.letters)}")
 
-    @commands.command()
+    @commands.command(brief="Generates a name", help="Generates a name for you", usage="length_of_name")
     async def namegen(self, ctx, length: int):
         if length <= 1:
             length = 2
@@ -318,23 +263,10 @@ class Namegen(commands.Cog):
         genname = "".join(genname)
         return genname
 
-
-class afkuser:
-    def __init__(self, user, id, guild, message):
-        self.user = user
-        self.id = id
-        self.guild = guild
-        self.message = message
-
-
-class Afkmake(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
     isafk = []
 
     # Afk
-    @commands.command()
+    @commands.command(brief="Sends you afk", help="Shows that you have gone afk", usage="Optional[reason]")
     async def afk(self, ctx, *, afkmsg="No reason, Just afk"):
         for afkperson in self.isafk:
             if ctx.author.id == afkperson.id and ctx.guild == afkperson.guild:
@@ -351,7 +283,7 @@ class Afkmake(commands.Cog):
 
     # back
 
-    @commands.command()
+    @commands.command(brief="Used to return from AFK", help="Sets you back to normal indicating that you have returned")
     async def back(self, ctx):
         for afkperson in self.isafk:
             if ctx.author.id == afkperson.id and ctx.guild == afkperson.guild:
@@ -386,13 +318,9 @@ class Afkmake(commands.Cog):
             if afkthing.user in message.mentions and afkthing.guild is message.guild:
                 await message.channel.send(f"{afkthing.user.name} went afk saying \"{afkthing.message}\"")
 
-    @commands.command()
-    async def resetnick(self, ctx):
-        await ctx.author.edit(nick=ctx.author.name)
-
     cd = 60 * 60
 
-    @commands.command()
+    @commands.command(brief="Make a suggestion", help="Makes a suggestion to the bot developer", usage="content")
     @commands.cooldown(1, cd, commands.BucketType.user)
     async def suggest(self, ctx, *, content):
         if len(content) <= 2:
@@ -413,5 +341,3 @@ class Afkmake(commands.Cog):
 
 def setup(bot):
     bot.add_cog(General(bot))
-    bot.add_cog(Namegen(bot))
-    bot.add_cog(Afkmake(bot))

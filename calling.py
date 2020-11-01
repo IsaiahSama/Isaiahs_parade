@@ -6,6 +6,7 @@ from random import randint
 from callclass import CallClass
 
 class Call(commands.Cog):
+    "For intercom related commands"
     def __init__(self, bot):
         self.bot = bot
 
@@ -23,7 +24,7 @@ class Call(commands.Cog):
     )"""
     sincall = []
     
-    @commands.command()
+    @commands.command(brief="Bring bring... Hope someone joins", help="Use this to communicate with other servers in which I reside")
     async def intercom(self, ctx):
         if await self.callchk(ctx.channel.id):
             await ctx.send("You are already in a call. To make another one, end this one with <>endcall")
@@ -43,7 +44,7 @@ class Call(commands.Cog):
             self.sincall.append(callingchan)
 
 
-    @commands.command()
+    @commands.command(brief="Used to end an intercom", help="Used to end an intercom")
     async def endcall(self, ctx):
         targobj = await self.callchk(ctx.channel.id)
         if targobj.incall:
@@ -73,7 +74,7 @@ class Call(commands.Cog):
             objt.pending = False
             objt.incall = True
         
-        obj1.chan2id, obj2.chan2id= obj2.chan1id, obj1.chan1id
+        obj1.chan2id, obj2.chan2id = obj2.chan1id, obj1.chan1id
 
     async def getchans(self, chan1, chan2):
         chan1 = self.bot.get_channel(chan1)
@@ -96,6 +97,7 @@ class Call(commands.Cog):
             await chan2.send(f"{message.author.display_name}: {message.content}")
 
 class GroupCall(commands.Cog):
+    "For group call related commands"
     def __init__(self, bot):
         self.bot = bot
 
@@ -104,7 +106,7 @@ class GroupCall(commands.Cog):
     incall = False
     pending = False
 
-    @commands.command()
+    @commands.command(brief="Used to start a group call", help="Use this to start an intercom where multiple servers can join in")
     async def gcall(self, ctx):
         if not self.incall and not self.pending:
             for server in self.bot.guilds:
@@ -147,7 +149,7 @@ class GroupCall(commands.Cog):
             await ctx.send("Unknown Error Occured")
 
     
-    @commands.command()
+    @commands.command(brief="Use this to join an existing group call", help="A multi server call has begun? Join it with this")
     async def gjoin(self, ctx):
         if self.pending or self.incall:
             if ctx.channel in self.calledChannels:
@@ -165,7 +167,7 @@ class GroupCall(commands.Cog):
         else:
             await ctx.send("There is no Multi-Server Intercom to join. Create one with <>gcall")
 
-    @commands.command()
+    @commands.command(brief="Use this to leave a multi-server call", help="Tired or bored? Use this command to leave a multi-server intercom")
     async def gleave(self, ctx):
         if ctx.channel in self.calledChannels:
             await ctx.send("You have left")
