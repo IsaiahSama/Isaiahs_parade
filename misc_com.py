@@ -26,8 +26,8 @@ class Misc(commands.Cog):
         if message.author.bot: return
         istnce = delemsg(message.channel, message)
         print(f"{message.author}: {message.content}")
-        test = [dmsg for dmsg in self.delmsg if dmsg.channel == message.channel]
-        if test: self.delmsg.remove(test)
+        test = [dmsg for dmsg in self.delmsg if dmsg.chan == message.channel]
+        if test: self.delmsg.remove(test[0])
         self.delmsg.append(istnce)
         await asyncio.sleep(120)
         try:
