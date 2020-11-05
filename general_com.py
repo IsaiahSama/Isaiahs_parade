@@ -165,11 +165,7 @@ class General(commands.Cog):
         await ctx.send(result.text)
 
     @commands.command(brief="Translates any given text to language specified", help='Translates any given text to the language specified', usage="language text_to_translate")
-    async def translateto(self, ctx, lang, *, text):
-        if lang.isdigit():
-            await ctx.send("Not a language")
-            return
-
+    async def translateto(self, ctx, lang: str, *, text):
         lang = lang.lower()
         languages = googletrans.LANGUAGES
 
