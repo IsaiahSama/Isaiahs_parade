@@ -14,8 +14,6 @@ import json
 # Set Client
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix='<>', case_insensitive=True, intents=intents)
-bot.help_command = None
-
 
 bot.load_extension("general_com")
 bot.load_extension("gaming_com")
@@ -60,17 +58,8 @@ async def backup():
 @bot.command()
 @commands.is_owner()
 async def refresh(ctx):
-    bot.reload_extension("general_com")
-    bot.reload_extension("gaming_com")
-    bot.reload_extension("misc_com")
-    bot.reload_extension("moderator_com")
-    bot.reload_extension("action_com")
-    bot.reload_extension("special_com")
-    bot.reload_extension("fighting")
-    bot.reload_extension("relacom")
-    bot.reload_extension("calling")
-    bot.reload_extension("music_com")
-    bot.reload_extension("bothelp")
+    for cog in bot.extensions.keys():
+        bot.reload_extension(cog)
 
     
 # when bot joins a guild
