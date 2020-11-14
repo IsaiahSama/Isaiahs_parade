@@ -40,11 +40,10 @@ class MyHelpCommand(commands.MinimalHelpCommand):
             color=randint(0, 0xffffff)
         )
 
-        symbols = ["+", "-", "---", "***", "!"]
         to_loop = await self.filter_commands(cog.get_commands())
         if not to_loop: await self.get_destination().send("This Cog has no commands."); return
         for command in to_loop:
-            embed.add_field(name=f"{self.clean_prefix}{command.qualified_name}", value=f"```diff\n{random.choice(symbols)} {command.brief}```", inline=False)
+            embed.add_field(name=f"{self.clean_prefix}{command.qualified_name}", value=f"```{command.brief}```")
         embed.set_footer(text=self.get_opening_note())
 
         
@@ -57,13 +56,12 @@ class MyHelpCommand(commands.MinimalHelpCommand):
             color=randint(0, 0xffffff)
         )
 
-        symbols = ["+", "-", "---", "***", "!"]
         to_loop = [k for k in mapping.keys() if k]
 
         to_loop = list(set(to_loop))
         for cog in to_loop:
             if cog.description:
-                embed.add_field(name=cog.qualified_name, value=f"```diff\n{random.choice(symbols)} {cog.description}```", inline=False)
+                embed.add_field(name=cog.qualified_name, value=f"```{cog.description}```")
             
 
         await self.get_destination().send(embed=embed)

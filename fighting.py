@@ -3558,6 +3558,12 @@ Stat names are the names that you see in the above embed, with the exception of 
         await asyncio.sleep(3)
         raise SystemExit     
 
+    @commands.Cog.listener()
+    async def on_disconnect(self):
+        await asyncio.sleep(2)
+        self.updlist.restart()
+        
+
         
 def setup(bot):
     bot.add_cog(Fight(bot))

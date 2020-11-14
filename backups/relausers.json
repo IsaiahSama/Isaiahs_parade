@@ -1,1 +1,22 @@
-[]
+[
+    {
+        "guild": "Iseh-And-Friends!",
+        "name": "Your Isaiah",
+        "tag": 493839592835907594,
+        "friendcount": 0,
+        "hasbff": false,
+        "bfid": null,
+        "pid": null,
+        "rela": false,
+        "friends": [],
+        "parents": [],
+        "children": [],
+        "petid": null,
+        "petexp": 0,
+        "pendingfr": null,
+        "pendinglove": null,
+        "pendingbf": null,
+        "pendingpar": null,
+        "petnick": null
+    }
+]

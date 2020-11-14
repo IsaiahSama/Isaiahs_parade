@@ -60,8 +60,7 @@ async def backup():
 async def refresh(ctx):
     for cog in bot.extensions.keys():
         bot.reload_extension(cog)
-
-    
+    await ctx.send("Reloaded all cogs")    
 # when bot joins a guild
 @bot.event
 async def on_guild_join(guild):

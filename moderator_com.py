@@ -30,32 +30,8 @@ class Moderator(commands.Cog):
             server = Tracking(server["guildid"], server["msg"])
             jltracking.append(server)
 
-    # Admin's Command
-    @commands.command()
-    @commands.has_permissions(administrator=True)
-    async def relax(self, ctx):
-        guild = ctx.guild
-        new_role = await guild.create_role(name="The Silent Ones")
 
-        overwrite = discord.PermissionOverwrite(send_messages=False)
-
-        await ctx.channel.set_permissions(new_role, overwrite=overwrite)
-
-        overcheck = ctx.channel.overwrites_for(new_role)
-
-        overcheck.update(send_messages=False)
-        
-        for member in guild.members:
-            await member.add_roles(new_role)
-
-        await ctx.send("You need to relax")
-        await asyncio.sleep(5)
-        await ctx.send("Continue")
-        for role in guild.roles:
-            if role.name == "The Silent Ones":
-                await role.delete()
-
-    @commands.command()
+    @commands.command(brief="Removes the roles of the mentioned person for x minutes.", help='Removes the roles of a member for x minutes. Returns them one by one', usage="@user duration")
     @commands.has_permissions(administrator=True)
     async def killerqueen(self, ctx, member: discord.Member, minutes: int=2):
         user_role = []
@@ -89,12 +65,14 @@ class Moderator(commands.Cog):
 
         for role in user_role:
             await member.add_roles(role)
-            await ctx.send(embed=reverse)
+            msg = await ctx.send(embed=reverse)
+            await asyncio.sleep(5)
+            await msg.delete()
             await asyncio.sleep(120)
 
 
     # Bans
-    @commands.command(aliases=["ban"])
+    @commands.command(aliases=["ban"], brief='Used to ban a member', help="Bans the mentioned member", usage='@member optional[reason]')
     @commands.has_permissions(ban_members=True)
     async def shadowrealm(self, ctx, member: discord.Member, *, reason=None):
         embed = discord.Embed(
@@ -109,9 +87,9 @@ class Moderator(commands.Cog):
         await member.ban(reason=reason)
 
 
-    @commands.command(aliases=["unban"])
+    @commands.command(aliases=["unban"], brief="Unbands a user", help="Used to lift the ban on the user.", usage="@user optional[reason]")
     @commands.has_permissions(ban_members=True)
-    async def impactrevive(self, ctx, user: int, reason=None):
+    async def impactrevive(self, ctx, user: discord.User, reason=None):
         user = await self.bot.fetch_user(user)
         await ctx.guild.unban(user, reason=reason)
         embed = discord.Embed(
@@ -124,7 +102,7 @@ class Moderator(commands.Cog):
 
 
     # Delete Messages
-    @commands.command(aliases=["purge"])
+    @commands.command(aliases=["purge"], brief="Deletes X number of memories", help="Used to delete a specified number of messages", usage='amount_to_delete')
     @commands.has_permissions(manage_messages=True)
     async def zahando(self, ctx, amount: int):
         await ctx.message.delete()
@@ -145,7 +123,7 @@ class Moderator(commands.Cog):
 
 
     # Target messages with a certain word
-    @commands.command()
+    @commands.command(help='Used to delete x number of messages containing the specified text', brief="Deletes messages containing text that you specify.", usage="amount_to_delete text-to-delete")
     @commands.has_permissions(manage_messages=True)
     async def wipehas(self, ctx, amount: typing.Optional[int] = 100, *, args):
         counter = 0
@@ -160,7 +138,7 @@ class Moderator(commands.Cog):
 
         await ctx.send("Moderated")
 
-    @commands.command()
+    @commands.command(brief="Deletes messages ending with the text specified", help="Deletes x number of messages ending with the text you specify.", usage="amount text-to-delete")
     @commands.has_permissions(manage_messages=True)
     async def wipeendswith(self, ctx, amount: typing.Optional[int] = 100, *, args):
         counter = 0
@@ -175,7 +153,7 @@ class Moderator(commands.Cog):
 
         await ctx.send("Moderated")
 
-    @commands.command()
+    @commands.command(brief="Deletes messages starting with the text specified", help="Deletes x number of messages starting with the text you specify.", usage="amount text-to-delete")
     @commands.has_permissions(manage_messages=True)
     async def wipestartswith(self, ctx, amount: typing.Optional[int] = 100, *, args):
         counter = 0
@@ -191,7 +169,7 @@ class Moderator(commands.Cog):
         await ctx.send("Moderated")
 
 
-    @commands.command()
+    @commands.command(brief="Deletes messages sent by a user", help="Deletes X number of messages sent by the mentioned user.", usage="@user amount")
     @commands.has_permissions(manage_messages=True)
     async def kingcrimson(self, ctx, member: discord.Member, amount: int):
         # def checking(m):
@@ -204,6 +182,7 @@ class Moderator(commands.Cog):
                 if m.author == member:
                     await m.delete()
                     counter += 1
+
         embed = discord.Embed(
             title="KING CRIMSON NO NOURYOKU",
             description=f'''**It is only the results that remain in this world!
@@ -218,7 +197,7 @@ class Moderator(commands.Cog):
 
 
     # Enables Slowmode
-    @commands.command(aliases=["slow"])
+    @commands.command(aliases=["slow"], brief="Applies a slowmode to the current channel", help="Sets a slowmode on the current channel. The interval being the number specified", usage="seconds (set to 0 to disable slowmode)")
     @commands.has_permissions(manage_channels=True)
     async def freeze3(self, ctx, second: int):
         file = discord.File("./images/3_freeze.gif", filename="3_freeze.gif")
@@ -236,7 +215,7 @@ class Moderator(commands.Cog):
 
 
     # Overwrites channel permissions to stop @everyone from talking in chat
-    @commands.command(aliases=["shhh"])
+    @commands.command(aliases=["shhh"], brief=)
     @commands.has_permissions(manage_channels=True, manage_roles=True)
     async def zawarudo(self, ctx, seconds: int=10):
         guild = ctx.guild
@@ -265,7 +244,7 @@ class Moderator(commands.Cog):
 
 
     # Reverses zawarudo and 3freeze
-    @commands.command()
+    @commands.command(brief="Cancels Channel Freeze and and slowmode", help="Reverses the effect of zawarudo and slowmode")
     @commands.has_permissions(manage_channels=True)
     async def ger(self, ctx):
         file = discord.File("./images/goldenexp.gif")
@@ -288,7 +267,7 @@ class Moderator(commands.Cog):
 
 
     # Kicks a user
-    @commands.command(aliases=["kick"])
+    @commands.command(aliases=["kick"], brief="Kicks a member", help="Removes a member from your server.", usage="@member")
     @commands.has_permissions(kick_members=True)
     async def deathnote(self, ctx, member: discord.Member):
         await ctx.send(content="***You're name has been written in my notebook... Now you have 5 seconds left...***",
@@ -299,19 +278,16 @@ class Moderator(commands.Cog):
         await member.kick()
 
     # Removes all roles permanately
-    @commands.command()
+    @commands.command(brief="Removes the roles from a user", help="Takes away all roles from a user", usage="@member")
     @commands.has_permissions(manage_roles=True)
     async def ger_rtz(self, ctx, member: discord.Member):
-        user_role = []
         for role in member.roles:
-            user_role.append(role)
-        user_role = user_role[1:]
-        for role in user_role:
-            await member.remove_roles(role)
+            if role == ctx.guild.default_role: continue
+            member.remove_roles(role)
 
         await ctx.send(f"{member.display_name} has had their roles permanately stripped")
 
-    @commands.command()
+    @commands.command(brief="Mutes a user for x minutes", help="Mutes a member from typing for x minutes.", usage="@member duration [defaults to 5] optional[reason]")
     @commands.has_permissions(manage_channels=True, manage_roles=True)
     async def mute(self, ctx, member: discord.Member, time=5, *, reason="They should know"):
         guild = ctx.guild
@@ -336,7 +312,7 @@ class Moderator(commands.Cog):
         await ctx.send(f"{member.mention}. You have been Unmuted. Do your best to not have to be muted again")
         await member.remove_roles(role)
 
-    @commands.command()
+    @commands.command(brief="Sets up permissions for the Mute role", help="Sets up permissions for the mute role.")
     @commands.has_permissions(manage_channels=True, manage_roles=True)
     async def silentnow(self, ctx):
         role = discord.utils.get(ctx.guild.roles, name="The Silent Ones")
@@ -346,7 +322,7 @@ class Moderator(commands.Cog):
             overwrites = {role: discord.PermissionOverwrite(send_messages=False)}
             await channel.edit(overwrites=overwrites)
 
-    @commands.command()
+    @commands.command(hidden=True)
     @commands.is_owner()
     async def rnotif(self, ctx, *, msg):
         for server in self.bot.guilds:
@@ -358,54 +334,7 @@ class Moderator(commands.Cog):
 
         await ctx.send("Notified")
 
-    @commands.command()
-    @commands.has_permissions(view_audit_log=True)
-    async def relog(self, ctx, amount=5):
-        channel = discord.utils.get(ctx.guild.text_channels, name="logs")
-        if channel == None:
-            channel = await ctx.guild.create_text_channel("logs")
-            await channel.send("An error occured and could not set channel perms. Please change them as you see fit")
 
-        async for entry in ctx.guild.audit_logs(limit=amount):
-            logbed = discord.Embed(
-                title=f"Log Entry",
-                description=f"{entry.action.name}: Done by {entry.user}\nTime: {entry.created_at.strftime('%b %a %H %M')}",
-                color=randint(0, 0xffffff)
-            )
-            
-            await channel.send(embed=logbed)
-
-    tlist = []
-
-    if len(jltracking) > 0:
-        tlist = [gid.guildid for gid in jltracking]
-
-    @commands.command()
-    @commands.has_permissions(administrator=True)
-    async def trackjoins(self, ctx, *, msg=None):
-
-        if msg:
-            if ctx.guild.id in self.tlist:
-                toobj = await self.getguildobj(ctx.guild.id)
-                toobj.msg = msg
-                await ctx.send("Updated your guild message")
-
-        if not msg:
-            msg = f"Welcome to {ctx.guild.name}. I hope you enjoy your time here"
-
-
-        if ctx.guild.id in self.tlist:
-            toobj = await self.getguildobj(ctx.guild.id)
-            self.jltracking.remove(toobj)
-            self.tlist.remove(ctx.guild.id)
-            await ctx.send("I will no longer track Joins and leaves from this server")
-        else:
-            tobj = Tracking(ctx.guild.id, msg)
-            self.jltracking.append(tobj)
-            self.tlist.append(ctx.guild.id)
-            await ctx.send("I will be tracking joins and leaves from this server. If you so desire, you can add on a custom message using <>trackjoins message")
-
-        await self.save()
     # Events
 
     @commands.Cog.listener()
@@ -474,6 +403,8 @@ class Moderator(commands.Cog):
 
             await ctx.send(f"Just take it easy {ctx.author.name}. You are on Cooldown for {math.floor(error.retry_after)} more seconds")
 
+        elif isinstance(error, commands.CommandNotFound):
+            await ctx.send("Could not find that command. Remember they are case sensitive. Use <>help for a list")
         else: 
 
             await ctx.send(error)    
@@ -482,37 +413,9 @@ class Moderator(commands.Cog):
         await channel.send(f"{ctx.author.name}: {error}")
         print(error)
 
-    @commands.Cog.listener()
-    async def on_error(self, ctx, error):
-        if isinstance(error, FileNotFoundError):
-            os.chdir('C:\\Users\\zelda\\onedrive\\programs\\code\\python\\discord\\iparade')
-            await ctx.send("Some error occured... Please run the command again :pray:")
-
-        else:
-            await ctx.send(error)
-
-    # Functions
-    async def getguildobj(self, gid):
-        for dic in self.jltracking:
-            if dic.guildid == gid:
-                return dic
-
-    async def save(self):
-        todump = []
-        for thing in self.jltracking:
-            todump.append(thing.__dict__)
-
-        with open("jltracking.json", "w") as f:
-            json.dump(todump, f, indent=4)
-
-
-class ProfanFilter(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
     noprofane = []
 
-    @commands.command()
+    @commands.command(brief="Toggles profanity filter", help="Toggles profanity filter")
     @commands.has_permissions(manage_channels=True)
     async def profane(self, ctx):
         if ctx.guild not in self.noprofane:
@@ -550,4 +453,3 @@ class ProfanFilter(commands.Cog):
 
 def setup(bot):
     bot.add_cog(Moderator(bot))
-    bot.add_cog(ProfanFilter(bot))
