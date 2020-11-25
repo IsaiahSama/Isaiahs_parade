@@ -10,28 +10,10 @@ import json
 import traceback
 
 
-class Tracking:
-    def __init__(self, guildid, msg=None):
-        self.guildid=guildid
-        self.msg=msg
-
-
 class Moderator(commands.Cog):
     """Commands for all moderators"""
     def __init__(self, bot):
         self.bot = bot
-
-    jltracking = []
-    tlist = []
-    if os.path.exists("jltracking.json"):
-        with open("jltracking.json") as tjl:
-            ttrack = json.load(tjl)
-
-        for server in ttrack:
-            server2 = Tracking(server["guildid"], server["msg"])
-            jltracking.append(server2)
-            tlist.append(server['guildid'])
-
 
     @commands.command(brief="Removes the roles of the mentioned person for x minutes.", help='Removes the roles of a member for x minutes. Returns them one by one', usage="@user duration")
     @commands.has_permissions(administrator=True)
@@ -355,18 +337,6 @@ class Moderator(commands.Cog):
             role = discord.utils.get(member.guild.roles, name="Follower")
 
             await member.add_roles(role)
-
-        elif member.guild.id in self.tlist:
-            channel= discord.utils.get(member.guild.text_channels, name="welcome")
-            if not channel:
-                channel = discord.utils.get(member.guild.text_channels, name="parade-room")
-                if not channel:
-                    channel = await member.guild.create_text_channel("parade-room")
-            else:
-                channel = member.guild.system_channel
-
-            ts = await self.getguildobj(member.guild.id)
-            await channel.send(f"{member.mention} {ts.msg}")
                 
     # On leaving
     @commands.Cog.listener()
