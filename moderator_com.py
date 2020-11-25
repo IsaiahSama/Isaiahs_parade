@@ -22,13 +22,15 @@ class Moderator(commands.Cog):
         self.bot = bot
 
     jltracking = []
+    tlist = []
     if os.path.exists("jltracking.json"):
         with open("jltracking.json") as tjl:
             ttrack = json.load(tjl)
 
         for server in ttrack:
-            server = Tracking(server["guildid"], server["msg"])
-            jltracking.append(server)
+            server2 = Tracking(server["guildid"], server["msg"])
+            jltracking.append(server2)
+            tlist.append(server['guildid'])
 
 
     @commands.command(brief="Removes the roles of the mentioned person for x minutes.", help='Removes the roles of a member for x minutes. Returns them one by one', usage="@user duration")
@@ -215,7 +217,7 @@ class Moderator(commands.Cog):
 
 
     # Overwrites channel permissions to stop @everyone from talking in chat
-    @commands.command(aliases=["shhh"], brief=)
+    @commands.command(aliases=["shhh"], brief="Just do it.")
     @commands.has_permissions(manage_channels=True, manage_roles=True)
     async def zawarudo(self, ctx, seconds: int=10):
         guild = ctx.guild

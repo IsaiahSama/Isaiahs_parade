@@ -1,1 +1,1 @@
-cape, csec, subject, school, study, headache, theatre, physics, computer
+cape,  csec,  subject,  school,  study,  headache,  theatre,  physics,  computer, jasmine, students, success
