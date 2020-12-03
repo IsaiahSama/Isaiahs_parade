@@ -35,7 +35,7 @@ async def on_ready():
     print("We have logged in as {0.user}".format(bot))
     # Sets Discord Status
     activity = discord.Activity(name='<>help', type=discord.ActivityType.watching)
-    await bot.change_presence(activity=activity)
+    await bot.change_presence(activity=activity, status=discord.Status.dnd)
     backup.start()
     # , status=discord.Status.dnd
 
@@ -55,12 +55,20 @@ async def backup():
 
     print("Backed up")    
 
-@bot.command()
+@bot.command(hidden=True)
 @commands.is_owner()
-async def refresh(ctx):
-    for cog in bot.extensions.keys():
-        bot.reload_extension(cog)
-    await ctx.send("Reloaded all cogs")    
+async def rc(ctx, *, cog=None):
+    if not cog:
+        for cog in bot.extensions.keys():
+            bot.reload_extension(cog)
+        await ctx.send("Reloaded all cogs")    
+
+    else:
+        try:
+            bot.reload_extension(cog)    
+            await ctx.send(f"{cog} has been reloaded")
+        except discord.ext.commands.ExtensionNotLoaded:
+            await ctx.send("Extension could not be found")
 # when bot joins a guild
 @bot.event
 async def on_guild_join(guild):

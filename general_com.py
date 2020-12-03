@@ -299,6 +299,28 @@ class General(commands.Cog):
 
         await ctx.send("Look at you pretending that you were gone")
 
+    @commands.command(brief="Quotes a message", help="Similar to discord's old quote function. (The message link is easily copied by right clicking the message)", usage="message_link")
+    async def quote(self, ctx, messageLink, *, msg=" "):
+        messageLink = messageLink.split("/")
+        try:
+            message_guild = int(messageLink[-3])
+            message_channel = int(messageLink[-2])
+            message_id = int(messageLink[-1])  
+        except ValueError:
+            await ctx.send("Something is wrong with your message link.")
+            return
+
+        if not message_guild == ctx.guild.id: await ctx.send("That message does not belong to this server"); return
+        channel = ctx.guild.get_channel(message_channel)
+        try:
+            message = await channel.fetch_message(message_id)
+        except discord.errors.NotFound:
+            await ctx.send("The message you may be looking for could not be found :thinking:")
+            return
+        content = message.content
+        await ctx.send(f"> {content} - {message.author.display_name}\n```{ctx.author.name}: {msg}``` \n Link: {message.jump_url}")
+        await ctx.message.delete()
+
     @commands.Cog.listener()
     async def on_message(self, message):
         if message.author == self.bot.user:
