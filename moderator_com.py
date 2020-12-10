@@ -101,9 +101,7 @@ class Moderator(commands.Cog):
         
         deleted.set_image(url="attachment://zahando.gif")
         
-        thing = await ctx.send(file=file, embed=deleted)
-        await asyncio.sleep(4)
-        await thing.delete()
+        await ctx.send(file=file, embed=deleted, delete_after=4)
 
 
     # Target messages with a certain word
@@ -177,7 +175,7 @@ class Moderator(commands.Cog):
         embed.set_thumbnail(url=self.bot.user.avatar_url)
         embed.set_image(url="attachment://kc.gif")
 
-        await ctx.send(file=file, embed=embed)
+        await ctx.send(file=file, embed=embed, delete_after=5)
 
 
     # Enables Slowmode
