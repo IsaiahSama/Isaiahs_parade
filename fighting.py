@@ -32,24 +32,31 @@ emojiz = ["🤔", "🤫", "🤨", "🤯", "😎", "😓", "🤡", "💣", "🧛"
 # name tag level curxp health mindmg maxdmg wins losses pcoin critchance healchance ability passive weapon armour xpthresh typeobj
 # canfight inteam invation weapon2 armour2 curbuff buffdur inventory, reborn
 
-
 class Fight(commands.Cog):
     """FIGHT COMMANDS!!!"""
     users = []
-    if os.path.exists("fightdata.json"):
-        try:
-            with open("fightdata.json") as h:
-                data = json.load(h)
-        except json.JSONDecodeError:
-            with open("backups/fightdata.json") as bh:
-                data = json.load(bh)
-                print("Fightdata was corrupted.")
+
+    async def setfight(self):
+        files = os.listdir("saves/fightdata")
+        if not files: return
+        index = -1
+        while True:
+            try:
+                with open(f"saves/fightdata/{files[index]}") as f:
+                    data = json.load(f)
+            except json.JSONDecodeError:
+                index -= 1
+            except IndexError:
+                print("There aren't any Fight files for me to read :(")
+                break
+            else:
+                break
 
         for k in data:
             u = Fighter(k["name"], k["tag"], k["level"], k['curxp'], k['health'], k['mindmg'], k['maxdmg'], k['wins'], k['losses'], k['pcoin'])
             for m, v in k.items():
                 setattr(u, m, v)
-            users.append(u)
+            self.users.append(u)
 
         # tempuser = []
 
@@ -98,7 +105,6 @@ class Fight(commands.Cog):
         teamlist = []
 
     
-
     def __init__(self, bot):
         self.bot = bot
         bot.loop.create_task(self.async_init())
@@ -106,8 +112,8 @@ class Fight(commands.Cog):
     async def async_init(self):
         await self.bot.wait_until_ready()
         self.homeguild = self.bot.get_guild(739229902921793637)
-
         self.updlist.start()
+        await self.setfight()
 
     modlist = [347513030516539393, 527111518479712256, 493839592835907594, 315619611724742656, 302071862769221635]
           
@@ -1288,8 +1294,6 @@ Stat names are the names that you see in the above embed, with the exception of 
             title="First 25 Tier 6 gods",
             color=randint(0, 0xffffff)
         )
-
-        counter = 0
 
         warriors = [warrior for warrior in self.users if warrior.getTier() == 6]
 
@@ -3193,16 +3197,27 @@ Stat names are the names that you see in the above embed, with the exception of 
 
     @tasks.loop(minutes=5.0)
     async def updlist(self):
+        if not self.users: return
+        files = os.listdir("saves/fightdata")
         dumped = []
-        for fighter in self.users:
+        for fighter in self.users: dumped.append(fighter.__dict__)
 
-            dumped.append(fighter.__dict__)
+        if not files:
+            with open("saves/fightdata/fightdata0.json", "w") as f:
+                json.dump(dumped, f, indent=4)
+            return
 
-        with open("fightdata.json", "w") as f:
+        if len(files) == 10: await self.savefix(files)
+        with open(f"saves/fightdata/fightdata{int(list(files[-1].split('.')[0])[-1]) + 1}.json", "w") as f:
             json.dump(dumped, f, indent=4)
 
-        print("Updated")
         # print("Save is off")   
+
+    async def savefix(self, files):
+        os.remove(files[0])
+        files.remove(files[0])
+        for pos, file in enumerate(files):
+            os.rename(f"saves/fightdata/{file}", f"saves/fightdata/{''.join(list(file.split('.')[0]).pop())}{pos}.json")
 
     async def updateteam(self):
         dumped = []
@@ -3537,17 +3552,11 @@ Stat names are the names that you see in the above embed, with the exception of 
         await ctx.message.delete()
         self.aboutupdate = True
 
-        print(len(self.infight))
-        print(len(self.raiders))
         await asyncio.sleep(5)
 
         counter = 0
 
         while len(self.infight) > 0 or len(self.raiders) > 0 or len(self.inquest) > 0 or len(self.inadventure) > 0:
-            print(len(self.infight))
-            print(len(self.raiders))
-            print(len(self.inquest))
-            print(len(self.inadventure))
             counter += 1
             await asyncio.sleep(15)
 
@@ -3563,7 +3572,6 @@ Stat names are the names that you see in the above embed, with the exception of 
         await asyncio.sleep(2)
         self.updlist.restart()
         
-
         
 def setup(bot):
     bot.add_cog(Fight(bot))
