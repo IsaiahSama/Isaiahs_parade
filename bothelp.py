@@ -31,7 +31,7 @@ class MyHelpCommand(commands.MinimalHelpCommand):
             embed.add_field(name="Cog:", value=f"```{command.cog.qualified_name}```")
     
         destination = self.get_destination()
-        await destination.send(embed=embed, delete_after=10)
+        await destination.send(embed=embed, delete_after=30)
 
     async def send_cog_help(self, cog):
         embed = discord.Embed(
@@ -47,7 +47,7 @@ class MyHelpCommand(commands.MinimalHelpCommand):
         embed.set_footer(text=self.get_opening_note())
 
         
-        await self.get_destination().send(embed=embed, delete_after=10)
+        await self.get_destination().send(embed=embed, delete_after=30)
 
 
     async def send_bot_help(self, mapping):
@@ -64,7 +64,7 @@ class MyHelpCommand(commands.MinimalHelpCommand):
                 embed.add_field(name=cog.qualified_name, value=f"```{cog.description}```")
             
 
-        await self.get_destination().send(embed=embed, delete_after=10)
+        await self.get_destination().send(embed=embed, delete_after=30)
 
     
 class MyHelp(commands.Cog):
