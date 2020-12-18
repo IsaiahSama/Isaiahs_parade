@@ -5,7 +5,7 @@ import random
 import os
 from random import randint
 from images import hugs, punches, kisses, slaps, knock, poses, flexes
-from fight import FightMe, Fighter, questpro, enemy, FightingBeast, abilities, allabilities, passives, allpassives, raidingmonster, weaponlist, armorlist, gear, lilgear, allarmor, allweapons, BeastFight
+from fight import FightMe, Fighter, questpro, enemy, FightingBeast, abilities, allabilities, passives, allpassives, raidingmonster, weaponlist, armourlist, gear, lilgear, allarmour, allweapons, BeastFight
 from items import Item, potlist, allpotlist
 import json
 import math
@@ -1268,18 +1268,18 @@ Stat names are the names that you see in the above embed, with the exception of 
         
         return
 
-    async def getstrongest(self, items, botuser):
-        canbuy = [item for item in items if item.tierz == botuser.getTier() and botuser.pcoin >= item.cost]
+    async def getstrongest(self, value, items, botuser):
+        canbuy = [item for item in items if item.tierz == botuser.getTier() and botuser.pcoin >= item.cost and item.cost > eval(f"botuser.{value}.cost")]
         if not canbuy: return None
         else: return canbuy[-1]
 
     async def upgradegear(self, ctx):
         botuser = await self.getmember(ctx.author)
-        for value in ["weapon", "armor"]:
+        for value in ["weapon", "armour"]:
             await ctx.send(f"<>shop {value}")
             await self.shop(ctx, value)
             await asyncio.sleep(2)
-            strongest = await self.getstrongest(eval(f"{value}list"), botuser)
+            strongest = await self.getstrongest(value, eval(f"{value}list"), botuser)
             if not strongest: await ctx.send("Not enough Parade Coins"); continue
             await ctx.send(f"<>buy {strongest.name}")
             await self.buy(ctx, arg=strongest.name)
@@ -1293,7 +1293,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             return
         user = await self.getmember(ctx.author)
         if user:
-            if arg.lower() == "armour" or arg.lower() == "armor":
+            if arg.lower() == "armour" or arg.lower() == "armour":
                 await self.loadarmour(ctx, user)
                 return
             
@@ -1306,7 +1306,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                 return
 
             else:
-                await ctx.send(f"{arg} must be weapons, armour or armor or items. not {arg}")
+                await ctx.send(f"{arg} must be weapons, armour or armour or items. not {arg}")
         
         else:
             await ctx.send("You can not view the store without an adventurer's license. Do <>createprofile")
@@ -1380,22 +1380,22 @@ Stat names are the names that you see in the above embed, with the exception of 
             msg = await ctx.send(embed=weaponbed)
         
         elif item.typeobj == "Armour":
-            armorbed = discord.Embed(
+            armourbed = discord.Embed(
             title="Here is the info you requested",
             color=randint(0, 0xffffff)
             )
 
-            armorbed.add_field(name="Name:", value=f"{item.name}")
-            armorbed.add_field(name="Description:", value=f"{item.description}")
-            armorbed.add_field(name="Health Up:", value=f"+{item.hpup}")
-            armorbed.add_field(name="Max Dmg Up:", value=f"+{item.pup}")
+            armourbed.add_field(name="Name:", value=f"{item.name}")
+            armourbed.add_field(name="Description:", value=f"{item.description}")
+            armourbed.add_field(name="Health Up:", value=f"+{item.hpup}")
+            armourbed.add_field(name="Max Dmg Up:", value=f"+{item.pup}")
             if item.regen != 0:
-                armorbed.add_field(name="Regen Amount:", value=f"{item.regen}%")
-            armorbed.add_field(name="Cost:", value=f"{item.cost} Parade Coins")
-            armorbed.add_field(name="Tier:", value=f"{item.tierz}")
+                armourbed.add_field(name="Regen Amount:", value=f"{item.regen}%")
+            armourbed.add_field(name="Cost:", value=f"{item.cost} Parade Coins")
+            armourbed.add_field(name="Tier:", value=f"{item.tierz}")
 
 
-            msg = await ctx.send(embed=armorbed)
+            msg = await ctx.send(embed=armourbed)
 
         elif item.typeobj == "item":
             infobed = discord.Embed(
@@ -1480,7 +1480,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             return
 
         uwep, uarm = user.getgear()
-        if uwep not in weaponlist or uarm not in armorlist:
+        if uwep not in weaponlist or uarm not in armourlist:
             await ctx.send("You can not sell a weapon that does not exist in the shop")
             return
 
@@ -1489,7 +1489,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             return
 
         if selly:
-            if arg.lower() == "armour" or arg.lower() == "armor":
+            if arg.lower() == "armour" or arg.lower() == "armour":
                 cost = math.ceil((3/4) * uarm.cost)
                 await ctx.send(f"Sold {uarm.name} for {cost} Parade Coins")
                 user.addcoin(cost)
@@ -1521,7 +1521,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                         await ctx.send(f"Sold {buffitem.name} for {cost} Parade coins")
 
                 else:
-                    await ctx.send(f"{arg} is neither 'armour', 'armor', 'weapon' or itemid")
+                    await ctx.send(f"{arg} is neither 'armour', 'armour', 'weapon' or itemid")
                     return
 
             await ctx.send("Completed")
@@ -2924,9 +2924,9 @@ Stat names are the names that you see in the above embed, with the exception of 
         ability = random.choice(allabilities)
         passive = random.choice(allpassives)
         weapons = [x for x in allweapons if x.tierz >= 5]
-        armors = [x for x in allarmor if x.tierz >= 5]
+        armours = [x for x in allarmour if x.tierz >= 5]
         weapon = random.choice(weapons)
-        armour = random.choice(armors)
+        armour = random.choice(armours)
         attackmsg = weapon.effect
         level = await self.vary(user.level)
         tier = user.getTier()
@@ -3237,28 +3237,28 @@ Stat names are the names that you see in the above embed, with the exception of 
         
 
     async def loadarmour(self, ctx, user):
-        armorbed = discord.Embed(
+        armourbed = discord.Embed(
             title="Welcome to my Armour Store",
             description="To buy an item, use <>buy {item name}, or use <>view {item name} for details",
             color=randint(0, 0xffffff)
         )
 
         if user.getTier() == 5:
-            for item in armorlist:
+            for item in armourlist:
                 if item.tierz >= 4:
-                    armorbed.add_field(name=f"Name: {item.name}", value=f"Cost: {item.cost} Parade Coins")  
+                    armourbed.add_field(name=f"Name: {item.name}", value=f"Cost: {item.cost} Parade Coins")  
 
         elif user.getTier() == 6:
-            for item in armorlist:
+            for item in armourlist:
                 if item.tierz >= 6:
-                    armorbed.add_field(name=f"Name: {item.name}", value=f"Cost: {item.cost} Parade Coins")           
+                    armourbed.add_field(name=f"Name: {item.name}", value=f"Cost: {item.cost} Parade Coins")           
 
         else:
-            for item in armorlist:
+            for item in armourlist:
                 if item.tierz <= user.getTier():
-                    armorbed.add_field(name=f"Name: {item.name}", value=f"Cost: {item.cost} Parade Coins")            
+                    armourbed.add_field(name=f"Name: {item.name}", value=f"Cost: {item.cost} Parade Coins")            
         
-        await ctx.send(embed=armorbed)
+        await ctx.send(embed=armourbed)
 
 
 

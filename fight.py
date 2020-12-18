@@ -338,7 +338,7 @@ saiyanguc = Armour("Saiyan Gucchi", 2109, "Special Edition it would seem", 40, 1
 
 # Tier 2
 abyss = Armour("Abyss Walker", 2201, "Not from this world", 55, 15, 3000, tierz=2)
-diamond = Armour("Diamond", 2202, "What's a Diamond Sword, Without Diamond Armor. Gains set bonus with Diamond Sword", 50, 10, 4000, 0, 1203, tierz=2)
+diamond = Armour("Diamond", 2202, "What's a Diamond Sword, Without Diamond Armour. Gains set bonus with Diamond Sword", 50, 10, 4000, 0, 1203, tierz=2)
 paladium = Armour("Paladium", 2203, "Increases life regen", 60, 20, 5500, 15, tierz=2)
 
 # Tier 3
@@ -363,7 +363,7 @@ nightmare = Armour("Nightmare", 2502, "Woven together from the essence of the da
 800, 420, 1100000, 0, 1502, 5)
 hshield = Armour("Hero's Shield", 2503, "The shield of the legendary Herorian of Heroria. Gains set bonus with The Herorian", 750, 400, 1400000, 4, 1503, 5)
 blastgear = Armour("Blasting", 2504, "Said to increase your power... Explosively. Gains set bonus with Tier 2 Buh-bomb", 700, 400, 1300000, 0, 1204, 5 )
-vmaster = Armour("Vibe Master", 2505, "An upgrade to the previous Wooden Armor. Gains set bonus with The Vibe Check", 700, 250, 1100000 , 8, 1401, 5)
+vmaster = Armour("Vibe Master", 2505, "An upgrade to the previous Wooden Armour. Gains set bonus with The Vibe Check", 700, 250, 1100000 , 8, 1401, 5)
 loincloth = Armour("Loincloth", 2506, "Who knows where this came from. With Deathly Axe, increases effectiveness of Deadly Grasp",
 500, 500, 1200000, 3, 1504, 6)
 susanoo1 = Armour("Imperfect Susanoo", 2507, "Named after the shinto god of storms. It hurts. Loses 2%hp each turn Gains set bonus with Energy Mace", 900, 400,
@@ -388,27 +388,27 @@ jotarowep = Armour("Celestial Platinum", 4604, "The physical manifestation of Ce
 5000, 1700, 0, 5, 3604, 6)
 bigbel = Armour("Biggums' Belly", 4605, "It's so chubby.", 5500, 2000, pairs=3605)
 
-armorlist = [linen, chain, hunters, iron, gold, slimearm, assas, valkryie, diamond, saiyanguc, 
+armourlist = [linen, chain, hunters, iron, gold, slimearm, assas, valkryie, diamond, saiyanguc, 
 abyss, paladium, cranger,
 solarflare, elitist, wood, hierro, plaguearm,
 vknight, shadowflame, artillery, sranger, 
 vampcloak, nightmare, hshield, blastgear, vmaster, loincloth, susanoo1,
 mkgear, haki, yang, ymr, chand, crimson]
 
-allarmor = [paraders, pdr, loin, jotarowep, bigbel]
-for thing in armorlist:
-    allarmor.append(thing)
+allarmour = [paraders, pdr, loin, jotarowep, bigbel]
+for thing in armourlist:
+    allarmour.append(thing)
 
 gear = []
 for item in allweapons:
     gear.append(item)
-for item in allarmor:
+for item in allarmour:
     gear.append(item)
 
 lilgear = []
 for item in weaponlist:
     lilgear.append(item)
-for item in armorlist:
+for item in armourlist:
     lilgear.append(item)
 
 @dataclass
@@ -703,17 +703,17 @@ class Fighter:
 
     def getgear(self):
         weapon = [w for w in allweapons if w.tag == self.weapon]
-        armor = [t for t in allarmor if t.tag == self.armour]
+        armour = [t for t in allarmour if t.tag == self.armour]
 
-        return copy.copy(weapon[0]), copy.copy(armor[0])
+        return copy.copy(weapon[0]), copy.copy(armour[0])
 
     def getallgear(self):
         weapon = [w for w in allweapons if w.tag == self.weapon]
-        armor = [t for t in allarmor if t.tag == self.armour]
+        armour = [t for t in allarmour if t.tag == self.armour]
         weapon2 = [w for w in allweapons if w.tag == self.weapon2]
-        armor2 = [t for t in allarmor if t.tag == self.armour2]
+        armour2 = [t for t in allarmour if t.tag == self.armour2]
 
-        return copy.copy(weapon[0]), copy.copy(armor[0]), copy.copy(weapon2[0]), copy.copy(armor2[0])
+        return copy.copy(weapon[0]), copy.copy(armour[0]), copy.copy(weapon2[0]), copy.copy(armour2[0])
 
     def getTier(self):
         if self.level >= 0 and self.level < 50:
