@@ -3,49 +3,28 @@ from discord.ext import commands, tasks
 import asyncio
 import random
 from random import randint
-from relastatus import relauser, egg, allpets, petlist
+from relastatus import Relauser, egg, allpets, petlist
 import json
 import os
 import copy
+from saving import Saving
 
 
 class Social(commands.Cog):
     """A list of commands for Social Interactions"""
     # Initializes the bot
+
+
     def __init__(self, bot):
         self.bot = bot
+        bot.loop.create_task(self.async_init())
+    
+    allusers = []
+    
+    async def async_init(self):
+        await self.bot.wait_until_ready()
+        self.allusers = await Saving().loaddata("reladata")
         self.updateusers.start()
-
-    # Getting People
-    if os.path.exists("relausers.json"):
-        try:
-            with open("relausers.json") as h:
-                data = json.load(h)
-        except json.JSONDecodeError:
-            with open("backups/relausers.json") as bh:
-                data = json.load(bh)
-                print("Relausers data was corrupt")
-
-        tempuser = []
-        
-        for dictobj in data:
-            templist = []
-            for v in dictobj.values():
-                templist.append(v)
-            tempuser.append(templist)
-
-        loadedacc = []
-       
-        
-        for relaperson in tempuser:
-            acc = relauser(*relaperson[0:18])
-
-            loadedacc.append(acc)
-
-        allusers = loadedacc
-
-    else:
-        allusers = []
 
     @commands.command(brief="Creates a social profile", help="Creates a social proile which will be used for main social commands")
     async def createsocial(self, ctx):
@@ -54,7 +33,7 @@ class Social(commands.Cog):
                 await ctx.send("You already have a profile")
                 return True
 
-        nuser = relauser(ctx.guild.name, ctx.author.display_name, ctx.author.id)
+        nuser = Relauser(ctx.guild.name, ctx.author.display_name, ctx.author.id)
         self.allusers.append(nuser)
         await ctx.send("User Account made Successfully. View with \"<>socialprofile\" or <>sp")
 
@@ -582,18 +561,11 @@ class Social(commands.Cog):
             if tagtoget == user.tag:
                 return user
 
-    @tasks.loop(minutes=2.0)
+    @tasks.loop(minutes=3.0)
     async def updateusers(self):
-        dumped = []
-        for user in self.allusers:
-
-            dumped.append(user.__dict__)
-
-        with open("relausers.json", "w") as f:
-            json.dump(dumped, f, indent=4)
-
-        print("Updated Successfully")
-
+        if not self.allusers: return
+        await Saving().save("reladata", self.allusers)
+        
 
     async def getpetnames(self):
         for acc in self.allusers:
@@ -601,7 +573,6 @@ class Social(commands.Cog):
                 if acc.petnick == None:
                     x = await self.getpetid(acc.petid)
                     acc.petnick = x.name
-
 
     # Events
     @commands.Cog.listener()

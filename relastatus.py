@@ -1,5 +1,5 @@
 import random
-class relauser:
+class Relauser:
     def __init__(self, guild, name, tag, friendcount=0, hasbff=False, bfid=None, pid=None,rela=False, friends=[], parents=[], children=[], petid=None, petexp=0,
     pendingfr=None, pendinglove=None, pendingbf = None, pendingpar=None, petnick=None):
         self.guild = guild
