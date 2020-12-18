@@ -16,7 +16,7 @@ class Saving:
         print(f"Attempting to load data from {folder}")
         if not files: print("No previous saves exist"); return
         data = await self.getdata(folder, files)
-        if not data: return
+        if not data: return []
         datalist = []
         for dic in data:
             if folder == "fightdata":
@@ -46,7 +46,7 @@ class Saving:
                 index -= 1
             except IndexError:
                 print(f"There aren't any {folder} files for me to read :(")
-                return None
+                return []
             
     async def save(self, folder, data):
         files = os.listdir(f"saves/{folder}")

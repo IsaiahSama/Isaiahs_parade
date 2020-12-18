@@ -47,8 +47,11 @@ class Fight(commands.Cog):
         await self.bot.wait_until_ready()
         self.homeguild = self.bot.get_guild(739229902921793637)
         self.users = await Saving().loaddata("fightdata")
+        if not self.users: self.users = []
         self.teamlist = await Saving().loaddata("teamdata")
+        if not self.teamlist: self.teamlist = []
         self.updlist.start()
+        print(self.users)
 
     modlist = [347513030516539393, 527111518479712256, 493839592835907594, 315619611724742656, 302071862769221635]
           
@@ -59,7 +62,7 @@ class Fight(commands.Cog):
     async def paradecoins(self, ctx):
         user = await self.getmember(ctx.author)
         
-        if user == None:
+        if not user:
             await self.denied(ctx.channel, ctx.author)
             return
         else:
@@ -102,7 +105,7 @@ class Fight(commands.Cog):
 
     @commands.command(brief="View yourself at your FULL POWER!!", help="Your profile, but includes buffs from gear.", usage="option[@user]")
     async def powprofile(self, ctx, member: discord.Member=None):
-        if await self.ismember(ctx.author):
+        if await self.getmember(ctx.author):
             await ctx.send("Now shine... In your true form")
             await self.profile(ctx, member, True)
             return 0
@@ -112,13 +115,13 @@ class Fight(commands.Cog):
 
     @commands.command(aliases=["p"], usage="optional[@user]", brief="See your profile", help="Use this to view your fight profile")
     async def profile(self, ctx, member: discord.Member=None, powpof=False):
-        if member == None:
+        if not member:
             target = await self.getmember(ctx.author)
 
         else:
             target = await self.getmember(member)
 
-        if target == None:
+        if not target:
             await self.denied(ctx.channel, ctx.author)
             return
 
@@ -211,7 +214,7 @@ class Fight(commands.Cog):
     async def createprofile(self, ctx):
         user = await self.getmember(ctx.author)
         channel = self.bot.get_channel(739266609264328786)
-        if user in self.users:
+        if user:
             await ctx.send("You already have a profile. View with <>profile")
             await ctx.send("Did you mean <>createsocial to create a Social Profile?")
             return
@@ -227,8 +230,8 @@ class Fight(commands.Cog):
     @commands.command(aliases=["q6"], brief="A quest for those who have reborn or are tier 6", help="A bonus quest for those who are Tier 6 or reborn. Cooldown: 2 uses, 5 minutes")
     @commands.cooldown(2, 300, commands.BucketType.user)
     async def quest6(self, ctx):
-        if await self.ismember(ctx.author):
-            user = await self.getmember(ctx.author)
+        user = await self.getmember(ctx.author)
+        if user:
             if user.reborn > 1 or user.getTier() == 6:
                 await self.quest(ctx, True)
             else:
@@ -246,7 +249,7 @@ class Fight(commands.Cog):
             return
         user = await self.getmember(ctx.author)
 
-        if user == None:
+        if not user:
             await self.denied(ctx.channel, ctx.author)
             return
 
@@ -297,11 +300,11 @@ class Fight(commands.Cog):
 
         user = await self.getmember(ctx.author)
         
-        if user == None:
+        if not user:
             await self.denied(ctx.channel, ctx.author)
             return
 
-        if arg == None:
+        if not arg:
             user2 = await self.fightuser(user)
             statembed = discord.Embed(
                 title=f"Stat Table for {ctx.author.display_name}",
@@ -355,8 +358,8 @@ Stat names are the names that you see in the above embed, with the exception of 
 
     @commands.command(brief="Shows your passive if you have one", help="Shows your passive if you have one")
     async def mypassive(self, ctx):
-        if await self.ismember(ctx.author):
-            user = await self.getmember(ctx.author)
+        user = await self.getmember(ctx.author)
+        if user:
             if user.hasPassive():
                 embed = discord.Embed(
                     title="Passive",
@@ -379,8 +382,8 @@ Stat names are the names that you see in the above embed, with the exception of 
 
     @commands.command(brief="Shows the list of reborn passives. Must have reborned", help="If you have already reborned, you can use this command to take a look at passives available for your level of reborn")
     async def rpassive(self, ctx):
-        if await self.ismember(ctx.author):
-            user = await self.getmember(ctx.author)
+        user = await self.getmember(ctx.author)
+        if user:
             if user.hasreborn():
                 await self.passive(ctx, rb=True)
             else:
@@ -392,8 +395,7 @@ Stat names are the names that you see in the above embed, with the exception of 
     @commands.command(brief="Get a passive or view the list of passives", help="This command is used to get your first passive, and also to change it to one you may one... for a price", usage="optional[True name_of_passive]")
     async def passive(self, ctx, arg=False, *, name_of_passive=None, rb=False):
         user = await self.getmember(ctx.author)
-
-        if user == None:
+        if not user:
             await self.denied(ctx.channel, ctx.author)
             return
 
@@ -452,8 +454,8 @@ Stat names are the names that you see in the above embed, with the exception of 
 
     @commands.command(aliases=["myactive"], brief="Shows your ability if you have it.", help="Used to view your ability.")
     async def myability(self, ctx):
-        if await self.ismember(ctx.author):
-            user = await self.getmember(ctx.author)
+        user = await self.getmember(ctx.author)
+        if user:
             if user.hasActive():
                 embed = discord.Embed(
                     title="Ability",
@@ -478,7 +480,7 @@ Stat names are the names that you see in the above embed, with the exception of 
     @commands.command(aliases=["ractive"], brief="Used to view reborn abilities", help="Use this to get a list of all reborn abilities available for your reborn level.")
     async def rability(self, ctx):
         user = await self.getmember(ctx.author)
-        if user is None:
+        if not user:
             await self.denied(ctx.channel, ctx.author)
             return
 
@@ -493,7 +495,7 @@ Stat names are the names that you see in the above embed, with the exception of 
     async def active(self, ctx, arg=False, *, act=None, rb=False):
         user = await self.getmember(ctx.author)
 
-        if user == None:
+        if not user:
             await self.denied(ctx.channel, ctx.author)
             return
 
@@ -571,7 +573,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             if raider.tag == user.tag:
                 await ctx.send("You are already in the raid")
                 return
-        if user == None:
+        if not user:
             await self.denied(ctx.channel, ctx.author)
             return
 
@@ -599,9 +601,8 @@ Stat names are the names that you see in the above embed, with the exception of 
     @commands.command(brief="Gives you a random reward", help="Receives a random reward. Cooldown: 1 hour")
     @commands.cooldown(1, 3600, commands.BucketType.user)
     async def reward(self, ctx):
-        if await self.ismember(ctx.author):
-            user = await self.getmember(ctx.author)
-
+        user = await self.getmember(ctx.author)
+        if user:
             msg = await self.getreward(user)
             if not msg:
                 item = random.choice(allpotlist)
@@ -619,12 +620,12 @@ Stat names are the names that you see in the above embed, with the exception of 
     async def readd(self, ctx):
         user = await self.getmember(ctx.author)
 
-        if user == None:
+        if not user:
             await self.denied(ctx.channel, ctx.author)
             return
 
         yes = discord.utils.get(ctx.author.roles, name="Parader")
-        if yes == None:
+        if not yes:
             role = discord.utils.get(ctx.guild.roles, name="Parader")
 
             await ctx.author.add_roles(role)
@@ -641,58 +642,32 @@ Stat names are the names that you see in the above embed, with the exception of 
     aboutupdate = False
     @commands.command(brief="FIGHT SOMEONE!!", help="This is used to start a fight with someone", usage="@user")
     @commands.cooldown(1, 30, commands.BucketType.user)
-    async def fight(self, ctx, member: discord.Member=None, isbot=False, isquest=False, q6=False):
+    async def fight(self, ctx, member: discord.Member, isbot=False, isquest=False, q6=False):
+        iparade = self.bot.user
         if self.aboutupdate:
             await ctx.send("Cannot Do a Quest/Fight Right now as bot is about to go offine")
             return
+
+        if isbot:
+            account = await self.getmember(iparade)
+        else:
+            account = await self.getmember(ctx.author)
         
-        user1 = None
-        user2 = None
-
-        bott = self.bot.user
-
-        # If member is None, or the bot is using it. Let member be none
-        if member == None or isbot:
-            member = None
-
-        if member is not None:
+        if not account: await ctx.send("You need to create your own user profile with <>createprofile first"); return
+        
+        if not isquest:
+            victim = await self.getmember(member)
+            if not victim: await ctx.send(f"{member} does not have a fight profile. Let them make one with <>createprofile"); return
+            user2 = await self.fightuser(victim)
             if member.status == discord.Status.offline:
                 await ctx.send(f"{member.display_name} is offline so cannot be fought")
                 return
 
-        # Loops through the list of users If any matches, instantinize them, else, keep them as None
-        for account in self.users:
-            # If the bot is the one using the command, User1 = Instance of the bot
-            if isbot:
-                account = await self.getmember(bott)
-                user1 = await self.fightuser(account)
-    
-            # If the one using the command is a human, then User1 = Fight Instance of the Player
-            if not isbot:
-                account = await self.getmember(ctx.author)
-                user1 = await self.fightuser(account)
-            # If the command has an @Mention, then user2 = Fight Instance of that person
-            if member is not None:
-                yes = await self.ismember(member)
-                if yes:
-                    account = await self.getmember(member)
-                    user2 = await self.fightuser(account)
-                else:
-                    await ctx.send(f"{member.name} does not have an account. Create one with <>createprofile")
-                    return
- 
-        if user1 == None:
-            await ctx.send(f"You need to create a profile with <>createprofile first {ctx.author.mention}")
-            return False
-
+        user1 = await self.fightuser(account)
 
         if not isquest:
-            if not user1.canfight:
-                await ctx.send(f"{user1.name} has off disabled pvp. Turn it on with <>togglefight")
-                return
-
-            if not user2.canfight:
-                await ctx.send(f"{user2.name} has disabled pvp. Turn it on with <>togglefight")
+            if not user1.canfight or not user2.canfight:
+                await ctx.send(f"One of you has disabled pvp. Turn it on with <>togglefight")
                 return
 
             if user1.tag in self.infight or user2.tag in self.infight:
@@ -750,33 +725,27 @@ Stat names are the names that you see in the above embed, with the exception of 
 
             botmsg = await ctx.send(embed=fightembed)
 
-        if user1.weapon.name == "Plague Doctors Scepter":
+        if user1.weapon.tag == 3601:
             user1.weapon.damage = math.floor(user1.maxdmg * 0.5)
 
-        elif user2.weapon.name == "Plague Doctors Scepter":
+        elif user2.weapon.tag == 3601:
             user2.weapon.damage = math.floor(user2.maxdmg * 0.5)
 
-        user1.oghealth = user1.health
-        user2.oghealth = user2.health
-        user1.slag = 0
-        user2.slag = 0
+        user1.oghealth, user2.oghealth, user1.slag, user2.slag = user1.health, user2.health, 0, 0
 
-        users = [user1, user2]
-        attacker, defender = random.sample(users, 2)
+        attacker, defender = random.sample([user1, user2], 2)
 
         fighting = True
 
-        
-        
         # Checking for Armour Weapon Pairs
         if attacker.armour.haspair():
-            if attacker.weapon.name == attacker.armour.pairs.name:
+            if attacker.weapon.tag == attacker.armour.pairs:
                 msg = attacker.buff()
                 await ctx.send(f"Set Bonus {msg}")
                 
 
         if defender.armour.haspair():
-            if defender.weapon.name == defender.armour.pairs.name:
+            if defender.weapon.tag == defender.armour.pairs:
                 msg = defender.buff()
                 await ctx.send(f"Set Bonus {msg}")
                 if not isquest:
@@ -791,11 +760,8 @@ Stat names are the names that you see in the above embed, with the exception of 
         """if user2.tag == 493839592835907594 and user1.tag in [315619611724742656, 347513030516539393, 315632232666759168]:
             user1.health = -999999
             await ctx.send(f"{user2.name} shut down {user1.name}'s attempt at betryal")
-
-
-            if user1.health <= 0:
-                attacker, defender = defender, attacker
-                fighting = False"""
+            attacker, defender = defender, attacker
+            fighting = False"""
             
         psned = []
         turns = 1
@@ -810,7 +776,6 @@ Stat names are the names that you see in the above embed, with the exception of 
         ts = False
         cts = False
 
-        
         if user1.hasbuff():
             main1 = await self.getmain(user1)
             main1.bdur -= 1
@@ -855,9 +820,9 @@ Stat names are the names that you see in the above embed, with the exception of 
                 attacker.weapon.lifesteal = 0
                 attacker.armour.regen = 0
                 if attacker.passive.tag == 7003:
-                    attacker.passive.name = None
-                if attacker.ability.name == "Ultra Heal":
-                    attacker.ability.name = None
+                    attacker.passive.tag = None
+                if attacker.ability.tag == 5009:
+                    attacker.ability.tag = None
                 await ctx.send(f"All regen has been Disabled for {attacker.name}")
 
             if attacker.mindmg > attacker.maxdmg:
@@ -869,7 +834,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             healnum = randint(0, 100)
 
             if slagged:
-                if attacker.ability.name == "Slag":
+                if attacker.ability.tag == 5012:
                     if defender.slag == 0:
                         pass
                     else:
@@ -886,12 +851,12 @@ Stat names are the names that you see in the above embed, with the exception of 
                         
             if attacker.hasPassive():
                 if attacker.passive.tag == 7010:
-                    if attacker.armour.name == "Haki":
+                    if attacker.armour.tag == 2602:
                         if attacker.armour.haspair():
-                            if attacker.weapon.name == attacker.armour.pairs.name:
+                            if attacker.weapon.tag == attacker.armour.Pairs:
                                 power = await self.cantruehaki(defender, attacker, power, battlebed)
                         
-                    elif attacker.weapon.name == "Conqueror Haki":
+                    elif attacker.weapon.tag == 1602:
                         power = await self.canhaki(defender, attacker, power, battlebed)
                     
                 if attacker.passive.tag == 9101:
@@ -903,7 +868,7 @@ Stat names are the names that you see in the above embed, with the exception of 
 
                 if attacker.passive.name == "Pride of Balance":
                     if attacker.armour.haspair():
-                        if attacker.armour.name == "Yang":
+                        if attacker.armour.tag == 2603:
                             power = await self.canbalance(defender, attacker, power, battlebed)
 
             if defender.hasPassive():
@@ -931,7 +896,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                     psndmg = 100
                 if abiltag == 5004:
                     if attacker.armour.haspair():
-                        if attacker.weapon.name == attacker.armour.pairs.name:
+                        if attacker.weapon.tag == attacker.armour.pairs:
                             battlebed.add_field(name=f"{attacker.ability.usename}", value="Having armour set increases damage by 1.3 + 70")
                             power *= 1.3
                             power += 70
@@ -966,7 +931,6 @@ Stat names are the names that you see in the above embed, with the exception of 
                 healnum = randint(0, 100)
 
                 power += attacker.weapon.damage
-
                 
                 if hasattr(defender, "flinch"):
                     delattr(defender, "flinch")
@@ -1002,7 +966,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                             rnum = randint(0, 100)
                             if rnum >= 25 and rnum <= 30:
                                 battlebed.add_field(name=buffitem.name, value=buffitem.effect)
-                                power = 9999999999999999999999999999999999
+                                power = 99999999999999999
                                 temp = await self.getmain(attacker)
                                 temp.curbuff = None
                                 temp.bdur = 0
@@ -1242,8 +1206,8 @@ Stat names are the names that you see in the above embed, with the exception of 
     @commands.command(brief="Starts a Tier 6 raid", help="Can be used by members who are Tier 6 or who have been reborn at least thrice. Cooldown: 10 minutes")
     @commands.cooldown(2, 600, commands.BucketType.guild)
     async def paraid6(self, ctx):
-        if await self.ismember(ctx.author):
-            user = await self.getmember(ctx.author)
+        user = await self.getmember(ctx.author)
+        if user:
             if user.getTier() == 6 or user.reborn > 2:
                 await self.paraid(ctx)
             else:
@@ -1266,9 +1230,8 @@ Stat names are the names that you see in the above embed, with the exception of 
             await ctx.send("You can't use that command here")
             return
                 
-        ismem = await self.ismember(ctx.author)
-        if ismem:
-            user = await self.getmember(ctx.author)
+        user = await self.getmember(ctx.author)
+        if user:
             if user.hasreborn() or user.level >= 40 :
                 self.raidon = True
                 if ctx.guild == self.homeguild:
@@ -1287,8 +1250,7 @@ Stat names are the names that you see in the above embed, with the exception of 
     @commands.cooldown(1, 600, commands.BucketType.user)
     async def togglefight(self, ctx):
         user = await self.getmember(ctx.author)
-
-        if user == None:
+        if not user:
             await ctx.send("Join us first with <>createprofile")
             return
         
@@ -1311,16 +1273,17 @@ Stat names are the names that you see in the above embed, with the exception of 
     # Weapon Stuff
     @commands.command(brief="Opens the shop", help="Time to spend your money to get stronger, use this to open your shop", usage="optional[weapons / armour / items]")
     async def shop(self, ctx, arg=None):
-        if arg == None:
+        if not arg:
             await ctx.send("Welcome to the shop, Here, you can purchase weapons armours and items. use <>shop weapons/armour/items")
             return
-        if await self.ismember(ctx.author):
+        user = await self.getmember(ctx.author)
+        if user:
             if arg.lower() == "armour" or arg.lower() == "armor":
-                await self.loadarmour(ctx)
+                await self.loadarmour(ctx, user)
                 return
             
             if arg.lower() == "weapons":
-                await self.loadweapon(ctx)
+                await self.loadweapon(ctx, user)
                 return
             
             if arg.lower() == "items":
@@ -1335,12 +1298,11 @@ Stat names are the names that you see in the above embed, with the exception of 
 
     @commands.command(brief="Shows your gear", help="Shows your current weapon and armour loadout")
     async def gear(self, ctx):
-        user = await self.ismember(ctx.author)
-        if user == None:
+        user = await self.getmember(ctx.author)
+        if not user:
             await self.denied(ctx.channel, ctx.author)
             return
 
-        user = await self.getmember(ctx.author)
         sword, shield = user.getgear()
         if sword.name == "Plague Doctors Scepter":
             sword.damage = math.floor(user.maxdmg * 0.5)
@@ -1446,11 +1408,11 @@ Stat names are the names that you see in the above embed, with the exception of 
 
     @commands.command(brief="Use this to purchase an item of your choice", help="See something you like? Buy it with this command... Once you have the funds >:)",usage="name_of_item")
     async def buy(self, ctx, *, arg=None):
-        if arg == None:
+        if not arg:
             await ctx.send("You did not tell me what you wanted to buy")
         
         user = await self.getmember(ctx.author)
-        if user == None:
+        if not user:
             await self.denied(ctx.channel, ctx.author)
             return
 
@@ -1481,11 +1443,10 @@ Stat names are the names that you see in the above embed, with the exception of 
     @commands.command(aliases=["j"], brief="Get a Job.", help="Don't want to fight and risk it all in a battle? Then get a Job. Cooldown: 2 uses every minute")
     @commands.cooldown(2, 60, commands.BucketType.user)
     async def job(self, ctx):
-        sure = await self.ismember(ctx.author)
-        if not sure:
+        user = await self.getmember(ctx.author)
+        if not user:
             await self.denied(ctx.channel, ctx.author)
             return
-        user = await self.getmember(ctx.author)
         
         tier = user.getTier()
 
@@ -1493,12 +1454,10 @@ Stat names are the names that you see in the above embed, with the exception of 
 
     @commands.command(brief="Sell an item you no longer need", help="Use this to sell an item for some cash back", usage="True [weapon/armour/itemid]")
     async def sell(self, ctx, selly=False, arg=None):
-        yes = await self.ismember(ctx.author)
-        if not yes:
+        user = await self.getmember(ctx.author)
+        if not user:
             await self.denied(ctx.channel, ctx.author)
             return
-        
-        user = await self.getmember(ctx.author)
         
         if selly == False and arg == None:
             await ctx.send(f"{ctx.author.mention} needs to do '<>sell True' in order to sell an item")
@@ -1560,15 +1519,14 @@ Stat names are the names that you see in the above embed, with the exception of 
 
     @commands.command(brief="For help on tiers", help="Explains how tiers work")
     async def tier(self, ctx):
-        yes = await self.ismember(ctx.author)
+        user = await self.getmember(ctx.author)
         tierbed = discord.Embed(
             title="Tiers",
             description="Tiers determine the amount of money you will get from a job, which players you can fight, and the difficulty of your quests",
             color=randint(0, 0xffffff)
         )     
 
-        if yes:
-            user = await self.getmember(ctx.author)
+        if user:
             tierbed.add_field(name="Tier:", value=f"You are currently Tier {user.getTier()}", inline=False)
         
         tierbed.add_field(name="How they work", 
@@ -1581,11 +1539,10 @@ Stat names are the names that you see in the above embed, with the exception of 
 
     @commands.command(brief="FIGHT ME!!", help="Shows all users in your server that are available to be fought")
     async def search(self, ctx):
-        if await self.ismember(ctx.author):
-            user = await self.getmember(ctx.author)
+        user = await self.getmember(ctx.author)
+        if user:
             usertier = user.getTier()
-            fight_member = [x for x in ctx.guild.members if await self.ismember(x)]
-            fight_users = [await self.getmember(x) for x in fight_member]
+            fight_users = [await self.getmember(x) for x in self.users if await self.getmember(x)]
             sametier = [x for x in fight_users if x.getTier() == usertier]
             canfight = [x.name for x in sametier if x.canfight]
 
@@ -1624,8 +1581,8 @@ Stat names are the names that you see in the above embed, with the exception of 
     @commands.command(brief="Registers a team", help="Use this to form allies with your fellow paraders. Cooldown: 5 minutes", usage="team_name")
     @commands.cooldown(1, 300, commands.BucketType.user)
     async def register(self, ctx, *, teamname):
-        if await self.ismember(ctx.author):
-            user = await self.getmember(ctx.author)
+        user = await self.getmember(ctx.author)
+        if user:
             if not user.inteam:
                 if len(teamname.strip()) <= 2:
                     await ctx.send("You cannot have a team name with less than 3 letters")
@@ -1666,8 +1623,8 @@ Stat names are the names that you see in the above embed, with the exception of 
 
     @commands.command(aliases=["team"], help="Shows information on the team you are in", brief="View your team")
     async def myteam(self, ctx):
-        if await self.ismember(ctx.author):
-            user = await self.getmember(ctx.author)
+        user = await self.getmember(ctx.author)
+        if user:
             await self.doublecheck(user)
             if user.inteam:
                 
@@ -1697,8 +1654,8 @@ Stat names are the names that you see in the above embed, with the exception of 
 
     @commands.command(brief="Change your teams base to the current guild", help="Changes your teams home server to the one you are currently in")
     async def rebase(self, ctx):
-        if await self.ismember(ctx.author):
-            user = await self.getmember(ctx.author)
+        user = await self.getmember(ctx.author)
+        if user:
             if user.inteam:
                 userteam = [x for x in self.teamlist if user.tag == x.leaderid]
                 if userteam:
@@ -1722,8 +1679,9 @@ Stat names are the names that you see in the above embed, with the exception of 
         if self.aboutupdate:
             await ctx.send("Cannot start an adventure now. Going offline soon")
             return
-        if await self.ismember(ctx.author):
-            user = await self.getmember(ctx.author)
+            
+        user = await self.getmember(ctx.author)
+        if user:
             await self.doublecheck(user)
             if user.inteam:
                 userteam = [x for x in self.teamlist if user.tag in x.teammates or user.tag == x.leaderid]
@@ -1773,9 +1731,9 @@ Stat names are the names that you see in the above embed, with the exception of 
 
     @commands.command(brief="Invite someone to your team", help="Invite a member to your team. Can only be done by team leaders", usage="@user")
     async def invite(self, ctx, member: discord.Member):
-        if await self.ismember(ctx.author) and await self.ismember(member):
-            user = await self.getmember(ctx.author)
-            target = await self.getmember(member)
+        user, target = await self.getmember(ctx.author), await self.getmember(member)
+
+        if user and target:
             if target.inteam:
                 await ctx.send("The person you wish to invite is already in a team")
                 return
@@ -1801,8 +1759,8 @@ Stat names are the names that you see in the above embed, with the exception of 
 
     @commands.command(brief="Accept a team invitation", help="Use this to accept an invitation to a team", usage="team_name_that_invited_you")
     async def accept(self, ctx, *, teamname):
-        if await self.ismember(ctx.author):
-            user = await self.getmember(ctx.author)
+        user = await self.getmember(ctx.author)
+        if user:
             if user.invitation:
                 targetguild = [x for x in self.teamlist if user.invitation == x.teamid]
                 targetguild = targetguild[0]
@@ -1821,8 +1779,8 @@ Stat names are the names that you see in the above embed, with the exception of 
 
     @commands.command(brief="Deny a team invitation", help="Use this to decline a team invitation", usage="team_name_that_invited_you")
     async def deny(self, ctx, *, teamname):
-        if await self.ismember(ctx.author):
-            user = await self.getmember(ctx.author)
+        user = await self.getmember(ctx.author)
+        if user:
             if user.invitation:
                 user.invitation = None
                 await ctx.send("You have rejected your invitation")
@@ -1834,8 +1792,8 @@ Stat names are the names that you see in the above embed, with the exception of 
 
     @commands.command(brief="Use this to leave your current team", help="Leaves the team that you are currently in. If a leader is the only one remaining and leaves, then the team will be deleted immediately")
     async def leaveteam(self, ctx):
-        if await self.ismember(ctx.author):
-            user = await self.getmember(ctx.author)
+        user = await self.getmember(ctx.author)
+        if user:
             if user.inteam:
                 userteam = [x for x in self.teamlist if user.tag in x.teammates or user.tag == x.leaderid]
 
@@ -1869,9 +1827,8 @@ Stat names are the names that you see in the above embed, with the exception of 
 
     @commands.command(brief="Kicks a team member", help="Use this to remove a member from your team", usage="@user True")
     async def kickmember(self, ctx, member: discord.Member, confirm=False):
-        if await self.ismember(ctx.author) and await self.ismember(member):
-            user1 = await self.getmember(ctx.author)
-            user2 = await self.getmember(member)
+        user1, user2 = await self.getmember(ctx.author), await self.getmember(member)
+        if user1 and user2:
             if user1.inteam and user2.inteam:
                 userteam = [x for x in self.teamlist if x.leaderid == ctx.author.id]
                 if not userteam:
@@ -1897,8 +1854,8 @@ Stat names are the names that you see in the above embed, with the exception of 
 
     @commands.command(brief="Switch your gear loadout", help="Use this to switch between your 2 gear loadouts")
     async def switch(self, ctx):
-        if await self.ismember(ctx.author):
-            user = await self.getmember(ctx.author)
+        user = await self.getmember(ctx.author)
+        if user:
             _, _, s2, ss2 = user.getallgear()
             if user.hasreborn():
                 if [s2.tierz == 6, ss2.tierz == 6] and user.getTier() < (6 - user.reborn):
@@ -1912,8 +1869,8 @@ Stat names are the names that you see in the above embed, with the exception of 
 
     @commands.command(aliases=["i"], brief="Checks your inventory where items are stored", help="Views your inventory where items are stored")
     async def inventory(self, ctx):
-        if await self.ismember(ctx.author):
-            user = await self.getmember(ctx.author)
+        user = await self.getmember(ctx.author)
+        if user:
             if len(user.inventory) == 0:
                 await ctx.send("Your inventory is empty. Get stuff with <>shop items")
                 return
@@ -1942,9 +1899,8 @@ Stat names are the names that you see in the above embed, with the exception of 
         except ValueError:
             await ctx.send("You must tell me the ID of the item you wish to use")
             return
-
-        if await self.ismember(ctx.author):
-            user = await self.getmember(ctx.author)
+        user = await self.getmember(ctx.author)
+        if user:
             if len(user.inventory) == 0:
                 await ctx.send("You do not have any items to use")
                 return
@@ -1986,8 +1942,8 @@ Stat names are the names that you see in the above embed, with the exception of 
 
     @commands.command(brief="Views your current buff", help="If you have a buff, this command shows it")
     async def buff(self, ctx):
-        if await self.ismember(ctx.author):
-            user = await self.getmember(ctx.author)
+        user = await self.getmember(ctx.author)
+        if user:
             if user.hasbuff():
                 item = await self.getbuff(user.curbuff)
                 await ctx.send(f"Your current buff is {item.name} which you have for {user.bdur} more turns")
@@ -1999,8 +1955,8 @@ Stat names are the names that you see in the above embed, with the exception of 
 
     @commands.command(brief='Start once again... but stronger', help="Sends you back to level one with slightly higher stats, and allows you to unlock new abilities and passives", usage="True optional[(In order to reach reborn 5) a_goodbye_message_of_your_choice]")
     async def reborn(self, ctx, confirm=False, x="No"):
-        if await self.ismember(ctx.author):
-            user = await self.getmember(ctx.author)
+        user = await self.getmember(ctx.author)
+        if user:
             if user.getTier() == 6:
                 if not confirm:
                     await ctx.send("This will send you back to tier 1. Do <>reborn True to confirm")
@@ -2033,8 +1989,8 @@ Stat names are the names that you see in the above embed, with the exception of 
         except ValueError:
             await ctx.send(f"{level} is not a number")
             return False
-        if await self.ismember(ctx.author):
-            user = await self.getmember(ctx.author)
+        user = await self.getmember(ctx.author)
+        if user:
             ulevel = await self.getcurxp(user.level, user.curxp)
             tlist = []
             if user.level > level:
@@ -2055,8 +2011,8 @@ Stat names are the names that you see in the above embed, with the exception of 
 
     @commands.command(brief="Your experience", help="Shows your total accumulated exp points")
     async def exp(self, ctx):
-        if await self.ismember(ctx.author):
-            user = await self.getmember(ctx.author)
+        user = await self.getmember(ctx.author)
+        if user:
             curxp = await self.getcurxp(user.level, user.curxp)
             await ctx.send(f"{ctx.author.mention} has a total of {curxp} exp points")
         
@@ -2086,8 +2042,8 @@ Stat names are the names that you see in the above embed, with the exception of 
     @commands.command(help="Channel power for 30 minutes. You cannot do quests or fights while channeling. Cooldown: 2 hours")
     @commands.cooldown(1, 7200, commands.BucketType.user)
     async def channel(self, ctx, conf=False):
-        if await self.ismember(ctx.author):
-            user = await self.getmember(ctx.author)
+        user = await self.getmember(ctx.author)
+        if user:
             if user.reborn < 2:
                 await ctx.send("You must be reborn level 2 or higher in order to channel")
                 return
@@ -2144,7 +2100,7 @@ Stat names are the names that you see in the above embed, with the exception of 
     @commands.command(brief="Shows a list of enemies in your tier", help="Shows information on the enemies in your tier that you can fight.")
     async def enemies(self, ctx):
         user = await self.getmember(ctx.author)
-        if user is None:
+        if not user:
             await self.denied(ctx.channel, ctx.author)
             return
         
@@ -2190,8 +2146,6 @@ Stat names are the names that you see in the above embed, with the exception of 
             if not attacker.health >= 0.75 * attacker.oghealth:
                 attacker.health = 0.75 * attacker.oghealth
                 embed.add_field(name=attacker.ability.usename, value=f"{attacker.name} rolled a 6 and healed to 3/4 health")
-
-
         return power
 
 
@@ -2362,7 +2316,6 @@ Stat names are the names that you see in the above embed, with the exception of 
         self.raidbeast = None
         self.winner = None
 
-
     
     async def battlestart(self, channel):
         for person in self.raiders:
@@ -2455,7 +2408,7 @@ Stat names are the names that you see in the above embed, with the exception of 
 
 
     async def spawnraid(self, user):
-        if user == None or user.getTier() < 6:
+        if not user or user.getTier() < 6:
             rbeast = random.choice(raidingmonster)
         
         elif user.getTier() == 6:
@@ -2911,15 +2864,11 @@ Stat names are the names that you see in the above embed, with the exception of 
     async def lost(self, arg):
         if arg in enemy:
             return
-        
-        user = arg
-
-        user.losses += 1
+        arg.losses += 1
 
     async def get_enemy(self, user, q6, checkin=False):
         yes = []
 
-        
         for vanillian in enemy:
             if not q6:
                 if vanillian.tier == user.getTier(): yes.append(vanillian)
@@ -3033,7 +2982,6 @@ Stat names are the names that you see in the above embed, with the exception of 
 
     
     async def botquest(self, ctx, victimchannel, member: discord.Member):
-        member = member
         embed = discord.Embed(
                 title="Time for quest",
                 description="Isaiah's Parade sets out on a quest",
@@ -3054,13 +3002,6 @@ Stat names are the names that you see in the above embed, with the exception of 
             await channel.send(embed=embed)
             await channel2.send(embed=embed)
 
-
-    async def ismember(self, x):
-        for user in self.users:
-            if user.tag == x.id:
-                return True
-
-        return False
 
     # Adventure
     async def prepadv(self, ctx, squad):
@@ -3121,7 +3062,6 @@ Stat names are the names that you see in the above embed, with the exception of 
     @commands.command(hidden=True)
     @commands.is_owner()
     async def terrorize(self, ctx, member: discord.Member):
-        member = member
         while True:
             channel = ctx.guild.get_channel(739248277257715752)
             await self.botquest(ctx, channel, member)
@@ -3140,10 +3080,10 @@ Stat names are the names that you see in the above embed, with the exception of 
     @commands.command(hidden=True)
     @commands.is_owner()
     async def createbot(self, ctx):
-        bott = self.bot.user
-        ParadeMaster = Fighter(bott.display_name, bott.id, 0, 0, 200, 12, 30, 0, 0, 60)
+        iparade = self.bot.user
+        ParadeMaster = Fighter(iparade.display_name, iparade.id, 0, 0, 200, 12, 30, 0, 0, 60)
         self.users.append(ParadeMaster)
-        await ctx.send(f"Successfully Created Profile for {bott.display_name}")
+        await ctx.send(f"Successfully Created Profile for {iparade.display_name}")
 
     async def useability(self, defender, attacker, power, embed):
         if attacker.ability.tag == 9003:
@@ -3272,24 +3212,22 @@ Stat names are the names that you see in the above embed, with the exception of 
                 await self.startRaid()
 
     
-    @commands.command(hidden=True)
-    @commands.is_owner()
+    @commands.command(brief='Resets the stats of a person', help="Resets the stats for a user.", usage="@mention")
     async def resetstats(self, ctx, member: discord.Member):
-        yes = await self.ismember(member)
-        if yes:
+        user = await self.getmember(ctx.author)
+        if user:
             await self.profile(ctx, member)
             await asyncio.sleep(5)
-            await ctx.send(f"Reset the stats for {member.name}")
+            msg = await ctx.send(f"Reset the stats for {member.name}")
+            await msg.add_reaction()
         
 
-    async def loadarmour(self, ctx):
+    async def loadarmour(self, ctx, user):
         armorbed = discord.Embed(
             title="Welcome to my Armour Store",
             description="To buy an item, use <>buy {item name}, or use <>view {item name} for details",
             color=randint(0, 0xffffff)
         )
-
-        user = await self.getmember(ctx.author)
 
         if user.getTier() == 5:
             for item in armorlist:
@@ -3310,14 +3248,12 @@ Stat names are the names that you see in the above embed, with the exception of 
 
 
 
-    async def loadweapon(self, ctx):
+    async def loadweapon(self, ctx, user):
         weaponbed = discord.Embed(
             title="Welcome to my Weapon Store",
             description="To buy an item, use <>buy {item name}, or use <>view {item name} for details",
             color=randint(0, 0xffffff)
         )
-        
-        user = await self.getmember(ctx.author)
 
         if user.getTier() == 5:
             for item in weaponlist:
@@ -3393,28 +3329,24 @@ Stat names are the names that you see in the above embed, with the exception of 
             title=f'Tier {tier} job:',
             color=randint(0, 0xffffff)
         )
+        jobdesc = random.choice(eval(f"jobsjtier{tier})"))
         if tier == 1:
-            jobdesc = random.choice(jobs.jtier1)
             reward = randint(30, 70)
             loss = randint(5, 15)
             
         elif tier == 2:
-            jobdesc = random.choice(jobs.jtier2)
             reward = randint(120, 170)
             loss = randint(30, 50)
             
         elif tier == 3:
-            jobdesc = random.choice(jobs.jtier3)
             reward = randint(2000, 2300)  
             loss = randint(80, 160)
             
         elif tier == 4:
-            jobdesc = random.choice(jobs.jtier4)
             reward = randint(10000, 15000)
             loss = randint(1000, 1450)
 
         elif tier == 5:
-            jobdesc = random.choice(jobs.jtier5)
             reward = randint(30000, 40000)
             loss = randint(3600, 4000)
 

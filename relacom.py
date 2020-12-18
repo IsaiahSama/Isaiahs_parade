@@ -24,6 +24,7 @@ class Social(commands.Cog):
     async def async_init(self):
         await self.bot.wait_until_ready()
         self.allusers = await Saving().loaddata("reladata")
+        if not self.allusers: self.allusers = []
         self.updateusers.start()
 
     @commands.command(brief="Creates a social profile", help="Creates a social proile which will be used for main social commands")

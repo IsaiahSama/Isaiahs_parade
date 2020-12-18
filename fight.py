@@ -264,7 +264,7 @@ daxe = Weapons("Deathly Axe", 1504, "Said to bring out the true power of Deadly 
 emace = Weapons("Energy Mace", 1505, "Made of concentrated chak-- energy", "slams into", 850, 5, 0, 1100000, 5)
 
 # Tier 6
-bblade = Weapons("Banana Blaster", 1601, "YAA HOO, not your typical exploding bananas", "fires at", 1800, 40, 3, 5300000, 6)
+bblaster = Weapons("Banana Blaster", 1601, "YAA HOO, not your typical exploding bananas", "fires at", 1800, 40, 3, 5300000, 6)
 cqhaki = Weapons("Conqueror Haki", 1602, "A physical manifestation of the ability. Allows the user to use the ability Haoshoku Haki.",
 "controls", 2000, 16, 5, 5400000, 6)
 yin = Weapons("Yin Blade", 1603, "The physical manifestation of darkness, destruction and negative energy", "alters the existence of", 1800, 20, 5, 5300000, 6)
@@ -277,7 +277,7 @@ weaponlist = [fist, katana, bow, pistol, sword, dagger, slime, fishrod, axe, fpa
 miracles, blaster, dsword, bomb, crossbow, bsuckler, sancspear, stormbreaker, hcard, seruption, vibechk, 
 tsummon, sfknife, srifle, 
 evampknife, dreamsword, herorian, daxe, emace,
-bblade, cqhaki, yin, mhand, tblade, cor]
+bblaster, cqhaki, yin, mhand, tblade, cor]
 
 # Unique
 pds = Weapons("Plague Doctors Scepter", 3601, "Soulbound to ...?", "infects", 0, 10, 15, 0, 6)
@@ -301,7 +301,7 @@ class Armour:
     pup: int=0
     cost: int=0
     regen: int=0
-    pairs: object=None
+    pairs: int=0
     tierz: int=1
     reborn: int=0
     typeobj: str="Armour"
@@ -331,62 +331,62 @@ chain = Armour("Chainmail", 2102, "The Typical first set to buy", 5, cost=140)
 hunters = Armour("Ranger", 2103, "Blends in with background. Gains set bonus with bow", 7, 2, cost=160)
 iron = Armour("Iron", 2104, "Often the go to in Minecraft Speedruns", 10, 2, 270)
 gold = Armour("Gold", 2105, "Is gold really better than iron though?", 15, 4, 400)
-slimearm = Armour("Slime", 2106, "It's almost like attacks slide right off. Gains set bonus with Baby Slime", 20, 4, 550, 4, slime)
-assas = Armour("Assassins", 2107, "Shh, Sneaky. Gains set bonus with Dagger", 20, 4, 550, 3, dagger)
-valkryie = Armour("Valkryie", 2108, "Straight from ValHalla. Don't ask. Gains set bonus with axe", 30, 6, 600, pairs=axe)
+slimearm = Armour("Slime", 2106, "It's almost like attacks slide right off. Gains set bonus with Baby Slime", 20, 4, 550, 4, 1107)
+assas = Armour("Assassins", 2107, "Shh, Sneaky. Gains set bonus with Dagger", 20, 4, 550, 3, 1106)
+valkryie = Armour("Valkryie", 2108, "Straight from ValHalla. Don't ask. Gains set bonus with axe", 30, 6, 600, pairs=1110)
 saiyanguc = Armour("Saiyan Gucchi", 2109, "Special Edition it would seem", 40, 10, 700)
 
 # Tier 2
 abyss = Armour("Abyss Walker", 2201, "Not from this world", 55, 15, 3000, tierz=2)
-diamond = Armour("Diamond", 2202, "What's a Diamond Sword, Without Diamond Armor. Gains set bonus with Diamond Sword", 50, 10, 4000, 0, dsword, tierz=2)
+diamond = Armour("Diamond", 2202, "What's a Diamond Sword, Without Diamond Armor. Gains set bonus with Diamond Sword", 50, 10, 4000, 0, 1203, tierz=2)
 paladium = Armour("Paladium", 2203, "Increases life regen", 60, 20, 5500, 15, tierz=2)
 
 # Tier 3
-cranger = Armour("Charged Ranger", 2301, "An upgrade to Ranger. Shocking I know", 90, 25, 7000, 0, crossbow, tierz=3)
-solarflare = Armour("Solar Flare", 2302, "Made from Solar Fragments and Luminite Ore. Gains set bonus with Solar Eruption", 120, 35, 8000, pairs=seruption, tierz=2)
+cranger = Armour("Charged Ranger", 2301, "An upgrade to Ranger. Shocking I know", 90, 25, 7000, 0, 1205, tierz=3)
+solarflare = Armour("Solar Flare", 2302, "Made from Solar Fragments and Luminite Ore. Gains set bonus with Solar Eruption", 120, 35, 8000, pairs=1305, tierz=2)
 elitist = Armour("Elitist", 2303, "Said to be made for the elites", 150, 40, 10000, tierz=3)
 hierro = Armour("Hierro", 2304, "Hard", 200, 50, 50000, 10, tierz=3)
 plaguearm = Armour("Plague Doctors Uniform", 2305, "A copy of the original owned by ...?", 200, 50, 50000, 4, tierz=3)
-wood = Armour("Wooden", 2306, "Pfft, you *wood*n't get it. Gains set bonus with The Vibe Check", 260, 45, 90000, 7, vibechk, 3)
+wood = Armour("Wooden", 2306, "Pfft, you *wood*n't get it. Gains set bonus with The Vibe Check", 260, 45, 90000, 7, 1401, 3)
 
 # Tier 4
 vknight = Armour("Valhalla Knight", 2401, "Again, Don't ask where I got this from", 100, 30, 500000, 20, tierz=4)
 shadowflame = Armour("Shadow Flame", 2402,
 "A sorcerer's creation created by shadows and flames of darkness. Gains set bonus with Shadow Flame Knife",
-510, 200, 500000, 5, sfknife, 4)
-artillery = Armour("Master General", 2403, "mhm yes. Tank uniform. Gains set bonus with Tank Summon", 660, 150, 500000, 0, tsummon, 4)
-sranger = Armour("Tundra Ranger", 2404, "Gained from surviving the depth of the Tundra. Gains set bonus with Sniper Rifle", 570, 160, 500000, 4, srifle, 4)
+510, 200, 500000, 5, 1403, 4)
+artillery = Armour("Master General", 2403, "mhm yes. Tank uniform. Gains set bonus with Tank Summon", 660, 150, 500000, 0, 1402, 4)
+sranger = Armour("Tundra Ranger", 2404, "Gained from surviving the depth of the Tundra. Gains set bonus with Sniper Rifle", 570, 160, 500000, 4, 1404, 4)
 
 # Tier 5
-vampcloak = Armour("Vampiric Cloak", 2501, "Makes it easier to drain blood. Pairs well with Enchanted Vamp Knives", 800, 300, 1100000, 18, evampknife, 5)
+vampcloak = Armour("Vampiric Cloak", 2501, "Makes it easier to drain blood. Pairs well with Enchanted Vamp Knives", 800, 300, 1100000, 18, 1501, 5)
 nightmare = Armour("Nightmare", 2502, "Woven together from the essence of the dark side of sleep. Gains set bonus with Dream Sword",
-800, 420, 1100000, 0, dreamsword, 5)
-hshield = Armour("Hero's Shield", 2503, "The shield of the legendary Herorian of Heroria. Gains set bonus with The Herorian", 750, 400, 1400000, 4, herorian, 5)
-blastgear = Armour("Blasting", 2504, "Said to increase your power... Explosively. Gains set bonus with Tier 2 Buh-bomb", 700, 400, 1300000, 0, bomb, 5 )
-vmaster = Armour("Vibe Master", 2505, "An upgrade to the previous Wooden Armor. Gains set bonus with The Vibe Check", 700, 250, 1100000 , 8, vibechk, 5)
+800, 420, 1100000, 0, 1502, 5)
+hshield = Armour("Hero's Shield", 2503, "The shield of the legendary Herorian of Heroria. Gains set bonus with The Herorian", 750, 400, 1400000, 4, 1503, 5)
+blastgear = Armour("Blasting", 2504, "Said to increase your power... Explosively. Gains set bonus with Tier 2 Buh-bomb", 700, 400, 1300000, 0, 1204, 5 )
+vmaster = Armour("Vibe Master", 2505, "An upgrade to the previous Wooden Armor. Gains set bonus with The Vibe Check", 700, 250, 1100000 , 8, 1401, 5)
 loincloth = Armour("Loincloth", 2506, "Who knows where this came from. With Deathly Axe, increases effectiveness of Deadly Grasp",
-500, 500, 1200000, 3, daxe, 6)
+500, 500, 1200000, 3, 1504, 6)
 susanoo1 = Armour("Imperfect Susanoo", 2507, "Named after the shinto god of storms. It hurts. Loses 2%hp each turn Gains set bonus with Energy Mace", 900, 400,
-1400000, -2, emace, 5)
+1400000, -2, 1505, 5)
 
 # Tier 6 (God Tier)
 mkgear = Armour("Monkey Suit", 2601, "An outfit made by the Monkey King. Gains set bonus with Banana Blaster", 1700, 800,
-5000000, 6, bblade, 6)
+5000000, 6, 1601, 6)
 haki = Armour("Haki", 2602, "Makes it easier to absorb this mysterious energy. Gains set bonus with Conqueror Haki",
-1200, 1200, 5000000, 5, cqhaki, 6)
-yang = Armour("Yang", 2603, "The physical manifestation of creation, light and positive energy", 1500, 1000, 5000000, 30, yin, 6)
-ymr = Armour("YareYare Mirror",2604, "Said to be able to significantly reduce all incoming damage. Set bonus with Tatsuki Blade", 2500, 50, 5200000, 0, tblade, 6)
-chand = Armour("Crazy Hand", 2605, "A mysterious floating hand with seemingly immense power used to defend", 1400, 1300, 5000000, 10, mhand, 6)
+1200, 1200, 5000000, 5, 1602, 6)
+yang = Armour("Yang", 2603, "The physical manifestation of creation, light and positive energy", 1500, 1000, 5000000, 30, 1603, 6)
+ymr = Armour("YareYare Mirror",2604, "Said to be able to significantly reduce all incoming damage. Set bonus with Tatsuki Blade", 2500, 50, 5200000, 0, 1605, 6)
+chand = Armour("Crazy Hand", 2605, "A mysterious floating hand with seemingly immense power used to defend", 1400, 1300, 5000000, 10, 1604, 6)
 crimson = Armour("The Crimson", 2606, "Armour forged from flesh and ore excavated from the depths of The Crimson's chasms. You take 1.2x damage from others",
-1200, 1300, 6000000, 35, cor, 6)
+1200, 1300, 6000000, 35, 1606, 6)
 
 # unique
-paraders = Armour("Parade Creators Outfit", 4601, "The cloak donned by the Creator of Isaiah's Parade", 5900, 4000, 0, 10, parblade, 6)
-pdr = Armour("True Plague Doctors Uniform", 4602, "You don't want him doing your autopsy", 4050, 1900, 0, 25, pds, 6)
-loin = Armour("Unusual Loincloth", 4603, "Wait, is that a monkey tail?", 5000, 2000, 0, 4, uth, 6)
+paraders = Armour("Parade Creators Outfit", 4601, "The cloak donned by the Creator of Isaiah's Parade", 5900, 4000, 0, 10, 3602, 6)
+pdr = Armour("True Plague Doctors Uniform", 4602, "You don't want him doing your autopsy", 4050, 1900, 0, 25, 3601, 6)
+loin = Armour("Unusual Loincloth", 4603, "Wait, is that a monkey tail?", 5000, 2000, 0, 4, 3603, 6)
 jotarowep = Armour("Celestial Platinum", 4604, "The physical manifestation of CelestialG's fighting spirit",
-5000, 1700, 0, 5, diowep, 6)
-bigbel = Armour("Biggums' Belly", 4605, "It's so chubby.", 5500, 2000)
+5000, 1700, 0, 5, 3604, 6)
+bigbel = Armour("Biggums' Belly", 4605, "It's so chubby.", 5500, 2000, pairs=3605)
 
 armorlist = [linen, chain, hunters, iron, gold, slimearm, assas, valkryie, diamond, saiyanguc, 
 abyss, paladium, cranger,
@@ -1177,7 +1177,7 @@ god2 = BeastFight("Weakened Parade Creator", 18000, 13000, 15000, 900000, 120000
 49438, 40, 20, jajanken, rage, "Twirls his staff then attacks", parblade, paraders, 570, 6)
 
 god3 = BeastFight("Monkey King", 40000, 20000, 23000, 1500000, 1700000, "Where did he even come from", 55188, 30, 10,
-swarm, rage, "aims and fires at", bblade, mkgear, 640, 6)
+swarm, rage, "aims and fires at", bblaster, mkgear, 640, 6)
 
 god4 = BeastFight("Haxiyuri Genko", 78000, 28000, 33000, 1800000, 2000000, "The ability to change materials and summon weapons at will... and you are his target",
 68521, 10, 10, sharpeye, balancepride, "sighs and summons weapons and attacks", yin, yang, 670, 6)
