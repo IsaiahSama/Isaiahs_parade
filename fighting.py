@@ -3074,7 +3074,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             ctx.author = self.bot.user
             await self.job(ctx, True)
             await self.job(ctx, True)
-            asyncio.sleep(5)
+            await asyncio.sleep(5)
             await self.upgradebot(ctx)
             await self.upgradegear(ctx)
             await asyncio.sleep(6 * 60)

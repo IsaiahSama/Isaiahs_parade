@@ -56,7 +56,7 @@ class Saving:
                 json.dump(dumped, f, indent=4)
                 return
 
-        if len(files) == 10: await self.savefix(folder, files)
+        if len(files) == 9: await self.savefix(folder, files)
         with open(f"saves/{folder}/{folder}{int(list(files[-1].split('.')[0])[-1]) + 1}.json", "w") as f:
             json.dump(dumped, f, indent=4)
 
@@ -64,5 +64,5 @@ class Saving:
         os.remove(f"saves/{folder}/{files[0]}")
         files.remove(files[0])
         for pos, file in enumerate(files):
-            os.rename(f"saves/{folder}/{file}", f"saves/{folder}/{''.join(list(file.split('.')[0]).pop())}{pos}.json")
+            os.rename(f"saves/{folder}/{file}", f"saves/{folder}/{folder}{pos}.json")
   
