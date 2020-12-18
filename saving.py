@@ -16,7 +16,7 @@ class Saving:
         print(f"Attempting to load data from {folder}")
         if not files: print("No previous saves exist"); return
         data = await self.getdata(folder, files)
-        if not data: return []
+        if not data: return data
         datalist = []
         for dic in data:
             if folder == "fightdata":
@@ -28,7 +28,7 @@ class Saving:
             
             for k, v in dic.items():
                 setattr(u, k, v)
-                datalist.append(u)
+            datalist.append(u)
 
         return datalist
 
@@ -39,6 +39,7 @@ class Saving:
                 with open(f"saves/{folder}/{files[index]}") as f:
                     data = json.load(f)
                     print(f"Loaded data from {files[index]}")
+                    print(data)
                     return data
             except json.JSONDecodeError:
                 print(f"{files[index]} was responsible for the JSONDecodeError")
@@ -52,7 +53,7 @@ class Saving:
         files = os.listdir(f"saves/{folder}")
         dumped = [member.__dict__ for member in data]
         if not files:
-            with open(f"saves/{folder}/{folder}0.json") as f:
+            with open(f"saves/{folder}/{folder}0.json", "w") as f:
                 json.dump(dumped, f, indent=4)
                 return
 

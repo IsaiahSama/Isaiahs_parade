@@ -51,7 +51,7 @@ class Fight(commands.Cog):
         self.teamlist = await Saving().loaddata("teamdata")
         if not self.teamlist: self.teamlist = []
         self.updlist.start()
-        print(self.users)
+        print("Let's begin.")
 
     modlist = [347513030516539393, 527111518479712256, 493839592835907594, 315619611724742656, 302071862769221635]
           
@@ -288,16 +288,15 @@ class Fight(commands.Cog):
     @commands.is_owner()
     async def clrquest(self, ctx):
         self.inquest.clear()
-        await ctx.send("Reset All Quests")  
+        await ctx.send("Reset All Quests") 
+
+    async def upgradebot(self, ctx):
+        toupgrade = random.choice(["health", "min_dmg", "max_dmg"])
+        await ctx.send(f"<>upgrade {toupgrade} 1")
+        await self.upgrade(ctx, toupgrade, 1)
 
     @commands.command(brief="Used to upgrade your stats.", help="Get stronger by upgrading your stats", usage="optional[stat_to_upgrade] optional[amount_of_times_to_upgrade]")
-    async def upgrade(self, ctx, arg=None, amount=0):
-        try:
-            narg = int(amount)
-        except ValueError:
-            await ctx.send("The amount of times to upgrade must be a number")
-            return
-
+    async def upgrade(self, ctx, arg=None, narg:int = 1):
         user = await self.getmember(ctx.author)
         
         if not user:
@@ -1269,6 +1268,22 @@ Stat names are the names that you see in the above embed, with the exception of 
         
         return
 
+    async def getstrongest(self, items, botuser):
+        canbuy = [item for item in items if item.tierz == botuser.getTier() and botuser.pcoin >= item.cost]
+        if not canbuy: return None
+        else: return canbuy[-1]
+
+    async def upgradegear(self, ctx):
+        botuser = await self.getmember(ctx.author)
+        for value in ["weapon", "armour"]:
+            await ctx.send(f"<>shop {value}")
+            await self.shop(ctx, value)
+            await asyncio.sleep(2)
+            strongest = await self.getstrongest(eval(f"{value}list"), botuser)
+            if not strongest: await ctx.send("Not enough Parade Coins"); continue
+            await ctx.send(f"<>buy {strongest}")
+            await self.buy(ctx, arg=strongest)
+
 
     # Weapon Stuff
     @commands.command(brief="Opens the shop", help="Time to spend your money to get stronger, use this to open your shop", usage="optional[weapons / armour / items]")
@@ -1282,7 +1297,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                 await self.loadarmour(ctx, user)
                 return
             
-            if arg.lower() == "weapons":
+            if arg.lower() == "weapons" or arg.lower() == "weapon":
                 await self.loadweapon(ctx, user)
                 return
             
@@ -1410,7 +1425,7 @@ Stat names are the names that you see in the above embed, with the exception of 
     async def buy(self, ctx, *, arg=None):
         if not arg:
             await ctx.send("You did not tell me what you wanted to buy")
-        
+
         user = await self.getmember(ctx.author)
         if not user:
             await self.denied(ctx.channel, ctx.author)
@@ -1423,14 +1438,14 @@ Stat names are the names that you see in the above embed, with the exception of 
                 req = item
                 break
         
-        if req is None:
+        if not req:
             for item in potlist:
                 if item.name.lower() == arg.lower():
                     req = item
                     break
 
-        if req == None:
-            await ctx.send(f"Sorry, I don't have any {req} in stock") 
+        if not req:
+            await ctx.send(f"Sorry, I don't have any {arg} in stock") 
             return
         
         
@@ -1442,7 +1457,7 @@ Stat names are the names that you see in the above embed, with the exception of 
     # Job
     @commands.command(aliases=["j"], brief="Get a Job.", help="Don't want to fight and risk it all in a battle? Then get a Job. Cooldown: 2 uses every minute")
     @commands.cooldown(2, 60, commands.BucketType.user)
-    async def job(self, ctx):
+    async def job(self, ctx, isbot=False):
         user = await self.getmember(ctx.author)
         if not user:
             await self.denied(ctx.channel, ctx.author)
@@ -2981,16 +2996,16 @@ Stat names are the names that you see in the above embed, with the exception of 
             return msg
 
     
-    async def botquest(self, ctx, victimchannel, member: discord.Member):
+    async def botquest(self, ctx, member: discord.Member):
         embed = discord.Embed(
                 title="Time for quest",
                 description="Isaiah's Parade sets out on a quest",
                 color=randint(0, 0xffffff)
             )
 
-        await victimchannel.send("<>quest")
-        await victimchannel.send(embed=embed)
-        ctx.channel = victimchannel
+        await ctx.send("<>quest")
+        await ctx.send(embed=embed)
+        self.inquest.append(member.id)
         await self.fight(ctx, member, True, True)
 
 
@@ -3063,15 +3078,22 @@ Stat names are the names that you see in the above embed, with the exception of 
     @commands.is_owner()
     async def terrorize(self, ctx, member: discord.Member):
         while True:
-            channel = ctx.guild.get_channel(739248277257715752)
-            await self.botquest(ctx, channel, member)
-            await asyncio.sleep(6 * 60)
+            await self.botquest(ctx, member)
+            ctx.author = self.bot.user
+            await self.job(ctx, True)
+            await self.job(ctx, True)
+            asyncio.sleep(5)
+            await self.upgradebot(ctx)
+            await self.upgradegear(ctx)
+            await asyncio.sleep(20)
 
 
-    @tasks.loop(minutes=5.0)
+    @tasks.loop(seconds=10)
     async def updlist(self):
         if not self.users: return
+        print
         await Saving().save("fightdata", self.users)
+        
 
     async def updateteam(self):
         if not self.teamlist: return
@@ -3084,6 +3106,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         ParadeMaster = Fighter(iparade.display_name, iparade.id, 0, 0, 200, 12, 30, 0, 0, 60)
         self.users.append(ParadeMaster)
         await ctx.send(f"Successfully Created Profile for {iparade.display_name}")
+
 
     async def useability(self, defender, attacker, power, embed):
         if attacker.ability.tag == 9003:
@@ -3329,7 +3352,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             title=f'Tier {tier} job:',
             color=randint(0, 0xffffff)
         )
-        jobdesc = random.choice(eval(f"jobsjtier{tier})"))
+        jobdesc = random.choice(eval(f"jobs.jtier{tier}"))
         if tier == 1:
             reward = randint(30, 70)
             loss = randint(5, 15)
