@@ -18,11 +18,11 @@ class Moderator(commands.Cog):
     @commands.command(brief="Removes the roles of the mentioned person for x minutes.", help='Removes the roles of a member for x minutes. Returns them one by one', usage="@user duration")
     @commands.has_permissions(administrator=True)
     async def killerqueen(self, ctx, member: discord.Member, minutes: int=2):
-        user_role = []
-        for role in member.roles:
-            user_role.append(role)
-        user_role = user_role[1:]
-        for role in user_role:
+        if member.id == 493839592835907594: 
+            await ctx.send("Sorry... I can't go against my creator")
+            return
+        user_roles = [role for role in member.roles if not role == ctx.guild.default_role]
+        for role in user_roles:
             await member.remove_roles(role)
         
         killer = discord.Embed(
@@ -47,11 +47,9 @@ class Moderator(commands.Cog):
         reverse.set_thumbnail(url=ctx.author.avatar_url)
         reverse.set_image(url="https://pa1.narvii.com/6477/edfa062f367af4201c7f40637f97a72b013799e6_hq.gif")
 
-        for role in user_role:
+        for role in user_roles:
             await member.add_roles(role)
-            msg = await ctx.send(embed=reverse)
-            await asyncio.sleep(5)
-            await msg.delete()
+            await ctx.send(embed=reverse, delete_after=5)
             await asyncio.sleep(120)
 
 
@@ -74,8 +72,13 @@ class Moderator(commands.Cog):
     @commands.command(aliases=["unban"], brief="Unbands a user", help="Used to lift the ban on the user.", usage="@user optional[reason]")
     @commands.has_permissions(ban_members=True)
     async def impactrevive(self, ctx, user: discord.User, reason=None):
-        user = await self.bot.fetch_user(user)
-        await ctx.guild.unban(user, reason=reason)
+        try:
+            person = await ctx.guild.fetch_ban(user)
+        except discord.NotFound:
+            await ctx.send("Could not find that user in the banned list")
+            return
+
+        await ctx.guild.unban(person.user, reason=reason)
         embed = discord.Embed(
             title='Tsk...',
             color=randint(0, 0xffffff)
@@ -90,7 +93,7 @@ class Moderator(commands.Cog):
     @commands.has_permissions(manage_messages=True)
     async def zahando(self, ctx, amount: int):
         await ctx.message.delete()
-        await ctx.channel.purge(limit=amount)
+        await ctx.channel.purge(limit=amount, bulk=True)
         await asyncio.sleep(0.5)
         file=discord.File("./images/zahando.gif", filename="zahando.gif")
 
@@ -108,68 +111,50 @@ class Moderator(commands.Cog):
     @commands.command(help='Used to delete x number of messages containing the specified text', brief="Deletes messages containing text that you specify.", usage="amount_to_delete text-to-delete")
     @commands.has_permissions(manage_messages=True)
     async def wipehas(self, ctx, amount: typing.Optional[int] = 100, *, args):
-        counter = 0
         
-        args = f"{args}"
+        def check(m):
+            return args.lower() in m.content.lower()
 
-        for message in await ctx.channel.history().flatten():
-            if counter <= amount:
-                if args.lower() in message.content.lower():
-                    await message.delete()
-                    counter += 1
+        await ctx.channel.purge(limit=amount, check=check)
+        await ctx.send("Moderated", delete_after=5)
 
-        await ctx.send("Moderated")
 
     @commands.command(brief="Deletes messages ending with the text specified", help="Deletes x number of messages ending with the text you specify.", usage="amount text-to-delete")
     @commands.has_permissions(manage_messages=True)
     async def wipeendswith(self, ctx, amount: typing.Optional[int] = 100, *, args):
-        counter = 0
-        
-        args = f"{args}"
+       
+        def check(m):
+            return m.content.lower().endswith(args.lower())
 
-        for message in await ctx.channel.history().flatten():
-            if counter <= amount:
-                if message.content.lower().endswith(args.lower()):
-                    await message.delete()
-                    counter += 1
+        await ctx.channel.purge(limit=amount, check=check)
+        await ctx.send("Moderated", delete_after=5)
 
-        await ctx.send("Moderated")
 
     @commands.command(brief="Deletes messages starting with the text specified", help="Deletes x number of messages starting with the text you specify.", usage="amount text-to-delete")
     @commands.has_permissions(manage_messages=True)
     async def wipestartswith(self, ctx, amount: typing.Optional[int] = 100, *, args):
-        counter = 0
         
-        args = f"{args}"
-
-        for message in await ctx.channel.history().flatten():
-            if counter <= amount:
-                if message.content.lower().startswith(args.lower()):
-                    await message.delete()
-                    counter += 1
-
+        def check(m):
+            return m.content.lower().startswith(args.lower())
+        
+        await ctx.channel.purge(limit=amount, check=check)
         await ctx.send("Moderated")
 
 
     @commands.command(brief="Deletes messages sent by a user", help="Deletes X number of messages sent by the mentioned user.", usage="@user amount")
     @commands.has_permissions(manage_messages=True)
     async def kingcrimson(self, ctx, member: discord.Member, amount: int):
-        # def checking(m):
-        #    return m.author == member
-        # await ctx.channel.purge(limit=arg, check=checking)
+        
+        def check(m):
+           return m.author == member
+        
+        await ctx.channel.purge(limit=amount, check=check)
+
         file = discord.File("./images/kc.gif", filename="kc.gif")
-        counter = 0
-        for m in await ctx.channel.history().flatten():
-            if counter < amount:
-                if m.author == member:
-                    await m.delete()
-                    counter += 1
 
         embed = discord.Embed(
             title="KING CRIMSON NO NOURYOKU",
-            description=f'''**It is only the results that remain in this world!
-    All the actions you take in a world where time is erased are meaningless!**
-    ***{member.mention} is now free of {amount} crimes***''',
+            description=f'It is only the results that remain in this world!All the actions you take in a world where time is erased are meaningless!.\n ***{member.mention} is now free of {amount} crimes***',
             color=randint(0, 0xffffff)
         )
         embed.set_thumbnail(url=self.bot.user.avatar_url)
@@ -200,12 +185,7 @@ class Moderator(commands.Cog):
     @commands.command(aliases=["shhh"], brief="Just do it.")
     @commands.has_permissions(manage_channels=True, manage_roles=True)
     async def zawarudo(self, ctx, seconds: int=10):
-        guild = ctx.guild
-
-        role = discord.utils.get(guild.roles, name="The Silent Ones")
-
-        for member in guild.members: await member.add_roles(role)
-
+        og = ctx.channel.overwrites or None
         file = discord.File("./images/zawarudo.gif", filename="zawarudo.gif")
         embed = discord.Embed(
             title="ZA... WARUDO!",
@@ -219,11 +199,10 @@ class Moderator(commands.Cog):
 
         await ctx.send(file=file, embed=embed)
 
+        await ctx.channel.set_permissions(ctx.guild.default_role, send_messages=False)
         await asyncio.sleep(seconds)
         await ctx.send("*Jikan desu... (Channel unfrozen)*")
-
-        for member in guild.members: await member.remove_roles(role)
-
+        await ctx.channel.edit(overwrites=og)
 
     # Reverses zawarudo and 3freeze
     @commands.command(brief="Cancels Channel Freeze and and slowmode", help="Reverses the effect of zawarudo and slowmode")
@@ -242,11 +221,7 @@ class Moderator(commands.Cog):
         embed.set_image(url="attachment://goldenexp.gif")
         await ctx.send(file=file, embed=embed)
         await ctx.channel.edit(slowmode_delay=0)
-        role = discord.utils.get(ctx.guild.roles, name="The Silent Ones")
-        for member in ctx.guild.members: 
-            if role in member.roles:
-                await member.remove_roles(role)
-
+        await ctx.channel.set_permissions(ctx.guild.default_role, send_messages=True)
 
     # Kicks a user
     @commands.command(aliases=["kick"], brief="Kicks a member", help="Removes a member from your server.", usage="@member")
@@ -261,7 +236,7 @@ class Moderator(commands.Cog):
 
     # Removes all roles permanately
     @commands.command(brief="Removes the roles from a user", help="Takes away all roles from a user", usage="@member")
-    @commands.has_permissions(manage_roles=True)
+    @commands.has_permissions(administrator=True)
     async def ger_rtz(self, ctx, member: discord.Member):
         for role in member.roles:
             if role == ctx.guild.default_role: continue
@@ -273,10 +248,9 @@ class Moderator(commands.Cog):
     @commands.has_permissions(manage_channels=True, manage_roles=True)
     async def mute(self, ctx, member: discord.Member, time=5, *, reason="They should know"):
         guild = ctx.guild
-
-        role = discord.utils.get(guild.roles, name="The Silent Ones")
-        if role == None:
-            await ctx.send("Could not get role 'The Silent Ones'. Create it and do <>silentnow")
+        role = discord.utils.get(guild.roles, name="shushed")
+        if not role:
+            await ctx.send("Could not get role 'shushed'. Create it and do <>silentnow")
             return
         
         await member.add_roles(role)
@@ -297,8 +271,8 @@ class Moderator(commands.Cog):
     @commands.command(brief="Sets up permissions for the Mute role", help="Sets up permissions for the mute role.")
     @commands.has_permissions(manage_channels=True, manage_roles=True)
     async def silentnow(self, ctx):
-        role = discord.utils.get(ctx.guild.roles, name="The Silent Ones")
-        if not role: await ctx.send("Role does 'The Silent Ones' does not exist"); return
+        role = discord.utils.get(ctx.guild.roles, name="shushed")
+        if not role: await ctx.send("Role does 'shushed' does not exist"); return
 
         for channel in ctx.guild.text_channels:
             overwrites = {role: discord.PermissionOverwrite(send_messages=False)}
@@ -310,8 +284,7 @@ class Moderator(commands.Cog):
         for server in self.bot.guilds:
             role = discord.utils.get(server.roles, name="Parader")
             channel = discord.utils.get(server.text_channels, name="parade-room")
-            if role == None or channel == None:
-                continue
+            if not role or not channel: continue
             await channel.send(f"Attention {role.mention}. {msg}")
 
         await ctx.send("Notified")
@@ -339,12 +312,8 @@ class Moderator(commands.Cog):
     # On leaving
     @commands.Cog.listener()
     async def on_member_remove(self, member:discord.Member):
-        if member.guild.id == 733822954034561065:
-            return False
-        elif member.guild.id == 739229902921793637:
+        if member.guild.id == 739229902921793637:
             channel = member.guild.get_channel(739255078229377054)
-        else:
-            return
 
         await channel.send(f"I hope {member.mention} doesn't think that they will be missed. They made their choice")
 
@@ -375,8 +344,7 @@ class Moderator(commands.Cog):
 
         elif isinstance(error, commands.CommandNotFound):
             await ctx.send("Could not find that command. Remember they are case sensitive. Use <>help for a list")
-        else: 
-
+        else:
             await ctx.send(error)    
 
         channel = self.bot.get_channel(740337325971603537)
