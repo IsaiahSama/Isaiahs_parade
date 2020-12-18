@@ -39,21 +39,7 @@ async def on_ready():
     backup.start()
     # , status=discord.Status.dnd
 
-@tasks.loop(hours=1)
-async def backup():
-    lis = ["fightdata.json", "relausers.json", "jltracking.json", "teams.json"]
-    for files in lis:
-        try:
-            with open(files) as fdata:
-                dataf = json.load(fdata)
-        except json.JSONDecodeError:
-            print("One of the Files Are Corrupt and therefore will not be backed up")
-            return
-        
-        with open(f"backups/{files}", "w") as t:
-            json.dump(dataf, t, indent=4)
 
-    print("Backed up")    
 
 @bot.command(hidden=True)
 @commands.is_owner()
@@ -73,21 +59,20 @@ async def rc(ctx, *, cog=None):
 @bot.event
 async def on_guild_join(guild):
     channel = discord.utils.get(guild.text_channels, name="parade-room")
-    if channel == None:
+    if not channel:
         await guild.create_text_channel("parade-room")
         channel = discord.utils.get(guild.text_channels, name="parade-room")
 
     role = discord.utils.get(guild.roles, name="Parader")
-    if role == None:
+    if not role:
         role = await guild.create_role(name="Parader")
 
     mchan = bot.get_channel(740414745252986970)
     await mchan.send(f"I have been invited to {guild.name}. {role.name} and {channel.name} Have been created successfully")
     
-
-    role = discord.utils.get(guild.roles, name="The Silent Ones")
+    role = discord.utils.get(guild.roles, name="shushed")
     if not role: 
-        role = await guild.create_role(name="The Silent Ones")
+        role = await guild.create_role(name="shushed")
     for channel in guild.text_channels:
         overwrites = {role: discord.PermissionOverwrite(send_messages=False)}
         await channel.edit(overwrites=overwrites)
@@ -103,7 +88,7 @@ async def on_guild_join(guild):
     joinbed.add_field(name="Help", value="You can view everything i'm capable of with <>help")
     joinbed.add_field(name="Main Server", value="Feel free to join my main server. Get the link with <>parade")
     joinbed.add_field(name="Positioning", value="As someone created to Moderate, be sure to give me a role high enough in order for you to use me to my full potential")
-
+    
     await channel.send(embed=joinbed)
 
         
