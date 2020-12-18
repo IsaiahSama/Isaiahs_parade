@@ -1275,14 +1275,14 @@ Stat names are the names that you see in the above embed, with the exception of 
 
     async def upgradegear(self, ctx):
         botuser = await self.getmember(ctx.author)
-        for value in ["weapon", "armour"]:
+        for value in ["weapon", "armor"]:
             await ctx.send(f"<>shop {value}")
             await self.shop(ctx, value)
             await asyncio.sleep(2)
             strongest = await self.getstrongest(eval(f"{value}list"), botuser)
             if not strongest: await ctx.send("Not enough Parade Coins"); continue
-            await ctx.send(f"<>buy {strongest}")
-            await self.buy(ctx, arg=strongest)
+            await ctx.send(f"<>buy {strongest.name}")
+            await self.buy(ctx, arg=strongest.name)
 
 
     # Weapon Stuff
@@ -3064,14 +3064,6 @@ Stat names are the names that you see in the above embed, with the exception of 
         rewardcash = (toreward.pcoin / 10)
         return rewardxp, rewardcash
 
-
-    @commands.command(hidden=True)
-    @commands.is_owner()
-    async def savefight(self, ctx):
-        await self.updlist()
-        await ctx.send("Saved")
-
-
     # Isaiah
 
     @commands.command(hidden=True)
@@ -3085,13 +3077,12 @@ Stat names are the names that you see in the above embed, with the exception of 
             asyncio.sleep(5)
             await self.upgradebot(ctx)
             await self.upgradegear(ctx)
-            await asyncio.sleep(20)
+            await asyncio.sleep(6 * 60)
 
 
-    @tasks.loop(seconds=10)
+    @tasks.loop(minutes=5)
     async def updlist(self):
         if not self.users: return
-        print
         await Saving().save("fightdata", self.users)
         
 

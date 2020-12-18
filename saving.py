@@ -39,7 +39,6 @@ class Saving:
                 with open(f"saves/{folder}/{files[index]}") as f:
                     data = json.load(f)
                     print(f"Loaded data from {files[index]}")
-                    print(data)
                     return data
             except json.JSONDecodeError:
                 print(f"{files[index]} was responsible for the JSONDecodeError")
