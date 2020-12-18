@@ -36,7 +36,6 @@ async def on_ready():
     # Sets Discord Status
     activity = discord.Activity(name='<>help', type=discord.ActivityType.watching)
     await bot.change_presence(activity=activity, status=discord.Status.dnd)
-    backup.start()
     # , status=discord.Status.dnd
 
 
