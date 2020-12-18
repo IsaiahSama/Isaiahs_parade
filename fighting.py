@@ -44,11 +44,14 @@ class Fight(commands.Cog):
             try:
                 with open(f"saves/fightdata/{files[index]}") as f:
                     data = json.load(f)
+                    print(f"Loaded data from {files[index]}")
             except json.JSONDecodeError:
+                print(f"{files[index]} was responsible for the JSONDecodeError")
+                os.remove(f"saves/fightdata/{files[index]}")
                 index -= 1
             except IndexError:
                 print("There aren't any Fight files for me to read :(")
-                break
+                return False
             else:
                 break
 
@@ -75,35 +78,32 @@ class Fight(commands.Cog):
 
         #users = loadedacc
 
-    if os.path.exists("Teams.json"):
-        try:
-            with open("Teams.json") as t:
-                data = json.load(t)
-        except json.JSONDecodeError:
-            with open("backups/Teams.json") as bt:
-                data = json.load(bt)
-                print("Teams Data was Corrupt")
-
-        buildingteam = []
+    teamlist = []
+    async def setteams(self):
+        files = os.listdir('saves/teamdata')
+        if not files: return
+        index = -1
+        while True:
+            try:
+                with open(f"saves/teamdata/{files[index]}") as f:
+                    data = json.load(f)
+                    print(f"Loaded team data from {files[index]}")
+            except json.JSONDecodeError:
+                print(f"{files[index]} was responsible for the JSONDecodeError")
+                os.remove(f"saves/fightdata/{files[index]}")
+                index -= 1
+            except IndexError:
+                print("No team files to read from currently")
+                return False
+            else:
+                break
         
-        for dictobj in data:
-            templist = []
-            for v in dictobj.values():
-                templist.append(v)
-            buildingteam.append(templist)
-
-        loadedteam = []
-
-        for team in buildingteam:
-            acc = Team(*team[0:5])
-            
-            loadedteam.append(acc)
-
-        teamlist = loadedteam
-
-    else:
-        teamlist = []
-
+        for dic in data:
+            temp = Team()
+            for k, v in dic.items():
+                setattr(temp, k, v)
+            self.teamlist.append(temp)
+    
     
     def __init__(self, bot):
         self.bot = bot
@@ -3189,9 +3189,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         member = member
         while True:
             channel = ctx.guild.get_channel(739248277257715752)
-
             await self.botquest(ctx, channel, member)
-
             await asyncio.sleep(6 * 60)
 
 
@@ -3199,36 +3197,36 @@ Stat names are the names that you see in the above embed, with the exception of 
     async def updlist(self):
         if not self.users: return
         files = os.listdir("saves/fightdata")
-        dumped = []
-        for fighter in self.users: dumped.append(fighter.__dict__)
-
+        dumped = [fighter.__dict__ for fighter in self.users]
         if not files:
             with open("saves/fightdata/fightdata0.json", "w") as f:
                 json.dump(dumped, f, indent=4)
             return
 
-        if len(files) == 10: await self.savefix(files)
+        if len(files) == 10: await self.savefix("fightdata", files)
         with open(f"saves/fightdata/fightdata{int(list(files[-1].split('.')[0])[-1]) + 1}.json", "w") as f:
             json.dump(dumped, f, indent=4)
 
         # print("Save is off")   
 
-    async def savefix(self, files):
-        os.remove(files[0])
+    async def savefix(self, folder, files):
+        os.remove(f"saves/{folder}/{files[0]}")
         files.remove(files[0])
         for pos, file in enumerate(files):
-            os.rename(f"saves/fightdata/{file}", f"saves/fightdata/{''.join(list(file.split('.')[0]).pop())}{pos}.json")
+            os.rename(f"saves/{folder}/{file}", f"saves/{folder}/{''.join(list(file.split('.')[0]).pop())}{pos}.json")
 
     async def updateteam(self):
-        dumped = []
-        if self.teamlist:
-            for team in self.teamlist:
-                dumped.append(team.__dict__)
-
-            with open("Teams.json", "w") as t:
+        if not self.teamlist: return
+        files = os.listdir("saves/teamdata")
+        dumped = [team.__dict__ for team in self.teamlist]
+        if not files: 
+            with open("saves/teamdata/teamdata0.json", "w") as t:
                 json.dump(dumped, t, indent=4)
-        else:
-            os.remove("Teams.json")
+                return
+
+        if len(files) == 5: await self.savefix("teamdata", files)
+        with open(f"saves/teamdata/teamdata{int(list(files[-1].split('.')[0])[-1]) + 1}.json", "w") as t:
+            json.dump(dumped, t, indent=4)
 
     
     @commands.command(hidden=True)
