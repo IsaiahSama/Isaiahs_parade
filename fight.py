@@ -696,6 +696,9 @@ class Fighter:
         else:
             return "You don't have enough Parade Coins for this"
 
+    def getarmour(self):
+        value = [a for a in allarmour if a.tag == self.armour]
+        return value[0]
 
     def getweapon(self):
         value = [w for w in allweapons if w.tag == self.weapon]

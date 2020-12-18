@@ -1269,7 +1269,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         return
 
     async def getstrongest(self, value, items, botuser):
-        canbuy = [item for item in items if item.tierz == botuser.getTier() and botuser.pcoin >= item.cost and item.cost > eval(f"botuser.{value}.cost")]
+        canbuy = [item for item in items if item.tierz == botuser.getTier() and botuser.pcoin >= item.cost and item.cost > eval(f"botuser.get{value}().cost")]
         if not canbuy: return None
         else: return canbuy[-1]
 
