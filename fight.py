@@ -312,11 +312,9 @@ class Armour:
         else:
             return True
 
-    def haspair(self):
-        if self.pairs == None:
-            return False
-        else:
-            return True
+    def getpair(self):
+        if not self.pairs: return False
+        return [pair for pair in weaponlist if self.pairs == pair.tag]
 
     def isreborn(self):
         if self.reborn > 0:
@@ -914,6 +912,7 @@ def buffing(tobuff):
         msg = "Something went wrong"
 
     return msg
+
 
 class FightMe(Fighter):
 

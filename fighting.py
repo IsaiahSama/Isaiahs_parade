@@ -392,7 +392,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             return
 
     @commands.command(brief="Get a passive or view the list of passives", help="This command is used to get your first passive, and also to change it to one you may one... for a price", usage="optional[True name_of_passive]")
-    async def passive(self, ctx, arg=False, *, name_of_passive=None, rb=False):
+    async def passive(self, ctx, arg=False, *, name_of_passive=None, rb=False, isbot=False):
         user = await self.getmember(ctx.author)
         if not user:
             await self.denied(ctx.channel, ctx.author)
@@ -407,7 +407,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             await ctx.send(f"Congratulations, your passive ability is {pash.name}. Check with <>profile")
             user.passive = pash.tag
             return
-
+        if isbot: return
         if user.hasPassive() and not arg:
             passconfirm = discord.Embed(
                 title=f"Passive Change. Your passive is {user.getabilpassname(user.passive)}",
@@ -737,13 +737,13 @@ Stat names are the names that you see in the above embed, with the exception of 
         fighting = True
 
         # Checking for Armour Weapon Pairs
-        if attacker.armour.haspair():
+        if attacker.armour.getpair():
             if attacker.weapon.tag == attacker.armour.pairs:
                 msg = attacker.buff()
                 await ctx.send(f"Set Bonus {msg}")
                 
 
-        if defender.armour.haspair():
+        if defender.armour.getpair():
             if defender.weapon.tag == defender.armour.pairs:
                 msg = defender.buff()
                 await ctx.send(f"Set Bonus {msg}")
@@ -851,7 +851,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             if attacker.hasPassive():
                 if attacker.passive.tag == 7010:
                     if attacker.armour.tag == 2602:
-                        if attacker.armour.haspair():
+                        if attacker.armour.getpair():
                             if attacker.weapon.tag == attacker.armour.Pairs:
                                 power = await self.cantruehaki(defender, attacker, power, battlebed)
                         
@@ -866,7 +866,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                     battlebed.add_field(name=f"{attacker.name}: {attacker.passive.usename}", value=f"{attacker.passive.effect} by {tob * 100}%")
 
                 if attacker.passive.name == "Pride of Balance":
-                    if attacker.armour.haspair():
+                    if attacker.armour.getpair():
                         if attacker.armour.tag == 2603:
                             power = await self.canbalance(defender, attacker, power, battlebed)
 
@@ -894,7 +894,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                     psn = True
                     psndmg = 100
                 if abiltag == 5004:
-                    if attacker.armour.haspair():
+                    if attacker.armour.getpair():
                         if attacker.weapon.tag == attacker.armour.pairs:
                             battlebed.add_field(name=f"{attacker.ability.usename}", value="Having armour set increases damage by 1.3 + 70")
                             power *= 1.3
@@ -1269,7 +1269,8 @@ Stat names are the names that you see in the above embed, with the exception of 
         return
 
     async def getstrongest(self, value, items, botuser):
-        canbuy = [item for item in items if item.tierz == botuser.getTier() and botuser.pcoin >= item.cost and item.cost > eval(f"botuser.get{value}().cost")]
+        canbuy = [item for item in items if item.tierz == botuser.getTier() and botuser.pcoin >= item.cost]
+            
         if not canbuy: return None
         else: return canbuy[-1]
 
@@ -1281,6 +1282,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             await asyncio.sleep(2)
             strongest = await self.getstrongest(value, eval(f"{value}list"), botuser)
             if not strongest: await ctx.send("Not enough Parade Coins"); continue
+            if strongest.cost < eval(f"botuser.get{value}().cost"): await ctx.send(f"{strongest.name} is weaker than my current {value}"); continue
             await ctx.send(f"<>buy {strongest.name}")
             await self.buy(ctx, arg=strongest.name)
 
@@ -1337,9 +1339,9 @@ Stat names are the names that you see in the above embed, with the exception of 
         thing.add_field(name=f"Weapon: {sword.name}", value=f"Damage: +{sword.damage}, Critchance: +{sword.critplus}%, Lifesteal: +{sword.lifesteal}",
         inline=False)
         thing.add_field(name=f"Armour: {shield.name}", value=f"Health up: +{shield.hpup}, Power Up: +{shield.pup}")
-        if shield.haspair():
+        if shield.getpair():
             fuser = await self.fightuser(user)
-            thing.add_field(name=f"{shield.name} pairs well with {shield.pairs.name}", value=f"{fuser.buff()}", inline=False)
+            thing.add_field(name=f"{shield.name} pairs well with {shield.getpair().name}", value=f"{fuser.buff()}", inline=False)
             
 
         await ctx.send(embed=thing)
@@ -2337,7 +2339,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             if person.hasActive():
                 person.ability.reset()
         # Checking for Armour Weapon Pairs
-            if person.armour.haspair():
+            if person.armour.getpair():
                 if person.weapon.name == person.armour.pairs.name:
                     msg = person.buff()
                     await channel.send(f"Set Bonus {msg}")
@@ -2359,7 +2361,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         if self.raidbeast.hasActive():
             self.raidbeast.ability.reset()
 
-        if self.raidbeast.armour.haspair():
+        if self.raidbeast.armour.getpair():
             if self.raidbeast.weapon.name == self.raidbeast.armour.pairs.name:
                 msg = self.raidbeast.buff()
                 await channel.send(f"Set Bonus {msg}")
@@ -2482,7 +2484,7 @@ Stat names are the names that you see in the above embed, with the exception of 
 
                 if player.passive.tag == 7010:
                     if player.armour.name == "Haki":
-                        if player.armour.haspair():
+                        if player.armour.getpair():
                             if player.weapon.name == player.armour.pairs.name:
                                 power = await self.cantruehaki(self.raidbeast, player, power, raidbed)
                         
@@ -2493,7 +2495,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                         pass
 
                 if player.passive.name == "Pride of Balance":
-                    if player.armour.haspair():
+                    if player.armour.getpair():
                         if player.armour.name == "Yang":
                             power = await self.canbalance(self.raidbeast, player, power, raidbed)
 
@@ -2717,7 +2719,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             
             if self.raidbeast.passive.tag == 7010:
                 if self.raidbeast.armour.name == "Haki":
-                    if self.raidbeast.armour.haspair():
+                    if self.raidbeast.armour.getpair():
                         if self.raidbeast.weapon.name == self.raidbeast.armour.pairs.name:
                             power = await self.cantruehaki(target, self.raidbeast, power, raidbed)
                         
@@ -2728,7 +2730,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                     pass
 
                 if self.raidbeast.passive.name == "Pride of Balance":
-                    if self.raidbeast.armour.haspair():
+                    if self.raidbeast.armour.getpair():
                         if self.raidbeast.armour.name == "Yang":
                             power = await self.canbalance(target, self.raidbeast, power, raidbed)
 
