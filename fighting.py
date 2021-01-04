@@ -2056,7 +2056,7 @@ Stat names are the names that you see in the above embed, with the exception of 
     async def rchannel(self, ctx):
         await self.channel(ctx, True)
         
-    @commands.command(help="Channel power for 30 minutes. You cannot do quests or fights while channeling. Cooldown: 2 hours")
+    @commands.command(help="Channel power for 30 minutes. You cannot do quests or fights while channeling. Cooldown: 2 hours", brief="Channel for power.")
     @commands.cooldown(1, 7200, commands.BucketType.user)
     async def channel(self, ctx, conf=False):
         user = await self.getmember(ctx.author)
