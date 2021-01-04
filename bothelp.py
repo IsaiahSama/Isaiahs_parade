@@ -31,7 +31,7 @@ class MyHelpCommand(commands.MinimalHelpCommand):
             embed.add_field(name="Cog:", value=f"```{command.cog.qualified_name}```")
     
         destination = self.get_destination()
-        await destination.send(embed=embed, delete_after=30)
+        await destination.send(embed=embed, delete_after=60)
 
     async def send_cog_help(self, cog):
         embed = discord.Embed(
@@ -42,12 +42,15 @@ class MyHelpCommand(commands.MinimalHelpCommand):
 
         to_loop = await self.filter_commands(cog.get_commands())
         if not to_loop: await self.get_destination().send("This Cog has no commands."); return
-        for command in to_loop:
-            embed.add_field(name=f"{self.clean_prefix}{command.qualified_name}", value=f"```{command.brief}```")
-        embed.set_footer(text=self.get_opening_note())
+        terminator = 1
+        if len(to_loop) > 25:
+            terminator = len(to_loop) // 25 + 1
+        for _ in range(terminator):
+            for command in to_loop[:ini]:
+                embed.add_field(name=f"{self.clean_prefix}{command.qualified_name}", value=f"```{command.brief}```")
+            embed.set_footer(text=self.get_opening_note())
 
-        
-        await self.get_destination().send(embed=embed, delete_after=30)
+            await self.get_destination().send(embed=embed, delete_after=60)
 
 
     async def send_bot_help(self, mapping):
@@ -64,7 +67,7 @@ class MyHelpCommand(commands.MinimalHelpCommand):
                 embed.add_field(name=cog.qualified_name, value=f"```{cog.description}```")
             
 
-        await self.get_destination().send(embed=embed, delete_after=30)
+        await self.get_destination().send(embed=embed, delete_after=60)
 
     
 class MyHelp(commands.Cog):
