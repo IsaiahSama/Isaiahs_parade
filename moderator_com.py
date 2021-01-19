@@ -71,20 +71,15 @@ class Moderator(commands.Cog):
 
     @commands.command(aliases=["unban"], brief="Unbands a user", help="Used to lift the ban on the user.", usage="@user optional[reason]")
     @commands.has_permissions(ban_members=True)
-    async def impactrevive(self, ctx, user: discord.User, reason=None):
-        try:
-            person = await ctx.guild.fetch_ban(user)
-        except discord.NotFound:
-            await ctx.send("Could not find that user in the banned list")
-            return
-
-        await ctx.guild.unban(person.user, reason=reason)
+    async def impactrevive(self, ctx, userid: int, reason=None):
+        user = await self.bot.fetch_user(userid)
+        await ctx.guild.unban(user, reason=reason)
         embed = discord.Embed(
             title='Tsk...',
             color=randint(0, 0xffffff)
         )
 
-        embed.add_field(name='I guess you are back', value=f"So you managed to escape {user.mention}!")
+        embed.add_field(name='I guess you are back', value=f"So you managed to escape {userid}!")
         await ctx.send(embed=embed)
 
 
@@ -148,7 +143,7 @@ class Moderator(commands.Cog):
         def check(m):
            return m.author == member
         
-        await ctx.channel.purge(limit=amount, check=check)
+        await ctx.channel.purge(limit=amount + 1, check=check)
 
         file = discord.File("./images/kc.gif", filename="kc.gif")
 
@@ -314,8 +309,7 @@ class Moderator(commands.Cog):
     async def on_member_remove(self, member:discord.Member):
         if member.guild.id == 739229902921793637:
             channel = member.guild.get_channel(739255078229377054)
-
-        await channel.send(f"I hope {member.mention} doesn't think that they will be missed. They made their choice")
+            await channel.send(f"I hope {member.mention} doesn't think that they will be missed. They made their choice")
 
 
     @commands.Cog.listener()
