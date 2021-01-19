@@ -4,8 +4,6 @@ from random import randint
 import asyncio
 import random
 import math
-from googletrans import Translator
-import googletrans
 
 
 class afkuser:
@@ -158,28 +156,7 @@ class General(commands.Cog):
         await asyncio.sleep(3)
         await ctx.send(f"{chosen.display_name}")
 
-    @commands.command(brief="Translates any given text into english", help="Translates any given text to english", usage="non-english_text")
-    async def translate(self, ctx, *, text):
-        translator = Translator()
-        result = translator.translate(text)
-        await ctx.send(result.text)
-
-    @commands.command(brief="Translates any given text to language specified", help='Translates any given text to the language specified', usage="language text_to_translate")
-    async def translateto(self, ctx, lang: str, *, text):
-        lang = lang.lower()
-        languages = googletrans.LANGUAGES
-
-        lang_to_trans = [k for k, v in languages.items() if lang.lower() in [k, v]]
-        if not lang_to_trans: 
-            await ctx.send(f"{lang} could not be found")
-            return
-
-        lang_to_trans = lang_to_trans[0]
-
-        translator = Translator()
-        result = translator.translate(text, dest=languages[lang_to_trans])
-        await ctx.send(result.text)
-
+    
     # List of all Letters in the Alphabet
     letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l",
                "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
