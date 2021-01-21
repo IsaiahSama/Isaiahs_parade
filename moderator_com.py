@@ -1,13 +1,11 @@
 import discord
 from discord.ext import commands
 import asyncio
-import random
 from random import randint
 import typing
 import math
-import os
-import json
 import traceback
+import aiohttp
 
 
 class Moderator(commands.Cog):
@@ -373,15 +371,26 @@ class Moderator(commands.Cog):
         if message.author == self.bot.user:
             return
 
-        if message.guild not in self.noprofane:
-            return
-        else:
+        if message.guild in self.noprofane:
             for sword in self.badword:
                 if sword in message.content.lower():
                     newmsg = await self.regulate(message.content.lower())
                     await message.channel.send(f"{message.author.display_name}: {newmsg}")
                     await message.delete()
-                    return        
+                    return
+        
+        if not message.channel.is_nsfw():
+            if message.attachments:
+                image = [img for img in message.attachments if hasattr(img, "height")]
+                if not image: return
+                async with aiohttp.ClientSession() as session:
+                    s = await session.post("https://api.deepai.org/api/nsfw-detector", data={'image': image[0].url,},headers={'api-key': "557a24bd-0ea9-47b3-bb06-98e0d0be6347"})
+                    sjson = await s.json()
+                    try:
+                        if sjson["output"]['nsfw_score'] > 0.5:
+                            await message.delete()
+                            await message.channel.send("OII... NO PORN HERE!!!", delete_after=5)
+                    except KeyError: print("Sus image... but idk what happened"); print(sjson)
 
 def setup(bot):
     bot.add_cog(Moderator(bot))
