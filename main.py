@@ -2,6 +2,7 @@
 import discord
 from discord.ext import commands, tasks
 import asyncio
+<<<<<<< HEAD
 import random
 from random import randint
 import os
@@ -9,6 +10,12 @@ import sqlite3
 from dotenv import load_dotenv
 load_dotenv()
 import json
+=======
+from random import randint
+import os
+from dotenv import load_dotenv
+load_dotenv()
+>>>>>>> 987dbf8 (Sending EVERYTHING)
 
 
 # Set Client
@@ -74,7 +81,11 @@ async def on_guild_join(guild):
         role = await guild.create_role(name="shushed")
     for channel in guild.text_channels:
         overwrites = {role: discord.PermissionOverwrite(send_messages=False)}
+<<<<<<< HEAD
         await channel.edit(overwrites=overwrites)
+=======
+        await channel.set_permissions(role, send_messages=False)
+>>>>>>> 987dbf8 (Sending EVERYTHING)
         
         print(f"{guild} roles set up")
     joinbed = discord.Embed(

@@ -132,7 +132,11 @@ class Fight(commands.Cog):
             if target.weapon.name == "Plague Doctors Scepter":
                 target.weapon.damage = math.floor(target.maxdmg * 0.5)
         
+<<<<<<< HEAD
         if not powpof:
+=======
+        else:
+>>>>>>> 987dbf8 (Sending EVERYTHING)
             sword, shield = target.getgear()
             if ctx.author.id in self.modlist and target.tag == ctx.author.id:
                 await self.modcheck(ctx, target)
@@ -539,12 +543,21 @@ Stat names are the names that you see in the above embed, with the exception of 
                     target = thing
                     break
             
+<<<<<<< HEAD
             if target == None:
                 await ctx.send(f"That is either not an active ability, or must be obtained by special means")
                 return
 
             if thing.isreborn():
                 if not user.reborn >= thing.reborn:
+=======
+            if not target:
+                await ctx.send(f"That is either not an active ability, or must be obtained by special means")
+                return
+
+            if target.isreborn():
+                if not user.reborn >= target.reborn:
+>>>>>>> 987dbf8 (Sending EVERYTHING)
                     await ctx.send("Your reborn Levels are too low for this ability.")
                     return
 
@@ -654,6 +667,11 @@ Stat names are the names that you see in the above embed, with the exception of 
         
         if not account: await ctx.send("You need to create your own user profile with <>createprofile first"); return
         
+<<<<<<< HEAD
+=======
+        user1 = await self.fightuser(account)
+
+>>>>>>> 987dbf8 (Sending EVERYTHING)
         if not isquest:
             victim = await self.getmember(member)
             if not victim: await ctx.send(f"{member} does not have a fight profile. Let them make one with <>createprofile"); return
@@ -662,9 +680,12 @@ Stat names are the names that you see in the above embed, with the exception of 
                 await ctx.send(f"{member.display_name} is offline so cannot be fought")
                 return
 
+<<<<<<< HEAD
         user1 = await self.fightuser(account)
 
         if not isquest:
+=======
+>>>>>>> 987dbf8 (Sending EVERYTHING)
             if not user1.canfight or not user2.canfight:
                 await ctx.send(f"One of you has disabled pvp. Turn it on with <>togglefight")
                 return
@@ -691,8 +712,20 @@ Stat names are the names that you see in the above embed, with the exception of 
             self.infight.append(user1.tag)
             self.infight.append(user2.tag)
 
+<<<<<<< HEAD
 
         if isquest:
+=======
+            fightembed = discord.Embed(
+                title="Fighting...",
+                description=f"Fight Between {user1.name} and {user2.name}",
+                color=randint(0, 0xffffff)
+            )
+
+            botmsg = await ctx.send(embed=fightembed)
+
+        else:
+>>>>>>> 987dbf8 (Sending EVERYTHING)
             user2 = await self.get_enemy(user1, q6)          
 
             questembed = discord.Embed(
@@ -715,6 +748,7 @@ Stat names are the names that you see in the above embed, with the exception of 
 
             botmsg = await ctx.send(embed=questembed)
             
+<<<<<<< HEAD
         else:
             fightembed = discord.Embed(
                 title="Fighting...",
@@ -723,6 +757,8 @@ Stat names are the names that you see in the above embed, with the exception of 
             )
 
             botmsg = await ctx.send(embed=fightembed)
+=======
+>>>>>>> 987dbf8 (Sending EVERYTHING)
 
         if user1.weapon.tag == 3601:
             user1.weapon.damage = math.floor(user1.maxdmg * 0.5)
@@ -892,7 +928,10 @@ Stat names are the names that you see in the above embed, with the exception of 
                 if abiltag == 6001:
                     psned.append(defender)
                     psn = True
+<<<<<<< HEAD
                     psndmg = 100
+=======
+>>>>>>> 987dbf8 (Sending EVERYTHING)
                 if abiltag == 5004:
                     if attacker.armour.getpair():
                         if attacker.weapon.tag == attacker.armour.pairs:
@@ -1037,6 +1076,10 @@ Stat names are the names that you see in the above embed, with the exception of 
             battlebed.add_field(name=f"{defender.name}:", value=f"Health: {defender.health}", inline=False)
 
             if psn:
+<<<<<<< HEAD
+=======
+                psndmg = 100
+>>>>>>> 987dbf8 (Sending EVERYTHING)
                 for person in psned:
                     person.ptime -= 1
                     person.health -= psndmg
@@ -1418,6 +1461,11 @@ Stat names are the names that you see in the above embed, with the exception of 
             infobed.add_field(name="Duration:", value=f"{item.duration}")
 
             msg = await ctx.send(embed=infobed)
+<<<<<<< HEAD
+=======
+
+        else: return
+>>>>>>> 987dbf8 (Sending EVERYTHING)
             
         await asyncio.sleep(60)
         await msg.delete()
@@ -1559,7 +1607,11 @@ Stat names are the names that you see in the above embed, with the exception of 
         user = await self.getmember(ctx.author)
         if user:
             usertier = user.getTier()
+<<<<<<< HEAD
             fight_users = [await self.getmember(x) for x in self.users if await self.getmember(x)]
+=======
+            fight_users = [await self.getmember(x) for x in ctx.guild.members if await self.getmember(x)]
+>>>>>>> 987dbf8 (Sending EVERYTHING)
             sametier = [x for x in fight_users if x.getTier() == usertier]
             canfight = [x.name for x in sametier if x.canfight]
 
@@ -2431,6 +2483,10 @@ Stat names are the names that you see in the above embed, with the exception of 
         elif user.getTier() == 6:
             strong = [beast for beast in raidingmonster if beast.level >= 800]
             rbeast = random.choice(strong)
+<<<<<<< HEAD
+=======
+        else: return
+>>>>>>> 987dbf8 (Sending EVERYTHING)
         
         rbeast = FightingBeast(rbeast.name, rbeast.health, rbeast.mindmg, rbeast.maxdmg, 
         rbeast.mincoin, rbeast.maxcoin, rbeast.entrymessage, rbeast.minxp, rbeast.critchance, rbeast.healchance,
@@ -2469,6 +2525,10 @@ Stat names are the names that you see in the above embed, with the exception of 
             color=randint(0, 0xffffff)
         )
 
+<<<<<<< HEAD
+=======
+            power = player.maxdmg
+>>>>>>> 987dbf8 (Sending EVERYTHING)
             if self.raidbeast.hasPassive():
                 if self.raidbeast.passive.tag == 7006:
                     raidbed.add_field(name=f"{self.raidbeast.name}", value=f"attacks first because of speed boost")
@@ -2506,7 +2566,10 @@ Stat names are the names that you see in the above embed, with the exception of 
                     player.health += math.ceil(tob * player.health)
                     raidbed.add_field(name=f"{player.name}: {player.passive.usename}", value=f"{player.passive.effect} by {tob * 100}%")
         
+<<<<<<< HEAD
             power = player.maxdmg
+=======
+>>>>>>> 987dbf8 (Sending EVERYTHING)
             critnum = randint(0, 100)
             healnum = randint(0, 100)
 

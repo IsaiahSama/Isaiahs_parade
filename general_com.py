@@ -276,6 +276,13 @@ class General(commands.Cog):
 
         await ctx.send("Look at you pretending that you were gone")
 
+<<<<<<< HEAD
+=======
+    @commands.command(brief="Command used to return a random element from a given list", help="Used to return a random element from a given list", usage="item1 item2 itemx etc")
+    async def spin_the_wheel(self, ctx, *args):
+        await ctx.send(random.choice(args))
+
+>>>>>>> 987dbf8 (Sending EVERYTHING)
     @commands.command(brief="Quotes a message", help="Similar to discord's old quote function. (The message link is easily copied by right clicking the message)", usage="message_link")
     async def quote(self, ctx, messageLink, *, msg=" "):
         messageLink = messageLink.split("/")
