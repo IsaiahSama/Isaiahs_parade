@@ -1,9 +1,7 @@
 .env
 .vscode
-special_com.py
 ./backups
 extra/
 isehjoin.mp3
-music_com.py
 mynotes.json
 saves/
