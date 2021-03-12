@@ -71,11 +71,7 @@ async def on_guild_join(guild):
         role = await guild.create_role(name="shushed")
     for channel in guild.text_channels:
         overwrites = {role: discord.PermissionOverwrite(send_messages=False)}
-<<<<<<< HEAD
-        await channel.edit(overwrites=overwrites)
-=======
         await channel.set_permissions(role, send_messages=False)
->>>>>>> 987dbf8 (Sending EVERYTHING)
         
         print(f"{guild} roles set up")
     joinbed = discord.Embed(
