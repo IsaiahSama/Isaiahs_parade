@@ -201,10 +201,7 @@ class Moderator(commands.Cog):
     @commands.command(brief="Cancels Channel Freeze and and slowmode", help="Reverses the effect of zawarudo and slowmode")
     @commands.has_permissions(manage_channels=True)
     async def ger(self, ctx):
-<<<<<<< HEAD
-=======
         og = ctx.channel.overwrites or None
->>>>>>> 987dbf8 (Sending EVERYTHING)
         file = discord.File("./images/goldenexp.gif")
 
         embed = discord.Embed(
@@ -218,12 +215,8 @@ class Moderator(commands.Cog):
         embed.set_image(url="attachment://goldenexp.gif")
         await ctx.send(file=file, embed=embed)
         await ctx.channel.edit(slowmode_delay=0)
-<<<<<<< HEAD
-        await ctx.channel.set_permissions(ctx.guild.default_role, send_messages=True)
-=======
         await ctx.channel.edit(overwrites=og)
         
->>>>>>> 987dbf8 (Sending EVERYTHING)
 
     # Kicks a user
     @commands.command(aliases=["kick"], brief="Kicks a member", help="Removes a member from your server.", usage="@member")
@@ -277,12 +270,7 @@ class Moderator(commands.Cog):
         if not role: await ctx.send("Role does 'shushed' does not exist"); return
 
         for channel in ctx.guild.text_channels:
-<<<<<<< HEAD
-            overwrites = {role: discord.PermissionOverwrite(send_messages=False)}
-            await channel.edit(overwrites=overwrites)
-=======
             await channel.set_permissions(role, send_messages=False)
->>>>>>> 987dbf8 (Sending EVERYTHING)
 
     @commands.command(hidden=True)
     @commands.is_owner()
