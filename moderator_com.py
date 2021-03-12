@@ -392,20 +392,6 @@ class Moderator(commands.Cog):
                     await message.delete()
                     return
         
-<<<<<<< HEAD
-        if not message.channel.is_nsfw():
-            if message.attachments:
-                image = [img for img in message.attachments if hasattr(img, "height")]
-                if not image: return
-                async with aiohttp.ClientSession() as session:
-                    s = await session.post("https://api.deepai.org/api/nsfw-detector", data={'image': image[0].url,},headers={'api-key': "557a24bd-0ea9-47b3-bb06-98e0d0be6347"})
-                    sjson = await s.json()
-                    try:
-                        if sjson["output"]['nsfw_score'] > 0.5:
-                            await message.delete()
-                            await message.channel.send("OII... NO PORN HERE!!!", delete_after=5)
-                    except KeyError: print("Sus image... but idk what happened"); print(sjson)
-=======
         # if not message.channel.is_nsfw():
         #     if message.attachments:
         #         image = [img for img in message.attachments if hasattr(img, "height")]
@@ -418,7 +404,6 @@ class Moderator(commands.Cog):
         #                     await message.delete()
         #                     await message.channel.send(f"OII... NO PORN HERE!!!. {sjson}", delete_after=10)
         #             except KeyError: print("Sus image... but idk what happened"); print(sjson)
->>>>>>> 987dbf8 (Sending EVERYTHING)
 
 def setup(bot):
     bot.add_cog(Moderator(bot))

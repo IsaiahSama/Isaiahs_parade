@@ -2,20 +2,10 @@
 import discord
 from discord.ext import commands, tasks
 import asyncio
-<<<<<<< HEAD
-import random
-from random import randint
-import os
-import sqlite3
-from dotenv import load_dotenv
-load_dotenv()
-import json
-=======
 from random import randint
 import os
 from dotenv import load_dotenv
 load_dotenv()
->>>>>>> 987dbf8 (Sending EVERYTHING)
 
 
 # Set Client
