@@ -252,7 +252,7 @@ class General(commands.Cog):
         try:
             await ctx.author.edit(nick=f"[AFK] {ctx.author.display_name}")
         except discord.errors.Forbidden:
-            pass
+            await ctx.send("I've logged your afk, but I don't have enough permissions to change your name.")
 
     # back
 
@@ -266,19 +266,22 @@ class General(commands.Cog):
                 except discord.errors.Forbidden: pass
                 self.isafk.remove(afkperson)
                 await ctx.send(f"Welcome back {ctx.author.mention}, you were missed... By me at least")
-            return
+                return
 
         if ctx.author.display_name.startswith("[AFK] "):
             try:
                 name = ctx.author.display_name.strip("[AFK] ")
-                await ctx.author.edit(nick=f"{name}")
-            except discord.errors.Forbidden: pass
+                await ctx.author.edit(nick=name)
+                await ctx.send("Look at you pretending that you were gone")
+            except discord.errors.Forbidden: await ctx.send("Sorry, can't change your name")
 
-        await ctx.send("Look at you pretending that you were gone")
 
     @commands.command(brief="Command used to return a random element from a given list", help="Used to return a random element from a given list", usage="item1 item2 itemx etc")
     async def spin_the_wheel(self, ctx, *args):
-        await ctx.send(random.choice(args))
+        await ctx.send(f"Mhm... let's see... out of {args} I choose...")
+        async with ctx.channel.typing():
+            await asyncio.sleep(1)
+            await ctx.send(random.choice(args))
 
     @commands.command(brief="Quotes a message", help="Similar to discord's old quote function. (The message link is easily copied by right clicking the message)", usage="message_link")
     async def quote(self, ctx, messageLink, *, msg=" "):
@@ -302,16 +305,18 @@ class General(commands.Cog):
         await ctx.send(f"> {content} - {message.author.display_name}\n```{ctx.author.name}: {msg}``` \n Link: {message.jump_url}")
         await ctx.message.delete()
 
+    @commands.command(brief="Used to view all members with a specified role", help="Returns a list of all users that have a given role", usage="role_name/role_id")
+    async def who_has_role(self, ctx, role:discord.Role):
+        members = [member.name for member in ctx.guild.members if role in member.roles]
+        if not members: await ctx.send("No one has that role as of yet")
+        else: 
+            await ctx.send(f"Showing all members that has the {role.name} role.")
+            await ctx.send(', '.join(members))
+
     @commands.Cog.listener()
     async def on_message(self, message):
         if message.author == self.bot.user:
             return
-
-        """if message.content.startswith("<>back"):
-            return
-        for afkperson in self.isafk:
-            if afkperson.id == message.author.id and afkperson.guild == message.guild:
-                await message.channel.send("Have you returned to us? If so, do <>back")"""
 
         for afkthing in self.isafk:
             if afkthing.user in message.mentions and afkthing.guild is message.guild:

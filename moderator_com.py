@@ -272,18 +272,6 @@ class Moderator(commands.Cog):
         for channel in ctx.guild.text_channels:
             await channel.set_permissions(role, send_messages=False)
 
-    @commands.command(hidden=True)
-    @commands.is_owner()
-    async def rnotif(self, ctx, *, msg):
-        for server in self.bot.guilds:
-            role = discord.utils.get(server.roles, name="Parader")
-            channel = discord.utils.get(server.text_channels, name="parade-room")
-            if not role or not channel: continue
-            await channel.send(f"Attention {role.mention}. {msg}")
-
-        await ctx.send("Notified")
-
-
     # Events
 
     @commands.Cog.listener()

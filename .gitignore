@@ -1,7 +1,7 @@
-.env
 .vscode
 ./backups
 extra/
 isehjoin.mp3
 mynotes.json
 saves/
+__pycache__/*
