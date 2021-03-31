@@ -305,14 +305,6 @@ class General(commands.Cog):
         await ctx.send(f"> {content} - {message.author.display_name}\n```{ctx.author.name}: {msg}``` \n Link: {message.jump_url}")
         await ctx.message.delete()
 
-    @commands.command(brief="Used to view all members with a specified role", help="Returns a list of all users that have a given role", usage="role_name/role_id")
-    async def who_has_role(self, ctx, role:discord.Role):
-        members = [member.name for member in ctx.guild.members if role in member.roles]
-        if not members: await ctx.send("No one has that role as of yet")
-        else: 
-            await ctx.send(f"Showing all members that has the {role.name} role.")
-            await ctx.send(', '.join(members))
-
     @commands.Cog.listener()
     async def on_message(self, message):
         if message.author == self.bot.user:

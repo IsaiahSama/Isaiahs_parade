@@ -272,6 +272,22 @@ class Moderator(commands.Cog):
         for channel in ctx.guild.text_channels:
             await channel.set_permissions(role, send_messages=False)
 
+    @commands.command(brief="Used to view all members with a specified role", help="Returns a list of all users that have a given role", usage="role_name/role_id")
+    async def who_has_role(self, ctx, role:discord.Role):
+        members = [member.name for member in ctx.guild.members if role in member.roles]
+        if not members: await ctx.send("No one has that role as of yet")
+        else: 
+            await ctx.send(f"Showing all members that have the {role.name} role.")
+            await ctx.send(', '.join(members))
+
+    @commands.command(brief="Used to view all members without a specified role", help="Returns a list of all users that do not have a given role", usage="role_name/role_id")
+    async def not_who_has_role(self, ctx, role:discord.Role):
+        members = [member.name for member in ctx.guild.members if role not in member.roles]
+        if not members: await ctx.send("Everyone seems to have that role")
+        else: 
+            await ctx.send(f"Showing all members that do not the {role.name} role.")
+            await ctx.send(', '.join(members))
+
     # Events
 
     @commands.Cog.listener()
