@@ -742,88 +742,103 @@ class Fighter:
         return toreturn[0]
 
 def buffing(tobuff):
-    if tobuff.armour.name == "Solar Flare":
+    # Solar flare
+    if tobuff.armour.tag == 2302:
         tobuff.weapon.damage += 20
         tobuff.health += 50
         msg = "Increased damage of Solar Flare by 20 and health by 50"
 
-    elif tobuff.armour.name == "Shadow Flame":
+    # Shadow flame
+    elif tobuff.armour.tag == 2402:
         tobuff.weapon.damage += 60
         tobuff.health += 100
         tobuff.mindmg += 15
         msg = "Increased damage of Shadow Flame Knife by 60, Increased health by 100, and increased mindmg by 15"
 
-    elif tobuff.armour.name == "True Plague Doctors Uniform":
+    # True PDU
+    elif tobuff.armour.tag == 4602:
         tobuff.health += 100
         tobuff.weapon.damage += 45
         tobuff.critchance += 5
         tobuff.weapon.lifesteal += 6
         msg = "Increased Damage of Plague Doctors Scepter by 45. Increased Health by 100. Increased Critchance by 5%. Increased lifesteal by 6%"
 
-    elif tobuff.armour.name == "Valkryie":
+    # Valkyriere
+    elif tobuff.armour.tag == 2108:
         tobuff.health += 40
         tobuff.weapon.damage += 5
         msg = "Increased Damge of Axe by 5, and increased health by 40"
 
-    elif tobuff.armour.name == "Assassins":
+    # Assassins
+    elif tobuff.armour.tag == 2107:
         tobuff.health += 10
         tobuff.weapon.damage += 15
         msg = "Increased Damage of Dagger by 15, added 3% lifesteal and +10 health"
 
-    elif tobuff.armour.name == "Charged Ranger":
+    # Charged enoug, then perphaps
+    elif tobuff.armour.tag == 2301:
         tobuff.weapon.damage += 30
         tobuff.armour.regen += 5
         tobuff.mindmg += 10
         msg = "Increased Weapon damage by 30, 5% regen and increase min damage by 10"       
 
-    elif tobuff.armour.name == "Diamond":
+    # Diamond
+    elif tobuff.armour.tag == 2202:
         tobuff.health += 35
         tobuff.weapon.damage += 15
         msg = "Increased Weapon Damage by 15, and increased health by 35"     
 
-    elif tobuff.armour.name == "Wooden":
+    # Wooden
+    elif tobuff.armour.tag == 2306:
         tobuff.health += 200
         tobuff.weapon.critplus += 3
         tobuff.weapon.damage += 15
         msg = "Increased Health by 200, increased weapon damage by 15, and critchance by 3%"
 
-    elif tobuff.armour.name == "Slime":
+    # Slime
+    elif tobuff.armour.tag == 2106:
         tobuff.health += 20
         tobuff.weapon.damage += 15
         tobuff.weapon.critplus += 4
         msg = "Increased Health by 20, increased Damage of Baby Slime by 15, and increased crit chance by 4"
         
-    elif tobuff.armour.name == "Master General":
+    # Master general
+    elif tobuff.armour.tag == 2403:
         tobuff.health += 220
         tobuff.weapon.damage += 20
         msg = "Increased health by 220. Increased weapon damage by 20"
 
-    elif tobuff.armour.name == "Tundra Ranger":
+    # Tundra Ranger
+    elif tobuff.armour.tag == 2404:
         tobuff.health += 150
         tobuff.critchance += 15
         tobuff.weapon.damage += 15
         tobuff.weapon.lifesteal += 3
         msg = "Increased health by 150. Increased Critchance and weapon damage by 15. Increased weapon lifesteal by 3%"
         
-    elif tobuff.armour.name == "Vibe Master":
+    # Vibe Master
+    elif tobuff.armour.tag == 2505:
         tobuff.critchance += 100
         tobuff.weapon.damage += 30
         msg = "Increased crit chance by 100. Increased weapon damage by 30"
 
-    elif tobuff.armour.name == "Vampiric Cloak":
+    # Vampiric Cloak
+    elif tobuff.armour.tag == 2501:
         tobuff.health += 200
         tobuff.weapon.lifesteal += 5
         tobuff.armour.regen += 2
         tobuff.weapon.damage += 40
         msg = "Increased Health by 200, lifesteal on ENC Vamp Knives by 5%, damage on ENC Vamp Knives by 40 and regen on Vamp Cloak by 2%"
 
-    elif tobuff.armour.name == "Nightmare":
+    # Nightmare
+    elif tobuff.armour.tag == 2502:
         tobuff.health += 120
         tobuff.weapon.damage += 120
         tobuff.attackmsg = "Sealed the dreams of"
         msg = "Increased health and weapon damage by 120"
 
-    elif tobuff.armour.name == "Haki":
+    # Haki
+    elif tobuff.armour.tag == 2602:
         tobuff.health += 500
         tobuff.weapon.damage += 400
         tobuff.weapon.lifesteal += 4
@@ -834,7 +849,8 @@ def buffing(tobuff):
         tobuff.attackmsg = "manipulates the existence of"
         msg = "This is your birthrite. Increased health by 500, Damage of Conquerors by 400, increased lifesteal on both Haki and Conquerors Haki by 4%,increased crit chance by 10% and increased min and max damage by 20. Able to use Haoshoku Haki passive"
 
-    elif tobuff.armour.name == "Yang":
+    # Yang
+    elif tobuff.armour.tag == 2603:
         tobuff.health += 500
         tobuff.weapon.damage += 400
         tobuff.weapon.lifesteal += 4
@@ -845,47 +861,55 @@ def buffing(tobuff):
         tobuff.attackmsg = "manipulates the mind and soul of"
         msg = "Perfect balanced has been achieved. Increased health by 500, Damage of Yin Blade by 400, increased lifesteal on both Yang and Yin by 4%,increased crit chance by 10% and increased min and max damage by 50. Able to use Pride of Balance Passive"
         
-    elif tobuff.armour.name == "Blasting":
+    # Blasting
+    elif tobuff.armour.tag == 2504:
         tobuff.weapon.damage += 700
         tobuff.health += 200
         tobuff.critchance += 10
         msg = "Increased weapon damage by 700, health by 200 and crit chance by 10"
     
-    elif tobuff.armour.name == "Monkey Suit":
+    # Monkey Suit
+    elif tobuff.armour.name == 2601:
         tobuff.health += 600
         tobuff.weapon.damage += 300
         tobuff.mindmg += 80
         tobuff.armour.regen += 4
         msg = "Your instincts run wild. Increases regen by 4%, health by 600, weapon damage by 300 and min damage by 80"
 
-    elif tobuff.armour.name == "Hero's Shield":
+    # Hero's shield
+    elif tobuff.armour.tag == 2503:
         tobuff.health += 400
         tobuff.weapon.damage += 200
         tobuff.mindmg += 40
         tobuff.maxdmg += 40
         msg = "You are now the hero. Increased health by 400, damage by 200 and min and max dmg by 40"
 
-    elif tobuff.armour.name == 'Crazy Hand':
+    # Crazy hand
+    elif tobuff.armour.tag == 2605:
         tobuff.ability = psusanoo
         msg = "You have awakened Perfect Susanoo"
 
-    elif tobuff.armour.name == "YareYare Mirror":
+    # Yare Yare MIrror
+    elif tobuff.armour.tag == 2604:
         tobuff.weapon.damage += 100
         tobuff.weapon.lifesteal = 5
         tobuff.ability = psusanoo
         msg = "You have awakened the ability of Perfect Susanoo. Tatsuki blade no longer harms you, but instead heals you and has +100 dmg"
 
-    elif tobuff.armour.name == "Imperfect Susanoo":
+    # Imperfect Susanoo
+    elif tobuff.armour.tag == 2507:
         tobuff.health += 200
         tobuff.weapon.damage += 50
         tobuff.weapon.lifesteal += 2
         msg = "Increases Health by 200, increases weapon damage by 50. Increased lifesteal of energy mace by 2%"
 
-    elif tobuff.armour.name == "Loincloth":
+    # Loincloth
+    elif tobuff.armour.tag == 2506:
         tobuff.ability = deadlygrasp
         msg = "Grants you the ability of deadly grasp and increases it's power."
 
-    elif tobuff.armour.name == "Parade Creators Outfit":
+    # Parade Creators outift
+    elif tobuff.armour.tag == 4601:
         tobuff.health += 60
         tobuff.weapon.damage += 40
         tobuff.weapon.critplus += 2
@@ -894,6 +918,7 @@ def buffing(tobuff):
         tobuff.maxdmg += 40
         msg = "Increased Health by 60. Increased Min, max and weapon damage by 40. Increased Crit Chance and heal% by 2%"
 
+    # Unusual Loincloth
     elif tobuff.armour.tag == 4603:
         tobuff.ability = suffocation
         tobuff.armour.hpup += 150
@@ -901,6 +926,7 @@ def buffing(tobuff):
         tobuff.weapon.damage += 150
         msg = "Now... Suffocate them. Increases all damage/health stats by 150"
 
+    # Celestial Platinum
     elif tobuff.armour.tag == 4604:
         tobuff.ability = czw
         tobuff.armour.hpup += 100
