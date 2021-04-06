@@ -1,5 +1,5 @@
 from random import choice, randint, sample, shuffle
-# Dictionaries
+# Class Dictionaries
 warrior_dict = {
     "POWER": 30,
     "DEFENSE": 30,
@@ -17,6 +17,76 @@ mage_dict = {
     "CLASS_": "Mage"
 }
 
+# Ability Dictionaries
+
+abilities = {
+    "Warrior": {
+        "ABILITY_1": {
+            "NAME": "Thrash",
+            "TOOLTIP": "A thrashing attack that Triples attack power, but reduces defence by 20%``` https://i.pinimg.com/originals/5b/31/0a/5b310a23d4d2c7879d215eb477590ea6.gif ```diff",
+            "PLAYER":{
+                "POWER": 300,
+                "DEFENSE": -20
+            }
+        },
+
+        "ABILITY_2": {
+            "NAME": "Warrior Cry",
+            "TOOLTIP": "A piercing cry which reduces the defense of enemies by 5%, and increases the power of the user by 30, defense by 5%, and health by 10%",
+            "PLAYER": {
+                "POWER": 30,
+                "DEFENSE": 5,
+                "HEALTH": 10
+            },
+            "ENEMY":{
+                "DEFENSE": -5
+            }
+        }
+    },
+
+    "Ranger": {
+        "ABILITY_1": {
+            "NAME": "Ballista Shot",
+            "TOOLTIP": "Fires a powerful piercing shot which does 250% of power``` https://static.wikia.nocookie.net/terraria_gamepedia/images/e/ee/Ballista_Cane_%28demo%29.gif/revision/latest/scale-to-width-down/658?cb=20200508012003 ```diff",
+            "PLAYER": {
+                "POWER": 250
+            }
+        },
+
+        "ABILITY_2": {
+            "NAME": "Sharp Eye",
+            "TOOLTIP": "Focusing strength into eyes, critical strike chance is increased by 30%",
+            "PLAYER": {
+                "CRIT_CHANCE": 30
+            }
+        }
+    },
+
+    "Mage":{
+        "ABILITY_1": {
+            "NAME": "Great Sage: Explosion!",
+            "TOOLTIP": "BAKURETSU!!! A powerful explosion that does 300% damage``` https://i.pinimg.com/originals/c4/07/40/c4074087283441de471b78e0fb56cf25.gif ```diff",
+            "PLAYER":{
+                "POWER": 300
+            }
+        },
+
+        "ABILITY_2": {
+            "NAME": "Activate Prepared Magic",
+            "TOOLTIP": "A pre-prepared spell the reduces all enemy stats by 10%, and increases all user stats by 5%",
+            "ENEMY":{
+                "DEFENSE": -10,
+                "POWER": -10,
+                "HEALTH": -10
+            },
+            "PLAYER":{
+                "HEALTH": 5,
+                "DEFENSE": 5,
+                "CRIT_CHANCE": 5
+            }
+        }
+    }
+}
 # Classes
 class Player:
     """Class for the player"""
@@ -76,18 +146,18 @@ class BattleHandler:
         elif emoji == "🥤":
             msg = self.handle_potion(attacker)
         elif emoji == "⛓":
-            pass
+            msg = self.handle_ability_1(attacker, defender)
         elif emoji == "👹":
-            pass
+            msg = "This Feature is not available as yet."
         elif emoji == "😇":
-            pass 
+            msg = "This Feature is not available as yet."
         else:
             pass
 
         return msg        
 
     def handle_attack(self, attacker, defender):
-        power = randint(attacker.power-5, attacker.power+6)
+        power = self.get_power(attacker)
         is_crit = False
         if hasattr(attacker, "crit_chance"):
             power, is_crit = self.handle_crit(power, attacker, is_crit)
@@ -114,8 +184,26 @@ class BattleHandler:
         return f"{attacker.name} healed for {heal_amount} health"
 
 
-    def handle_ability_1(self):
-        pass 
+    def handle_ability_1(self, attacker, defender):
+        ability = abilities[attacker.class_]["ABILITY_1"]
+        msg1 = f"Ability Activate: {ability['NAME']}: {ability['TOOLTIP']}"
+        power = self.get_power(attacker)
+        for k, v in ability["PLAYER"].items():
+            if k == "POWER":
+                power += v/100 * getattr(attacker, "power")
+                continue
+            setattr(attacker, k.lower(), getattr(attacker, k.lower()) + ((v/100) * getattr(attacker, k.lower())))
+
+        enemy_effects = ability.get("ENEMY", None)
+        if enemy_effects:
+            for k, v in ability["ENEMY"].items():
+                setattr(defender, k.lower(), getattr(defender, k.lower()) + v)
+
+        if ability["PLAYER"].get("POWER", None):
+            defender.health -= power 
+            msg1 += f"\n+ {defender.name} took {power} damage from {attacker.name}'s {ability['NAME']}"
+
+        return msg1
 
     def handle_ability_2(self):
         pass
@@ -125,6 +213,10 @@ class BattleHandler:
 
     def handle_running(self):
         pass
+
+    def get_power(self, attacker):
+        return randint(attacker.power-5, attacker.power+6)
+
 
     def handle_crit(self, power, attacker, is_crit):
         is_crit = self.random_calculator(range(0, 100), attacker.crit_chance)
