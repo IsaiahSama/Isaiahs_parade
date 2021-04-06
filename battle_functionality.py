@@ -38,7 +38,7 @@ warrior_dict = {
 }
 
 ranger_dict = {
-    "CRIT_CHANCE":20
+    "CRIT_CHANCE":15
 }
 
 mage_dict = {
