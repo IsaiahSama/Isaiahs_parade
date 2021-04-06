@@ -1,7 +1,5 @@
 .vscode
-./backups
 extra/
-isehjoin.mp3
 mynotes.json
-saves/
 __pycache__/*
+v2concept.txt
