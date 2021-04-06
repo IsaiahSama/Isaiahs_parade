@@ -127,12 +127,16 @@ class BattleHandler:
         pass
 
     def handle_crit(self, power, attacker, is_crit):
-        numbers = list(range(0, 100))
-        crit_numbers = sample(numbers, attacker.crit_chance)
-        crit_number = randint(0, 99)
-
-        if crit_number in crit_numbers:
+        is_crit = self.random_calculator(range(0, 100), attacker.crit_chance)
+        if is_crit:
             power *= 1.5
-            is_crit = True
 
         return power, is_crit
+
+    def random_calculator(self, numrange:list, percent_value:int):
+        numbers = sample(numrange, percent_value)
+        value = randint(numrange[0], numrange[-1])
+
+        if value in numbers:
+            return True 
+        return False
