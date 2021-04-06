@@ -59,7 +59,7 @@ class RPG(commands.Cog):
         for k, v in chosen_dict.items():
             setattr(player, k.lower(), getattr(player, k.lower()) + v)
     
-        await ctx.send(f"EVERYONE, Welcome {ctx.author.display_name}, our newest {chosen_class}")
+        await ctx.send(f"EVERYONE, Welcome {ctx.author.display_name}, our newest {chosen_class}. Type <>quest to start your first quest")
         
         self.players.clear()
         self.players.append(player)

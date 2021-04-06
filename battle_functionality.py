@@ -1,4 +1,4 @@
-from random import choice, randint, sample
+from random import choice, randint, sample, shuffle
 # Dictionaries
 warrior_dict = {
     "POWER": 30,
@@ -64,7 +64,7 @@ class BattleHandler:
     def handle(self, emoji:str):
         msg1 = self.handle_user(self.player, self.enemy, emoji)
         msg2 = self.handle_user(self.enemy, self.player, None)
-        msg = f"```diff\n+{msg1}\n-{msg2}"
+        msg = f"```diff\n+ {msg1}\n- {msg2}```"
         return msg, self.player, self.enemy
 
     def handle_user(self, attacker, defender, emoji):
@@ -74,7 +74,7 @@ class BattleHandler:
         if emoji == "⚔️":
             msg = self.handle_attack(attacker, defender)
         elif emoji == "🥤":
-            pass
+            msg = self.handle_potion(attacker)
         elif emoji == "⛓":
             pass
         elif emoji == "👹":
@@ -88,12 +88,12 @@ class BattleHandler:
 
     def handle_attack(self, attacker, defender):
         power = randint(attacker.power-5, attacker.power+6)
-        if power < 0: power = 1
         is_crit = False
         if hasattr(attacker, "crit_chance"):
             power, is_crit = self.handle_crit(power, attacker, is_crit)
         
         power -= (defender.defense // 2)
+        if power < 0: power = 1
         defender.health -= power
 
         if is_crit:
@@ -102,8 +102,17 @@ class BattleHandler:
             return f"{defender.name} was attacked by {attacker.name} and took {power} damage"
 
 
-    def handle_potion(self):
-        pass 
+    def handle_potion(self, attacker):
+        options = [True, True, True, False, False]
+        shuffle(options)
+        will_heal = choice(options)
+        if not will_heal:
+            return f"{attacker.name} tried to heal but was in a hurry and spilt the potion"
+
+        heal_amount = randint((attacker.health//10), (attacker.health//5))
+        attacker.health += heal_amount
+        return f"{attacker.name} healed for {heal_amount} health"
+
 
     def handle_ability_1(self):
         pass 
