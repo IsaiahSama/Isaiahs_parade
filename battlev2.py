@@ -107,16 +107,16 @@ class RPG(commands.Cog):
             """
 
         battle = await ctx.send(embed=embed, content=msg)
+        battle_msg = await ctx.send("React above to start")
 
         for reaction in self.battle_emojis.keys():
                 await battle.add_reaction(reaction)
 
+        handler = BattleHandler(player, enemy)
         def check(reaction, user):
             return reaction.emoji in self.battle_emojis.keys() and user == ctx.author
 
-        handler = BattleHandler(player, enemy)
-
-        while not player.health < 0 or not enemy["HEALTH"] < 0:
+        while player.health > 0 and enemy.health > 0:
 
             try:
                 reaction = await self.bot.wait_for("reaction_add", timeout=30, check=check)
@@ -124,7 +124,7 @@ class RPG(commands.Cog):
                 await ctx.send(":x: Took too long to pick your move :x:")
                 return
 
-            handler.handle(reaction[0].emoji)
+            to_send, player, enemy = handler.handle(reaction[0].emoji)
 
             msg = f"""
             ```
@@ -135,10 +135,13 @@ class RPG(commands.Cog):
             """
 
             await battle.edit(embed=embed, content=msg)
+            await battle_msg.edit(content=to_send)
 
             await battle.clear_reactions()
             for battle_reaction in self.battle_emojis.keys():
                 await battle.add_reaction(battle_reaction)
+
+        await ctx.send("Battle over")
 
 
 def setup(bot):

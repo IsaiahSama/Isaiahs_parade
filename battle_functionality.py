@@ -1,3 +1,4 @@
+from random import choice, randint, sample
 # Dictionaries
 warrior_dict = {
     "POWER": 30,
@@ -38,7 +39,8 @@ class Player:
 
 class Enemy:
     """Class for the Enemy"""
-    def __init__(self, health, power, defense, expgain, paradians) -> None:
+    def __init__(self, name="Enemy", health=100, power=15, defense=10, expgain=100, paradians=100) -> None:
+        self.name = name
         self.health = health 
         self.power = power
         self.defense = defense
@@ -60,8 +62,17 @@ class BattleHandler:
         self.enemy = enemy
 
     def handle(self, emoji:str):
+        msg1 = self.handle_user(self.player, self.enemy, emoji)
+        msg2 = self.handle_user(self.enemy, self.player, None)
+        msg = f"```diff\n+{msg1}\n-{msg2}"
+        return msg, self.player, self.enemy
+
+    def handle_user(self, attacker, defender, emoji):
+        if not emoji:
+            emoji = choice(["⚔️"])
+
         if emoji == "⚔️":
-            pass
+            msg = self.handle_attack(attacker, defender)
         elif emoji == "🥤":
             pass
         elif emoji == "⛓":
@@ -72,3 +83,47 @@ class BattleHandler:
             pass 
         else:
             pass
+
+        return msg        
+
+    def handle_attack(self, attacker, defender):
+        power = randint(attacker.power-5, attacker.power+6)
+        if power < 0: power = 1
+        is_crit = False
+        if hasattr(attacker, "crit_chance"):
+            power, is_crit = self.handle_crit(power, attacker, is_crit)
+        
+        power -= (defender.defense // 2)
+        defender.health -= power
+
+        if is_crit:
+            return f"IT'S A CRIT. {attacker.name} attacked {defender.name} and did a whoppin {power} damage"
+        else:
+            return f"{defender.name} was attacked by {attacker.name} and took {power} damage"
+
+
+    def handle_potion(self):
+        pass 
+
+    def handle_ability_1(self):
+        pass 
+
+    def handle_ability_2(self):
+        pass
+
+    def handle_blessing(self):
+        pass 
+
+    def handle_running(self):
+        pass
+
+    def handle_crit(self, power, attacker, is_crit):
+        numbers = list(range(0, 100))
+        crit_numbers = sample(numbers, attacker.crit_chance)
+        crit_number = randint(0, 99)
+
+        if crit_number in crit_numbers:
+            power *= 1.5
+            is_crit = True
+
+        return power, is_crit
