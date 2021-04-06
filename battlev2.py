@@ -53,32 +53,30 @@ class RPG(commands.Cog):
         self.players.clear()
         self.players.append(player)
 
-    def is_user_decorator(self, function):
-        def wrapper(self, ctx):
-            user = [user for user in self.users if user.player_id == ctx.author.id]
-            if not user:
-                return_message = "Could not find your Account. Create one with <>createprofile"
-            else:
-                return_message = None
-            function(ctx, user, return_message=return_message)
+    async def is_player(self, member):
+        player = [player for player in self.players if player.player_id == member.id]
+        if not player:
+            return_message = "Could not find your Account. Create one with <>createprofile"
+        else:
+            return_message = None
 
-        return wrapper
+        return player, return_message
 
     @commands.command(brief="Used to view your RPG Battle Profile", help="Shows the profile relating to your RPG account once applicable")
-    @is_user_decorator()
-    async def profile(self, ctx, user=None, return_message=""):
+    async def profile(self, ctx):
+        player, return_message = await self.is_player(ctx.author)
         if return_message:
             await ctx.send(return_message)
             return 
 
-        await ctx.send(user.__dict__)
+        await ctx.send(player[0].__dict__)
 
-    @commands.command(brief="Used to start a battle quest", help="Used to initiate a fight based quest")
-    @is_user_decorator()
-    async def quest(self, ctx, user=None, return_message=""):
-        if return_message:
-            await ctx.send(return_message)
-            return
+    # @commands.command(brief="Used to start a battle quest", help="Used to initiate a fight based quest")
+    # @is_user_decorator()
+    # async def quest(self, ctx, user=None, return_message=""):
+    #     if return_message:
+    #         await ctx.send(return_message)
+    #         return
             
 
 def setup(bot):
