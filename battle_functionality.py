@@ -16,11 +16,12 @@ player_dict = {
 }
 
 class Player:
-    def __init__(self, name="", level=1, tier=1, class_="", power=10, defense=10, crit_chance=5, ability_1=0, ability_2=0, passive=0, paradians=200, weapon=0, armor=0, player_id=0) -> None:
+    def __init__(self, name="", level=1, tier=1, class_="", health=100, power=10, defense=10, crit_chance=5, ability_1="None", ability_2="None", passive="None", paradians=200, weapon="None", armor="None", player_id=0) -> None:
         self.name = name
         self.level = level 
         self.tier = tier 
         self.class_ = class_ 
+        self.health = health
         self.power = power 
         self.defense = defense 
         self.crit_chance = crit_chance 
@@ -34,16 +35,19 @@ class Player:
 
 warrior_dict = {
     "POWER": 30,
-    "DEFENSE": 30
+    "DEFENSE": 30,
+    "CLASS_": "Warrior"
 }
 
 ranger_dict = {
-    "CRIT_CHANCE":15
+    "CRIT_CHANCE":15,
+    "CLASS_": "Ranger"
 }
 
 mage_dict = {
     "POWER": 25,
-    "DEFENSE": -5
+    "DEFENSE": -5,
+    "CLASS_": "Mage"
 }
 
 enemy_dict = {

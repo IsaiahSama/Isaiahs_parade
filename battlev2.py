@@ -56,27 +56,28 @@ class RPG(commands.Cog):
     async def is_player(self, member):
         player = [player for player in self.players if player.player_id == member.id]
         if not player:
-            return_message = "Could not find your Account. Create one with <>createprofile"
+            return None, "Could not find your Account. Create one with <>createprofile"
         else:
-            return_message = None
-
-        return player, return_message
+            return player[0], None
 
     @commands.command(brief="Used to view your RPG Battle Profile", help="Shows the profile relating to your RPG account once applicable")
     async def profile(self, ctx):
         player, return_message = await self.is_player(ctx.author)
         if return_message:
             await ctx.send(return_message)
+            return
+
+        await ctx.send(player.__dict__)
+
+    @commands.command(brief="Used to start a battle quest", help="Used to initiate a fight based quest")
+    async def quest(self, ctx):
+        player, return_message = await self.is_player(ctx.author)
+        if return_message:
+            await ctx.send(return_message)
             return 
 
-        await ctx.send(player[0].__dict__)
-
-    # @commands.command(brief="Used to start a battle quest", help="Used to initiate a fight based quest")
-    # @is_user_decorator()
-    # async def quest(self, ctx, user=None, return_message=""):
-    #     if return_message:
-    #         await ctx.send(return_message)
-    #         return
+        await ctx.send(f"Engaging in combat against enemy.")
+        await ctx.send(f"{player.__dict__}\nVS\n{enemy_dict}")
             
 
 def setup(bot):
