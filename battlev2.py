@@ -50,6 +50,7 @@ class RPG(commands.Cog):
     
         await ctx.send(f"EVERYONE, Welcome {ctx.author.display_name}, our newest {chosen_class}")
         
+        self.players.clear()
         self.players.append(player)
 
     def is_user_decorator(self, function):
@@ -62,6 +63,15 @@ class RPG(commands.Cog):
             function(ctx, user, return_message=return_message)
 
         return wrapper
+
+    @commands.command(brief="Used to view your RPG Battle Profile", help="Shows the profile relating to your RPG account once applicable")
+    @is_user_decorator()
+    async def profile(self, ctx, user=None, return_message=""):
+        if return_message:
+            await ctx.send(return_message)
+            return 
+
+        await ctx.send(user.__dict__)
 
     @commands.command(brief="Used to start a battle quest", help="Used to initiate a fight based quest")
     @is_user_decorator()
