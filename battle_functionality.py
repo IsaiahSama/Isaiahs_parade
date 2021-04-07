@@ -47,7 +47,7 @@ abilities = {
     "Ranger": {
         "ABILITY_1": {
             "NAME": "Ballista Shot",
-            "TOOLTIP": "Fires a powerful piercing shot which does 250% of power``` https://static.wikia.nocookie.net/terraria_gamepedia/images/e/ee/Ballista_Cane_%28demo%29.gif/revision/latest/scale-to-width-down/658?cb=20200508012003 ```diff",
+            "TOOLTIP": "Fires a powerful piercing shot which does 250% of power``` https://static.wikia.nocookie.net/terraria_gamepedia/images/e/ee/Ballista_Cane_%28demo%29.gif ```diff",
             "PLAYER": {
                 "POWER": 250
             }
