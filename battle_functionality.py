@@ -148,7 +148,7 @@ class BattleHandler:
         elif emoji == "⛓":
             msg = self.handle_ability_1(attacker, defender)
         elif emoji == "👹":
-            msg = "This Feature is not available as yet."
+            msg = self.handle_ability_2(attacker, defender)
         elif emoji == "😇":
             msg = "This Feature is not available as yet."
         else:
@@ -186,27 +186,13 @@ class BattleHandler:
 
     def handle_ability_1(self, attacker, defender):
         ability = abilities[attacker.class_]["ABILITY_1"]
-        msg1 = f"Ability Activate: {ability['NAME']}: {ability['TOOLTIP']}"
-        power = self.get_power(attacker)
-        for k, v in ability["PLAYER"].items():
-            if k == "POWER":
-                power += v/100 * getattr(attacker, "power")
-                continue
-            setattr(attacker, k.lower(), getattr(attacker, k.lower()) + ((v/100) * getattr(attacker, k.lower())))
+        msg = self.handle_ability(attacker, defender, ability)
+        return msg
 
-        enemy_effects = ability.get("ENEMY", None)
-        if enemy_effects:
-            for k, v in ability["ENEMY"].items():
-                setattr(defender, k.lower(), getattr(defender, k.lower()) + v)
-
-        if ability["PLAYER"].get("POWER", None):
-            defender.health -= power 
-            msg1 += f"\n+ {defender.name} took {power} damage from {attacker.name}'s {ability['NAME']}"
-
-        return msg1
-
-    def handle_ability_2(self):
-        pass
+    def handle_ability_2(self, attacker, defender):
+        ability = abilities[attacker.class_]["ABILITY_2"]
+        msg = self.handle_ability(attacker, defender, ability)
+        return msg        
 
     def handle_blessing(self):
         pass 
@@ -217,6 +203,25 @@ class BattleHandler:
     def get_power(self, attacker):
         return randint(attacker.power-5, attacker.power+6)
 
+    def handle_ability(self, attacker, defender, ability):
+        msg = f"Ability Activate: {ability['NAME']}: {ability['TOOLTIP']}"
+        power = self.get_power(attacker)
+        for k, v in ability["PLAYER"].items():
+            if k == "POWER":
+                power += v/100 * getattr(attacker, "power")
+                continue
+            setattr(attacker, k.lower(), getattr(attacker, k.lower()) + ((v//100) * getattr(attacker, k.lower())))
+
+        enemy_effects = ability.get("ENEMY", None)
+        if enemy_effects:
+            for k, v in ability["ENEMY"].items():
+                setattr(defender, k.lower(), getattr(defender, k.lower()) + v)
+
+        if ability["PLAYER"].get("POWER", None):
+            defender.health -= power 
+            msg += f"\n+ {defender.name} took {power} damage from {attacker.name}'s {ability['NAME']}"
+
+        return msg
 
     def handle_crit(self, power, attacker, is_crit):
         is_crit = self.random_calculator(range(0, 100), attacker.crit_chance)

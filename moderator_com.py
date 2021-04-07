@@ -292,6 +292,12 @@ class Moderator(commands.Cog):
     async def change_channel_topic(self, ctx, *, new_topic):
         await ctx.channel.edit(topic=new_topic)
 
+    @commands.command()
+    @commands.is_owner()
+    async def botrestart(self, ctx):
+        await ctx.send("Turning off bot now")
+        raise SystemExit
+
     # Events
 
     @commands.Cog.listener()
