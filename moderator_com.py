@@ -288,6 +288,10 @@ class Moderator(commands.Cog):
             await ctx.send(f"Showing all members that do not the {role.name} role.")
             await ctx.send(', '.join(members))
 
+    @commands.command(brief="Changes the topic of the current channel", help="Used to change the topic of the current channel", usage="new_topic")
+    async def change_channel_topic(self, ctx, *, new_topic):
+        await ctx.channel.edit(topic=new_topic)
+
     # Events
 
     @commands.Cog.listener()
