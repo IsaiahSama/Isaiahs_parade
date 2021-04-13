@@ -99,13 +99,8 @@ class RPG(commands.Cog):
             color=randint(0, 0xffffff)
         )
 
-        msg = f"""
-            ```
-            Name:\t\t{player["NAME"]}\t\t\t\t\tEnemy
-            Health:\t\t{player["HEALTH"]}\t\t\t\t\t{game_enemy["HEALTH"]}
-            Power:\t\t{player["POWER"]}\t\t\t\t\t{game_enemy["POWER"]}
-            Defense:\t\t{player["DEFENSE"]}\t\t\t\t\t{game_enemy["DEFENSE"]}```
-            """
+        
+        msg = f'```{player["NAME"].centre(30, "=")}\nHealth:{player["HEALTH"]}\nPower:{player["POWER"]}\nDefense:\t\t{player["DEFENSE"]}\n{"Enemy".center(30, "=")}\nPower: {game_enemy["POWER"]}\nDefense: {game_enemy["DEFENSE"]}```'
 
         battle = await ctx.send(embed=embed, content=msg)
         battle_msg = await ctx.send("React above to start")
@@ -126,14 +121,6 @@ class RPG(commands.Cog):
                 return
 
             to_send, player, game_enemy = handler.handle(reaction[0].emoji)
-
-            msg = f"""
-            ```
-            Name:\t\t{player["NAME"]}\t\t\t\t\tEnemy
-            Health:\t\t{player["HEALTH"]}\t\t\t\t\t{game_enemy["HEALTH"]}
-            Power:\t\t{player["POWER"]}\t\t\t\t\t{game_enemy["POWER"]}
-            Defense:\t\t{player["DEFENSE"]}\t\t\t\t\t{game_enemy["DEFENSE"]}```
-            """
 
             await battle.edit(embed=embed, content=msg)
             await battle_msg.edit(content=to_send)
