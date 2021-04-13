@@ -66,7 +66,7 @@ class RPG(commands.Cog):
         self.players.append(player)
 
     async def is_player(self, member):
-        player = [player for player in self.players if player.player_id == member.id]
+        player = [player for player in self.players if player["PLAYER_ID"] == member.id]
         if not player:
             return None, "Could not find your Account. Create one with <>createprofile"
         else:
