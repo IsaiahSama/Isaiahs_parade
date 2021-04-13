@@ -1,5 +1,5 @@
 # Player Template
-player = {
+player_template = {
     "NAME": "",
     "LEVEL": 0,
     "TIER": 1,
@@ -19,7 +19,7 @@ player = {
 }
 
 # Enemy Template
-enemy = {
+enemy_template = {
     "NAME": "",
     "HEALTH": 100,
     "POWER": 0,

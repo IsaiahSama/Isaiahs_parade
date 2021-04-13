@@ -3,6 +3,7 @@ import discord
 from discord.ext import commands
 from random import randint
 from battle_functionality import *
+from copy import copy
 
 class RPG(commands.Cog):
     """ Contains all Battle based RPG Commands"""
@@ -48,8 +49,9 @@ class RPG(commands.Cog):
             return
 
         chosen_class = self.class_emojis[str(reaction[0].emoji)]
-
-        player = Player(name=ctx.author.name, player_id=ctx.author.id)
+        player = copy(player_template)
+        player["NAME"] = ctx.author.name
+        player["PLAYER_ID"] = ctx.author.id
 
         if chosen_class == "Warrior": chosen_dict = warrior_dict
         elif chosen_class == "Mage": chosen_dict = mage_dict
@@ -57,11 +59,10 @@ class RPG(commands.Cog):
         else: await ctx.send("Something went wrong with the classes"); return
 
         for k, v in chosen_dict.items():
-            setattr(player, k.lower(), getattr(player, k.lower()) + v)
+            player[k] += v
     
         await ctx.send(f"EVERYONE, Welcome {ctx.author.display_name}, our newest {chosen_class}. Type <>quest to start your first quest")
         
-        self.players.clear()
         self.players.append(player)
 
     async def is_player(self, member):
@@ -78,7 +79,7 @@ class RPG(commands.Cog):
             await ctx.send(return_message)
             return
 
-        await ctx.send(player.__dict__)
+        await ctx.send(player)
 
     @commands.command(brief="Used to start a battle quest", help="Used to initiate a fight based quest")
     async def quest(self, ctx):
@@ -87,10 +88,10 @@ class RPG(commands.Cog):
             await ctx.send(return_message)
             return 
 
-        await ctx.send(f"Engaging in combat against enemy.")
-        # await ctx.send(f"{player.__dict__}\nVS\n{enemy}")
+        await ctx.send(f"Engaging in combat against game_enemy.")
+        # await ctx.send(f"{player.__dict__}\nVS\n{game_enemy}")
 
-        enemy = Enemy()
+        game_enemy = copy(enemy_template)
         
         embed = discord.Embed(
             title="BATTLE",
@@ -100,10 +101,10 @@ class RPG(commands.Cog):
 
         msg = f"""
             ```
-            Name:\t\t{player.name}\t\t\t\t\tEnemy
-            Health:\t\t{player.health}\t\t\t\t\t{enemy.health}
-            Power:\t\t{player.power}\t\t\t\t\t{enemy.power}
-            Defense:\t\t{player.defense}\t\t\t\t\t{enemy.defense}```
+            Name:\t\t{player["NAME"]}\t\t\t\t\tEnemy
+            Health:\t\t{player["HEALTH"]}\t\t\t\t\t{game_enemy["HEALTH"]}
+            Power:\t\t{player["POWER"]}\t\t\t\t\t{game_enemy["POWER"]}
+            Defense:\t\t{player["DEFENSE"]}\t\t\t\t\t{game_enemy["DEFENSE"]}```
             """
 
         battle = await ctx.send(embed=embed, content=msg)
@@ -112,11 +113,11 @@ class RPG(commands.Cog):
         for reaction in self.battle_emojis.keys():
                 await battle.add_reaction(reaction)
 
-        handler = BattleHandler(player, enemy)
+        handler = BattleHandler(player, game_enemy)
         def check(reaction, user):
             return reaction.emoji in self.battle_emojis.keys() and user == ctx.author
 
-        while player.health > 0 and enemy.health > 0:
+        while player["HEALTH"] > 0 and game_enemy["HEALTH"] > 0:
 
             try:
                 reaction = await self.bot.wait_for("reaction_add", timeout=30, check=check)
@@ -124,19 +125,20 @@ class RPG(commands.Cog):
                 await ctx.send(":x: Took too long to pick your move :x:")
                 return
 
-            to_send, player, enemy = handler.handle(reaction[0].emoji)
+            to_send, player, game_enemy = handler.handle(reaction[0].emoji)
 
             msg = f"""
             ```
-            Name:\t\t{player.name}\t\t\t\t\tEnemy
-            Health:\t\t{player.health}\t\t\t\t\t{enemy.health}
-            Power:\t\t{player.power}\t\t\t\t\t{enemy.power}
-            Defense:\t\t{player.defense}\t\t\t\t\t{enemy.defense}```
+            Name:\t\t{player["NAME"]}\t\t\t\t\tEnemy
+            Health:\t\t{player["HEALTH"]}\t\t\t\t\t{game_enemy["HEALTH"]}
+            Power:\t\t{player["POWER"]}\t\t\t\t\t{game_enemy["POWER"]}
+            Defense:\t\t{player["DEFENSE"]}\t\t\t\t\t{game_enemy["DEFENSE"]}```
             """
 
             await battle.edit(embed=embed, content=msg)
             await battle_msg.edit(content=to_send)
-
+            if "run successful" in to_send.lower():
+                break
             await battle.clear_reactions()
             for battle_reaction in self.battle_emojis.keys():
                 await battle.add_reaction(battle_reaction)

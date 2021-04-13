@@ -37,7 +37,15 @@ class BattleHandler:
             msg = self.handle_blessing(attacker)
         else:
             can_run = self.handle_running(attacker, defender)
-
+            if can_run:
+                if attacker["PARADIANS"] == 0:
+                    attacker['PARADIANS'] -= 100
+                    msg = f"RUN SUCCESSFUL: {attacker['NAME']} was saved by wandering traveler, but is too poor to pay them, so now they owe Lady Luck {attacker['PARADIANS']} paradians"
+                else:
+                    attacker["PARADIANS"] -= (1/5) * attacker["PARADIANS"]
+                    msg = f"RUN SUCCESSFUL: {attacker['NAME']} has escaped from enemy but lost 1/5 of their Paradians in the process"
+            else:
+                msg = f"RUN FAILED: {attacker['NAME']} has failed to escape from enemy"
 
         return msg        
 
@@ -52,9 +60,9 @@ class BattleHandler:
         defender["HEALTH"] -= power
 
         if is_crit:
-            return f"IT'S A CRIT. {attacker.name} attacked {defender.name} and did a whoppin {power} damage"
+            return f"IT'S A CRIT. {attacker['NAME']} attacked {defender['NAME']} and did a whoppin {power} damage"
         else:
-            return f"{defender.name} was attacked by {attacker.name} and took {power} damage"
+            return f"{defender['NAME']} was attacked by {attacker['NAME']} and took {power} damage"
 
 
     def handle_potion(self, attacker):
@@ -62,11 +70,11 @@ class BattleHandler:
         shuffle(options)
         will_heal = choice(options)
         if not will_heal:
-            return f"{attacker.name} tried to heal but was in a hurry and spilt the potion"
+            return f"{attacker['NAME']} tried to heal but was in a hurry and spilt the potion"
 
         heal_amount = randint((attacker["HEALTH"]//10), (attacker["HEALTH"]//5))
         attacker["HEALTH"] += heal_amount
-        return f"{attacker.name} healed for {heal_amount} health"
+        return f"{attacker['NAME']} healed for {heal_amount} health"
 
 
     def handle_ability_1(self, attacker, defender):
@@ -114,7 +122,7 @@ class BattleHandler:
 
         if ability["PLAYER"].get("POWER", None):
             defender["HEALTH"] -= power 
-            msg += f"\n+ {defender.name} took {power} damage from {attacker.name}'s {ability['NAME']}"
+            msg += f"\n+ {defender['NAME']} took {power} damage from {attacker['NAME']}'s {ability['NAME']}"
 
         return msg
 
