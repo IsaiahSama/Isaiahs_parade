@@ -34,9 +34,10 @@ class BattleHandler:
         elif emoji == "👹":
             msg = self.handle_ability_2(attacker, defender)
         elif emoji == "😇":
-            msg = "This Feature is not available as yet."
+            msg = self.handle_blessing(attacker)
         else:
-            pass
+            can_run = self.handle_running(attacker, defender)
+
 
         return msg        
 
@@ -90,9 +91,10 @@ class BattleHandler:
         msg = f"I, {attacker['name']}, have been blessed. {blessing['NAME']}: {blessing['TOOLTIP']}"
         return msg
 
-    def handle_running(self):
-        pass
-
+    def handle_running(self, attacker, defender):
+        health_difference = abs(defender['health'] - attacker['health']) + 100
+        return self.random_calculator(list(range(0, 100)), health_difference % 100)
+        
     def get_power(self, attacker):
         return randint(attacker["POWER"]-5, attacker["POWER"]+6)
 

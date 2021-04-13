@@ -1,0 +1,205 @@
+RPG system.
+
+Purpose:
+    Provides a form of entertainment for discord users.
+
+Attributes:
+
+    Profile
+
+    Class System:
+        Warrior
+        Ranger 
+        Mage
+
+    Jobs:
+        Rewards scale based on levels
+
+    Quests:
+        Main way of obtaining Cash
+        Quest Enemies scale with player stats
+        Turn Based
+
+    Leveling System
+
+    Tiers:
+        Every 200 levels per tier. 5 tiers
+
+    Rebirth:
+        Return to level 1 but with slightly higher stats
+
+    Factions/Teams:
+        Adventures:
+            Like quests, but is automatic and done with a team
+    
+    Shop:
+        Weapons
+        Armor
+        Items
+
+    Currency System (Parade Coins)
+
+Player:
+    Visible Attributes:
+        Name
+        Level 
+        Tier
+        Class
+        Power 
+        Defense 
+        Ability 1
+        Ability 2
+        Passive
+        Paradians
+        Weapon 
+        Armor 
+        player_id
+        exp
+
+    Methods:
+        
+
+
+Profile:
+    A profile will be needed for these services. And will be created using <>createprofile
+
+    Profile Creation:
+        Class selection:
+            🗡️ - Warrior 
+            🏹 - Ranger 
+            📖 - Mage            
+
+    Profile Attributes:
+        Player Name (Will be a mention)
+        Player Level
+        Player Tier
+
+        Player Class
+
+        Player Power 
+        Player Defense
+        Player Crit_chance
+
+        Player Abils 1 & 2
+        Player Passive
+        
+        Player Paradians (Currency)
+        Player Main Weapon 
+        Player Main Armor
+
+        Player player_id
+
+Class System:
+    Warrior: 
+        Attacks using physical weapons (Sword, Spear)
+        highest defense
+        high power
+
+        Blessing: 
+            Warriors' Blessing:
+                Doubles current health
+                Increases attack power by 50%
+                Increases defense by 30%
+
+    Ranger:
+        Attacks using Ranged weapons (Bow, guns)
+        high accuracy
+        high critical hit ratio 
+        Higher dodge ratio 
+
+        Blessing:
+            Rangers Blessing:
+                Increase critical hit chance by 20%
+                Increases critical damage by 50%
+
+    Mage:
+        Attacks using magic (Spells)
+        High damage
+        Low defense
+        
+        Blessing:
+            Mages' Blessing:
+                Increases magic power by 30%
+                Gains 5% lifesteal
+
+Quests:
+    Quests will be against NPCs
+
+PVP: N/A
+
+Quest Combat:
+    Players will attack using Reactions
+    Reactions:
+        ⚔️ - Attack
+        🥤 - Potion
+        ⛓ - Ability 1
+        👹 - Ability 2
+        😇 - Blessing
+        🏃 - Run
+
+
+Quest Enemies:
+    Attributes:
+        Health
+        Damage 
+        Defense
+        Expgain
+        Paradians Gain
+
+Abilities
+    Players will be allowed to have a maximum of 2 abilities at any given time.
+    Abilities are Class specific.
+
+    Damaging Abilities have a 40% chance of working.
+    Buffing Abilities have a 30% chance of working
+    
+    Abilities may either directly increase the power of the attack, or provide a buff to the user for the remaining Duration
+
+    Melee:
+        Thrash:
+            Damaging Ability
+            Reduces defense by 20
+            Does x3 damage to enemy
+
+        Warrior Cry:
+            Buffing Ability
+            Increases Power by 10%
+            Increases Defense by 5%
+            Increases health by 10%
+            Decreases enemy defense by 5
+
+    Ranger:
+        Ballista Shot:
+            Damaging Ability
+            Doex x2.5 damage to enemy
+
+        Sharp Eye:
+            Buffing Ability
+            Increases Critical Chance by 30%
+
+    Mage:
+        Great Sage: EXPLOSION!!!:
+            Deals x3 of power
+            Will Play a gif because ME GUSTA
+
+        Activate Prepared Magic:
+            Reduces Enemy defense by 10
+            Increases all stats by 5%
+
+Blessings:
+    Requirements:
+        User must be below 40% health
+        Can only be used once per fight
+
+Running:
+    The chance to escape will be determined as follows:
+        1) The health of the player is subtracted from the health of the enemy, and the absolute value is used.
+        2) 100 is then added to this value.
+        3) The random calculator will take in a list of numbers from 0-99, and the percentage chance will be the modulus of the value above when divided by 100
+        Example:
+            If the player had 420 health, and the enemy had 360. The subtraction would be:
+            1)    360 - 420 = -60
+                As the absolute value is used, this will just be 60. 
+
+            2) Adding 100, will then make this 160
+            3) 160 % 100 will give a remainder of 60. This means the player has a 60% chance of successfully running.
