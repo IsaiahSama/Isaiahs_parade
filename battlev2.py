@@ -100,7 +100,7 @@ class RPG(commands.Cog):
         )
 
         
-        msg = f'```{player["NAME"].centre(30, "=")}\nHealth:{player["HEALTH"]}\nPower:{player["POWER"]}\nDefense:\t\t{player["DEFENSE"]}\n{"Enemy".center(30, "=")}\nPower: {game_enemy["POWER"]}\nDefense: {game_enemy["DEFENSE"]}```'
+        msg = f'```{player["NAME"].centre(30, "=")}\nHealth:{player["HEALTH"]}\nPower:{player["POWER"]}\nDefense:\t\t{player["DEFENSE"]}\n{"Enemy".centre(30, "=")}\nPower: {game_enemy["POWER"]}\nDefense: {game_enemy["DEFENSE"]}```'
 
         battle = await ctx.send(embed=embed, content=msg)
         battle_msg = await ctx.send("React above to start")
