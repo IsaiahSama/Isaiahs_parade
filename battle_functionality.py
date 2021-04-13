@@ -94,7 +94,7 @@ class BattleHandler:
             if not value:
                 attacker[k] = v
             else:
-                attacker[k] = (v/100 * value) + value
+                attacker[k] = (v//100 * value) + value
 
         msg = f"I, {attacker['name']}, have been blessed. {blessing['NAME']}: {blessing['TOOLTIP']}"
         return msg
@@ -111,14 +111,14 @@ class BattleHandler:
         power = self.get_power(attacker)
         for k, v in ability["PLAYER"].items():
             if k == "POWER":
-                power += v/100 * getattr(attacker, "power")
+                power += v/100 * attacker["POWER"]
                 continue
-            setattr(attacker, k.lower(), getattr(attacker, k.lower()) + ((v//100) * getattr(attacker, k.lower())))
+            attacker[k] = (v//100 * attacker[k]) + attacker[k]
 
         enemy_effects = ability.get("ENEMY", None)
         if enemy_effects:
             for k, v in ability["ENEMY"].items():
-                setattr(defender, k.lower(), getattr(defender, k.lower()) + v)
+                defender[k] += v
 
         if ability["PLAYER"].get("POWER", None):
             defender["HEALTH"] -= power 

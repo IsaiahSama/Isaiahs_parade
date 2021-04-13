@@ -32,18 +32,18 @@ enemy_template = {
 warrior_dict = {
     "POWER": 30,
     "DEFENSE": 30,
-    "CLASS_": "Warrior"
+    "CLASS": "Warrior"
 }
 
 ranger_dict = {
     "CRIT_CHANCE":15,
-    "CLASS_": "Ranger"
+    "CLASS": "Ranger"
 }
 
 mage_dict = {
     "POWER": 40,
     "DEFENSE": -5,
-    "CLASS_": "Mage"
+    "CLASS": "Mage"
 }
 
 # Ability Dictionaries
