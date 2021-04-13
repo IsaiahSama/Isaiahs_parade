@@ -289,8 +289,42 @@ class Moderator(commands.Cog):
             await ctx.send(', '.join(members))
 
     @commands.command(brief="Changes the topic of the current channel", help="Used to change the topic of the current channel", usage="new_topic")
+    @commands.has_permissions(manage_channels=True)
     async def change_channel_topic(self, ctx, *, new_topic):
         await ctx.channel.edit(topic=new_topic)
+
+    @commands.command(brief="Changes all channel topics", help="This will allow you to change all channel topics as you please")
+    @commands.has_permissions(manage_channels=True)
+    async def change_all_channel_topics(self, ctx):
+        check_dict = {"✅": "yes", "❌": "no"}
+        
+        def react_check(reaction, user):
+            return user == ctx.author and str(reaction.emoji) in list(check_dict.keys())
+
+        def message_check(m):
+            return m.author == ctx.author and m.channel == ctx.channel
+
+        for channel in ctx.guild.channels:
+            if not hasattr(channel, "topic"): continue
+            msg = await ctx.send(f"Would you like to change the topic for {channel.name}? ✅/❌")
+            for key in list(check_dict.keys()):
+                await msg.add_reaction(key)
+
+            try:
+                response = await self.bot.wait_for("reaction_add", check=react_check, timeout=60)
+        
+                answer = check_dict[str(response[0].emoji)]
+                if answer == "no":
+                    await ctx.send("Okay, moving on")
+                    continue
+
+                await ctx.send(f"The current topic for this channel is {channel.topic}. What would you like to change it to?")
+                response = await self.bot.wait_for('message', check=message_check, timeout=60)
+                await channel.edit(topic=response.content)
+                await ctx.send(f"The new channel topic for {channel.name} is {channel.topic}")
+            except asyncio.TimeoutError:
+                await ctx.send("You took too long")
+                return
 
     @commands.command()
     @commands.is_owner()
