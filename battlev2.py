@@ -78,8 +78,10 @@ class RPG(commands.Cog):
         if return_message:
             await ctx.send(return_message)
             return
-
-        await ctx.send(player)
+        to_send = ""
+        for k, v in player.items():
+            to_send += f"\n{k}: {v}"
+        await ctx.send(f"```{to_send}```")
 
     @commands.command(brief="Used to start a battle quest", help="Used to initiate a fight based quest")
     async def quest(self, ctx):
@@ -93,15 +95,16 @@ class RPG(commands.Cog):
 
         game_enemy = copy(enemy_template)
         move_set = ""
+        
         for k, v in self.battle_emojis.items():
             move_set += f"\n{v}: {k}"
+        
         embed = discord.Embed(
             title="BATTLE",
             description=f"PICK YOUR MOVE!!!{move_set}",
             color=randint(0, 0xffffff)
         )
 
-        
         msg = f'```{player["NAME"].center(30, "=")}\nHealth:{player["HEALTH"]}\nPower:{player["POWER"]}\nDefense:{player["DEFENSE"]}\n\n{"Enemy".center(30, "=")}\nHealth: {game_enemy["HEALTH"]}\nPower: {game_enemy["POWER"]}\nDefense: {game_enemy["DEFENSE"]}```'
 
         battle = await ctx.send(embed=embed, content=msg)

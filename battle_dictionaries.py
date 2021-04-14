@@ -20,7 +20,7 @@ player_template = {
 
 # Enemy Template
 enemy_template = {
-    "NAME": "",
+    "NAME": "ENEMY",
     "HEALTH": 100,
     "POWER": 10,
     "DEFENSE": 5, 
