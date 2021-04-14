@@ -23,7 +23,8 @@ Attributes:
     Leveling System
 
     Tiers:
-        Every 200 levels per tier. 5 tiers
+        Every 100 levels is a tier increase. 5 tiers
+        Tier increase is similar to an evolution, and allows your class to evolve
 
     Rebirth:
         Return to level 1 but with slightly higher stats
@@ -56,9 +57,6 @@ Player:
         player_id
         exp
 
-    Methods:
-        
-
 
 Profile:
     A profile will be needed for these services. And will be created using <>createprofile
@@ -81,7 +79,6 @@ Profile:
         Player Crit_chance
 
         Player Abils 1 & 2
-        Player Passive
         
         Player Paradians (Currency)
         Player Main Weapon 
@@ -92,8 +89,8 @@ Profile:
 Class System:
     Warrior: 
         Attacks using physical weapons (Sword, Spear)
-        highest defense
-        high power
+        highest defense + 30 defense
+        high power + 30 power
 
         Blessing: 
             Warriors' Blessing:
@@ -104,7 +101,7 @@ Class System:
     Ranger:
         Attacks using Ranged weapons (Bow, guns)
         high accuracy
-        high critical hit ratio 
+        high critical hit ratio + 15% crit chance
         Higher dodge ratio 
 
         Blessing:
@@ -114,8 +111,8 @@ Class System:
 
     Mage:
         Attacks using magic (Spells)
-        High damage
-        Low defense
+        High damage + 40 power
+        Low defense - 5 defense
         
         Blessing:
             Mages' Blessing:
@@ -150,8 +147,8 @@ Abilities
     Players will be allowed to have a maximum of 2 abilities at any given time.
     Abilities are Class specific.
 
-    Damaging Abilities have a 40% chance of working.
-    Buffing Abilities have a 30% chance of working
+    Damaging Abilities have a 40% chance of working. These are unlocked at level 20
+    Buffing Abilities have a 30% chance of working. These are unlocked at level 40
     
     Abilities may either directly increase the power of the attack, or provide a buff to the user for the remaining Duration
 
@@ -183,10 +180,11 @@ Abilities
             Will Play a gif because ME GUSTA
 
         Activate Prepared Magic:
-            Reduces Enemy defense by 10
+            Reduces Enemy defense by 10%
             Increases all stats by 5%
 
 Blessings:
+    Unlocked at level 60
     Requirements:
         User must be below 40% health
         Can only be used once per fight

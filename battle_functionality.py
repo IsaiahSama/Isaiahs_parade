@@ -15,13 +15,15 @@ class BattleHandler:
         self.player = player
         self.enemy = enemy
 
-    def handle(self, emoji:str):
+    def handle(self, emoji:str) -> str/dict:
+        """Function that handles the turns for the attacker and defender, returns the message to be output, and the two dictionaries"""
         msg1 = self.handle_user(self.player, self.enemy, emoji)
         msg2 = self.handle_user(self.enemy, self.player, None)
         msg = f"```diff\n+ {msg1}\n- {msg2}```"
         return msg, self.player, self.enemy
 
-    def handle_user(self, attacker, defender, emoji):
+    def handle_user(self, attacker, defender, emoji) -> str:
+        """Determines the action to take based on the used emoji. Currently for enemies, all they can do is attack. Returns the message to be output"""
         if not emoji:
             emoji = choice(["⚔️"])
 
@@ -49,7 +51,8 @@ class BattleHandler:
 
         return msg        
 
-    def handle_attack(self, attacker, defender):
+    def handle_attack(self, attacker, defender) -> str:
+        """Handles the attacking and life deduction. Returns the message to be output"""
         power = self.get_power(attacker)
         is_crit = False
         if hasattr(attacker, "crit_chance"):
@@ -65,7 +68,8 @@ class BattleHandler:
             return f"{defender['NAME']} was attacked by {attacker['NAME']} and took {power} damage"
 
 
-    def handle_potion(self, attacker):
+    def handle_potion(self, attacker) -> str:
+        """Determines if a player can heal or not. If so, performs the heal, and then returns the message to be output"""
         options = [True, True, True, False, False]
         shuffle(options)
         will_heal = choice(options)
@@ -77,17 +81,20 @@ class BattleHandler:
         return f"{attacker['NAME']} healed for {heal_amount} health"
 
 
-    def handle_ability_1(self, attacker, defender):
+    def handle_ability_1(self, attacker, defender) -> str:
+        """Function which passes on the values to the ability handler, then returns the message"""
         ability = abilities[attacker["CLASS"]]["ABILITY_1"]
         msg = self.handle_ability(attacker, defender, ability)
         return msg
 
-    def handle_ability_2(self, attacker, defender):
+    def handle_ability_2(self, attacker, defender) -> str:
+        """Function which passes on the values to the ability handler, then returns the message"""
         ability = abilities[attacker["CLASS"]]["ABILITY_2"]
         msg = self.handle_ability(attacker, defender, ability)
         return msg        
 
-    def handle_blessing(self, attacker):
+    def handle_blessing(self, attacker) -> str:
+        """Uses the blessing of the attacker. Returns the message to be output"""
         blessing = blessings[attacker["CLASS"]]
         for k, v in blessing['EFFECTS'].items():
             value = attacker.get(k)
@@ -101,15 +108,22 @@ class BattleHandler:
         msg = f"I, {attacker['NAME']}, have been blessed. {blessing['NAME']}: {blessing['TOOLTIP']}"
         return msg
 
-    def handle_running(self, attacker, defender):
+    def handle_running(self, attacker, defender) -> bool:
+        """Determines whether or not the player is able to run. Returns this as a boolean"""
         health_difference = abs(defender['HEALTH'] - attacker['HEALTH']) + 100
         return self.random_calculator(list(range(0, 100)), health_difference % 100)
         
-    def get_power(self, attacker):
+    def get_power(self, attacker) -> int:
+        """Calculates the varying power of the attacker. Returns the power as an integer"""
         return randint(attacker["POWER"]-5, attacker["POWER"]+6)
 
-    def handle_ability(self, attacker, defender, ability):
+    def handle_ability(self, attacker, defender, ability) -> str:
+        """Determines if an ability can is used or not. If so, applies the affect of the ability. Returns a string containing the message to output"""
         msg = f"Ability Activate: {ability['NAME']}: {ability['TOOLTIP']}"
+        can_ability = self.random_calculator(range(0, 100), ability["CHANCE"])
+        if not can_ability:
+            msg += f"\nAbility failed"
+            return msg
         power = self.get_power(attacker)
         for k, v in ability["PLAYER"].items():
             if k == "POWER":
@@ -128,17 +142,22 @@ class BattleHandler:
 
         return msg
 
-    def handle_crit(self, power, attacker, is_crit):
+    def handle_crit(self, power, attacker, is_crit) -> float/bool:
+        """Calculates whether of not a crit will occur, and determines the output. Returns the power as a float and the crit as a bool"""
         is_crit = self.random_calculator(range(0, 100), attacker.crit_chance)
         if is_crit:
             power *= 1.5
 
         return power, is_crit
 
-    def random_calculator(self, numrange:list, percent_value:int):
-        numbers = sample(numrange, percent_value)
+    def random_calculator(self, numrange:list, percent_value:int) -> bool:
+        """Calculates whether a certain event will occur or not. Takes a range of numbers, and a percent value as an integer. Returns the boolean."""
+        numbers = sample(numrange, round((percent_value/100) * (len(numrange) - 1)))
         value = randint(numrange[0], numrange[-1])
 
         if value in numbers:
             return True 
         return False
+
+    def get_battle_emojis(self):
+        pass

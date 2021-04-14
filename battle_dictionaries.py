@@ -53,6 +53,7 @@ abilities = {
         "ABILITY_1": {
             "NAME": "Thrash",
             "TOOLTIP": "A thrashing attack that Triples attack power, but reduces defence by 20%``` https://i.pinimg.com/originals/5b/31/0a/5b310a23d4d2c7879d215eb477590ea6.gif ```diff",
+            "CHANCE": 40,
             "PLAYER":{
                 "POWER": 300,
                 "DEFENSE": -20
@@ -62,6 +63,7 @@ abilities = {
         "ABILITY_2": {
             "NAME": "Warrior Cry",
             "TOOLTIP": "A piercing cry which reduces the defense of enemies by 5%, and increases the power of the user by 30, defense by 5%, and health by 10%",
+            "CHANCE": 30,
             "PLAYER": {
                 "POWER": 30,
                 "DEFENSE": 5,
@@ -77,6 +79,7 @@ abilities = {
         "ABILITY_1": {
             "NAME": "Ballista Shot",
             "TOOLTIP": "Fires a powerful piercing shot which does 250% of power``` https://static.wikia.nocookie.net/terraria_gamepedia/images/e/ee/Ballista_Cane_%28demo%29.gif ```diff",
+            "CHANCE": 40,
             "PLAYER": {
                 "POWER": 250
             }
@@ -85,6 +88,7 @@ abilities = {
         "ABILITY_2": {
             "NAME": "Sharp Eye",
             "TOOLTIP": "Focusing strength into eyes, critical strike chance is increased by 30%",
+            "CHANCE": 30,
             "PLAYER": {
                 "CRIT_CHANCE": 30
             }
@@ -95,6 +99,7 @@ abilities = {
         "ABILITY_1": {
             "NAME": "Great Sage: Explosion!",
             "TOOLTIP": "BAKURETSU!!! A powerful explosion that does 300% damage``` https://i.pinimg.com/originals/c4/07/40/c4074087283441de471b78e0fb56cf25.gif ```diff",
+            "CHANCE": 40,
             "PLAYER":{
                 "POWER": 300
             }
@@ -103,6 +108,7 @@ abilities = {
         "ABILITY_2": {
             "NAME": "Activate Prepared Magic",
             "TOOLTIP": "A pre-prepared spell the reduces all enemy stats by 10%, and increases all user stats by 5%",
+            "CHANCE": 30,
             "ENEMY":{
                 "DEFENSE": -10,
                 "POWER": -10,
