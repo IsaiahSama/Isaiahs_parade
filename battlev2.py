@@ -15,31 +15,16 @@ class RPG(commands.Cog):
         await self.bot.wait_until_ready()
         print("Loaded in")
 
-    class_emojis = {
-        "🗡️": "Warrior",
-        "🏹": "Ranger",
-        "📖": "Mage"
-    }
-
-    battle_emojis = {
-        "⚔️": "Attack",
-        "🥤" : "Potion",
-        "⛓" : "Ability_1",
-        "👹" : "Ability_2",
-        "😇" : "Blessing",
-        "🏃" : "Run",
-    }
-
     players = []
 
     @commands.command(brief="Used to create a RPG Profile", help="Used to create a profile to be used for the RPG functionality")
     async def createprofile(self, ctx):
         msg = await ctx.send("React with the emoji of the class you want to be:\n🗡️: Warrior\n🏹: Ranger\n📖: Mage")
-        for key in self.class_emojis.keys():
+        for key in class_emojis.keys():
             await msg.add_reaction(key)
 
         def check(reaction, user):
-            return user == ctx.author and str(reaction.emoji) in self.class_emojis.keys()
+            return user == ctx.author and str(reaction.emoji) in class_emojis.keys()
 
         try:
             reaction = await self.bot.wait_for("reaction_add", check=check, timeout=30.0)
@@ -48,7 +33,7 @@ class RPG(commands.Cog):
             await msg.delete()
             return
 
-        chosen_class = self.class_emojis[str(reaction[0].emoji)]
+        chosen_class = class_emojis[str(reaction[0].emoji)]
         player = copy(player_template)
         player["NAME"] = ctx.author.name
         player["PLAYER_ID"] = ctx.author.id
@@ -94,9 +79,14 @@ class RPG(commands.Cog):
         # await ctx.send(f"{player.__dict__}\nVS\n{game_enemy}")
 
         game_enemy = copy(enemy_template)
+        
+        handler = BattleHandler(player, game_enemy)
+        
+        battle_emojis = handler.get_battle_emojis(player)
+
         move_set = ""
         
-        for k, v in self.battle_emojis.items():
+        for k, v in battle_emojis.items():
             move_set += f"\n{v}: {k}"
         
         embed = discord.Embed(
@@ -110,12 +100,11 @@ class RPG(commands.Cog):
         battle = await ctx.send(embed=embed, content=msg)
         battle_msg = await ctx.send("React above to start")
 
-        for reaction in self.battle_emojis.keys():
+        for reaction in battle_emojis.keys():
                 await battle.add_reaction(reaction)
 
-        handler = BattleHandler(player, game_enemy)
         def check(reaction, user):
-            return reaction.emoji in self.battle_emojis.keys() and user == ctx.author
+            return reaction.emoji in battle_emojis.keys() and user == ctx.author
 
         while player["HEALTH"] > 0 and game_enemy["HEALTH"] > 0:
 
@@ -134,7 +123,7 @@ class RPG(commands.Cog):
             if "run successful" in to_send.lower():
                 break
             await battle.clear_reactions()
-            for battle_reaction in self.battle_emojis.keys():
+            for battle_reaction in battle_emojis.keys():
                 await battle.add_reaction(battle_reaction)
 
         await ctx.send("Battle over")

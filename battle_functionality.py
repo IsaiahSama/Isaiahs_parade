@@ -159,5 +159,14 @@ class BattleHandler:
             return True 
         return False
 
-    def get_battle_emojis(self):
-        pass
+    def get_battle_emojis(self, player) -> dict:
+        """Used to determine what emojis will be available for the user to use. Returns a dictionary of emojis to action"""
+        # battle_emojis = {"⚔️": "Attack", "🥤" : "Potion", "🏃" : "Run"}
+        # if player["LEVEL"] >= 20:
+        #     battle_emojis["⛓"] = "Ability_1"
+        # if player["LEVEL"] >= 40:
+        #     battle_emojis["👹"] = "Ability_2"
+        # if player["LEVEL"] >= 60:
+        #     battle_emojis["😇"] = "Blessing"
+
+        return all_battle_emojis

@@ -28,6 +28,22 @@ enemy_template = {
     "PARADIANS": 0
 }
 
+# Battle Dictionaries
+class_emojis = {
+    "🗡️": "Warrior",
+    "🏹": "Ranger",
+    "📖": "Mage"
+}
+
+all_battle_emojis = {
+    "⚔️": "Attack",
+    "🥤" : "Potion",
+    "⛓" : "Ability_1",
+    "👹" : "Ability_2",
+    "😇" : "Blessing",
+    "🏃" : "Run"
+}
+
 # Class Dictionaries
 warrior_dict = {
     "POWER": 30,
