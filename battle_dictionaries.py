@@ -22,8 +22,8 @@ player_template = {
 enemy_template = {
     "NAME": "",
     "HEALTH": 100,
-    "POWER": 0,
-    "DEFENSE": 0, 
+    "POWER": 10,
+    "DEFENSE": 5, 
     "EXPGAIN": 0,
     "PARADIANS": 0
 }

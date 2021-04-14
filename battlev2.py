@@ -92,15 +92,17 @@ class RPG(commands.Cog):
         # await ctx.send(f"{player.__dict__}\nVS\n{game_enemy}")
 
         game_enemy = copy(enemy_template)
-        
+        move_set = ""
+        for k, v in self.battle_emojis.items():
+            move_set += f"\n{v}: {k}"
         embed = discord.Embed(
             title="BATTLE",
-            description=f"PICK YOUR MOVE!!!\n{dict(zip(self.battle_emojis.values(), self.battle_emojis.keys()))}",
+            description=f"PICK YOUR MOVE!!!{move_set}",
             color=randint(0, 0xffffff)
         )
 
         
-        msg = f'```{player["NAME"].centre(30, "=")}\nHealth:{player["HEALTH"]}\nPower:{player["POWER"]}\nDefense:\t\t{player["DEFENSE"]}\n{"Enemy".centre(30, "=")}\nPower: {game_enemy["POWER"]}\nDefense: {game_enemy["DEFENSE"]}```'
+        msg = f'```{player["NAME"].center(30, "=")}\nHealth:{player["HEALTH"]}\nPower:{player["POWER"]}\nDefense:{player["DEFENSE"]}\n\n{"Enemy".center(30, "=")}\nHealth: {game_enemy["HEALTH"]}\nPower: {game_enemy["POWER"]}\nDefense: {game_enemy["DEFENSE"]}```'
 
         battle = await ctx.send(embed=embed, content=msg)
         battle_msg = await ctx.send("React above to start")
@@ -121,6 +123,8 @@ class RPG(commands.Cog):
                 return
 
             to_send, player, game_enemy = handler.handle(reaction[0].emoji)
+
+            msg = f'```{player["NAME"].center(30, "=")}\nHealth:{player["HEALTH"]}\nPower:{player["POWER"]}\nDefense:{player["DEFENSE"]}\n\n{"Enemy".center(30, "=")}\nHealth: {game_enemy["HEALTH"]}\nPower: {game_enemy["POWER"]}\nDefense: {game_enemy["DEFENSE"]}```'
 
             await battle.edit(embed=embed, content=msg)
             await battle_msg.edit(content=to_send)

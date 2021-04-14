@@ -55,7 +55,7 @@ class BattleHandler:
         if hasattr(attacker, "crit_chance"):
             power, is_crit = self.handle_crit(power, attacker, is_crit)
         
-        power -= (defender.defense // 2)
+        power -= (defender["DEFENSE"] // 2)
         if power < 0: power = 1
         defender["HEALTH"] -= power
 
@@ -89,18 +89,20 @@ class BattleHandler:
 
     def handle_blessing(self, attacker):
         blessing = blessings[attacker["CLASS"]]
-        for k, v in blessing.items():
+        for k, v in blessing['EFFECTS'].items():
             value = attacker.get(k)
             if not value:
                 attacker[k] = v
             else:
-                attacker[k] = (v//100 * value) + value
+                print(attacker[k])
+                attacker[k] += round(v/100 * value)
+                print(attacker[k])
 
-        msg = f"I, {attacker['name']}, have been blessed. {blessing['NAME']}: {blessing['TOOLTIP']}"
+        msg = f"I, {attacker['NAME']}, have been blessed. {blessing['NAME']}: {blessing['TOOLTIP']}"
         return msg
 
     def handle_running(self, attacker, defender):
-        health_difference = abs(defender['health'] - attacker['health']) + 100
+        health_difference = abs(defender['HEALTH'] - attacker['HEALTH']) + 100
         return self.random_calculator(list(range(0, 100)), health_difference % 100)
         
     def get_power(self, attacker):
@@ -113,7 +115,7 @@ class BattleHandler:
             if k == "POWER":
                 power += v/100 * attacker["POWER"]
                 continue
-            attacker[k] = (v//100 * attacker[k]) + attacker[k]
+            attacker[k] = round((v/100 * attacker[k]) + attacker[k])
 
         enemy_effects = ability.get("ENEMY", None)
         if enemy_effects:
