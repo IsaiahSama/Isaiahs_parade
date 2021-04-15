@@ -1,6 +1,7 @@
 # Player Template
 player_template = {
     "NAME": "",
+    "LIVES": 4,
     "LEVEL": 0,
     "TIER": 1,
     "CLASS": "",

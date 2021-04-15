@@ -15,7 +15,11 @@ Attributes:
     Jobs:
         Rewards scale based on levels
 
+    Training:
+        Will be the main form of gaining exp and getting stronger before being able to do quests/
+
     Quests:
+        Unlocks at level 10
         Main way of obtaining Cash
         Quest Enemies scale with player stats
         Turn Based
@@ -43,7 +47,8 @@ Attributes:
 Player:
     Visible Attributes:
         Name
-        Level 
+        Lives
+        Level
         Tier
         Class
         Power 

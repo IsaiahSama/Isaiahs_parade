@@ -121,13 +121,31 @@ class RPG(commands.Cog):
             await battle.edit(embed=embed, content=msg)
             await battle_msg.edit(content=to_send)
             if "run successful" in to_send.lower():
+                winner = None
                 break
             await battle.clear_reactions()
             for battle_reaction in battle_emojis.keys():
                 await battle.add_reaction(battle_reaction)
-
+            
+            if player["HEALTH"] < game_enemy["HEALTH"]:
+                winner = game_enemy
+            else:
+                winner = player
+            
         await ctx.send("Battle over")
-
+        if not winner:
+            await ctx.send(f"The winner is... No one. Well, get to live to fight another day.")
+        elif winner == game_enemy:
+            player["LIVES"] -= 1
+            if player["LIVES"] == 0:
+                await ctx.send(f"{player['NAME']} has lost their last life. Goodbye")
+                self.players.remove(player)
+            else:
+                await ctx.send(f"{player['NAME']} has lost this fight, and a life. {player['LIVES']} remain")
+        else:
+            player["PARADIANS"] += game_enemy["PARADIANS"]
+            player["EXP"] += game_enemy["EXPGAIN"]
+            await ctx.send(f"CONGRATULATIONS, {ctx.author.mention} has defeated {game_enemy['NAME']}, and gained {game_enemy['PARADIANS']} Paradians, and {game_enemy['EXPGAIN']} exp points.")
 
 def setup(bot):
     bot.add_cog(RPG(bot))
