@@ -170,3 +170,16 @@ class BattleHandler:
         #     battle_emojis["😇"] = "Blessing"
 
         return all_battle_emojis
+
+    def handle_level_up(self, player):
+        msg = ""
+        player["LEVEL"] += 1
+        msg += f"!!!\n{player['NAME']} is now level {player['LEVEL']}"
+
+        if player["LEVEL"] % 100 == 0 and player["LEVEL"] < 5:
+            player["TIER"] += 1
+            msg += f"\n!!! {player['NAME']} is now Tier {player['TIER']}"
+
+        player["EXP_FOR_NEXT_LEVEL"] *= 1.6
+
+        return msg, player

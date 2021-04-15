@@ -121,31 +121,38 @@ class RPG(commands.Cog):
             await battle.edit(embed=embed, content=msg)
             await battle_msg.edit(content=to_send)
             if "run successful" in to_send.lower():
-                winner = None
+                winner, loser = None, None
                 break
             await battle.clear_reactions()
             for battle_reaction in battle_emojis.keys():
                 await battle.add_reaction(battle_reaction)
             
             if player["HEALTH"] < game_enemy["HEALTH"]:
-                winner = game_enemy
+                winner, loser = game_enemy, player
             else:
-                winner = player
+                winner, loser = player, game_enemy
             
         await ctx.send("Battle over")
+        await self.handle_post_battle(ctx, winner, loser, handler)
+
+    async def handle_post_battle(self, ctx, winner, loser, handler):
         if not winner:
             await ctx.send(f"The winner is... No one. Well, get to live to fight another day.")
-        elif winner == game_enemy:
-            player["LIVES"] -= 1
-            if player["LIVES"] == 0:
-                await ctx.send(f"{player['NAME']} has lost their last life. Goodbye")
-                self.players.remove(player)
+            return
+        if winner.get("TYPE", None):
+            loser["LIVES"] -= 1
+            if loser["LIVES"] == 0:
+                await ctx.send(f"{loser['NAME']} has lost their last life. Goodbye")
+                self.players.remove(loser)
             else:
-                await ctx.send(f"{player['NAME']} has lost this fight, and a life. {player['LIVES']} remain")
+                await ctx.send(f"{loser['NAME']} has lost this fight, and a life. {loser['LIVES']} remain")
         else:
-            player["PARADIANS"] += game_enemy["PARADIANS"]
-            player["EXP"] += game_enemy["EXPGAIN"]
-            await ctx.send(f"CONGRATULATIONS, {ctx.author.mention} has defeated {game_enemy['NAME']}, and gained {game_enemy['PARADIANS']} Paradians, and {game_enemy['EXPGAIN']} exp points.")
+            winner["PARADIANS"] += loser["PARADIANS"]
+            winner["EXP"] += loser["EXPGAIN"]
+            await ctx.send(f"CONGRATULATIONS, {ctx.author.mention} has defeated {loser['NAME']}, and gained {loser['PARADIANS']} Paradians, and {loser['EXPGAIN']} exp points.")
+            if winner["EXP"] >= winner["EXP_FOR_NEXT_LEVEL"]:
+                msg, winner = handler.handle_level_up(winner)
+                await ctx.send(msg)
 
 def setup(bot):
     bot.add_cog(RPG(bot))

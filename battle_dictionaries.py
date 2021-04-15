@@ -15,7 +15,7 @@ player_template = {
     "WEAPON": "None",
     "ARMOR": "None",
     "EXP": 0,
-    "EXP_TO_NEXT_LEVEL": 100,
+    "EXP_FOR_NEXT_LEVEL": 100,
     "PLAYER_ID": 0
 }
 
@@ -26,7 +26,8 @@ enemy_template = {
     "POWER": 10,
     "DEFENSE": 5, 
     "EXPGAIN": 0,
-    "PARADIANS": 0
+    "PARADIANS": 0,
+    "TYPE": "ENEMY"
 }
 
 # Battle Dictionaries
