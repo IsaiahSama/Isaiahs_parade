@@ -15,7 +15,7 @@ class BattleHandler:
         self.player = player
         self.enemy = enemy
 
-    def handle(self, emoji:str) -> str/dict:
+    def handle(self, emoji:str) -> dict:
         """Function that handles the turns for the attacker and defender, returns the message to be output, and the two dictionaries"""
         msg1 = self.handle_user(self.player, self.enemy, emoji)
         msg2 = self.handle_user(self.enemy, self.player, None)
@@ -142,7 +142,7 @@ class BattleHandler:
 
         return msg
 
-    def handle_crit(self, power, attacker, is_crit) -> float/bool:
+    def handle_crit(self, power, attacker, is_crit) -> bool:
         """Calculates whether of not a crit will occur, and determines the output. Returns the power as a float and the crit as a bool"""
         is_crit = self.random_calculator(range(0, 100), attacker.crit_chance)
         if is_crit:
