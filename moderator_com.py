@@ -1,4 +1,5 @@
 import discord
+from discord import utils
 from discord.ext import commands
 import asyncio
 from random import randint
@@ -392,6 +393,67 @@ class Moderator(commands.Cog):
         await channel.send(f"{ctx.author.name}: {error}")
         print(error)
 
+    @commands.command(brief="Moves all members in the user's vc to another one", help="Used to move all members in the same vc as the user to another vc, whose id is specified", usage="name or id of vc to move to")
+    @commands.has_permissions(move_members=True)
+    async def move_members_to(self, ctx, name_or_id_of_vc):
+        if not ctx.author.voice.channel:
+            await ctx.send("You are not currently connected to a voice channel")
+            return 
+        
+        if not name_or_id_of_vc.isnumeric():
+            vc_name = name_or_id_of_vc
+            channels = [channel for channel in ctx.guild.channels if hasattr(channel, "connect") and vc_name.lower() in channel.name.lower()]
+            if not channels:
+                await ctx.send("Could not find any channels with that name. Double check spelling.")
+                return
+
+            if len(channels) > 1:
+                await ctx.send("You have more than one channel matching the name given. Use the command again, but use the id of the channel instead provided below")
+                channel_msg = ""
+                for channel in channels:
+                    channel_msg += f"`{channel.name}: {channel.id}`\n"
+                
+                await ctx.send(channel_msg)
+                return
+
+            channel = channels[0]
+            
+        elif name_or_id_of_vc.isnumeric():
+            vc_id = int(name_or_id_of_vc)
+            channel = utils.get(ctx.guild.channels, id=vc_id)
+            if not channel:
+                await ctx.send("There is no channel in this server with that id.")
+                return
+
+        else:
+            await ctx.send("The text you entered, I do not recognise.")
+            return 
+
+        confirmation = ["✅", "❌"]
+
+        def check(reaction, user):
+            return user == ctx.author and str(reaction.emoji) in confirmation
+
+        msg = await ctx.send(f"Are you sure you want to move all {len(ctx.author.voice.channel.members)} members of your voice channel to {channel.name}")
+        for emoji in confirmation:
+            await msg.add_reaction(emoji)
+
+        try:
+            reaction = await self.bot.wait_for("reaction_add", check=check, timeout=60)
+        except asyncio.TimeoutError:
+            await ctx.send("Took too long. Cancelled operation")
+            return
+
+        emoji = str(reaction[0].emoji)
+
+        if not emoji == "✅":
+            await ctx.send("Maybe next time. Move has been cancelled")
+            return
+
+        for person in ctx.author.voice.channel:
+            await person.move_to(channel)
+            
+
     noprofane = []
 
     @commands.command(brief="Toggles profanity filter", help="Toggles profanity filter")
@@ -410,7 +472,7 @@ class Moderator(commands.Cog):
         msg = msg.replace("fuck", "fack")
         msg = msg.replace("shit", "shiz")
         msg = msg.replace("bitch", "beech")
-        msg = msg.replace("cum ", "excrete my sexual fluid")
+        msg = msg.replace("cum ", "sexual fluid")
         msg = msg.replace("nigger", "handsome black person")
         return msg
         
