@@ -10,7 +10,7 @@ load_dotenv()
 
 # Set Client
 intents = discord.Intents.all()
-bot = commands.Bot(command_prefix='!', case_insensitive=True, intents=intents)
+bot = commands.Bot(command_prefix="<>", case_insensitive=True, intents=intents)
 
 bot.load_extension("general_com")
 bot.load_extension("gaming_com")
