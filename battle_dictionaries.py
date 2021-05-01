@@ -5,6 +5,7 @@ player_template = {
     "LEVEL": 0,
     "TIER": 1,
     "CLASS": "",
+    "MAX_HEALTH": 100,
     "HEALTH": 100,
     "POWER": 30,
     "DEFENSE": 10,

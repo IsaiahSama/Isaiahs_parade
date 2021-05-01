@@ -50,13 +50,6 @@ class RPG(commands.Cog):
         
         self.players.append(player)
 
-    async def is_player(self, member):
-        player = [player for player in self.players if player["PLAYER_ID"] == member.id]
-        if not player:
-            return None, "Could not find your Account. Create one with <>createprofile"
-        else:
-            return player[0], None
-
     @commands.command(brief="Used to view your RPG Battle Profile", help="Shows the profile relating to your RPG account once applicable")
     async def profile(self, ctx):
         player, return_message = await self.is_player(ctx.author)
@@ -153,6 +146,31 @@ class RPG(commands.Cog):
             if winner["EXP"] >= winner["EXP_FOR_NEXT_LEVEL"]:
                 msg, winner = handler.handle_level_up(winner)
                 await ctx.send(msg)
+
+    healing = []
+
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        player, return_message = await self.is_player(message.author)
+        if return_message:
+            return 
+
+        if player["HEALTH"] < player["MAX_HEALTH"]:
+            if player in self.healing: return
+
+            # Regen mechanic. 1 message per 30 seconds increases health by 5
+            self.healing.append(player)
+            player["HEALTH"] += 5
+            await asyncio.sleep(30)
+            self.healing.remove(player)
+
+    async def is_player(self, member):
+        player = [player for player in self.players if player["PLAYER_ID"] == member.id]
+        if not player:
+            return None, "Could not find your Account. Create one with <>createprofile"
+        else:
+            return player[0], None
+    
 
 def setup(bot):
     bot.add_cog(RPG(bot))
