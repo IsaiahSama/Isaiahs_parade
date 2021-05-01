@@ -103,9 +103,7 @@ class BattleHandler:
             if not value:
                 attacker[k] = v
             else:
-                print(attacker[k])
                 attacker[k] += round(v/100 * value)
-                print(attacker[k])
 
         msg = f"I, {attacker['NAME']}, have been blessed. {blessing['NAME']}: {blessing['TOOLTIP']}"
         return msg
@@ -172,15 +170,15 @@ class BattleHandler:
 
     def get_battle_emojis(self, player) -> dict:
         """Used to determine what emojis will be available for the user to use. Returns a dictionary of emojis to action"""
-        # battle_emojis = {"⚔️": "Attack", "🥤" : "Potion", "🏃" : "Run"}
-        # if player["LEVEL"] >= 20:
-        #     battle_emojis["⛓"] = "Ability_1"
-        # if player["LEVEL"] >= 40:
-        #     battle_emojis["👹"] = "Ability_2"
-        # if player["LEVEL"] >= 60:
-        #     battle_emojis["😇"] = "Blessing"
+        battle_emojis = {"⚔️": "Attack", "🥤" : "Potion", "🏃" : "Run"}
+        if player["LEVEL"] >= 30:
+            battle_emojis["⛓"] = "Ability_1"
+        if player["LEVEL"] >= 60:
+            battle_emojis["👹"] = "Ability_2"
+        if player["LEVEL"] >= 150:
+            battle_emojis["😇"] = "Blessing"
 
-        return all_battle_emojis
+        return battle_emojis
 
     def handle_level_up(self, player):
         msg = ""
@@ -216,7 +214,5 @@ def handle_enemy_gen(player):
     enemy["EXPGAIN"] = round((1 / variate(10)) * player["EXP_FOR_NEXT_LEVEL"])
 
     enemy["PARADIANS"] = round((1 / randint(2, 5)) * ((player["MAX_HEALTH"] + player["POWER"]) // 5))
-
-    print(enemy)
 
     return enemy

@@ -56,10 +56,17 @@ class RPG(commands.Cog):
         if return_message:
             await ctx.send(return_message)
             return
-        to_send = ""
+        
+        embed = discord.Embed(
+            title="Showing Profile",
+            description=f"Showing {player['NAME']}'s profile",
+            color=randint(0, 0xffffff)
+        )
+
         for k, v in player.items():
-            to_send += f"\n{k}: {v}"
-        await ctx.send(f"```{to_send}```")
+            embed.add_field(name=k, value=v)
+
+        await ctx.send(embed=embed)
 
     @commands.command(brief="Used to start a battle quest", help="Used to initiate a fight based quest")
     async def quest(self, ctx):
@@ -82,15 +89,31 @@ class RPG(commands.Cog):
         for k, v in battle_emojis.items():
             move_set += f"\n{v}: {k}"
         
-        embed = discord.Embed(
+        move_embed = discord.Embed(
             title="BATTLE",
             description=f"PICK YOUR MOVE!!!{move_set}",
             color=randint(0, 0xffffff)
         )
 
-        msg = f'```{player["NAME"].center(30, "=")}\nHealth:{player["HEALTH"]}\nPower:{player["POWER"]}\nDefense:{player["DEFENSE"]}\n\n{"Enemy".center(30, "=")}\nHealth: {game_enemy["HEALTH"]}\nPower: {game_enemy["POWER"]}\nDefense: {game_enemy["DEFENSE"]}```'
+        # msg = f'```{player["NAME"].center(30, "=")}\nHealth:{player["HEALTH"]}\nPower:{player["POWER"]}\nDefense:{player["DEFENSE"]}\n\n{"Enemy".center(30, "=")}\nHealth: {game_enemy["HEALTH"]}\nPower: {game_enemy["POWER"]}\nDefense: {game_enemy["DEFENSE"]}```'
 
-        battle = await ctx.send(embed=embed, content=msg)
+        stat_embed = discord.Embed(
+            title="Player VS Enemy",
+            description=f"{player['NAME']} VS {game_enemy['NAME']}",
+            color=randint(0, 0xffffff)
+        )
+
+        stat_embed.add_field(name="NAME", value=player["NAME"], inline=False)
+        stat_embed.add_field(name="HEALTH", value=f'{player["HEALTH"]} / {player["MAX_HEALTH"]}')
+        stat_embed.add_field(name="POWER", value=player["POWER"])
+        stat_embed.add_field(name="DEFENSE", value=player["DEFENSE"])
+        stat_embed.add_field(name="NAME", value=game_enemy["NAME"], inline=False)
+        stat_embed.add_field(name="HEALTH", value=game_enemy["HEALTH"])
+        stat_embed.add_field(name="POWER", value=game_enemy["POWER"])
+        stat_embed.add_field(name="DEFENSE", value=game_enemy["DEFENSE"])
+
+        battle = await ctx.send(embed=stat_embed)
+        move_message = await ctx.send(embed=move_embed)
         battle_msg = await ctx.send("React above to start")
 
         for reaction in battle_emojis.keys():
@@ -111,15 +134,33 @@ class RPG(commands.Cog):
 
             to_send, player, game_enemy = handler.handle(reaction[0].emoji)
 
-            msg = f'```{player["NAME"].center(30, "=")}\nHealth:{player["HEALTH"]}\nPower:{player["POWER"]}\nDefense:{player["DEFENSE"]}\n\n{"Enemy".center(30, "=")}\nHealth: {game_enemy["HEALTH"]}\nPower: {game_enemy["POWER"]}\nDefense: {game_enemy["DEFENSE"]}```'
+            # msg = f'```{player["NAME"].center(30, "=")}\nHealth:{player["HEALTH"]}\nPower:{player["POWER"]}\nDefense:{player["DEFENSE"]}\n\n{"Enemy".center(30, "=")}\nHealth: {game_enemy["HEALTH"]}\nPower: {game_enemy["POWER"]}\nDefense: {game_enemy["DEFENSE"]}```'
 
-            await battle.edit(embed=embed, content=msg)
+            stat_embed = discord.Embed(
+            title="Player VS Enemy",
+            description=f"{player['NAME']} VS {game_enemy['NAME']}",
+            color=randint(0, 0xffffff)
+            )
+
+            stat_embed.add_field(name="NAME", value=player["NAME"], inline=False)
+            stat_embed.add_field(name="HEALTH", value=f'{player["HEALTH"]} / {player["MAX_HEALTH"]}')
+            stat_embed.add_field(name="POWER", value=player["POWER"])
+            stat_embed.add_field(name="DEFENSE", value=player["DEFENSE"])
+            stat_embed.add_field(name="NAME", value=game_enemy["NAME"], inline=False)
+            stat_embed.add_field(name="HEALTH", value=game_enemy["HEALTH"])
+            stat_embed.add_field(name="POWER", value=game_enemy["POWER"])
+            stat_embed.add_field(name="DEFENSE", value=game_enemy["DEFENSE"])
+
+            await move_message.edit(embed=move_embed)
+            await battle.edit(embed=stat_embed)
+            
             await battle_msg.edit(content=to_send)
             if "run successful" in to_send.lower():
                 break
-            await battle.clear_reactions()
+
+            await move_message.clear_reactions()
             for battle_reaction in battle_emojis.keys():
-                await battle.add_reaction(battle_reaction)
+                await move_message.add_reaction(battle_reaction)
             
             if player["HEALTH"] < game_enemy["HEALTH"]:
                 winner, loser = game_enemy, player
