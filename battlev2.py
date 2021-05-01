@@ -117,7 +117,7 @@ class RPG(commands.Cog):
         battle_msg = await ctx.send("React above to start")
 
         for reaction in battle_emojis.keys():
-                await battle.add_reaction(reaction)
+                await move_message.add_reaction(reaction)
 
         def check(reaction, user):
             return reaction.emoji in battle_emojis.keys() and user == ctx.author
