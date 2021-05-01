@@ -10,7 +10,7 @@ load_dotenv()
 
 # Set Client
 intents = discord.Intents.all()
-bot = commands.Bot(command_prefix="<>", case_insensitive=True, intents=intents)
+bot = commands.Bot(command_prefix="IP ", case_insensitive=True, intents=intents)
 
 bot.load_extension("general_com")
 bot.load_extension("gaming_com")
@@ -31,7 +31,7 @@ async def on_ready():
     # on ready event called when bot finished logging in
     print("We have logged in as {0.user}".format(bot))
     # Sets Discord Status
-    activity = discord.Activity(name='<>help or !help for testing', type=discord.ActivityType.watching)
+    activity = discord.Activity(name='<>help or IP help for testing', type=discord.ActivityType.watching)
     await bot.change_presence(activity=activity, status=discord.Status.dnd)
     # , status=discord.Status.dnd
 

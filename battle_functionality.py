@@ -1,4 +1,6 @@
+from copy import copy
 from random import choice, randint, sample, shuffle
+
 from battle_dictionaries import *
 
 # battle_emojis = {
@@ -10,7 +12,7 @@ from battle_dictionaries import *
 #         "🏃" : "Run",
 #     }
 class BattleHandler:
-    """Class that handles the two battle turns"""
+    """Class that handles all battle related functions"""
     def __init__(self, player, enemy) -> None:
         self.player = player
         self.enemy = enemy
@@ -183,3 +185,29 @@ class BattleHandler:
         player["EXP_FOR_NEXT_LEVEL"] *= 1.6
 
         return msg, player
+
+def handle_enemy_gen(player):
+    # Function which handles the generation of enemies.
+
+    def variate(value) -> int:
+        # Function which takes in a value, and returns a variaton of that number
+        number = randint(1, (value // 2))
+
+        if number % 2 == 0:
+            return value + number
+        else:
+            return value - number
+
+    enemy = copy(enemy_template)
+
+    enemy["HEALTH"] = variate(player["MAX_HEALTH"])
+    enemy["POWER"] = variate(player["POWER"])
+    enemy["DEFENSE"] = variate(player["DEFENSE"])
+
+    enemy["EXPGAIN"] = round((1 / variate(10)) * player["EXP_FOR_NEXT_LEVEL"])
+
+    enemy["PARADIANS"] = round((1 / randint(2, 5)) * ((player["MAX_HEALTH"] + player["POWER"]) // 5))
+
+    print(enemy)
+
+    return enemy

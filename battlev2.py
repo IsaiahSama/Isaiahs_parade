@@ -71,7 +71,7 @@ class RPG(commands.Cog):
         await ctx.send(f"Engaging in combat against game_enemy.")
         # await ctx.send(f"{player.__dict__}\nVS\n{game_enemy}")
 
-        game_enemy = copy(enemy_template)
+        game_enemy = handle_enemy_gen(player)
         
         handler = BattleHandler(player, game_enemy)
         
@@ -99,6 +99,8 @@ class RPG(commands.Cog):
         def check(reaction, user):
             return reaction.emoji in battle_emojis.keys() and user == ctx.author
 
+        winner, loser = None, None
+
         while player["HEALTH"] > 0 and game_enemy["HEALTH"] > 0:
 
             try:
@@ -114,7 +116,6 @@ class RPG(commands.Cog):
             await battle.edit(embed=embed, content=msg)
             await battle_msg.edit(content=to_send)
             if "run successful" in to_send.lower():
-                winner, loser = None, None
                 break
             await battle.clear_reactions()
             for battle_reaction in battle_emojis.keys():
