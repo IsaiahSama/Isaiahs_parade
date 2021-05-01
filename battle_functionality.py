@@ -99,7 +99,7 @@ class BattleHandler:
         """Uses the blessing of the attacker. Returns the message to be output"""
         blessing = blessings[attacker["CLASS"]]
         for k, v in blessing['EFFECTS'].items():
-            value = attacker.get(k)
+            value = attacker.get(k, None)
             if not value:
                 attacker[k] = v
             else:
@@ -146,9 +146,18 @@ class BattleHandler:
 
     def handle_crit(self, power, attacker, is_crit) -> bool:
         """Calculates whether of not a crit will occur, and determines the output. Returns the power as a float and the crit as a bool"""
+        
+        crit_chance = attacker.crit_chance
+        
+        if attacker.get("CRITICAL_CHANCE", None):
+            crit_chance += attacker["CRITICAL_CHANCE"]
+
         is_crit = self.random_calculator(range(0, 100), attacker.crit_chance)
         if is_crit:
             power *= 1.5
+
+        if attacker.get("CRITICAL_DAMAGE", None):
+            power += round((attacker["CRITICAL_DAMAGE"] / 100) * power)
 
         return power, is_crit
 
