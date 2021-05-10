@@ -1,3 +1,5 @@
+# File Will handle functionality for quests.
+# This will include damage values, crit, ability usage etc
 from copy import copy
 from random import choice, randint, sample, shuffle
 
@@ -147,15 +149,13 @@ class BattleHandler:
         
         crit_chance = attacker.crit_chance
         
-        if attacker.get("CRITICAL_CHANCE", None):
-            crit_chance += attacker["CRITICAL_CHANCE"]
+        crit_chance += attacker["CRITICAL_CHANCE"]
 
         is_crit = self.random_calculator(range(0, 100), attacker.crit_chance)
         if is_crit:
             power *= 1.5
 
-        if attacker.get("CRITICAL_DAMAGE", None):
-            power += round((attacker["CRITICAL_DAMAGE"] / 100) * power)
+        power += round((attacker["CRITICAL_DAMAGE"] / 100) * power)
 
         return power, is_crit
 
@@ -170,28 +170,15 @@ class BattleHandler:
 
     def get_battle_emojis(self, player) -> dict:
         """Used to determine what emojis will be available for the user to use. Returns a dictionary of emojis to action"""
-        battle_emojis = {"⚔️": "Attack", "🥤" : "Potion", "🏃" : "Run"}
-        if player["LEVEL"] >= 30:
-            battle_emojis["⛓"] = "Ability_1"
-        if player["LEVEL"] >= 60:
-            battle_emojis["👹"] = "Ability_2"
-        if player["LEVEL"] >= 150:
-            battle_emojis["😇"] = "Blessing"
+        # battle_emojis = {"⚔️": "Attack", "🥤" : "Potion", "🏃" : "Run"}
+        # if player["LEVEL"] >= 30:
+        #     battle_emojis["⛓"] = "Ability_1"
+        # if player["LEVEL"] >= 60:
+        #     battle_emojis["👹"] = "Ability_2"
+        # if player["LEVEL"] >= 150:
+        #     battle_emojis["😇"] = "Blessing"
 
-        return battle_emojis
-
-    def handle_level_up(self, player):
-        msg = ""
-        player["LEVEL"] += 1
-        msg += f"!!!\n{player['NAME']} is now level {player['LEVEL']}"
-
-        if player["LEVEL"] % 100 == 0 and player["LEVEL"] < 5:
-            player["TIER"] += 1
-            msg += f"\n!!! {player['NAME']} is now Tier {player['TIER']}"
-
-        player["EXP_FOR_NEXT_LEVEL"] *= 1.6
-
-        return msg, player
+        return all_battle_emojis
 
 def handle_enemy_gen(player):
     # Function which handles the generation of enemies.
@@ -216,3 +203,7 @@ def handle_enemy_gen(player):
     enemy["PARADIANS"] = round((1 / randint(2, 5)) * ((player["MAX_HEALTH"] + player["POWER"]) // 5))
 
     return enemy
+
+tips = [
+    "Lost some 💙? Legend has it that being active increases your health gradually."
+]
