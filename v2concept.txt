@@ -206,3 +206,9 @@ Running:
 
             2) Adding 100, will then make this 160
             3) 160 % 100 will give a remainder of 60. This means the player has a 60% chance of successfully running.
+
+TODO:
+    Leveling System
+    Quests 
+    Training
+    DB usage

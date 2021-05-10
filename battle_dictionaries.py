@@ -1,3 +1,27 @@
+# Player DB Values
+
+player_columns = {
+    "PLAYER_ID": 0,
+    "NAME": 1,
+    "LIVES": 2,
+    "TIER": 3,
+    "CLASS": 4,
+    "MAX_HEALTH": 5,
+    "HEALTH": 6,
+    "POWER": 7,
+    "DEFENSE": 8,
+    "CRIT_CHANCE": 9,
+    "ABILITY_1": 10,
+    "ABILITY_2": 11,
+    "PARADIANS": 12,
+    "WEAPON": 13,
+    "ARMOR": 14,
+    "EXP": 15,
+    "EXP_FOR_NEXT_LEVEL": 16,
+    "CRITICAL_CHANCE": 17,
+    "CRITICAL_DAMAGE": 18
+}
+
 # Player Template
 player_template = {
     "NAME": "",
@@ -17,7 +41,9 @@ player_template = {
     "ARMOR": "None",
     "EXP": 0,
     "EXP_FOR_NEXT_LEVEL": 100,
-    "PLAYER_ID": 0
+    "PLAYER_ID": 0,
+    "CRITICAL_CHANCE": 0,
+    "CRITICAL_DAMAGE": 0
 }
 
 # Enemy Template
