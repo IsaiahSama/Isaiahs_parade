@@ -27,6 +27,7 @@ class RPG(commands.Cog):
                 PLAYER_ID INTEGER PRIMARY KEY UNIQUE NOT NULL,
                 NAME TEXT NOT NULL,
                 LIVES INTEGER,
+                LEVEL INTEGER,
                 TIER INTEGER,
                 CLASS TEXT,
                 MAX_HEALTH INTEGER,
@@ -50,11 +51,11 @@ class RPG(commands.Cog):
     @commands.command(brief="Used to create a RPG Profile", help="Used to create a profile to be used for the RPG functionality")
     async def createprofile(self, ctx):
         player, return_message = await self.get_player(ctx.author)
-        if return_message:
-            await ctx.send(return_message)
+        if not return_message:
+            await ctx.send(f"You already have an account with {player['LIVES']}")
             return
 
-        msg = await ctx.send("React with the emoji of the class you want to be:\n🗡️: Warrior\n🏹: Ranger\n📖: Mage")
+        msg = await ctx.send("React with the emoji of the class you want to be:\n\n🗡️: `Warrior`\n\n🏹: `Ranger`\n\n📖: `Mage`")
         for key in class_emojis.keys():
             await msg.add_reaction(key)
 
@@ -85,13 +86,14 @@ class RPG(commands.Cog):
 
         db = await aiosqlite.connect("IParadeDB.sqlite3")
 
-        await db.execute("INSERT INTO FighterTable (ID, NAME, LIVES, TIER, CLASS, MAX_HEALTH, HEALTH, POWER, DEFENSE, CRIT_CHANCE, ABILITY_1, ABILITY_2, PARADIANS, WEAPON, ARMOR, EXP, EXP_FOR_NEXT_LEVEL) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (ctx.author.id, player["NAME"], 4, 1, player["CLASS"], 100, 100, player["POWER"], player["DEFENSE"], player["CRIT_CHANCE"], player["ABILITY_1"], player["ABILITY_2"], 100, player["WEAPON"], player["ARMOR"], 0, 100))
+        await db.execute("INSERT INTO FighterTable (PLAYER_ID, NAME, LIVES, TIER, CLASS, MAX_HEALTH, HEALTH, POWER, DEFENSE, CRIT_CHANCE, ABILITY_1, ABILITY_2, PARADIANS, WEAPON, ARMOR, EXP, EXP_FOR_NEXT_LEVEL) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (ctx.author.id, player["NAME"], 4, 1, player["CLASS"], 100, 100, player["POWER"], player["DEFENSE"], player["CRIT_CHANCE"], player["ABILITY_1"], player["ABILITY_2"], 100, player["WEAPON"], player["ARMOR"], 0, 100))
         
         await db.commit()
         await db.close()
 
-    @commands.command(brief="Used to view your RPG Battle Profile", help="Shows the profile relating to your RPG account once applicable")
+    @commands.command(brief="Used to view your RPG Battle Profile", help="Shows the profile relating to your RPG account once applicable", aliases=["p"])
     async def profile(self, ctx):
+        await ctx.send(embed=await self.get_tip())
         player, return_message = await self.get_player(ctx.author)
         if return_message:
             await ctx.send(return_message)
@@ -105,7 +107,22 @@ class RPG(commands.Cog):
             color=randint(0, 0xffffff)
         )
 
+        health_check = 0
+        level_check = 0
+
         for k, v in player.items():
+            if "health" in k.lower() and health_check == 0:
+                embed.add_field(name="HEALTH", value=f"{v}/{player['MAX_HEALTH']}")
+                health_check += 1
+                continue
+            elif "health" in k.lower(): continue
+
+            if "exp" in k.lower() and level_check == 0:
+                embed.add_field(name=k, value=f"{v}/{player['EXP_FOR_NEXT_LEVEL']}")
+                level_check += 1
+                continue
+            elif "exp" in k.lower(): continue
+
             embed.add_field(name=k, value=v)
 
         await ctx.send(embed=embed)
@@ -117,7 +134,7 @@ class RPG(commands.Cog):
             await ctx.send(return_message)
             return
         
-        await ctx.send(await self.get_tip())
+        await ctx.send(embed=await self.get_tip())
 
         player = await self.get_player_dict(player)
 
@@ -264,7 +281,7 @@ class RPG(commands.Cog):
         # Returns a dictionary of the player's database values
         player_dict = copy(player_template)
         for k in player_template.keys():
-            player_dict[k] = player[k]
+            player_dict[k] = player[player_columns[k]]
         
         return player_dict
 
@@ -280,7 +297,7 @@ class RPG(commands.Cog):
     async def handle_life_loss(self, player) -> None:
         db = await aiosqlite.connect("IParadeDB.sqlite3")
 
-        await db.execute("UPDATE FighterTable SET LIVES = ? WHERE PLAYER_ID == ?", (player["LIVES"], player["PLAYER_ID"]))
+        await db.execute("UPDATE FighterTable SET HEALTH = ?, LIVES = ? WHERE PLAYER_ID == ?", (player['MAX_HEALTH'], player["LIVES"], player["PLAYER_ID"]))
         await db.commit()
         await db.close()
 
@@ -305,7 +322,7 @@ class RPG(commands.Cog):
     async def handle_post_changes(self, player) -> None:
         db = await aiosqlite.connect("IParadeDB.sqlite3")
 
-        await db.execute("UPDATE FighterTable SET EXP = ?, PARADIANS = ?, LIVES = ? WHERE PLAYER_ID == ?", (player["EXP"], player["PARADIANS"], player["LIVES"], player["PLAYER_ID"]))
+        await db.execute("UPDATE FighterTable SET EXP = ?, PARADIANS = ?, LIVES = ?, HEALTH = ? WHERE PLAYER_ID == ?", (player["EXP"], player["PARADIANS"], player["LIVES"], player["HEALTH"], player["PLAYER_ID"]))
 
         await db.commit()
         await db.close()
@@ -313,7 +330,12 @@ class RPG(commands.Cog):
     # Tips
 
     async def get_tip(self) -> str:
-        return choice(tips)
+        embed = discord.Embed(
+            title="A Tip For You",
+            description=choice(tips),
+            color=randint(0, 0xffffff)
+        )
+        return embed
     # Event
 
     healing = []
@@ -333,6 +355,9 @@ class RPG(commands.Cog):
             # Regen mechanic. 1 message per 30 seconds increases health by 5
             self.healing.append(player)
             player["HEALTH"] += 5
+
+            await self.handle_post_changes(player)
+
             await asyncio.sleep(30)
             self.healing.remove(player)
 
