@@ -1,5 +1,6 @@
 import asyncio
 import discord
+import aiosqlite
 from discord.ext import commands
 from random import randint
 from battle_functionality import *
@@ -10,15 +11,49 @@ class RPG(commands.Cog):
     def __init__(self, bot) -> None:
         self.bot = bot
         bot.loop.create_task(self.async_init())
+        self.checker = 0
 
     async def async_init(self):
         await self.bot.wait_until_ready()
-        print("Loaded in")
+        if self.checker == 0:
+            print("Beginning set up")
+            await self.setup()
+            self.checker += 1
 
-    players = []
+    async def setup(self):
+        # Sets up the database
+        async with aiosqlite.connect("IParadeDB.sqlite3") as db:
+            await db.execute("""CREATE TABLE IF NOT EXISTS FighterTable (
+                PLAYER_ID INTEGER PRIMARY KEY UNIQUE NOT NULL,
+                NAME TEXT NOT NULL,
+                LIVES INTEGER,
+                TIER INTEGER,
+                CLASS TEXT,
+                MAX_HEALTH INTEGER,
+                HEALTH INTEGER,
+                POWER INTEGER,
+                DEFENSE INTEGER,
+                CRIT_CHANCE INTEGER,
+                ABILITY_1 TEXT,
+                ABILITY_2 TEXT,
+                PARADIANS INTEGER,
+                WEAPON TEXT,
+                ARMOR TEXT,
+                EXP INTEGER,
+                EXP_FOR_NEXT_LEVEL INTEGER,
+                CRITICAL_CHANCE INTEGER,
+                CRITICAL_DAMAGE INTEGER)
+                """)
+
+            await db.commit()
 
     @commands.command(brief="Used to create a RPG Profile", help="Used to create a profile to be used for the RPG functionality")
     async def createprofile(self, ctx):
+        player, return_message = await self.get_player(ctx.author)
+        if return_message:
+            await ctx.send(return_message)
+            return
+
         msg = await ctx.send("React with the emoji of the class you want to be:\n🗡️: Warrior\n🏹: Ranger\n📖: Mage")
         for key in class_emojis.keys():
             await msg.add_reaction(key)
@@ -47,15 +82,22 @@ class RPG(commands.Cog):
             player[k] += v
     
         await ctx.send(f"EVERYONE, Welcome {ctx.author.display_name}, our newest {chosen_class}. Type <>quest to start your first quest")
+
+        db = await aiosqlite.connect("IParadeDB.sqlite3")
+
+        await db.execute("INSERT INTO FighterTable (ID, NAME, LIVES, TIER, CLASS, MAX_HEALTH, HEALTH, POWER, DEFENSE, CRIT_CHANCE, ABILITY_1, ABILITY_2, PARADIANS, WEAPON, ARMOR, EXP, EXP_FOR_NEXT_LEVEL) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (ctx.author.id, player["NAME"], 4, 1, player["CLASS"], 100, 100, player["POWER"], player["DEFENSE"], player["CRIT_CHANCE"], player["ABILITY_1"], player["ABILITY_2"], 100, player["WEAPON"], player["ARMOR"], 0, 100))
         
-        self.players.append(player)
+        await db.commit()
+        await db.close()
 
     @commands.command(brief="Used to view your RPG Battle Profile", help="Shows the profile relating to your RPG account once applicable")
     async def profile(self, ctx):
-        player, return_message = await self.is_player(ctx.author)
+        player, return_message = await self.get_player(ctx.author)
         if return_message:
             await ctx.send(return_message)
             return
+
+        player = await self.get_player_dict(player)
         
         embed = discord.Embed(
             title="Showing Profile",
@@ -70,10 +112,14 @@ class RPG(commands.Cog):
 
     @commands.command(brief="Used to start a battle quest", help="Used to initiate a fight based quest")
     async def quest(self, ctx):
-        player, return_message = await self.is_player(ctx.author)
+        player, return_message = await self.get_player(ctx.author)
         if return_message:
             await ctx.send(return_message)
-            return 
+            return
+        
+        await ctx.send(await self.get_tip())
+
+        player = await self.get_player_dict(player)
 
         await ctx.send(f"Engaging in combat against game_enemy.")
         # await ctx.send(f"{player.__dict__}\nVS\n{game_enemy}")
@@ -168,9 +214,10 @@ class RPG(commands.Cog):
                 winner, loser = player, game_enemy
             
         await ctx.send("Battle over")
-        await self.handle_post_battle(ctx, winner, loser, handler)
+        await self.handle_post_battle(ctx, winner, loser)
 
-    async def handle_post_battle(self, ctx, winner, loser, handler):
+    async def handle_post_battle(self, ctx, winner, loser):
+        # Handles the winner and loser functionality
         if not winner:
             await ctx.send(f"The winner is... No one. Well, get to live to fight another day.")
             return
@@ -178,24 +225,107 @@ class RPG(commands.Cog):
             loser["LIVES"] -= 1
             if loser["LIVES"] == 0:
                 await ctx.send(f"{loser['NAME']} has lost their last life. Goodbye")
-                self.players.remove(loser)
+                await self.kill_player(loser)
             else:
                 await ctx.send(f"{loser['NAME']} has lost this fight, and a life. {loser['LIVES']} remain")
+                await self.handle_life_loss(loser)
+
+            human = loser
+            
         else:
             winner["PARADIANS"] += loser["PARADIANS"]
             winner["EXP"] += loser["EXPGAIN"]
             await ctx.send(f"CONGRATULATIONS, {ctx.author.mention} has defeated {loser['NAME']}, and gained {loser['PARADIANS']} Paradians, and {loser['EXPGAIN']} exp points.")
             if winner["EXP"] >= winner["EXP_FOR_NEXT_LEVEL"]:
-                msg, winner = handler.handle_level_up(winner)
+                msg, winner = await self.handle_level_up(winner)
                 await ctx.send(msg)
+            
+            human = winner 
+        
+        await self.handle_post_changes(human)
+
+    # Player Handling
+
+    async def get_player(self, member):
+        # Function used to query the database for a player's information.
+        db = await aiosqlite.connect("IParadeDB.sqlite3")
+
+        cursor = await db.execute("SELECT * FROM FighterTable where (PLAYER_ID) == ?", (member.id, ))
+        row = await cursor.fetchone()
+
+        await db.close()
+
+        if not row:
+            return None, "Could not find your Account. Create one with <>createprofile"
+        
+        return row, None
+
+    async def get_player_dict(self, player):
+        # Returns a dictionary of the player's database values
+        player_dict = copy(player_template)
+        for k in player_template.keys():
+            player_dict[k] = player[k]
+        
+        return player_dict
+
+    # Player Updates
+
+    async def kill_player(self, player) -> None:
+        db = await aiosqlite.connect("IParadeDB.sqlite3")
+        
+        await db.execute("DELETE FROM FighterTable WHERE (PLAYER_ID) == ?", (player["PLAYER_ID"],))
+        await db.commit()
+        await db.close()
+
+    async def handle_life_loss(self, player) -> None:
+        db = await aiosqlite.connect("IParadeDB.sqlite3")
+
+        await db.execute("UPDATE FighterTable SET LIVES = ? WHERE PLAYER_ID == ?", (player["LIVES"], player["PLAYER_ID"]))
+        await db.commit()
+        await db.close()
+
+    async def handle_level_up(self, player) -> None:
+        msg = ""
+        player["LEVEL"] += 1
+        msg += f"!!!\n{player['NAME']} is now level {player['LEVEL']}"
+
+        if player["LEVEL"] % 100 == 0 and player["LEVEL"] < 5:
+            player["TIER"] += 1
+            msg += f"\n!!! {player['NAME']} is now Tier {player['TIER']}"
+
+        player["EXP_FOR_NEXT_LEVEL"] *= 1.6
+
+        db = await aiosqlite.connect("IParadeDB.sqlite3")
+        await db.execute("UPDATE FighterTable SET LEVEL = ?, TIER = ?, EXP_FOR_NEXT_LEVEL = ? WHERE PLAYER_ID == ?", (player["LEVEL"], player["TIER"], player["EXP_FOR_NEXT_LEVEL"], player["PLAYER_ID"]))
+        await db.commit()
+        await db.close()
+
+        return msg, player
+        
+    async def handle_post_changes(self, player) -> None:
+        db = await aiosqlite.connect("IParadeDB.sqlite3")
+
+        await db.execute("UPDATE FighterTable SET EXP = ?, PARADIANS = ?, LIVES = ? WHERE PLAYER_ID == ?", (player["EXP"], player["PARADIANS"], player["LIVES"], player["PLAYER_ID"]))
+
+        await db.commit()
+        await db.close()
+
+    # Tips
+
+    async def get_tip(self) -> str:
+        return choice(tips)
+    # Event
 
     healing = []
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        player, return_message = await self.is_player(message.author)
+        if message.author.bot: return
+        player, return_message = await self.get_player(message.author)
         if return_message:
             return 
+
+        player = await self.get_player_dict(player)
 
         if player["HEALTH"] < player["MAX_HEALTH"]:
             if player in self.healing: return
@@ -205,14 +335,6 @@ class RPG(commands.Cog):
             player["HEALTH"] += 5
             await asyncio.sleep(30)
             self.healing.remove(player)
-
-    async def is_player(self, member):
-        player = [player for player in self.players if player["PLAYER_ID"] == member.id]
-        if not player:
-            return None, "Could not find your Account. Create one with <>createprofile"
-        else:
-            return player[0], None
-    
 
 def setup(bot):
     bot.add_cog(RPG(bot))
