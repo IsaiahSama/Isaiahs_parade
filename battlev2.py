@@ -14,11 +14,11 @@ class RPG(commands.Cog):
         self.checker = 0
 
     async def async_init(self):
-        await self.bot.wait_until_ready()
         if self.checker == 0:
-            print("Beginning set up")
+            print("Beginning Battle set up")
             await self.setup()
             self.checker += 1
+
 
     async def setup(self):
         # Sets up the database
@@ -86,7 +86,7 @@ class RPG(commands.Cog):
 
         db = await aiosqlite.connect("IParadeDB.sqlite3")
 
-        await db.execute("INSERT INTO FighterTable (PLAYER_ID, NAME, LIVES, TIER, CLASS, MAX_HEALTH, HEALTH, POWER, DEFENSE, CRIT_CHANCE, ABILITY_1, ABILITY_2, PARADIANS, WEAPON, ARMOR, EXP, EXP_FOR_NEXT_LEVEL) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (ctx.author.id, player["NAME"], 4, 1, player["CLASS"], 100, 100, player["POWER"], player["DEFENSE"], player["CRIT_CHANCE"], player["ABILITY_1"], player["ABILITY_2"], 100, player["WEAPON"], player["ARMOR"], 0, 100))
+        await db.execute("INSERT INTO FighterTable (PLAYER_ID, NAME, LIVES, LEVEL, TIER, CLASS, MAX_HEALTH, HEALTH, POWER, DEFENSE, CRIT_CHANCE, ABILITY_1, ABILITY_2, PARADIANS, WEAPON, ARMOR, EXP, EXP_FOR_NEXT_LEVEL) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (ctx.author.id, player["NAME"], 4, 1, 1, player["CLASS"], 100, 100, player["POWER"], player["DEFENSE"], player["CRIT_CHANCE"], player["ABILITY_1"], player["ABILITY_2"], 100, player["WEAPON"], player["ARMOR"], 0, 100))
         
         await db.commit()
         await db.close()
@@ -137,6 +137,10 @@ class RPG(commands.Cog):
         await ctx.send(embed=await self.get_tip())
 
         player = await self.get_player_dict(player)
+
+        if player["LEVEL"] < 30:
+            await ctx.send("Sorry. You are too weak to do battle quests. Use <>train instead")
+            return
 
         await ctx.send(f"Engaging in combat against game_enemy.")
         # await ctx.send(f"{player.__dict__}\nVS\n{game_enemy}")

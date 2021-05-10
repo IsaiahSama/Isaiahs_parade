@@ -27,7 +27,7 @@ player_columns = {
 player_template = {
     "NAME": "",
     "LIVES": 4,
-    "LEVEL": 0,
+    "LEVEL": 1,
     "TIER": 1,
     "CLASS": "",
     "HEALTH": 100,
