@@ -1,5 +1,7 @@
-# File Will handle functionality for quests.
+# File Will handle functionality for Battle related commands.
 # This will include damage values, crit, ability usage etc
+# Includes functionality for Training 
+
 from copy import copy
 from random import choice, randint, sample, shuffle
 
@@ -207,3 +209,20 @@ def handle_enemy_gen(player):
 tips = [
     "Lost some 💙? Legend has it that being active increases your health gradually."
 ]
+
+# Training
+class TrainingHandler:
+    def __init__(self) -> None:
+        pass
+
+    async def handle_damage(self, bot, ctx, player):
+        pass
+
+    async def handle_defense(self, bot, ctx, player):
+        pass
+
+    async def handle_health(self, bot, ctx, player):
+        pass 
+
+    async def handle_crit(self, bot, ctx, player):
+        pass

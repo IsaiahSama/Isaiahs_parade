@@ -63,6 +63,7 @@ Player:
         exp
 
 
+
 Profile:
     A profile will be needed for these services. And will be created using <>createprofile
 
@@ -90,6 +91,17 @@ Profile:
         Player Main Armor
 
         Player player_id
+
+Training:
+    Training will grant EXP Points, along with an increase to a stat: Damage, Defense, Health or Crit_chance
+
+    Training will generally take the form of interactive events: on_message, on_reaction_add.
+
+    Damage: 💢,
+    Defense: 🛡️,
+    Health: 💙,
+    Crit_chance: 💥
+
 
 Class System:
     Warrior: 
@@ -208,7 +220,7 @@ Running:
             3) 160 % 100 will give a remainder of 60. This means the player has a 60% chance of successfully running.
 
 TODO:
-    Leveling System
-    Quests 
-    Training
-    DB usage
+    Leveling System - 1
+    Quests - 1
+    Training - 0
+    DB usage - 1

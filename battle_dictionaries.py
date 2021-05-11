@@ -58,7 +58,7 @@ enemy_template = {
     "TYPE": "ENEMY"
 }
 
-# Battle Dictionaries
+# Emoji Dictionaries
 class_emojis = {
     "🗡️": "Warrior",
     "🏹": "Ranger",
@@ -72,6 +72,13 @@ all_battle_emojis = {
     "👹" : "Ability_2",
     "😇" : "Blessing",
     "🏃" : "Run"
+}
+
+train_emojis = {
+    "💢": "Damage",
+    "🛡️": "Defense",
+    "💙": "Health",
+    "💥": "Crit_chance"
 }
 
 # Class Dictionaries

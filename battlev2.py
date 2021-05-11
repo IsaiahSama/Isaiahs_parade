@@ -127,6 +127,49 @@ class RPG(commands.Cog):
 
         await ctx.send(embed=embed)
 
+    @commands.command()
+    async def train(self, ctx):
+        player, return_message = await self.get_player(ctx.author)
+        if return_message:
+            await ctx.send(return_message)
+            return 
+
+        player = await self.get_player_dict(player)
+        await ctx.send(embed=await self.get_tip())
+
+        train_embed = discord.Embed(
+            title="Training",
+            description=f"What do you want to train?\n💢: `Damage`\n🛡️: `Defense`\n💙: `Health`\n💥: `Crit_Chance`",
+            color=randint(0, 0xffffff)
+        )
+
+        msg = await ctx.send(embed=train_embed)
+
+        for emoji in train_emojis.keys():
+            await msg.add_reaction(emoji)
+        
+        def check(reaction, user):
+            return reaction.emoji in list(train_emojis.keys()) and user == ctx.author
+
+        try:
+            reaction = await self.bot.wait_for("reaction_add", check=check, timeout=30)
+        except asyncio.TimeoutError:
+            await ctx.send(":x:Took too long to respond to me. :x:")
+            return
+
+        choice = train_emojis[str(reaction[0].emoji)]
+
+        trainHandler = TrainingHandler()
+
+        if choice == "Damage":
+            await trainHandler.handle_damage(self.bot, ctx, player)
+        elif choice == "Defense":
+            await trainHandler.handle_defense(self.bot, ctx, player)
+        elif choice == "Health":
+            await trainHandler.handle_health(self.bot, ctx, player)
+        else:
+            await trainHandler.handle_crit(self.bot, ctx, player)
+
     @commands.command(brief="Used to start a battle quest", help="Used to initiate a fight based quest")
     async def quest(self, ctx):
         player, return_message = await self.get_player(ctx.author)
