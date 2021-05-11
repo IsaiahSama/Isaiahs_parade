@@ -6,13 +6,48 @@ from random import randint
 import typing
 import math
 import traceback
-import aiohttp
+from copy import copy
 
 
 class Moderator(commands.Cog):
     """Commands for all moderators"""
     def __init__(self, bot):
         self.bot = bot
+
+    @commands.Cog.listener()
+    async def on_guild_join(self, guild):
+        channel = discord.utils.get(guild.text_channels, name="parade-room")
+        if not channel:
+            await guild.create_text_channel("parade-room")
+            channel = discord.utils.get(guild.text_channels, name="parade-room")
+
+        role = discord.utils.get(guild.roles, name="Parader")
+        if not role:
+            role = await guild.create_role(name="Parader")
+
+        mchan = self.bot.get_channel(740414745252986970)
+        await mchan.send(f"I have been invited to {guild.name}. {role.name} and {channel.name} Have been created successfully")
+        
+        role = discord.utils.get(guild.roles, name="shushed")
+        if not role: 
+            role = await guild.create_role(name="shushed")
+        for channel in guild.text_channels:
+            overwrites = channel.overwrites
+            overwrites[role] = discord.PermissionOverwrite(send_messages=False)
+            await channel.edit(overwrites=overwrites)
+            
+        joinbed = discord.Embed(
+            title="I have Arrived",
+            description=f"Thanks for inviting me to {guild.name}. I look forward to spending time with all of you",
+            color=randint(0, 0xffffff)
+        )
+
+        joinbed.set_thumbnail(url=self.bot.user.avatar_url)
+        joinbed.add_field(name="Help", value="You can view everything i'm capable of with <>help")
+        joinbed.add_field(name="Main Server", value="Feel free to join my main server. Get the link with <>parade")
+        joinbed.add_field(name="Positioning", value="As someone created to Moderate, be sure to give me a role high enough in order for you to use me to my full potential")
+        
+        await channel.send(embed=joinbed)
 
     @commands.command(brief="Removes the roles of the mentioned person for x minutes.", help='Removes the roles of a member for x minutes. Returns them one by one', usage="@user duration")
     @commands.has_permissions(administrator=True)
@@ -193,7 +228,10 @@ class Moderator(commands.Cog):
 
         await ctx.send(file=file, embed=embed)
 
-        await ctx.channel.set_permissions(ctx.guild.default_role, send_messages=False)
+        changed_overwrites = copy(og) 
+        changed_overwrites[ctx.guild.default_role] = discord.PermissionOverwrite(send_messages=False)
+
+        await ctx.channel.edit(overwrites=changed_overwrites)
         await asyncio.sleep(seconds)
         await ctx.send("*Jikan desu... (Channel unfrozen)*")
         await ctx.channel.edit(overwrites=og)
@@ -268,10 +306,12 @@ class Moderator(commands.Cog):
     @commands.has_permissions(manage_channels=True, manage_roles=True)
     async def silentnow(self, ctx):
         role = discord.utils.get(ctx.guild.roles, name="shushed")
-        if not role: await ctx.send("Role does 'shushed' does not exist"); return
+        if not role: await ctx.send("Role does 'shushed' does not exist. Make sure it is in lower_case"); return
 
         for channel in ctx.guild.text_channels:
-            await channel.set_permissions(role, send_messages=False)
+            overwrites = channel.overwrites
+            overwrites[role] = discord.PermissionOverwrite(send_messages=False)
+            await channel.edit(overwrites=overwrites)
 
     @commands.command(brief="Used to view all members with a specified role", help="Returns a list of all users that have a given role", usage="role_name/role_id")
     async def who_has_role(self, ctx, role:discord.Role):
