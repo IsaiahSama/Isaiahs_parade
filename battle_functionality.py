@@ -216,6 +216,8 @@ tips = [
 
 crit_emojis = ["😋", "😃", "🌍", "🍞", "🚗", "📞", "🎉", "⚔️", "🤼‍♂️", "💥", "🔪", "🗡️", "🔫", "❤️", "💛", "🧡", "💖", "💓"]
 
+arrows = ["⬅️", "➡️", "⬇️", "⬆️", "↗️", "↘️", "↙️", "↖️"]
+
 # Training
 class TrainingHandler:
     def __init__(self) -> None:
@@ -225,7 +227,7 @@ class TrainingHandler:
         points = 0
 
         embed = Embed(
-            title="Damage Training",
+            title="{ctx.author.display_name}'s Damage Training",
             description=f"I will give you a scrambled world... Decipher it",
             color=randint(0, 0xffffff)
         )
@@ -240,13 +242,12 @@ class TrainingHandler:
 
         for i in range(1, 5):
             correct_word = choice(words)
-            if " " in correct_word:
-                correct_word = choice(correct_word.split(" "))
+
             shuffled_word = list(correct_word)
             shuffle(shuffled_word)
             to_find = ''.join(shuffled_word)
 
-            embed.title = f"Damage Training. Part {i}/4"
+            embed.title = f"{ctx.author.display_name}'s Damage Training. Part {i}/4"
             embed.description = f"Unscramble {to_find}. You have 10 seconds"
 
             await message.edit(embed=embed)
@@ -269,20 +270,110 @@ class TrainingHandler:
         player["EXP"] += points * 3
         player["POWER"] += points 
 
-        await ctx.send(f"Increased power by {points} and gained {points * 3} exp points")
+        await ctx.send(f"Increased {ctx.author.mention}'s power by {points} and gained {points * 3} exp points")
         return player
 
     async def handle_defense(self, bot, ctx, player):
-        pass
+        points = 0
+
+        embed = Embed(
+            title=f"{ctx.author.display_name}'s Defense Training Session",
+            description="I will provide a range of numbers from 1 to 10. I will then give you a number that I want. Tell me 1 by 1, the 3 numbers in the range 1 to 10, that add up to the number I want. You may only use a number once. You have 10 seconds per attempt",
+            color=randint(0, 0xffffff)
+        )
+
+        message = await ctx.send(embed=embed)
+        await sleep(10)
+
+        numrange = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+        selected = sample(numrange, 3)
+        print(selected)
+
+        total = sum(selected)
+
+        user_answers = []
+
+        embed.description = f"{numrange}.\nTo Sum = {total}."
+        await message.edit(embed=embed)
+
+        def check(m):
+            return m.author == ctx.author and m.channel == ctx.channel and m.content.isnumeric()
+
+        for i in range(3):
+            try:
+                response = await bot.wait_for("message", check=check, timeout=10)
+            except TimeoutError:
+                embed.description = "Time's UP. You've failed"
+                break
+            if int(response.content) in numrange:
+                if int(response.content) not in user_answers:
+                    user_answers.append(int(response.content))
+                    if int(response.content) in selected:
+                        points += 1
+                    embed.add_field(name=f"Attempt {i + 1}", value=f"Your sum = {sum(user_answers)}", inline=False)
+            await message.edit(embed=embed)
+
+            await sleep(1)
+
+        await message.edit(embed=embed)
+
+        
+        player["DEFENSE"] += points
+        player["EXP"] += points
+        msg = f"{ctx.author.mention}'s Gained + {points} Defense and Exp Points"
+        if sum(user_answers) == total:
+            points = 3
+            player["EXP"] += (points * 3) + 5
+            msg += f"\nFor getting the correct answer. You have gained an extra {(points * 3) + 5} EXP points"
+    
+        await ctx.send(msg)
+        return player
 
     async def handle_health(self, bot, ctx, player):
-        pass 
+        points = 0
+        embed = Embed(
+            title=f"{ctx.author.display_name}'s Health training session",
+            description="Alright. We'll play a little song. Get ready to follow along",
+            color=randint(0, 0xffffff)
+        )
+        
+        message = await ctx.send(embed=embed)
+
+        for reaction in arrows:
+            await message.add_reaction(reaction)
+
+        shuffle(arrows)
+        embed.description = f"Play this in the order I have laid out:\n{arrows}"
+        await message.edit(embed=embed)
+
+        def check(reaction, user):
+            return user == ctx.author
+
+        for arrow in arrows:
+            try:
+                reaction = await bot.wait_for("reaction_add", check=check, timeout=10)
+            except TimeoutError:
+                await ctx.send(f"{ctx.author.mention} Failed.")
+                break
+            
+            if str(reaction[0].emoji) == arrow:
+                points += 1
+        
+        if points >= 5:
+            player["HEALTH"] += points
+            player["EXP"] += points * 2
+            await ctx.send(f"{ctx.author.mention} gained {points} HP and {points * 2} EXP points")
+        else:
+            await ctx.send(f"{ctx.author.mention} has failed")
+
+        return player
 
     async def handle_crit(self, bot, ctx, player):
         points = 0
 
         embed = Embed(
-            title="Crit Training: Session",
+            title=f"{ctx.author.display_name}'s Crit Training: Session",
             description=f"Get ready to select the target emoji. Good luck. You have 3 seconds to select the correct one. Starting in 5 seconds",
             color=randint(0, 0xffffff)
             )
@@ -298,7 +389,7 @@ class TrainingHandler:
             def check(reaction, user):
                 return user == ctx.author
 
-            embed.title = f"Crit Training: Session {i}"
+            embed.title = f"{ctx.author.display_name}'s Crit Training: Session {i}"
             
             await message.edit(embed=embed)
             
@@ -325,9 +416,9 @@ class TrainingHandler:
         if points >= 3:
             player["CRIT_CHANCE"] += points
             player["EXP"] += points * 3
-            embed.title = f"You Passed :). Increased crit_chance by {points}, and gained {points * 3} exp points."
+            embed.title = f"{ctx.author.mention}'s  Passed :). Increased crit_chance by {points}, and gained {points * 3} exp points."
         else:
-            embed.title = "You failed 😒"
+            embed.title = f"{ctx.author.failed}'s  failed 😒"
 
         await message.edit(embed=embed)
         return player
