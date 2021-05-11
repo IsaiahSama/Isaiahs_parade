@@ -4,6 +4,10 @@
 
 from copy import copy
 from random import choice, randint, sample, shuffle
+from discord import Embed
+from asyncio import sleep, TimeoutError
+
+from discord.ext.commands.errors import RoleNotFound
 
 from battle_dictionaries import *
 
@@ -210,13 +214,63 @@ tips = [
     "Lost some 💙? Legend has it that being active increases your health gradually."
 ]
 
+crit_emojis = ["😋", "😃", "🌍", "🍞", "🚗", "📞", "🎉", "⚔️", "🤼‍♂️", "💥", "🔪", "🗡️", "🔫", "❤️", "💛", "🧡", "💖", "💓"]
+
 # Training
 class TrainingHandler:
     def __init__(self) -> None:
         pass
 
     async def handle_damage(self, bot, ctx, player):
-        pass
+        points = 0
+
+        embed = Embed(
+            title="Damage Training",
+            description=f"I will give you a scrambled world... Decipher it",
+            color=randint(0, 0xffffff)
+        )
+        
+        message = await ctx.send(embed=embed)
+
+        def check(m):
+            return m.author == ctx.author and m.channel == ctx.channel
+
+        with open("hangwords.txt") as f:
+            words = f.read().split(", ")
+
+        for i in range(1, 5):
+            correct_word = choice(words)
+            if " " in correct_word:
+                correct_word = choice(correct_word.split(" "))
+            shuffled_word = list(correct_word)
+            shuffle(shuffled_word)
+            to_find = ''.join(shuffled_word)
+
+            embed.title = f"Damage Training. Part {i}/4"
+            embed.description = f"Unscramble {to_find}. You have 10 seconds"
+
+            await message.edit(embed=embed)
+
+            try:
+                response = await bot.wait_for("message", check=check, timeout=10)
+            except TimeoutError:
+                embed.description = "Took too long. Next"
+            else:
+                if response.content.lower() == correct_word:
+                    embed.description = "Correct. Please wait"
+                    points += 1
+                else:
+                    embed.description = f"Wrong. Please wait. Correct word was {correct_word}"
+            
+            await message.edit(embed=embed)
+
+            await sleep(2)
+
+        player["EXP"] += points * 3
+        player["POWER"] += points 
+
+        await ctx.send(f"Increased power by {points} and gained {points * 3} exp points")
+        return player
 
     async def handle_defense(self, bot, ctx, player):
         pass
@@ -225,4 +279,55 @@ class TrainingHandler:
         pass 
 
     async def handle_crit(self, bot, ctx, player):
-        pass
+        points = 0
+
+        embed = Embed(
+            title="Crit Training: Session",
+            description=f"Get ready to select the target emoji. Good luck. You have 3 seconds to select the correct one. Starting in 5 seconds",
+            color=randint(0, 0xffffff)
+            )
+
+        message = await ctx.send(embed=embed)
+
+        await sleep(5)
+
+        for i in range(1, 6):
+            training_emojis = sample(crit_emojis, 5)
+            target = choice(training_emojis)
+
+            def check(reaction, user):
+                return user == ctx.author
+
+            embed.title = f"Crit Training: Session {i}"
+            
+            await message.edit(embed=embed)
+            
+            for emoji in training_emojis:
+                await message.add_reaction(emoji)
+
+            embed.description = f"Find {target}. 5 seconds remain"  
+            await message.edit(embed=embed)
+
+            try:
+                reaction = await bot.wait_for("reaction_add", check=check, timeout=3)            
+            except TimeoutError:
+                pass
+            else:
+                if str(reaction[0].emoji) == target:
+                    points += 1
+                    embed.description = "Passed. Please wait"
+                else:
+                    embed.description = "Failed. Please wait"
+
+                await message.edit(embed=embed)
+            await sleep(2)
+        
+        if points >= 3:
+            player["CRIT_CHANCE"] += points
+            player["EXP"] += points * 3
+            embed.title = f"You Passed :). Increased crit_chance by {points}, and gained {points * 3} exp points."
+        else:
+            embed.title = "You failed 😒"
+
+        await message.edit(embed=embed)
+        return player

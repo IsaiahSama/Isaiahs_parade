@@ -48,11 +48,14 @@ class RPG(commands.Cog):
 
             await db.commit()
 
+        print("Database has been setup")
+
     @commands.command(brief="Used to create a RPG Profile", help="Used to create a profile to be used for the RPG functionality")
     async def createprofile(self, ctx):
         player, return_message = await self.get_player(ctx.author)
+        player = await self.get_player_dict(player)
         if not return_message:
-            await ctx.send(f"You already have an account with {player['LIVES']}")
+            await ctx.send(f"You already have an account with {player['LIVES']} lives")
             return
 
         msg = await ctx.send("React with the emoji of the class you want to be:\n\n🗡️: `Warrior`\n\n🏹: `Ranger`\n\n📖: `Mage`")
@@ -86,7 +89,7 @@ class RPG(commands.Cog):
 
         db = await aiosqlite.connect("IParadeDB.sqlite3")
 
-        await db.execute("INSERT INTO FighterTable (PLAYER_ID, NAME, LIVES, LEVEL, TIER, CLASS, MAX_HEALTH, HEALTH, POWER, DEFENSE, CRIT_CHANCE, ABILITY_1, ABILITY_2, PARADIANS, WEAPON, ARMOR, EXP, EXP_FOR_NEXT_LEVEL) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (ctx.author.id, player["NAME"], 4, 1, 1, player["CLASS"], 100, 100, player["POWER"], player["DEFENSE"], player["CRIT_CHANCE"], player["ABILITY_1"], player["ABILITY_2"], 100, player["WEAPON"], player["ARMOR"], 0, 100))
+        await db.execute("INSERT INTO FighterTable (PLAYER_ID, NAME, LIVES, LEVEL, TIER, CLASS, MAX_HEALTH, HEALTH, POWER, DEFENSE, CRIT_CHANCE, ABILITY_1, ABILITY_2, PARADIANS, WEAPON, ARMOR, EXP, EXP_FOR_NEXT_LEVEL, CRITICAL_CHANCE, CRITICAL_DAMAGE) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?)", (ctx.author.id, player["NAME"], 4, 1, 1, player["CLASS"], 100, 100, player["POWER"], player["DEFENSE"], player["CRIT_CHANCE"], player["ABILITY_1"], player["ABILITY_2"], 100, player["WEAPON"], player["ARMOR"], 0, 100, 0, 0))
         
         await db.commit()
         await db.close()
@@ -149,7 +152,7 @@ class RPG(commands.Cog):
             await msg.add_reaction(emoji)
         
         def check(reaction, user):
-            return reaction.emoji in list(train_emojis.keys()) and user == ctx.author
+            return str(reaction.emoji) in list(train_emojis.keys()) and user == ctx.author
 
         try:
             reaction = await self.bot.wait_for("reaction_add", check=check, timeout=30)
@@ -159,16 +162,25 @@ class RPG(commands.Cog):
 
         choice = train_emojis[str(reaction[0].emoji)]
 
+        train_embed.description = f"Training {choice}"
+        await msg.edit(embed=train_embed)
+
         trainHandler = TrainingHandler()
 
         if choice == "Damage":
-            await trainHandler.handle_damage(self.bot, ctx, player)
+            player = await trainHandler.handle_damage(self.bot, ctx, player)
         elif choice == "Defense":
-            await trainHandler.handle_defense(self.bot, ctx, player)
+            player = await trainHandler.handle_defense(self.bot, ctx, player)
         elif choice == "Health":
-            await trainHandler.handle_health(self.bot, ctx, player)
+            player = await trainHandler.handle_health(self.bot, ctx, player)
         else:
-            await trainHandler.handle_crit(self.bot, ctx, player)
+            player = await trainHandler.handle_crit(self.bot, ctx, player)
+
+        if player["EXP"] >= player["EXP_FOR_NEXT_LEVEL"]:
+                msg, player = await self.handle_level_up(player)
+                await ctx.send(msg)
+
+        await self.handle_post_training(player)
 
     @commands.command(brief="Used to start a battle quest", help="Used to initiate a fight based quest")
     async def quest(self, ctx):
@@ -370,6 +382,14 @@ class RPG(commands.Cog):
         db = await aiosqlite.connect("IParadeDB.sqlite3")
 
         await db.execute("UPDATE FighterTable SET EXP = ?, PARADIANS = ?, LIVES = ?, HEALTH = ? WHERE PLAYER_ID == ?", (player["EXP"], player["PARADIANS"], player["LIVES"], player["HEALTH"], player["PLAYER_ID"]))
+
+        await db.commit()
+        await db.close()
+
+    async def handle_post_training(self, player) -> None:
+        db = await aiosqlite.connect("IParadeDB.sqlite3")
+
+        await db.execute("UPDATE FighterTable SET HEALTH = ?, DEFENSE = ?, POWER = ?, CRIT_CHANCE = ?, EXP = ?, EXP_FOR_NEXT_LEVEL = ?, LEVEL = ? WHERE PLAYER_ID == ?", (player['HEALTH'], player["DEFENSE"], player["POWER"], player["CRIT_CHANCE"], player["EXP"], player["EXP_FOR_NEXT_LEVEL"], player["LEVEL"], player["PLAYER_ID"]))
 
         await db.commit()
         await db.close()
