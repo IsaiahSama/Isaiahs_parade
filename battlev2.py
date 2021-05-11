@@ -7,7 +7,7 @@ from battle_functionality import *
 from copy import copy
 
 class RPG(commands.Cog):
-    """ Contains all Battle based RPG Commands"""
+    """Contains the commands for Fight Based RPG"""
     def __init__(self, bot) -> None:
         self.bot = bot
         bot.loop.create_task(self.async_init())

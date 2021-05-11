@@ -361,7 +361,7 @@ class TrainingHandler:
                 points += 1
         
         if points >= 5:
-            player["HEALTH"] += points
+            player["HEALTH"] += points // 2
             player["EXP"] += points * 2
             await ctx.send(f"{ctx.author.mention} gained {points} HP and {points * 2} EXP points")
         else:
