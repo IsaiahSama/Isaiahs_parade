@@ -1,13 +1,13 @@
 import discord
-from discord import utils
+from discord import utils, Embed
 from discord.ext import commands
 import asyncio
-from random import randint
+from random import randint, choice
 import typing
 import math
 import traceback
 from copy import copy
-
+from tips import tips
 
 class Moderator(commands.Cog):
     """Commands for all moderators"""
@@ -374,6 +374,20 @@ class Moderator(commands.Cog):
         raise SystemExit
 
     # Events
+
+    @commands.Cog.listener()
+    async def on_command_completion(self, ctx):
+        chosen = choice(list(range(3)))
+        value = randint(0, 2)
+        
+        if chosen == value:
+            embed = Embed(
+                title="A Tip For You",
+                description=choice(tips),
+                color=randint(0, 0xffffff)
+            )
+        
+            await ctx.send(embed=embed)
 
     @commands.Cog.listener()
     async def on_member_join(self, member:discord.Member):

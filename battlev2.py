@@ -96,7 +96,6 @@ class RPG(commands.Cog):
 
     @commands.command(brief="Used to view your RPG Battle Profile", help="Shows the profile relating to your RPG account once applicable", aliases=["p"])
     async def profile(self, ctx):
-        await ctx.send(embed=await self.get_tip())
         player, return_message = await self.get_player(ctx.author)
         if return_message:
             await ctx.send(return_message)
@@ -138,7 +137,6 @@ class RPG(commands.Cog):
             return 
 
         player = await self.get_player_dict(player)
-        await ctx.send(embed=await self.get_tip())
 
         train_embed = discord.Embed(
             title="Training",
@@ -189,8 +187,6 @@ class RPG(commands.Cog):
             await ctx.send(return_message)
             return
         
-        await ctx.send(embed=await self.get_tip())
-
         player = await self.get_player_dict(player)
 
         if player["LEVEL"] < 30:
@@ -394,15 +390,6 @@ class RPG(commands.Cog):
         await db.commit()
         await db.close()
 
-    # Tips
-
-    async def get_tip(self) -> str:
-        embed = discord.Embed(
-            title="A Tip For You",
-            description=choice(tips),
-            color=randint(0, 0xffffff)
-        )
-        return embed
     # Event
 
     healing = []
