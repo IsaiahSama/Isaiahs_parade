@@ -1,3 +1,5 @@
+"""Module for handling Pets and Social Profiles for users. For use with Isaiah's Parade"""
+
 import random
 class Relauser:
     def __init__(self, guild, name, tag, friendcount=0, hasbff=False, bfid=None, pid=None,rela=False, friends=[], parents=[], children=[], petid=None, petexp=0,
@@ -27,6 +29,34 @@ class Relauser:
         else:
             return True
 
+columns = {
+    "USER_ID": 0,
+    "GUILD_ID": 1,
+    "USER_NAME": 2,
+    "BF_ID": 3,
+    "SPOUSE_ID": 4,
+    "FRIENDS": 5,
+    "PARENTS": 6,
+    "CHILDREN": 7,
+    "PET_ID": 8,
+    "PET_NICK": 9,
+    "PET_EXP": 10
+}
+
+social_dict = {
+    "USER_ID": 0,
+    "GUILD_ID": 0,
+    "USER_NAME": "",
+    "BF_ID": 0,
+    "SPOUSE_ID":0,
+    "FRIENDS": [],
+    "PARENTS": [],
+    "CHILDREN": [],
+    "PET_ID": 0,
+    "PET_NICK": "",
+    "PET_EXP": 0,
+}
+
 
 class Pet:
     def __init__(self, name, desc, tag, typef, stages, expreq, stage=0, evolvesinto=None, playmessage=None, feedmsg=None):
@@ -42,6 +72,7 @@ class Pet:
         self.feedmsg = feedmsg
 
     def evolve(self):
+        """Allows a pet to evolve."""
         if self.name == "Egg":
             x = random.choice(petlist)
             msg = f"Congratulations. Your Egg hatched into a {x.name}. View with <>pet"
@@ -51,11 +82,9 @@ class Pet:
             msg = f"Congratulations, Your {self.name} evolved into {self.evolvesinto.name} view with <>pet"
             return msg, self.evolvesinto.tag
 
-        else:
-            return
-
-    def canevolve(self):
-        if self.evolvesinto == None:
+    def canevolve(self) -> bool:
+        """ Checks if a pet can evolve."""
+        if not self.evolvesinto:
             return False
         
         return True
