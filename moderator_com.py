@@ -377,7 +377,7 @@ class Moderator(commands.Cog):
     # Events
 
     @commands.Cog.listener()
-    async def on_command_completion(self, ctx):
+    async def on_command(self, ctx):
         chosen = choice(list(range(3)))
         value = randint(0, 2)
         
