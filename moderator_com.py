@@ -378,8 +378,8 @@ class Moderator(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command(self, ctx):
-        chosen = choice(list(range(3)))
-        value = randint(0, 2)
+        chosen = choice(list(range(5)))
+        value = randint(0, 4)
         
         if chosen == value:
             embed = Embed(
@@ -388,7 +388,7 @@ class Moderator(commands.Cog):
                 color=randint(0, 0xffffff)
             )
         
-            await ctx.send(embed=embed)
+            await ctx.send(embed=embed, delete_after=10)
 
     @commands.Cog.listener()
     async def on_member_join(self, member:discord.Member):
