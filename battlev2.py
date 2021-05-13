@@ -93,6 +93,9 @@ class RPG(commands.Cog):
         
         await db.commit()
         await db.close()
+        role = await ctx.guild.get_role(name="Parader")
+        if role:
+            await ctx.author.add_roles(role)
 
     @commands.command(brief="Used to view your RPG Battle Profile", help="Shows the profile relating to your RPG account once applicable", aliases=["p"])
     async def profile(self, ctx):
