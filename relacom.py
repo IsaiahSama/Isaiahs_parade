@@ -616,7 +616,7 @@ class Social(commands.Cog):
     async def on_message(self, message):
         if message.author.bot: return
         if user := await self.get_user(message.author.id):
-            if user["PET_ID"] != 0:
+            if user["PET_ID"]:
                 user["PET_EXP"] += 5
                 pet = await self.getpetid(user["PET_ID"], message.channel)
                 if user["PET_EXP"] >= pet.expreq and pet.expreq != 0:
