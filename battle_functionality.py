@@ -357,9 +357,9 @@ class TrainingHandler:
                 points += 1
         
         if points >= 5:
-            player["HEALTH"] += points // 2
+            player["MAX_HEALTH"] += points // 2
             player["EXP"] += points * 2
-            await ctx.send(f"{ctx.author.mention} gained {points} HP and {points * 2} EXP points")
+            await ctx.send(f"{ctx.author.mention} gained {points //2} HP and {points * 2} EXP points")
         else:
             await ctx.send(f"{ctx.author.mention} has failed")
 
@@ -412,9 +412,8 @@ class TrainingHandler:
         if points >= 3:
             player["CRIT_CHANCE"] += points
             player["EXP"] += points * 3
-            embed.title = f"{ctx.author.mention}'s  Passed :). Increased crit_chance by {points}, and gained {points * 3} exp points."
+            await ctx.send(f"{ctx.author.mention} has  Passed :). Increased crit_chance by {points}, and gained {points * 3} exp points.")
         else:
-            embed.title = f"{ctx.author.failed}'s  failed 😒"
+            await ctx.send(f"{ctx.author.display_name} has failed  failed 😒")
 
-        await message.edit(embed=embed)
         return player

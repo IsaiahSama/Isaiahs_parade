@@ -1,3 +1,9 @@
+menu_options = {
+    '💼': "profile",
+    '💪': "Train",
+    '⚔️': "Quest"
+}
+
 # Player DB Values
 
 player_columns = {

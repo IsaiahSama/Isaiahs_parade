@@ -1,5 +1,13 @@
 RPG system.
 
+Instead of using different commands. Will provide a menu interface
+
+menu_options:
+
+    💼: Profile
+    💪: Train 
+    ⚔️: Quest
+
 Purpose:
     Provides a form of entertainment for discord users.
 

@@ -93,9 +93,50 @@ class RPG(commands.Cog):
         
         await db.commit()
         await db.close()
-        role = await ctx.guild.get_role(name="Parader")
+        role = discord.utils.get(ctx.guild.roles, name="Parader")
         if role:
             await ctx.author.add_roles(role)
+
+    @commands.command(brief="Provides the menu for all RPG Battle commands", help="Shows the menu which allows user to take part in Battle RPG")
+    async def menu(self, ctx):
+        player, return_message = await self.get_player(ctx.author)
+        if return_message:
+            await ctx.send(return_message)
+            return
+
+        embed = discord.Embed(
+            title=f"Showing Battle Menu for {ctx.author.display_name}",
+            color=randint(0, 0xffffff)
+        )
+        
+        def check(reaction, user):
+            return str(reaction.emoji) in list(menu_options.keys()) and user == ctx.author
+        
+        message = await ctx.send(embed=embed)
+
+        for k, v in menu_options.items():
+            embed.add_field(name=k, value=v, inline=False)
+
+        for emoji in list(menu_options.keys()):
+            await message.add_reaction(emoji)
+
+        await message.edit(embed=embed)
+
+        try:
+            reaction = await self.bot.wait_for("reaction_add", check=check, timeout=30)  
+        except asyncio.TimeoutError:
+            await ctx.send("Took too long to respond")
+        else:
+            emoji = str(reaction[0].emoji)
+            func = menu_options[emoji]
+
+            if func == "profile":
+                await self.profile(ctx)
+            elif func == "quest":
+                await self.quest(ctx)
+            else:
+                await self.train(ctx)
+
 
     @commands.command(brief="Used to view your RPG Battle Profile", help="Shows the profile relating to your RPG account once applicable", aliases=["p"])
     async def profile(self, ctx):
@@ -104,8 +145,6 @@ class RPG(commands.Cog):
             await ctx.send(return_message)
             return
 
-        player = await self.get_player_dict(player)
-        
         embed = discord.Embed(
             title="Showing Profile",
             description=f"Showing {player['NAME']}'s profile",
@@ -138,8 +177,6 @@ class RPG(commands.Cog):
         if return_message:
             await ctx.send(return_message)
             return 
-
-        player = await self.get_player_dict(player)
 
         train_embed = discord.Embed(
             title="Training",
@@ -190,8 +227,6 @@ class RPG(commands.Cog):
             await ctx.send(return_message)
             return
         
-        player = await self.get_player_dict(player)
-
         if player["LEVEL"] < 30:
             await ctx.send("Sorry. You are too weak to do battle quests. Use <>train instead")
             return
@@ -292,7 +327,7 @@ class RPG(commands.Cog):
         await self.handle_post_battle(ctx, winner, loser)
 
     async def handle_post_battle(self, ctx, winner, loser):
-        # Handles the winner and loser functionality
+        "Handles the winner and loser functionality"
         if not winner:
             await ctx.send(f"The winner is... No one. Well, get to live to fight another day.")
             return
@@ -322,7 +357,7 @@ class RPG(commands.Cog):
     # Player Handling
 
     async def get_player(self, member):
-        # Function used to query the database for a player's information.
+        "Function used to query the database for a player's information."
         db = await aiosqlite.connect("IParadeDB.sqlite3")
 
         cursor = await db.execute("SELECT * FROM FighterTable where (PLAYER_ID) == ?", (member.id, ))
@@ -333,10 +368,10 @@ class RPG(commands.Cog):
         if not row:
             return None, "Could not find your Account. Create one with <>createprofile"
         
-        return row, None
+        return await self.get_player_dict(row), None
 
     async def get_player_dict(self, player):
-        # Returns a dictionary of the player's database values
+        "Returns a dictionary of the player's database values"
         player_dict = copy(player_template)
         for k in player_template.keys():
             player_dict[k] = player[player_columns[k]]
@@ -403,8 +438,6 @@ class RPG(commands.Cog):
         player, return_message = await self.get_player(message.author)
         if return_message:
             return 
-
-        player = await self.get_player_dict(player)
 
         if player["HEALTH"] < player["MAX_HEALTH"]:
             if player in self.healing: return
