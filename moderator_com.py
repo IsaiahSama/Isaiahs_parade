@@ -378,8 +378,8 @@ class Moderator(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command(self, ctx):
-        chosen = choice(list(range(5)))
-        value = randint(0, 4)
+        chosen = choice(list(range(4)))
+        value = randint(0, 3)
         
         if chosen == value:
             embed = Embed(
