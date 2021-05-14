@@ -76,11 +76,11 @@ class Pet:
         if self.name == "Egg":
             x = random.choice(petlist)
             msg = f"Congratulations. Your Egg hatched into a {x.name}. View with <>pet"
-            return msg, x.tag
+            return msg, x
         
         if self.canevolve():
             msg = f"Congratulations, Your {self.name} evolved into {self.evolvesinto.name} view with <>pet"
-            return msg, self.evolvesinto.tag
+            return msg, self.evolvesinto
 
     def canevolve(self) -> bool:
         """ Checks if a pet can evolve."""

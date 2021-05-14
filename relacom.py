@@ -194,7 +194,7 @@ class Social(commands.Cog):
             return
             
         user1, user2 = await self.get_user(ctx.author.id), await self.get_user(member.id)
-        if not user1 or user2:
+        if not user1 or not user2:
             await ctx.send("One of the two of you does not have a profile. Create one with <>createsocial")
             return
 
@@ -220,68 +220,58 @@ class Social(commands.Cog):
     # I WANT TO MAKE PETS. THEREFORE I SHALLLLLLL
     @commands.command(breif="Grants you an egg", help="Grants you an egg.")
     async def getpet(self, ctx):
-        if await self.isuser(ctx.author):
-            user = await self.get_user(ctx.author)
-            if user.haspet():
+        if user:= await self.get_user(ctx.author.id):
+            if user["PET_ID"]:
                 await ctx.send("You already have a pet. View with <>pet")
                 return
             else:
-                user["PET_ID"] = egg.tag
+                await self.update_relationship("PET_ID", egg.tag, user["USER_ID"])
+                if not user["PET_NICK"]:
+                    await self.update_relationship("PET_NICK", "egg", user["USER_ID"])
                 await ctx.send("CONGRATULATIONS. YOU HAVE RECEIVED AN EGG!!! View with <>pet")
         else:
-            await ctx.send("Please create an account first. Use <>help socials")
+            await ctx.send("Please create an account first. Use <>help Socials")
             return
 
     # Pet
     @commands.command(brief="Shows information on your pet", help="Shows information on your current pet")
     async def pet(self, ctx):
 
-        if await self.isuser(ctx.author):
+        if user:= await self.get_user(ctx.author.id):
 
-            user = await self.get_user(ctx.author)
-    
-            if user.haspet():
+            if user["PET_ID"]:
 
-                pett = await self.get_pet_by_id(user["PET_ID"], ctx.channel)
+                pet = await self.get_pet_by_id(user["PET_ID"], ctx.channel)
         
                 petbed = discord.Embed(
                     title=f"{ctx.author.name}'s pet {user['PET_NICK']}",
-                    description=f"{pett.name}: {pett.desc}",
+                    description=f"{pet.name}: {pet.desc}",
                     color=randint(0, 0xffffff)
                 )
                 
                 petbed.set_thumbnail(url=ctx.author.avatar_url)
-                petbed.add_field(name="Type:", value=f"{pett.type}")
-                petbed.add_field(name="Amount of Stages", value=f"{pett.stages}")
-                petbed.add_field(name="Current Stage", value=f"{pett.stage}")
-                petbed.add_field(name="Exp", value=f"{user['PET_EXP']}/{pett.expreq}")
+                petbed.add_field(name="Type:", value=f"{pet.type}")
+                petbed.add_field(name="Amount of Stages", value=f"{pet.stages}")
+                petbed.add_field(name="Current Stage", value=f"{pet.stage}")
+                petbed.add_field(name="Exp", value=f"{user['PET_EXP']}/{pet.expreq}")
                 
                 await ctx.send(embed=petbed)
                 return
             
         await ctx.send("You don't have pet. Get one with <>getpet.")
 
-    @commands.command(brief="Changes your profile's guild to the one you are currently in", help="Used to switch your profile's guild to the one you are currently in")
-    async def updatesocial(self, ctx):
-        if user:= await self.get_user(ctx.author.id):
-            await self.update_relationship("GUILD_ID", ctx.guild.id, user["USER_ID"])
-            await ctx.send(f"Changed your current guild to {ctx.guild.name}")
-        else:
-            await ctx.send("You don't even have a profile to update")
 
     @commands.command(brief="Plays with your pet", help="Plays with your pet for exp. Cooldown: 3 minutes, 20 Seconds")
     @commands.cooldown(1, 200, commands.BucketType.user)
     async def play(self, ctx):
-        if await self.isuser(ctx.author):
-            user = await self.get_user(ctx.author)
-            if user.haspet():
+        if user := await self.get_user(ctx.author.id):
+            if user["PET_ID"]:
                 pet = await self.get_pet_by_id(user["PET_ID"], ctx.channel)
                 msg = pet.playmessage
                 await ctx.send(f"You play with {user['PET_NICK']}")
                 await asyncio.sleep(2)
                 await ctx.send(f"{user['PET_NICK']} {msg}")
-                user["PET_EXP"] += 20
-            
+                await self.update_relationship("PET_EXP", user["PET_EXP"] + 20, user["USER_ID"])
             else:
                 await ctx.send("You don't have a pet. Get one with <>getpet")
         
@@ -298,6 +288,7 @@ class Social(commands.Cog):
                 await ctx.send(f"You feed {user['PET_NICK']}")
                 await asyncio.sleep(2)
                 await ctx.send(f"{user['PET_NICK']} {pet.feedmsg}")
+                await self.update_relationship("PET_EXP", user["PET_EXP"] + 15, user["USER_ID"])
                 user["PET_EXP"] += 15
             else:
                 await ctx.send("You don't have a pet to feed. Do <>getpet to get one")
@@ -306,33 +297,23 @@ class Social(commands.Cog):
 
     @commands.command(brief="Deletes your pet", help="Gets rid of your pet... for a cost")
     async def delpet(self, ctx, confirm=False):
-        if await self.isuser(ctx.author):
-            user = await self.get_user(ctx.author)
-            if user.haspet():
+        if user := await self.get_user(ctx.author):
+            if user["PET_ID"]:
                 pet = await self.get_pet_by_id(user["PET_ID"], ctx.channel)
                 await ctx.send(f"{pet.name} will never forgive you.")
                 if not confirm:
                     await ctx.send("Do <>delpet True, to confirm")
                     return
-                if confirm:
-                    await ctx.send(f"{pet.name} vanishes with a menacing look, and you get the urge to check your social profile")
-                    user["PET_EXP"] = -100
-                    user["PET_ID"] = None
-                    user["PET_NICK"] = None
-                    await self.socialprofile(ctx)
-                    await self.getpetnames()
+                await ctx.send(f"{pet.name} vanishes with a menacing look, and you get the urge to check your social profile")    
+                await self.update_relationship("PET_EXP", randint(50, 250), user["USER_ID"])  
+                await self.update_relationship("PET_ID", 0, user["USER_ID"])  
+                await self.socialprofile(ctx)
             
             else:
                 await ctx.send("You don't even have a pet and want to get rid of it?")
                 return
         else:
             await ctx.send("Not a member. Become one with <>createsocial")
-
-    @commands.command()
-    @commands.is_owner()
-    async def save(self, ctx):
-        self.updateusers.restart()
-        print("Updated profile")
 
     @commands.command(brief="Gives your pet a nickname", help="Give your pet a nickname. Carries on from one pet to the next, until you change it", usage="name")
     async def nickpet(self, ctx,*, name):
@@ -343,6 +324,20 @@ class Social(commands.Cog):
 
             await self.update_relationship("PET_NICK", name, user["USER_ID"])
             await ctx.send(f"Set your Pet's name to {name}")
+
+    @commands.command()
+    @commands.is_owner()
+    async def save(self, ctx):
+        self.updateusers.restart()
+        print("Updated profile")
+
+    @commands.command(brief="Changes your profile's guild to the one you are currently in", help="Used to switch your profile's guild to the one you are currently in")
+    async def updatesocial(self, ctx):
+        if user:= await self.get_user(ctx.author.id):
+            await self.update_relationship("GUILD_ID", ctx.guild.id, user["USER_ID"])
+            await ctx.send(f"Changed your current guild to {ctx.guild.name}")
+        else:
+            await ctx.send("You don't even have a profile to update")
 
     # Functions
     
@@ -363,17 +358,18 @@ class Social(commands.Cog):
             return await self.get_user_dict(row)
         return None
 
-    async def get_user_dict(self, row):
+    async def get_user_dict(self, row) -> dict:
+        "Creates a dictionary out of the tuple provided. Tuple will be a row returned from fetchone(). Returns the newly created dictionary"
         user_dict = {}
         for k in social_dict.keys():
             user_dict[k] = row[columns[k]]
         return user_dict
 
     async def get_pet_by_id(self, target, channel=None):
-        pett = [x for x in allpets if x.tag == target]
+        pet = [x for x in allpets if x.tag == target]
         try:
-            pett = pett[0]
-            return copy.copy(pett)
+            pet = pet[0]
+            return copy.copy(pet)
         except IndexError:
             if not channel: return
             await channel.send("Something went wrong getting your pet")
@@ -473,10 +469,12 @@ class Social(commands.Cog):
                     msg, new_pet = pet.evolve()
                     user["PET_EXP"] = 0
                     await message.channel.send(msg)
-                    user["PET_ID"] = new_pet
+                    await self.update_relationship("PET_ID", new_pet.id, user["USER_ID"])
                     if not user["PET_NICK"]:
                         new_pet = await self.get_pet_by_id(user["PET_ID"], message.channel)
-                        user["PET_NICK"] = new_pet.name
+                        await self.update_relationship("PET_NICK", new_pet.name, user["USER_ID"])
+                await self.update_relationship("PET_EXP", user["PET_EXP"], user["USER_ID"])
+                
             else:
                 return
 
