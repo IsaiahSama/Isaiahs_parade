@@ -3,9 +3,8 @@ from discord import user
 from discord.ext import commands, tasks
 import asyncio
 from random import randint
-from relastatus import Relauser, egg, allpets, social_dict, columns
+from relastatus import egg, allpets, social_dict, columns
 import copy
-from saving import Saving
 import aiosqlite
 
 veri_emojis = ["✅", "❌"]
@@ -426,12 +425,6 @@ class Social(commands.Cog):
             
             else:
                 await ctx.send(f"{member.name} has rejected {ctx.author.mention}'s '{text}'ship")
-
-
-    @tasks.loop(minutes=3.0)
-    async def updateusers(self):
-        if not self.allusers: return
-        await Saving().save("reladata", self.allusers)
 
     # Events
     @commands.Cog.listener()
