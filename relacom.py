@@ -117,10 +117,10 @@ class Social(commands.Cog):
 
     # Adding A Friend
     @commands.command(brief="Sends a Role Play friend request", help="Used to request someone to be your friend (Role Play wise)", usage='@user')
-    async def addfriend(self, ctx, member: discord.Member=None):
-        # if ctx.author == member or not member:
-        #     await ctx.send("I'm glad to see you love yourself")
-        #     return
+    async def friend(self, ctx, member: discord.Member=None):
+        if ctx.author == member or not member:
+            await ctx.send("I'm glad to see you love yourself")
+            return
 
         user1 = await self.get_user(ctx.author.id)
         user2 = await self.get_user(member.id)
@@ -133,7 +133,7 @@ class Social(commands.Cog):
 
 
     @commands.command(brief="Shows your friends", help="Shows a max of 25 of your friends")
-    async def showfriends(self, ctx):
+    async def friends(self, ctx):
         if user:= await self.get_user(ctx.author.id):
             friend_embed = discord.Embed(
                 title=f"List of all of {user['USER_NAME']}'s friends",
@@ -154,11 +154,11 @@ class Social(commands.Cog):
         else:
             await ctx.send("You don't have a social account. Use <>createsocial to create one")
 
-    @commands.command(brief="Sends a love request", help="Requests someone to be your love", usage="@user")
-    async def addlove(self, ctx, member:discord.Member):
-        # if ctx.author == member:
-        #     await ctx.send("I'm glad to see you love yourself")
-        #     return
+    @commands.command(brief="Sends a love request", help="Requests someone to be your lover", usage="@user")
+    async def marry(self, ctx, member:discord.Member):
+        if ctx.author == member:
+            await ctx.send("I'm glad to see you love yourself")
+            return
         
         user1 = await self.get_user(ctx.author.id)
         user2 = await self.get_user(member.id)
@@ -169,193 +169,53 @@ class Social(commands.Cog):
         
         await self.send_request(ctx, member, user1, user2, "lover", "SPOUSE_ID")
  
-    @commands.command(brief="'Breaks up' from your loved one", help="Dumps the person you are in a relationship with")
+    @commands.command(brief="Breaks up from your loved one", help="Dumps the person you are in a relationship with")
     async def dump(self, ctx):
-        if await self.isuser(ctx.author):
-            user = await self.get_user(ctx.author)
-            if user.rela:
-                user2 = await self.reget(user.pid)
-                user.pid = None
-                user2.pid = None
-                user.rela = False
-                user2.rela = False
-                user2main = self.bot.get_user(user2.tag)
-
-                await ctx.author.send(f"Broke up with {user2main.name}")
-                await user2main.send(f"{ctx.author.name} has dumped you")
+        if user:= await self.get_user(ctx.author.id):
+            if user["SPOUSE_ID"]:
+                user2 = await self.get_user(user["SPOUSE_ID"])
+                await self.update_relationship("SPOUSE_ID", 0, user["USER_ID"])
+                if not user2:
+                    await ctx.send(f"{user['NAME']} is not single")
+                    return
+                await self.update_relationship("SPOUSE_ID", 0, user2["USER_ID"])
+                
+                await ctx.send(f"{user['NAME']} and {user2['NAME']} are now no more")
             
             else:
                 await ctx.send("You are not in a relationship to leave")
-
-    
-    @commands.command(brief="Accepts a love request", help="Accepts a love request")
-    async def acceptlove(self, ctx):
-        if await self.isuser(ctx.author):
-            user = await self.get_user(ctx.author)
-
-            if user.pendinglove != None:
-                sender = await self.reget(user.pendinglove)
-
-                user.pid = sender.tag
-                sender.pid = user.tag
-
-                mainuser = self.bot.get_user(user.tag)
-                await mainuser.send(f"Congratualions. You are now {sender.name}'s lover")
-                user.rela = True
-                mainuser2 = self.bot.get_user(sender.tag)
-                await mainuser2.send(f"Congratualions. You are now {user.name}'s lover")
-                sender.rela = True
-
-                user.pendinglove = None
-
-            else:
-                await ctx.send("You don't have any incoming love requests")
-
         else:
-            await ctx.send("Missing a few steps. Create a Social Profile first with <>createsocial")
-
-    @commands.command(brief="Denies a love request", help="Denies a love request")
-    async def denylove(self, ctx):
-        if await self.isuser(ctx.author):
-            user = await self.get_user(ctx.author)
-            if user.pendinglove != None:
-                user.pendinglove = None
-                await ctx.send("Rejected")
-
-            else:
-                await ctx.send("You don't have any incoming love requests")
-
-        else:
-            await ctx.send("Missing a few steps. Create a Social Profile first with <>createsocial")
-
+            await ctx.send("You don't have a social profile. Use <>createsocial to create one.")
 
     @commands.command(brief="Requests someone to be your best friend", help="Use this to add someone as your one and only best friend", usage="@user")
-    async def newbff(self, ctx, member: discord.Member=None):
+    async def bestfriend(self, ctx, member: discord.Member):
         if ctx.author == member:
             await ctx.send("I'm glad to see you love yourself")
             return
-        
-        if await self.isuser(ctx.author) and await self.isuser(member):
-            u1 = await self.get_user(ctx.author)
-            u2 = await self.get_user(member)
-
-            u2.pendingbf = u1.tag
-            await member.send(f"{ctx.author.name} would like to be your best friend")
-            await member.send(f"Accept with <>acceptbff or <>denybff to deny")
-            await ctx.send("Your Best Friend Request has been sent :thumbsup:")
-
-        else:
-            await ctx.send("You or the person you mentioned does not have a profile")
-
-    @commands.command(brief="Accepts a best friend request", help="Used to accept a pending best friend request")
-    async def acceptbff(self, ctx):
-        if await self.isuser(ctx.author):
-            user = await self.get_user(ctx.author)
-            if user.pendingbf != None:
-                sender = await self.reget(user.pendingbf)
-                temp2 = self.bot.get_user(sender.tag)
-                await ctx.send("Congratulations")
-                await temp2.send(f"{user.name} Accepted your best friend request")
-
-                user.bfid = sender.tag
-                sender.bfid = user.tag
-                user.hasbff = True
-                sender.hasbff = True
-                
-                user.pendingbf = None
             
-            else:
-                await ctx.send("No one has sent you a best friend request")
-            
-        else:
-            await ctx.send("No best friends until you create an account with <>createsocial")
+        user1, user2 = await self.get_user(ctx.author.id), await self.get_user(member.id)
+        if not user1 or user2:
+            await ctx.send("One of the two of you does not have a profile. Create one with <>createsocial")
+            return
 
-    @commands.command(brief="Deny a best friend request", help="Used to deny a pending best friend request")
-    async def denybff(self, ctx):
-        if await self.isuser(ctx.author):
-            user = await self.get_user(ctx.author)
-            if user.pendingbf != None:
-                user.pendingbf = None
-                
-                await ctx.send("Rejected")
-            
-            else:
-                await ctx.send("No one has sent you a best friend request")
-            
-        else:
-            await ctx.send("No best friends until you create an account with <>createsocial")
+        await self.update_relationship("BF_ID", user2["USER_ID"], user["USER_ID"])
+
+        await ctx.send(f"{ctx.author.mention} now considers {member.mention} to be their best friend.")
+
 
     @commands.command(brief="Add someone to be your child", help="Invites someone to be your child", usage="@user")
     async def newchild(self, ctx, member: discord.Member):
         if ctx.author == member:
-            await ctx.send("Uh... what?")
+            await ctx.send("Being your own child? I'm not sure, seems illegal doesn't it?")
             return
 
-        if await self.isuser(ctx.author) and await self.isuser(member):
-            user = await self.get_user(ctx.author)
-            user2 = await self.get_user(member)
-            
-            if user2.pendingpar != None:
+        user1, user2 = await self.get_user(ctx.author.id), await self.get_user(member.id)
 
-                await ctx.send("This person already has a parent request")
-                return
-
-            if len(user2.parents) == 2:
-                await ctx.send(f"Sorry to say but, {user2.name} already has 2 parents")
-                return
-
-            await member.send(f"Hey. {ctx.author} would like to be your parent. Do <>acceptparent or <>denyparent")
-            await ctx.send("Your request has been sent")
-            user2.pendingpar = user.tag
-        else:
-            await ctx.send("You or the person you mentioned, does not have a Social Profile")
-
-    @commands.command(brief="Accepts someone as your parent", help="Used to accept a pending parent request")
-    async def acceptparent(self, ctx):
-        if await self.isuser(ctx.author):
-            user = await self.get_user(ctx.author)
-            if user.pendingpar != None:
-                sender = await self.reget(user.pendingpar)
-                temp2 = self.bot.get_user(sender.tag)
-
-                parlist = list(user.parents)
-                parlist.append(sender.tag)
-                user.parents = parlist
-
-                clist = list(sender.children)
-                clist.append(user.tag)
-                sender.children = clist
-
-                await ctx.send(f"Successful. Congrats. You are now the child of {sender.name}")
-                await temp2.send(f"Congratulations. You are now a parent of {user.name}")
-
-                user.pendingpar = None
-
-            else:
-                await ctx.send("You don't have any pending parent requests")
-                return
-        else:
-            await ctx.send("You must create a social profile with <>createsocial")
-
-    @commands.command(brief="Denies a parent request", help="Denies a pending parent request")
-    async def denyparent(self, ctx):
-        if await self.isuser(ctx.author):
-            user = await self.get_user(ctx.author)
-            
-            if user.pendingpar != None:
-                x = await self.reget(user.pendingpar)
-                temp1 = self.bot.get_user(x.tag)
-
-                await temp1.send("Your parent request has been denied")
-                user.pendingpar = None
-
-                await ctx.send("Rejected Successfully")
-            
-            else:
-                await ctx.send("You do not have any pending requests")
+        if not user1 or not user2:
+            await ctx.send("One of the two of you does not have a profile. Create one with <>createsocial")
+            return
         
-        else:
-            await ctx.send("Become one of us with <>createsocial first")
+        await self.send_request(ctx, member, user1, user2, "Parent", "PARENTS")
 
     # I WANT TO MAKE PETS. THEREFORE I SHALLLLLLL
     @commands.command(breif="Grants you an egg", help="Grants you an egg.")
@@ -382,7 +242,7 @@ class Social(commands.Cog):
     
             if user.haspet():
 
-                pett = await self.getpetid(user["PET_ID"], ctx.channel)
+                pett = await self.get_pet_by_id(user["PET_ID"], ctx.channel)
         
                 petbed = discord.Embed(
                     title=f"{ctx.author.name}'s pet {user['PET_NICK']}",
@@ -403,12 +263,9 @@ class Social(commands.Cog):
 
     @commands.command(brief="Changes your profile's guild to the one you are currently in", help="Used to switch your profile's guild to the one you are currently in")
     async def updatesocial(self, ctx):
-        if await self.isuser(ctx.author):
-            user = await self.get_user(ctx.author)
-            user.guild = ctx.guild.name
-            user.name = ctx.author.display_name
+        if user:= await self.get_user(ctx.author.id):
+            await self.update_relationship("GUILD_ID", ctx.guild.id, user["USER_ID"])
             await ctx.send(f"Changed your current guild to {ctx.guild.name}")
-
         else:
             await ctx.send("You don't even have a profile to update")
 
@@ -418,7 +275,7 @@ class Social(commands.Cog):
         if await self.isuser(ctx.author):
             user = await self.get_user(ctx.author)
             if user.haspet():
-                pet = await self.getpetid(user["PET_ID"], ctx.channel)
+                pet = await self.get_pet_by_id(user["PET_ID"], ctx.channel)
                 msg = pet.playmessage
                 await ctx.send(f"You play with {user['PET_NICK']}")
                 await asyncio.sleep(2)
@@ -431,12 +288,28 @@ class Social(commands.Cog):
         else:
             await ctx.send("Become one of us with <>createsocial")
 
+
+    @commands.command(brief="Feeds your pet", help="Feeds your pet for pet exp Cooldown 2 minutes")
+    @commands.cooldown(1, 120, commands.BucketType.user)
+    async def feed(self, ctx):
+        if user:= await self.get_user(ctx.author.id):
+            if user["PET_ID"]:
+                pet = await self.get_pet_by_id(user["PET_ID"], ctx.channel)
+                await ctx.send(f"You feed {user['PET_NICK']}")
+                await asyncio.sleep(2)
+                await ctx.send(f"{user['PET_NICK']} {pet.feedmsg}")
+                user["PET_EXP"] += 15
+            else:
+                await ctx.send("You don't have a pet to feed. Do <>getpet to get one")
+        else:
+            await ctx.send("You are not a member. Become one with <>createsocial")
+
     @commands.command(brief="Deletes your pet", help="Gets rid of your pet... for a cost")
     async def delpet(self, ctx, confirm=False):
         if await self.isuser(ctx.author):
             user = await self.get_user(ctx.author)
             if user.haspet():
-                pet = await self.getpetid(user["PET_ID"], ctx.channel)
+                pet = await self.get_pet_by_id(user["PET_ID"], ctx.channel)
                 await ctx.send(f"{pet.name} will never forgive you.")
                 if not confirm:
                     await ctx.send("Do <>delpet True, to confirm")
@@ -455,22 +328,6 @@ class Social(commands.Cog):
         else:
             await ctx.send("Not a member. Become one with <>createsocial")
 
-    @commands.command(brief="Feeds your pet", help="Feeds your pet for pet exp Cooldown 2 minutes")
-    @commands.cooldown(1, 120, commands.BucketType.user)
-    async def feed(self, ctx):
-        if await self.isuser(ctx.author):
-            user = await self.get_user(ctx.author)
-            if user.haspet():
-                pet = await self.getpetid(user["PET_ID"], ctx.channel)
-                await ctx.send(f"You feed {user['PET_NICK']}")
-                await asyncio.sleep(2)
-                await ctx.send(f"{user['PET_NICK']} {pet.feedmsg}")
-                user["PET_EXP"] += 15
-            else:
-                await ctx.send("You don't have a pet to feed")
-        else:
-            await ctx.send("You are not a member. Become one with <>createsocial")
-
     @commands.command()
     @commands.is_owner()
     async def save(self, ctx):
@@ -479,20 +336,13 @@ class Social(commands.Cog):
 
     @commands.command(brief="Gives your pet a nickname", help="Give your pet a nickname. Carries on from one pet to the next, until you change it", usage="name")
     async def nickpet(self, ctx,*, name):
-        if len(name) >= 15:
-            await ctx.send("That name is too long")
-            return
-        
-        if await self.isuser(ctx.author):
-            user = await self.get_user(ctx.author)
-            if user.haspet():
-                user["PET_NICK"] = name
-                await ctx.send(f"Set your Pet's name to {name}")
-                
-            else:
-                await ctx.send("You do not have a pet to nickname")
+        if user:= await self.get_user(ctx.author.id):
+            if len(name) >= 15:
+                await ctx.send("That name is too long")
                 return
-        
+
+            await self.update_relationship("PET_NICK", name, user["USER_ID"])
+            await ctx.send(f"Set your Pet's name to {name}")
 
     # Functions
     
@@ -519,7 +369,7 @@ class Social(commands.Cog):
             user_dict[k] = row[columns[k]]
         return user_dict
 
-    async def getpetid(self, target, channel=None):
+    async def get_pet_by_id(self, target, channel=None):
         pett = [x for x in allpets if x.tag == target]
         try:
             pett = pett[0]
@@ -608,7 +458,7 @@ class Social(commands.Cog):
         for acc in self.allusers:
             if acc.haspet():
                 if acc.petnick:
-                    x = await self.getpetid(acc.petid)
+                    x = await self.get_pet_by_id(acc.petid)
                     acc.petnick = x.name
 
     # Events
@@ -618,14 +468,14 @@ class Social(commands.Cog):
         if user := await self.get_user(message.author.id):
             if user["PET_ID"]:
                 user["PET_EXP"] += 5
-                pet = await self.getpetid(user["PET_ID"], message.channel)
+                pet = await self.get_pet_by_id(user["PET_ID"], message.channel)
                 if user["PET_EXP"] >= pet.expreq and pet.expreq != 0:
                     msg, new_pet = pet.evolve()
                     user["PET_EXP"] = 0
                     await message.channel.send(msg)
                     user["PET_ID"] = new_pet
                     if not user["PET_NICK"]:
-                        new_pet = await self.getpetid(user["PET_ID"], message.channel)
+                        new_pet = await self.get_pet_by_id(user["PET_ID"], message.channel)
                         user["PET_NICK"] = new_pet.name
             else:
                 return
