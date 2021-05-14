@@ -51,44 +51,6 @@ async def rc(ctx, *, cog=None):
             await ctx.send(f"{cog} has been reloaded")
         except discord.ext.commands.ExtensionNotLoaded:
             await ctx.send("Extension could not be found")
-# when bot joins a guild
-@bot.event
-async def on_guild_join(guild):
-    channel = discord.utils.get(guild.text_channels, name="parade-room")
-    if not channel:
-        await guild.create_text_channel("parade-room")
-        channel = discord.utils.get(guild.text_channels, name="parade-room")
-
-    role = discord.utils.get(guild.roles, name="Parader")
-    if not role:
-        role = await guild.create_role(name="Parader")
-
-    mchan = bot.get_channel(740414745252986970)
-    await mchan.send(f"I have been invited to {guild.name}. {role.name} and {channel.name} Have been created successfully")
-    
-    role = discord.utils.get(guild.roles, name="shushed")
-    if not role: 
-        role = await guild.create_role(name="shushed")
-    for channel in guild.text_channels:
-        overwrites = {role: discord.PermissionOverwrite(send_messages=False)}
-        await channel.set_permissions(role, send_messages=False)
-        
-        print(f"{guild} roles set up")
-    joinbed = discord.Embed(
-        title="I have Arrived",
-        description=f"Thanks for inviting me to {guild.name}. I look forward to spending time with all of you",
-        color=randint(0, 0xffffff)
-    )
-
-    joinbed.set_thumbnail(url=bot.user.avatar_url)
-    joinbed.add_field(name="Help", value="You can view everything i'm capable of with <>help")
-    joinbed.add_field(name="Main Server", value="Feel free to join my main server. Get the link with <>parade")
-    joinbed.add_field(name="Positioning", value="As someone created to Moderate, be sure to give me a role high enough in order for you to use me to my full potential")
-    
-    await channel.send(embed=joinbed)
-
-        
-
 
 @bot.command()
 async def help2(ctx, *, category=None):
