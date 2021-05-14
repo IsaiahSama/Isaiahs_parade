@@ -176,11 +176,11 @@ class Social(commands.Cog):
                 user2 = await self.get_user(user["SPOUSE_ID"])
                 await self.update_relationship("SPOUSE_ID", 0, user["USER_ID"])
                 if not user2:
-                    await ctx.send(f"{user['NAME']} is not single")
+                    await ctx.send(f"{user['USER_NAME']} is now single")
                     return
                 await self.update_relationship("SPOUSE_ID", 0, user2["USER_ID"])
                 
-                await ctx.send(f"{user['NAME']} and {user2['NAME']} are now no more")
+                await ctx.send(f"{user['USER_NAME']} and {user2['USER_NAME']} are now no more")
             
             else:
                 await ctx.send("You are not in a relationship to leave")
@@ -197,8 +197,8 @@ class Social(commands.Cog):
         if not user1 or not user2:
             await ctx.send("One of the two of you does not have a profile. Create one with <>createsocial")
             return
-
-        await self.update_relationship("BF_ID", user2["USER_ID"], user["USER_ID"])
+        
+        await self.update_relationship("BF_ID", user2["USER_ID"], user1["USER_ID"])
 
         await ctx.send(f"{ctx.author.mention} now considers {member.mention} to be their best friend.")
 
@@ -325,11 +325,6 @@ class Social(commands.Cog):
             await self.update_relationship("PET_NICK", name, user["USER_ID"])
             await ctx.send(f"Set your Pet's name to {name}")
 
-    @commands.command()
-    @commands.is_owner()
-    async def save(self, ctx):
-        self.updateusers.restart()
-        print("Updated profile")
 
     @commands.command(brief="Changes your profile's guild to the one you are currently in", help="Used to switch your profile's guild to the one you are currently in")
     async def updatesocial(self, ctx):
@@ -340,13 +335,6 @@ class Social(commands.Cog):
             await ctx.send("You don't even have a profile to update")
 
     # Functions
-    
-    async def isuser(self, target):
-        for user in self.allusers:
-            if user.tag == target.id:
-                return True
-            
-        return False
 
     async def get_user(self, tag):
         "Queries the database for a user's information. Returns None if nothing is found. Tag is the ID of the user."
@@ -439,23 +427,11 @@ class Social(commands.Cog):
             else:
                 await ctx.send(f"{member.name} has rejected {ctx.author.mention}'s '{text}'ship")
 
-    async def reget(self, tagtoget):
-        for user in self.allusers:
-            if tagtoget == user.tag:
-                return user
 
     @tasks.loop(minutes=3.0)
     async def updateusers(self):
         if not self.allusers: return
         await Saving().save("reladata", self.allusers)
-        
-
-    async def getpetnames(self):
-        for acc in self.allusers:
-            if acc.haspet():
-                if acc.petnick:
-                    x = await self.get_pet_by_id(acc.petid)
-                    acc.petnick = x.name
 
     # Events
     @commands.Cog.listener()
@@ -469,8 +445,8 @@ class Social(commands.Cog):
                     msg, new_pet = pet.evolve()
                     user["PET_EXP"] = 0
                     await message.channel.send(msg)
-                    await self.update_relationship("PET_ID", new_pet.id, user["USER_ID"])
-                    if not user["PET_NICK"]:
+                    await self.update_relationship("PET_ID", new_pet.tag, user["USER_ID"])
+                    if not user["PET_NICK"] or user["PET_NICK"] == pet.name:
                         new_pet = await self.get_pet_by_id(user["PET_ID"], message.channel)
                         await self.update_relationship("PET_NICK", new_pet.name, user["USER_ID"])
                 await self.update_relationship("PET_EXP", user["PET_EXP"], user["USER_ID"])
