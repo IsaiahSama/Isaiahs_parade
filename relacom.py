@@ -304,7 +304,7 @@ class Social(commands.Cog):
                     await ctx.send("Do <>delpet True, to confirm")
                     return
                 await ctx.send(f"{pet.name} vanishes with a menacing look, and you get the urge to check your social profile")    
-                await self.update_relationship("PET_EXP", randint(50, 250), user["USER_ID"])  
+                await self.update_relationship("PET_EXP", randint(50, 250) * -1, user["USER_ID"])  
                 await self.update_relationship("PET_ID", 0, user["USER_ID"])
                 await self.socialprofile(ctx)
             
