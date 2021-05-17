@@ -296,7 +296,7 @@ class Social(commands.Cog):
 
     @commands.command(brief="Deletes your pet", help="Gets rid of your pet... for a cost")
     async def delpet(self, ctx, confirm=False):
-        if user := await self.get_user(ctx.author):
+        if user := await self.get_user(ctx.author.id):
             if user["PET_ID"]:
                 pet = await self.get_pet_by_id(user["PET_ID"], ctx.channel)
                 await ctx.send(f"{pet.name} will never forgive you.")
@@ -305,7 +305,7 @@ class Social(commands.Cog):
                     return
                 await ctx.send(f"{pet.name} vanishes with a menacing look, and you get the urge to check your social profile")    
                 await self.update_relationship("PET_EXP", randint(50, 250), user["USER_ID"])  
-                await self.update_relationship("PET_ID", 0, user["USER_ID"])  
+                await self.update_relationship("PET_ID", 0, user["USER_ID"])
                 await self.socialprofile(ctx)
             
             else:
