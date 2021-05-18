@@ -54,7 +54,6 @@ class RPG(commands.Cog):
     async def createprofile(self, ctx):
         player, return_message = await self.get_player(ctx.author)
         if not return_message:
-            player = await self.get_player_dict(player)
             await ctx.send(f"You already have an account with {player['LIVES']} lives")
             return
 

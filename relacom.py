@@ -62,7 +62,7 @@ class Social(commands.Cog):
         target = member or ctx.author
         user = await self.get_user(target.id)
         if not user:
-            await ctx.send("{target.mention} does not have an account. Create one with <>createsocial")
+            await ctx.send(f"{target.mention} does not have an account. Create one with <>createsocial")
             return
 
         userbed = discord.Embed(
