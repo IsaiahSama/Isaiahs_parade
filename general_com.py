@@ -1,4 +1,5 @@
 import discord
+from discord.embeds import Embed
 from discord.ext import commands
 from random import randint
 import asyncio
@@ -312,7 +313,12 @@ class General(commands.Cog):
 
         for afkthing in self.isafk:
             if afkthing.user in message.mentions and afkthing.guild is message.guild:
-                await message.channel.send(f"{afkthing.user.name} went afk saying \"{afkthing.message}\"")
+                embed = Embed(
+                    title="Afk",
+                    description = f"{afkthing.user.name} went afk saying \"{afkthing.message}\"",
+                    color=randint(0, 0xffffff)
+                )
+                await message.channel.send(embed=embed)
 
     cd = 60 * 60
 
