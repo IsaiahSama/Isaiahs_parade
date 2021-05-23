@@ -237,7 +237,7 @@ class TrainingHandler:
             words = f.read().split(", ")
 
         for i in range(1, 5):
-            correct_word = choice(words.strip().lower())
+            correct_word = choice(words).strip().lower()
 
             shuffled_word = list(correct_word)
             shuffle(shuffled_word)
