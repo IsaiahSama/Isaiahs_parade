@@ -31,7 +31,7 @@ class MyHelpCommand(commands.MinimalHelpCommand):
             embed.add_field(name="Cog:", value=f"```{command.cog.qualified_name}```")
     
         destination = self.get_destination()
-        await destination.send(embed=embed, delete_after=60)
+        await destination.send(embed=embed)
 
     async def send_cog_help(self, cog):
         to_loop = await self.filter_commands(cog.get_commands())
@@ -50,7 +50,7 @@ class MyHelpCommand(commands.MinimalHelpCommand):
                 embed.add_field(name=f"{self.clean_prefix}{command.qualified_name}", value=f"```{command.brief}```")
             embed.set_footer(text=self.get_opening_note())
 
-            await self.get_destination().send(embed=embed, delete_after=60)
+            await self.get_destination().send(embed=embed)
             starting, ending = starting + 25, ending + 25
             await asyncio.sleep(1)
 
@@ -69,7 +69,7 @@ class MyHelpCommand(commands.MinimalHelpCommand):
                 embed.add_field(name=cog.qualified_name, value=f"```{cog.description}```")
             
 
-        await self.get_destination().send(embed=embed, delete_after=60)
+        await self.get_destination().send(embed=embed)
 
     
 class MyHelp(commands.Cog):
