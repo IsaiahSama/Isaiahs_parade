@@ -171,6 +171,7 @@ class RPG(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command()
+    @commands.cooldown(1, 60, commands.BucketType.member)
     async def train(self, ctx):
         player, return_message = await self.get_player(ctx.author)
         if return_message:
@@ -449,6 +450,13 @@ class RPG(commands.Cog):
 
             await asyncio.sleep(30)
             self.healing.remove(player)
+
+    @commands.Cog.listener()
+    @commands.coold
+    async def on_command_error(error, ctx):
+        if isinstance(error, commands.CommandOnCooldown):
+            await ctx.send(f"Take it easy. You're on cooldown for another {error.retry_after} seconds")
+            return
 
 def setup(bot):
     bot.add_cog(RPG(bot))
