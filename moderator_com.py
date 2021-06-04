@@ -46,7 +46,7 @@ class Moderator(commands.Cog):
         joinbed.add_field(name="Help", value="You can view everything i'm capable of with <>help")
         joinbed.add_field(name="Main Server", value="Feel free to join my main server. Get the link with <>parade")
         joinbed.add_field(name="Positioning", value="As someone created to Moderate, be sure to give me a role high enough in order for you to use me to my full potential")
-        joinbed.add_field(name="Extra", value="I have automatically setup a role called Parader, which is assigned when the <>createprofile command is used.")
+        joinbed.add_field(name="Extra", value="I have automatically setup a role called shushed, which is assigned when the <>mute command is used. For setting this role up for newly created channels, use <>silentnow")
         
         await channel.send(embed=joinbed)
 
