@@ -341,7 +341,7 @@ class General(commands.Cog):
         await ctx.send("Your suggesstion was made")
 
     @commands.command()
-    async def react_to(self, ctx, message_id:int, letters:list):
+    async def react_to(self, ctx, message_id:int, *, letters:list):
         try:
             message = await ctx.channel.fetch_message(message_id)
         except:
