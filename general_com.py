@@ -340,6 +340,21 @@ class General(commands.Cog):
         await msg.add_reaction("\U00002b50")
         await ctx.send("Your suggesstion was made")
 
+    @commands.command()
+    async def react_to(self, ctx, message_id:int, letters:list):
+        try:
+            message = await ctx.channel.fetch_message(message_id)
+        except:
+            await ctx.send("Message with that id Could not be found")
+            return
+
+        for letter in letters:
+            try:
+                await message.add_reaction(chr(int(f"1274{ord(letter.upper())}") - 3))
+            except:
+                await ctx.send("Unknown letter", delete_after=5)
+
+
 
 def setup(bot):
     bot.add_cog(General(bot))

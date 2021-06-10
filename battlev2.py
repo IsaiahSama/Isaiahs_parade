@@ -452,7 +452,7 @@ class RPG(commands.Cog):
             self.healing.remove(player)
 
     @commands.Cog.listener()
-    async def on_command_error(error, ctx):
+    async def on_command_error(self, error, ctx):
         if isinstance(error, commands.CommandOnCooldown):
             await ctx.send(f"Take it easy. You're on cooldown for another {error.retry_after} seconds")
             return
