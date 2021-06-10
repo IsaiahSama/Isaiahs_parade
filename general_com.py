@@ -354,6 +354,8 @@ class General(commands.Cog):
             except:
                 await ctx.send("Unknown letter", delete_after=5)
 
+        await asyncio.sleep(3)
+        await ctx.message.delete()
 
 
 def setup(bot):
