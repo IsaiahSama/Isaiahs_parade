@@ -89,6 +89,7 @@ class Moderator(commands.Cog):
 
 
     # Bans
+
     @commands.command(aliases=["ban"], brief='Used to ban a member', help="Bans the mentioned member", usage='@member optional[reason]')
     @commands.has_permissions(ban_members=True)
     async def shadowrealm(self, ctx, member: discord.Member, *, reason=None):
@@ -119,6 +120,7 @@ class Moderator(commands.Cog):
 
 
     # Delete Messages
+
     @commands.command(aliases=["purge"], brief="Deletes X number of memories", help="Used to delete a specified number of messages", usage='amount_to_delete')
     @commands.has_permissions(manage_messages=True)
     async def zahando(self, ctx, amount: int):
@@ -138,6 +140,7 @@ class Moderator(commands.Cog):
 
 
     # Target messages with a certain word
+
     @commands.command(help='Used to delete x number of messages containing the specified text', brief="Deletes messages containing text that you specify.", usage="amount_to_delete text-to-delete")
     @commands.has_permissions(manage_messages=True)
     async def wipehas(self, ctx, amount: typing.Optional[int] = 100, *, args):
@@ -194,6 +197,7 @@ class Moderator(commands.Cog):
 
 
     # Enables Slowmode
+
     @commands.command(aliases=["slow"], brief="Applies a slowmode to the current channel", help="Sets a slowmode on the current channel. The interval being the number specified", usage="seconds (set to 0 to disable slowmode)")
     @commands.has_permissions(manage_channels=True)
     async def freeze3(self, ctx, second: int):
@@ -211,7 +215,11 @@ class Moderator(commands.Cog):
         await ctx.channel.edit(slowmode_delay=second)
 
 
-    # Overwrites channel permissions to stop @everyone from talking in chat
+    # Overwrites channel permissions to stop @everyone from talking in chat'
+
+    # Frozen_channels is a dict where channel_ids are the keys, and the value is a dictionary mapping the original overwrites
+    frozen_channels = {}
+
     @commands.command(aliases=["shhh"], brief="Just do it.")
     @commands.has_permissions(manage_channels=True, manage_roles=True)
     async def zawarudo(self, ctx, seconds: int=10):
@@ -226,6 +234,7 @@ class Moderator(commands.Cog):
 
         embed.set_thumbnail(url=self.bot.user.avatar_url)
         embed.set_image(url="attachment://zawarudo.gif")
+        self.frozen_channels[ctx.channel.id] = og
 
         await ctx.send(file=file, embed=embed)
 
@@ -236,12 +245,16 @@ class Moderator(commands.Cog):
         await asyncio.sleep(seconds)
         await ctx.send("*Jikan desu... (Channel unfrozen)*")
         await ctx.channel.edit(overwrites=og)
+        try:
+            del self.frozen_channels[ctx.channel.id]
+        except KeyError:
+            await ctx.send("Seems that someone here has the same type of stand and has already freed you")
 
     # Reverses zawarudo and 3freeze
+
     @commands.command(brief="Cancels Channel Freeze and and slowmode", help="Reverses the effect of zawarudo and slowmode")
     @commands.has_permissions(manage_channels=True)
     async def ger(self, ctx):
-        og = ctx.channel.overwrites or None
         file = discord.File("./images/goldenexp.gif")
 
         embed = discord.Embed(
@@ -255,7 +268,13 @@ class Moderator(commands.Cog):
         embed.set_image(url="attachment://goldenexp.gif")
         await ctx.send(file=file, embed=embed)
         await ctx.channel.edit(slowmode_delay=0)
-        await ctx.channel.edit(overwrites=og)
+        overwrites = self.frozen_channels.get(ctx.channel.id)
+        if overwrites:
+            await ctx.channel.edit(overwrites=overwrites)
+            try:
+                del self.frozen_channels[ctx.channel.id]
+            except KeyError:
+                pass
         
 
     # Kicks a user
