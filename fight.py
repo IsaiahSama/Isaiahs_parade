@@ -45,7 +45,7 @@ class Database:
         entry = list(fighter.__dict__.values())
         entry[-2] = ", ".join(entry[-2])
 
-        await db.exectute("INSERT OR REPLACE INTO FightTable (NAME, ID, LEVEL, CURXP, HEALTH, MINDMG, MAXDMG, WINS, LOSSES, PCOIN, CRITCHANCE, HEALCHANCE, ABILITY, PASSIVE, WEAPON, ARMOUR, XPTHRESH, TYPEOBJ, CANFIGHT, INTEAM, WEAPON2, ARMOUR2, CURBUFF, BDUR, INVENTORY, REBORN) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", tuple(entry))
+        await db.execute("INSERT OR REPLACE INTO FightTable (NAME, ID, LEVEL, CURXP, HEALTH, MINDMG, MAXDMG, WINS, LOSSES, PCOIN, CRITCHANCE, HEALCHANCE, ABILITY, PASSIVE, WEAPON, ARMOUR, XPTHRESH, TYPEOBJ, CANFIGHT, INTEAM, WEAPON2, ARMOUR2, CURBUFF, BDUR, INVENTORY, REBORN) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", tuple(entry))
         await db.commit()
 
     async def query_all_fighters(self, db:Connection):
