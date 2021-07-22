@@ -1,7 +1,48 @@
 import math
 from dataclasses import dataclass, field
 import copy
+from sqlite3 import connect 
 
+class Database:
+    def __init__(self) -> None:
+        self.db = None
+        self.connect()
+        self.setup()
+
+    def connect(self):
+        """Function that connects to the database"""
+        self.db = connect("paradedb.sqlite3")
+
+    def setup(self):
+        self.db.execute("""CREATE TABLE IF NOT EXISTS FightTable (
+            NAME TEXT,
+            ID INTEGER PRIMARY KEY UNIQUE,
+            LEVEL INTEGER,
+            CURXP INTEGER,
+            HEALTH INTEGER,
+            MINDMG INTEGER,
+            MAXDMG INTEGER,
+            WINS INTEGER,
+            LOSSES INTEGER,
+            PCOINT INTEGER,
+            CRITCHANCE INTEGER,
+            HEALCHANCE INTEGER,
+            ABILITY INTEGER,
+            PASSIVE INTEGER,
+            WEAPON INTEGER,
+            ARMOUR INTEGER,
+            XPTHRESH INTEGER,
+            TYPEOBJ TEXT,
+            CANFIGHT TEXT,
+            INTEAM TEXT,
+            WEAPON2 INTEGER,
+            ARMOUR2 INTEGER,
+            CURBUFF INTEGER,
+            BDUR INTEGER,
+            INVENTORY TEXT,
+            REBORN INTEGER
+            );""")
+        self.db.commit()
 
 @dataclass
 class Ability:
@@ -431,7 +472,6 @@ class Fighter:
     typeobj: str="player"
     canfight: bool=True
     inteam: bool=False
-    invitation: int= None
     weapon2: int=1101
     armour2: int=2101
     curbuff: int=None
