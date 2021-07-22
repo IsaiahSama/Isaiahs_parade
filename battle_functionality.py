@@ -316,7 +316,7 @@ class TrainingHandler:
 
         
         player.health += points
-        player.exp += points
+        player.curxp += points
         msg = f"{ctx.author.mention}'s Gained + {points} health and Exp Points"
         if sum(user_answers) == total:
             points = 3

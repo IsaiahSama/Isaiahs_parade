@@ -232,6 +232,9 @@ class Fight(commands.Cog):
             if not role:return
             role = role[0]
             await ctx.author.add_roles(role)
+        
+        async with connect(db_name) as db:
+            await fightdb.insert_or_replace(db, acc)
 
     @commands.command(aliases=["q6"], brief="A quest for those who have reborn or are tier 6", help="A bonus quest for those who are Tier 6 or reborn. Cooldown: 2 uses, 5 minutes")
     @commands.cooldown(2, 300, commands.BucketType.user)
@@ -686,10 +689,8 @@ Stat names are the names that you see in the above embed, with the exception of 
         else:
             player = await trainHandler.handle_crit(self.bot, ctx, player)
 
-        await self.didlevel(player)
-        await ctx.send(f"{player.name} has reached level {player.level}")
-
-        await self.handle_post_training(player)
+        if await self.didlevel(player):
+            await ctx.send(f"{player.name} has reached level {player.level}")
 
     # Main
     infight = []
