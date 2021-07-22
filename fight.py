@@ -1,20 +1,15 @@
 import math
-from dataclasses import dataclass, field
-import copy
-from sqlite3 import connect 
+from copy import copy
+from sqlite3.dbapi2 import Connection 
+from dataclasses import dataclass
 
 class Database:
     def __init__(self) -> None:
-        self.db = None
-        self.connect()
-        self.setup()
+        pass
 
-    def connect(self):
-        """Function that connects to the database"""
-        self.db = connect("paradedb.sqlite3")
-
-    def setup(self):
-        self.db.execute("""CREATE TABLE IF NOT EXISTS FightTable (
+    def setup(self, db:Connection):
+        """Accepts a database connection, and creates the FightTable"""
+        db.execute("""CREATE TABLE IF NOT EXISTS FightTable (
             NAME TEXT,
             ID INTEGER PRIMARY KEY UNIQUE,
             LEVEL INTEGER,
@@ -24,7 +19,7 @@ class Database:
             MAXDMG INTEGER,
             WINS INTEGER,
             LOSSES INTEGER,
-            PCOINT INTEGER,
+            PCOIN INTEGER,
             CRITCHANCE INTEGER,
             HEALCHANCE INTEGER,
             ABILITY INTEGER,
@@ -42,7 +37,23 @@ class Database:
             INVENTORY TEXT,
             REBORN INTEGER
             );""")
-        self.db.commit()
+        db.commit()
+
+    def insert_or_replace(self, db:Connection, fighter):
+        """Function which accepts a db connection and a fighter object, and inserts it into the database"""
+
+        entry = tuple(fighter.__dict__.values())
+
+        db.exectute("INSERT OR REPLACE INTO FightTable (NAME, ID, LEVEL, CURXP, HEALTH, MINDMG, MAXDMG, WINS, LOSSES, PCOIN, CRITCHANCE, HEALCHANCE, ABILITY, PASSIVE, WEAPON, ARMOUR, XPTHRESH, TYPEOBJ, CANFIGHT, INTEAM, WEAPON2, ARMOUR2, CURBUFF, BDUR, INVENTORY, REBORN) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", entry)
+        db.commit()
+
+    def query_all_fighters(self, db:Connection):
+        """Function which accepts a database connection, queries the database, and returns all entries"""
+        cursor = db.execute("SELECT * FROM FightTable")
+        return cursor.fetchall()
+
+fightdb = Database()
+
 
 @dataclass
 class Ability:
@@ -464,19 +475,19 @@ class Fighter:
     pcoin: int
     critchance: int=5
     healchance: int=3
-    ability: object=None
-    passive: object=None
+    ability: int=0
+    passive: int=0
     weapon: int=1101
     armour: int=2101
     xpthresh: int=50
     typeobj: str="player"
-    canfight: bool=True
-    inteam: bool=False
+    canfight: str="True"
+    inteam: str="False"
     weapon2: int=1101
     armour2: int=2101
-    curbuff: int=None
+    curbuff: int=0
     bdur: int=0
-    inventory: list=field(default_factory=list)
+    inventory: str=""
     reborn: int=0
 
     def rtz(self):
@@ -510,16 +521,16 @@ class Fighter:
         self.pcoin -= coin
         
     def hasPassive(self):
-        if self.passive == None:
+        """Returns True if user has a passive, returns False otherwise"""
+        if not self.passive:
             return False
-        else:
-            return True
+        return True
 
-    def hasActive(self):
-        if self.ability == None:
+    def hasActive(self) -> bool:
+        """Function that returns True if the user has an ability, false otherwise"""
+        if not self.ability:
             return False
-        else:
-            return True
+        return True
 
     def healthprice(self):
         if self.getTier() in [4, 5]:
@@ -734,27 +745,31 @@ class Fighter:
         else:
             return "You don't have enough Parade Coins for this"
 
-    def getarmour(self):
+    def getarmour(self) -> Armour:
+        """Function which returns the Armour of the user"""
         value = [a for a in allarmour if a.tag == self.armour]
         return value[0]
 
-    def getweapon(self):
+    def getweapon(self) -> Weapons:
+        """Function which returns the Weapon of the user"""
         value = [w for w in allweapons if w.tag == self.weapon]
         return value[0]
 
     def getgear(self):
-        weapon = [w for w in allweapons if w.tag == self.weapon]
-        armour = [t for t in allarmour if t.tag == self.armour]
+        """Function which returns the weapon and armour of the user"""
+        weapon = self.getweapon()
+        armour = self.getarmour()
 
-        return copy.copy(weapon[0]), copy.copy(armour[0])
+        return copy(weapon), copy(armour)
 
     def getallgear(self):
-        weapon = [w for w in allweapons if w.tag == self.weapon]
-        armour = [t for t in allarmour if t.tag == self.armour]
+        """Function which returns both weapons and armours of the user"""
+        weapon = self.getweapon()
+        armour = self.getarmour()
         weapon2 = [w for w in allweapons if w.tag == self.weapon2]
         armour2 = [t for t in allarmour if t.tag == self.armour2]
 
-        return copy.copy(weapon[0]), copy.copy(armour[0]), copy.copy(weapon2[0]), copy.copy(armour2[0])
+        return copy(weapon), copy(armour), copy(weapon2[0]), copy(armour2[0])
 
     def getTier(self):
         if self.level >= 0 and self.level < 50:
@@ -983,24 +998,26 @@ def buffing(tobuff):
 class FightMe(Fighter):
 
     def instantize(self):
-        if self.ability != None:
+        """Function which replaces ids with the objects for abilities and weapons"""
+        if self.ability != 0:
             value = [x for x in allabilities if x.tag == self.ability]
             self.ability = value[0]
         
 
-        if self.passive != None:
+        if self.passive != 0:
             value = [x for x in allpassives if x.tag == self.passive]
             self.passive = value[0]
 
         weapon, armour = self.getgear()
 
-        self.weapon, self.armour = copy.copy(weapon), copy.copy(armour)
+        self.weapon, self.armour = copy(weapon), copy(armour)
         if self.reborn > 0:
             self.incstats()
 
         self.buffup()
 
     def incstats(self):
+        """Function which increases stats by 3 + reborn_level %"""
         toinc = (3 + self.reborn) / 100
         twep = self.weapon.__dict__
         for k,v in twep.items():
@@ -1017,15 +1034,14 @@ class FightMe(Fighter):
             else: continue
 
     def buffup(self):
+        """Function which increases stats based on weapon and armour"""
         self.attackmsg = self.weapon.effect
         self.health += self.armour.hpup
         self.maxdmg += self.armour.pup
         self.critchance += self.weapon.critplus
 
     def buff(self):
-        x = self
-        msg = buffing(x)
-        return msg
+        return buffing(self)
 
     def hpcheck(self):
         return self.health
@@ -1035,7 +1051,6 @@ class FightMe(Fighter):
 
     def heal(self, amount):
         self.health += amount
-    
 
     def abiluse(self, power):
         powerinc, powerticinc, healthinc, min_dmg_upinc, max_dmg_upinc, perhealth = self.ability.use()
@@ -1077,8 +1092,8 @@ class BeastFight:
         self.ability = ability
         self.passive = passive
         self.attackmsg = attackmsg
-        self.weapon = copy.copy(weapon)
-        self.armour = copy.copy(armour)
+        self.weapon = copy(weapon)
+        self.armour = copy(armour)
         self.level = level
         self.tier = tier
         self.reborn = reborn
@@ -1133,7 +1148,6 @@ class FightingBeast(BeastFight):
 
     def buff(self):
         x = self
-        buffing(x)
         msg = buffing(x)
         return msg
 
@@ -1266,7 +1280,7 @@ god1, god2, god3, god4, god5
 
 enemy = []
 for thingie in enemybeta:
-    enemy.append(copy.copy(thingie))
+    enemy.append(copy(thingie))
 
 # def __init__(self, name, tag, health, mindmg, maxdmg, mincoin, maxcoin, entrymessage, minxp, 
 # critchance=5, healchance=3, ability=None, passive=None, attackmsg=None, weapon=fist, armour=linen, 
