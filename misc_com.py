@@ -97,11 +97,10 @@ class Misc(commands.Cog):
     async def mentioned(self, ctx):
         msgcount = 0
         for m in await ctx.channel.history().flatten():
-            if msgcount < 700:
+            if msgcount < 1000:
                 if ctx.author in m.mentions:
-                    if m.author == self.bot.user:
-                        continue
                     await ctx.send(f"{m.author}: ***{m.content}***")
+                    await ctx.send(m.jump_url)
                     return True
                 msgcount += 1
 
