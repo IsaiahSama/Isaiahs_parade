@@ -263,10 +263,10 @@ class TrainingHandler:
 
             await sleep(2)
 
-        player["EXP"] += points * 3
-        player["POWER"] += points 
+        player.curxp += points * 3
+        player.maxdmg += points 
 
-        await ctx.send(f"Increased {ctx.author.mention}'s power by {points} and gained {points * 3} exp points")
+        await ctx.send(f"Increased {ctx.author.mention}'s max damage by {points} and gained {points * 3} exp points")
         return player
 
     async def handle_defense(self, bot, ctx, player):
@@ -315,12 +315,12 @@ class TrainingHandler:
         await message.edit(embed=embed)
 
         
-        player["DEFENSE"] += points
-        player["EXP"] += points
-        msg = f"{ctx.author.mention}'s Gained + {points} Defense and Exp Points"
+        player.health += points
+        player.exp += points
+        msg = f"{ctx.author.mention}'s Gained + {points} health and Exp Points"
         if sum(user_answers) == total:
             points = 3
-            player["EXP"] += (points * 3) + 5
+            player.curxp += (points * 3) + 5
             msg += f"\nFor getting the correct answer. You have gained an extra {(points * 3) + 5} EXP points"
     
         await ctx.send(msg)
@@ -357,8 +357,8 @@ class TrainingHandler:
                 points += 1
         
         if points >= 5:
-            player["MAX_HEALTH"] += points // 2
-            player["EXP"] += points * 2
+            player.health += points // 2
+            player.curxp += points * 2
             await ctx.send(f"{ctx.author.mention} gained {points //2} HP and {points * 2} EXP points")
         else:
             await ctx.send(f"{ctx.author.mention} has failed")
@@ -410,8 +410,8 @@ class TrainingHandler:
             await sleep(2)
         
         if points >= 3:
-            player["CRIT_CHANCE"] += points
-            player["EXP"] += points * 3
+            player.critchance += points
+            player.curxp += points * 3
             await ctx.send(f"{ctx.author.mention} has  Passed :). Increased crit_chance by {points}, and gained {points * 3} exp points.")
         else:
             await ctx.send(f"{ctx.author.display_name} has failed  failed 😒")

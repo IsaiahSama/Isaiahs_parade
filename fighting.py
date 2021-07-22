@@ -10,6 +10,7 @@ from items import Item, potlist, allpotlist
 import math
 import jobs
 from teams import Team, ToAdv
+from battle_functionality import train_emojis, TrainingHandler
 
 emojiz = ["🤔", "🤫", "🤨", "🤯", "😎", "😓", "🤡", "💣", "🧛", "🧟‍♂️", "🏋️‍♂️", "⛹", "🏂"]
 db_name = "iparadedb.sqlite3"
@@ -47,14 +48,14 @@ class Fight(commands.Cog):
         self.homeguild = self.bot.get_guild(739229902921793637)
         
         async with connect(db_name) as db:
-            fightdb.setup(db)
-            self.users = fightdb.query_all_fighters(db)
+            await fightdb.setup(db)
+            self.users = await fightdb.query_all_fighters(db)
 
         await self.setup_fighters()
 
         # self.teamlist = await Saving().loaddata("teamdata")
         # if not self.teamlist: self.teamlist = []
-        self.udpate_fighters.start()
+        self.update_fighters.start()
         print("Let's begin.")
 
     modlist = [347513030516539393, 527111518479712256, 493839592835907594, 315619611724742656, 302071862769221635]
@@ -640,6 +641,55 @@ Stat names are the names that you see in the above embed, with the exception of 
             await ctx.author.remove_roles(yes)
 
             await ctx.send(f"Removed Parader role from {ctx.author.name}. Do this command again to get it back")
+
+    @commands.command()
+    @commands.cooldown(1, 60, commands.BucketType.member)
+    async def train(self, ctx):
+        player = await self.getmember(ctx.author)
+        if not player:
+            await self.denied(ctx.channel, ctx.author)
+            return 
+
+        train_embed = discord.Embed(
+            title="Training",
+            description=f"What do you want to train?\n💢: `Damage`\n🛡️: `Defense`\n💙: `Health`\n💥: `Crit_Chance`",
+            color=randint(0, 0xffffff)
+        )
+
+        msg = await ctx.send(embed=train_embed)
+
+        for emoji in train_emojis.keys():
+            await msg.add_reaction(emoji)
+        
+        def check(reaction, user):
+            return str(reaction.emoji) in list(train_emojis.keys()) and user == ctx.author
+
+        try:
+            reaction = await self.bot.wait_for("reaction_add", check=check, timeout=30)
+        except asyncio.TimeoutError:
+            await ctx.send(":x:Took too long to respond to me. :x:")
+            return
+
+        choice = train_emojis[str(reaction[0].emoji)]
+
+        train_embed.description = f"Training {choice}"
+        await msg.edit(embed=train_embed)
+
+        trainHandler = TrainingHandler()
+
+        if choice == "Damage":
+            player = await trainHandler.handle_damage(self.bot, ctx, player)
+        elif choice == "Defense":
+            player = await trainHandler.handle_defense(self.bot, ctx, player)
+        elif choice == "Health":
+            player = await trainHandler.handle_health(self.bot, ctx, player)
+        else:
+            player = await trainHandler.handle_crit(self.bot, ctx, player)
+
+        await self.didlevel(player)
+        await ctx.send(f"{player.name} has reached level {player.level}")
+
+        await self.handle_post_training(player)
 
     # Main
     infight = []
@@ -3098,7 +3148,7 @@ Stat names are the names that you see in the above embed, with the exception of 
     async def update_fighters(self):
         if not self.users: return
         async with connect(db_name) as db:
-            [fightdb.insert_or_replace(db, user) for user in self.users]
+            [await fightdb.insert_or_replace(db, user) for user in self.users]
         
 
     # async def updateteam(self):

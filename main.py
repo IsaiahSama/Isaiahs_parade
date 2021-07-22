@@ -10,7 +10,7 @@ load_dotenv()
 
 # Set Client
 intents = discord.Intents.all()
-bot = commands.Bot(command_prefix="<>", case_insensitive=True, intents=intents)
+bot = commands.Bot(command_prefix="IP ", case_insensitive=True, intents=intents)
 
 bot.load_extension("general_com")
 bot.load_extension("gaming_com")
@@ -18,7 +18,7 @@ bot.load_extension("misc_com")
 bot.load_extension("moderator_com")
 bot.load_extension("action_com")
 bot.load_extension("special_com")
-bot.load_extension("battlev2")
+bot.load_extension("fighting")
 bot.load_extension("relacom")
 bot.load_extension("calling")
 bot.load_extension("bothelp")
@@ -34,7 +34,6 @@ async def on_ready():
     activity = discord.Activity(name='<>help or IP help for testing', type=discord.ActivityType.watching)
     await bot.change_presence(activity=activity, status=discord.Status.dnd)
     # , status=discord.Status.dnd
-
 
 
 @bot.command(hidden=True)

@@ -387,11 +387,11 @@ class Moderator(commands.Cog):
                 await ctx.send("You took too long")
                 return
 
-    @commands.command()
-    @commands.is_owner()
-    async def botrestart(self, ctx):
-        await ctx.send("Turning off bot now")
-        raise SystemExit
+    # @commands.command()
+    # @commands.is_owner()
+    # async def botrestart(self, ctx):
+    #     await ctx.send("Turning off bot now")
+    #     raise SystemExit
 
     # Events
 
