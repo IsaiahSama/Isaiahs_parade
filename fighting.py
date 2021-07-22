@@ -1,19 +1,18 @@
 import discord
 from discord.ext import commands, tasks
+from aiosqlite import connect
 import asyncio
 import random
-import os
 from random import randint
 from images import hugs, punches, kisses, slaps, knock, poses, flexes
-from fight import FightMe, Fighter, questpro, enemy, FightingBeast, abilities, allabilities, passives, allpassives, raidingmonster, weaponlist, armourlist, gear, lilgear, allarmour, allweapons, BeastFight
+from fight import FightMe, Fighter, questpro, enemy, FightingBeast, abilities, allabilities, passives, allpassives, raidingmonster, weaponlist, armourlist, gear, lilgear, allarmour, allweapons, BeastFight, fightdb
 from items import Item, potlist, allpotlist
-import json
 import math
 import jobs
 from teams import Team, ToAdv
-from saving import Saving
 
 emojiz = ["🤔", "🤫", "🤨", "🤯", "😎", "😓", "🤡", "💣", "🧛", "🧟‍♂️", "🏋️‍♂️", "⛹", "🏂"]
+db_name = "iparadedb.sqlite3"
 
 
 # Evolution of Fighter class
@@ -46,11 +45,16 @@ class Fight(commands.Cog):
     async def async_init(self):
         await self.bot.wait_until_ready()
         self.homeguild = self.bot.get_guild(739229902921793637)
-        self.users = await Saving().loaddata("fightdata")
-        if not self.users: self.users = []
-        self.teamlist = await Saving().loaddata("teamdata")
-        if not self.teamlist: self.teamlist = []
-        self.updlist.start()
+        
+        async with connect(db_name) as db:
+            fightdb.setup(db)
+            self.users = fightdb.query_all_fighters(db)
+
+        await self.setup_fighters()
+
+        # self.teamlist = await Saving().loaddata("teamdata")
+        # if not self.teamlist: self.teamlist = []
+        self.udpate_fighters.start()
         print("Let's begin.")
 
     modlist = [347513030516539393, 527111518479712256, 493839592835907594, 315619611724742656, 302071862769221635]
@@ -142,7 +146,7 @@ class Fight(commands.Cog):
             color=randint(0, 0xffffff)
         )
 
-        if member == None:
+        if not member:
             profileEmbed.set_thumbnail(url=ctx.author.avatar_url)
         else:
              profileEmbed.set_thumbnail(url=member.avatar_url)
@@ -224,6 +228,7 @@ class Fight(commands.Cog):
             await ctx.send("Profile Created. View with <>profile")
             await channel.send(f"{ctx.author.name} from {ctx.guild.name} is now a parader")
             role = [p for p in ctx.guild.roles if p.name == "Parader"]
+            if not role:return
             role = role[0]
             await ctx.author.add_roles(role)
 
@@ -296,7 +301,7 @@ class Fight(commands.Cog):
         await self.upgrade(ctx, toupgrade, 1)
 
     @commands.command(brief="Used to upgrade your stats.", help="Get stronger by upgrading your stats", usage="optional[stat_to_upgrade] optional[amount_of_times_to_upgrade]")
-    async def upgrade(self, ctx, arg=None, narg:int = 1):
+    async def upgrade(self, ctx, arg=None, amount:int = 1):
         user = await self.getmember(ctx.author)
         
         if not user:
@@ -340,11 +345,11 @@ Stat names are the names that you see in the above embed, with the exception of 
         arg = arg.lower()
 
         if arg == "health":
-            msg = user.uphealth(narg)
+            msg = user.uphealth(amount)
         elif arg == "min_dmg":
-            msg = user.upmin(narg)
+            msg = user.upmin(amount)
         elif arg == "max_dmg":
-            msg = user.upmax(narg)
+            msg = user.upmax(amount)
         elif arg == "crit_chance":
             msg = user.upcrit()
         elif arg == "heal_chance":
@@ -664,7 +669,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                 await ctx.send(f"{member.display_name} is offline so cannot be fought")
                 return
 
-            if not user1.canfight or not user2.canfight:
+            if not user1.fightable() or not user2.fightable():
                 await ctx.send(f"One of you has disabled pvp. Turn it on with <>togglefight")
                 return
 
@@ -1251,14 +1256,14 @@ Stat names are the names that you see in the above embed, with the exception of 
             await ctx.send("Join us first with <>createprofile")
             return
         
-        if user.canfight:
-            user.canfight = False
+        if user.fightable() == "True":
+            user.canfight = "False"
             await ctx.send(f"{ctx.author.display_name} can no longer be fought")
             if ctx.guild.id == 739229902921793637:
                 role = discord.utils.get(ctx.guild.roles, name="Pacifist")
                 await ctx.author.add_roles(role)
         else:
-            user.canfight = True
+            user.canfight = "True"
             await ctx.send(f"{ctx.author.display_name} is now available for fighting")
             if ctx.guild.id ==739229902921793637:
                 role = discord.utils.get(ctx.guild.roles, name="Pacifist")
@@ -1561,7 +1566,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             usertier = user.getTier()
             fight_users = [await self.getmember(x) for x in ctx.guild.members if await self.getmember(x)]
             sametier = [x for x in fight_users if x.getTier() == usertier]
-            canfight = [x.name for x in sametier if x.canfight]
+            canfight = [x.name for x in sametier if x.fightable()]
 
             fightbed = discord.Embed(
                 title=f"Members able to be fought by {ctx.author.display_name}",
@@ -1600,7 +1605,7 @@ Stat names are the names that you see in the above embed, with the exception of 
     async def register(self, ctx, *, teamname):
         user = await self.getmember(ctx.author)
         if user:
-            if not user.inteam:
+            if not user.is_teammate():
                 if len(teamname.strip()) <= 2:
                     await ctx.send("You cannot have a team name with less than 3 letters")
                     return
@@ -1643,7 +1648,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         user = await self.getmember(ctx.author)
         if user:
             await self.doublecheck(user)
-            if user.inteam:
+            if user.is_teammate():
                 
                 userteam = [x for x in self.teamlist if ctx.author.id in x.teammates or ctx.author.id == x.leaderid]
                 userteam = userteam[0]
@@ -1673,7 +1678,7 @@ Stat names are the names that you see in the above embed, with the exception of 
     async def rebase(self, ctx):
         user = await self.getmember(ctx.author)
         if user:
-            if user.inteam:
+            if user.is_teammate():
                 userteam = [x for x in self.teamlist if user.tag == x.leaderid]
                 if userteam:
                     userteam = userteam[0]
@@ -1700,7 +1705,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         user = await self.getmember(ctx.author)
         if user:
             await self.doublecheck(user)
-            if user.inteam:
+            if user.is_teammate():
                 userteam = [x for x in self.teamlist if user.tag in x.teammates or user.tag == x.leaderid]
                 userteam = userteam[0]
                 canjoin = [x for x in self.inadventure if x.teamid == userteam.teamid]
@@ -1751,11 +1756,11 @@ Stat names are the names that you see in the above embed, with the exception of 
         user, target = await self.getmember(ctx.author), await self.getmember(member)
 
         if user and target:
-            if target.inteam:
+            if target.is_teammate():
                 await ctx.send("The person you wish to invite is already in a team")
                 return
 
-            if not user.inteam:
+            if not user.is_teammate():
                 await self.tdeny(ctx)
                 return
 
@@ -1811,7 +1816,7 @@ Stat names are the names that you see in the above embed, with the exception of 
     async def leaveteam(self, ctx):
         user = await self.getmember(ctx.author)
         if user:
-            if user.inteam:
+            if user.is_teammate():
                 userteam = [x for x in self.teamlist if user.tag in x.teammates or user.tag == x.leaderid]
 
                 userteam = userteam[0]
@@ -1846,7 +1851,7 @@ Stat names are the names that you see in the above embed, with the exception of 
     async def kickmember(self, ctx, member: discord.Member, confirm=False):
         user1, user2 = await self.getmember(ctx.author), await self.getmember(member)
         if user1 and user2:
-            if user1.inteam and user2.inteam:
+            if user1.is_teammate() and user2.is_teammate():
                 userteam = [x for x in self.teamlist if x.leaderid == ctx.author.id]
                 if not userteam:
                     await ctx.send("Only the leader can kick someone from a team")
@@ -2137,6 +2142,7 @@ Stat names are the names that you see in the above embed, with the exception of 
     # Functions
 
     async def dicing(self, defender, attacker, power, embed, num):
+        """Function used with the Dice ability."""
         if num == 0:
             embed.add_field(name=attacker.ability.usename, value=f"{attacker.name} couldn't get a valid dice roll")
         
@@ -2168,6 +2174,7 @@ Stat names are the names that you see in the above embed, with the exception of 
 
 
     async def fixvalues(self, user):
+        """Function which accepts a Fighter or FightMe object, and removes all floating points for their values"""
         user.health = math.ceil(user.health)
         user.mindmg = math.ceil(user.mindmg)
         user.maxdmg = math.ceil(user.maxdmg)
@@ -2187,6 +2194,7 @@ Stat names are the names that you see in the above embed, with the exception of 
 
 
     async def modcheck(self, ctx, target):
+        """Function used to check if a user is a moderator of Isaiah Parade, and checks if they are strong enough to receive their gear"""
         if target.tag == 347513030516539393:
                 if target.level < 300 and not target.hasreborn():
                     await ctx.send("Hello Trxsh. Reach level 300 to achieve your True Power")
@@ -2797,17 +2805,20 @@ Stat names are the names that you see in the above embed, with the exception of 
                 await self.canregen(self.raidbeast, raidbed)
 
         
-    async def getmember(self, x):
+    async def getmember(self, member):
+        """Function which accepts a guild member as an argument, and searches the list of registered fighters, and returns their Fighter Instance if it exists"""
         for user in self.users:
-            if user.tag == x.id:
+            if user.tag == member.id:
                 return user
 
         return None
 
     async def denied(self, chan, person):
+        """Function which accepts a channel and member object, and is called when a given member does not have a fight profile."""
         await chan.send(f"{person.mention}, or the person you @mentioned does not have a profile. Create one with <>createprofile")
 
     async def expgain(self, winner, loser):
+        """Function called to reward exp after a battle. Is called when the winner is a player. Accepts 2 fighter objects, or a Fighter and a Beast"""
         winner = await self.getmain(winner)
         if loser.typeobj == "npc":
             exp = randint(loser.minxp, loser.maxxp)
@@ -3084,14 +3095,15 @@ Stat names are the names that you see in the above embed, with the exception of 
 
 
     @tasks.loop(minutes=5)
-    async def updlist(self):
+    async def update_fighters(self):
         if not self.users: return
-        await Saving().save("fightdata", self.users)
+        async with connect(db_name) as db:
+            [fightdb.insert_or_replace(db, user) for user in self.users]
         
 
-    async def updateteam(self):
-        if not self.teamlist: return
-        await Saving().save("teamdata", self.teamlist)
+    # async def updateteam(self):
+    #     if not self.teamlist: return
+    #     await Saving().save("teamdata", self.teamlist)
     
     @commands.command(hidden=True)
     @commands.is_owner()
@@ -3199,11 +3211,9 @@ Stat names are the names that you see in the above embed, with the exception of 
         
         return power
 
-    async def fightuser(self, account):
-        person = FightMe(account.name, account.tag, account.level, account.curxp, account.health, account.mindmg, account.maxdmg, 
-        account.wins, account.losses, account.pcoin, account.critchance, account.healchance, account.ability,
-        account.passive, account.weapon, account.armour, account.xpthresh, account.typeobj, account.canfight, 
-        curbuff=account.curbuff, bdur=account.bdur, reborn=account.reborn)
+    async def fightuser(self, account:Fighter):
+        """Function which accepts a Fighter class, and converts it to a FightMe class."""
+        person = FightMe(*tuple(account.__dict__.values()))
         person.instantize()
         return person
         
@@ -3399,6 +3409,10 @@ Stat names are the names that you see in the above embed, with the exception of 
             jobbed.add_field(name="How unfortunate", value=f"You had to pay {loss} parade coins for your failure")
             jobbed.add_field(name="Sigh", value=f"{random.choice(jobs.badresp)}")
             user.takecoin(loss)
+
+    async def setup_fighters(self):
+        """Function which turns all tuples from the db into Fighter instances"""
+        self.users = [Fighter(*user) for user in self.users]
 
 
     @commands.command()

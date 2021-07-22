@@ -7,9 +7,9 @@ class Database:
     def __init__(self) -> None:
         pass
 
-    def setup(self, db:Connection):
+    async def setup(self, db:Connection):
         """Accepts a database connection, and creates the FightTable"""
-        db.execute("""CREATE TABLE IF NOT EXISTS FightTable (
+        await db.execute("""CREATE TABLE IF NOT EXISTS FightTable (
             NAME TEXT,
             ID INTEGER PRIMARY KEY UNIQUE,
             LEVEL INTEGER,
@@ -37,20 +37,21 @@ class Database:
             INVENTORY TEXT,
             REBORN INTEGER
             );""")
-        db.commit()
+        await db.commit()
 
-    def insert_or_replace(self, db:Connection, fighter):
+    async def insert_or_replace(self, db:Connection, fighter):
         """Function which accepts a db connection and a fighter object, and inserts it into the database"""
 
-        entry = tuple(fighter.__dict__.values())
+        entry = list(fighter.__dict__.values())
+        entry[-2] = ", ".join(entry[-2])
 
-        db.exectute("INSERT OR REPLACE INTO FightTable (NAME, ID, LEVEL, CURXP, HEALTH, MINDMG, MAXDMG, WINS, LOSSES, PCOIN, CRITCHANCE, HEALCHANCE, ABILITY, PASSIVE, WEAPON, ARMOUR, XPTHRESH, TYPEOBJ, CANFIGHT, INTEAM, WEAPON2, ARMOUR2, CURBUFF, BDUR, INVENTORY, REBORN) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", entry)
-        db.commit()
+        await db.exectute("INSERT OR REPLACE INTO FightTable (NAME, ID, LEVEL, CURXP, HEALTH, MINDMG, MAXDMG, WINS, LOSSES, PCOIN, CRITCHANCE, HEALCHANCE, ABILITY, PASSIVE, WEAPON, ARMOUR, XPTHRESH, TYPEOBJ, CANFIGHT, INTEAM, WEAPON2, ARMOUR2, CURBUFF, BDUR, INVENTORY, REBORN) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", tuple(entry))
+        await db.commit()
 
-    def query_all_fighters(self, db:Connection):
+    async def query_all_fighters(self, db:Connection):
         """Function which accepts a database connection, queries the database, and returns all entries"""
-        cursor = db.execute("SELECT * FROM FightTable")
-        return cursor.fetchall()
+        cursor = await db.execute("SELECT * FROM FightTable")
+        return await cursor.fetchall()
 
 fightdb = Database()
 
@@ -463,32 +464,33 @@ for item in armourlist:
 
 @dataclass
 class Fighter:
-    name: str
-    tag: int
-    level: int
-    curxp: int
-    health: int
-    mindmg: int
-    maxdmg: int
-    wins: int
-    losses: int
-    pcoin: int
-    critchance: int=5
-    healchance: int=3
-    ability: int=0
-    passive: int=0
-    weapon: int=1101
-    armour: int=2101
-    xpthresh: int=50
-    typeobj: str="player"
-    canfight: str="True"
-    inteam: str="False"
-    weapon2: int=1101
-    armour2: int=2101
-    curbuff: int=0
-    bdur: int=0
-    inventory: str=""
-    reborn: int=0
+    def __init__(self, name, tag, level, curxp, health, mindmg, maxdmg, wins, losses, pcoin, critchance=5, healchance=3, ability=0, passive=0, weapon=1101, armour=2101, xpthresh=50, typeobj="player", canfight="True", inteam="False", weapon2=1101, armour2=2101, curbuff=0, bdur=0, inventory="", reborn=0):
+        self.name = name
+        self.tag = tag
+        self.level = level
+        self.curxp = curxp
+        self.health = health
+        self.mindmg = mindmg
+        self.maxdmg = maxdmg
+        self.wins = wins
+        self.losses = losses
+        self.pcoin = pcoin
+        self.critchance = critchance
+        self.healchance = healchance
+        self.ability = ability
+        self.passive = passive
+        self.weapon = weapon
+        self.armour = armour
+        self.xpthresh = xpthresh
+        self.typeobj = typeobj
+        self.canfight = canfight
+        self.inteam = inteam
+        self.weapon2 = weapon2
+        self.armour2 = armour2
+        self.curbuff = curbuff
+        self.bdur = bdur
+        self.inventory = [int(num) for num in inventory.split(", ")]
+        self.reborn = reborn
 
     def rtz(self):
         self.level = 0
@@ -502,15 +504,27 @@ class Fighter:
         self.weapon = 1101
         self.armour = 2101
 
+    def fightable(self) -> bool:
+        """Function which checks if a user can fight or not"""
+        if self.canfight == "True":
+            return True 
+        return False 
+
+    def is_teammate(self) -> bool:
+        """Function which checks if a user is in a team or not"""
+        if self.inteam == "True":
+            return True
+        return False
+
     def hasreborn(self):
+        """Function which returns whether a player has reborn before or not"""
         if self.reborn == 0:
             return False
         return True
 
     def hasbuff(self):
-        if self.curbuff is not None:
+        if self.curbuff:
             return True
-        
         return False
 
     def addcoin(self, coin):
