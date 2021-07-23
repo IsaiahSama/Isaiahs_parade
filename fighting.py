@@ -3480,7 +3480,8 @@ Stat names are the names that you see in the above embed, with the exception of 
             counter += 1
             await asyncio.sleep(15)
 
-        self.updlist.restart()
+        async with connect(db_name) as db:
+            [await fightdb.insert_or_replace(db, user) for user in self.users]
         
         await ctx.send("Restarting bot")
 
@@ -3490,7 +3491,8 @@ Stat names are the names that you see in the above embed, with the exception of 
     @commands.Cog.listener()
     async def on_disconnect(self):
         await asyncio.sleep(2)
-        self.updlist.restart()
+        async with connect(db_name) as db:
+            [await fightdb.insert_or_replace(db, user) for user in self.users]
         
         
 def setup(bot):
