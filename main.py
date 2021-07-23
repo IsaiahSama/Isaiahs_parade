@@ -31,7 +31,7 @@ async def on_ready():
     # on ready event called when bot finished logging in
     print("We have logged in as {0.user}".format(bot))
     # Sets Discord Status
-    activity = discord.Activity(name='<>help or IP help for testing', type=discord.ActivityType.watching)
+    activity = discord.Activity(name='<>help', type=discord.ActivityType.watching)
     await bot.change_presence(activity=activity, status=discord.Status.dnd)
     # , status=discord.Status.dnd
 
