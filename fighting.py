@@ -3296,16 +3296,6 @@ Stat names are the names that you see in the above embed, with the exception of 
             if potraid >= 20 and potraid <= 40:
                 self.raidon = True
                 await self.startRaid()
-
-    
-    @commands.command(brief='Resets the stats of a person', help="Resets the stats for a user.", usage="@mention")
-    async def resetstats(self, ctx, member: discord.Member):
-        user = await self.getmember(ctx.author)
-        if user:
-            await self.profile(ctx, member)
-            await asyncio.sleep(5)
-            msg = await ctx.send(f"Reset the stats for {member.name}")
-            await msg.add_reaction()
         
 
     async def loadarmour(self, ctx, user):
@@ -3474,7 +3464,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         self.users = [Fighter(*user) for user in self.users]
 
 
-    @commands.command()
+    @commands.command(hidden=True)
     @commands.is_owner()
     async def botrestart(self, ctx):
         await ctx.message.delete()

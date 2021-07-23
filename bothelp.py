@@ -50,7 +50,11 @@ class MyHelpCommand(commands.MinimalHelpCommand):
                 embed.add_field(name=f"{self.clean_prefix}{command.qualified_name}", value=f"```{command.brief}```")
             embed.set_footer(text=self.get_opening_note())
 
-            await self.get_destination().send(embed=embed)
+            try:
+                author = self.context.author
+                await author.send(embed=embed)
+            except Exception:
+                await self.get_destination().send(embed=embed)
             starting, ending = starting + 25, ending + 25
             await asyncio.sleep(1)
 
@@ -68,7 +72,7 @@ class MyHelpCommand(commands.MinimalHelpCommand):
             if cog.description:
                 embed.add_field(name=cog.qualified_name, value=f"```{cog.description}```")
             
-
+        embed.set_footer(text=self.get_opening_note())
         await self.get_destination().send(embed=embed)
 
     
