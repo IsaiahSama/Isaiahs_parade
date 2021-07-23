@@ -863,7 +863,10 @@ Stat names are the names that you see in the above embed, with the exception of 
                 else:
                     await ctx.send(f"You have {main2.bdur} fights remaining with this buff")
 
-        while fighting:            
+        battle = await ctx.send("Battle will begin shortly.")
+
+        while fighting:   
+            await battle.edit(content="FIGHT!!!")         
             
             if attacker.hasPassive():
                 if attacker.health <= (attacker.oghealth / 3):
@@ -1160,7 +1163,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             turns += 1
 
             if turns % 2 == 0:
-                await ctx.send(embed=battlebed)
+                await battle.edit(embed=battlebed)
                 battlebed = discord.Embed(
                     title=f"FIGHT... Turn {turns}",
                     color=randint(0, 0xffffff)
