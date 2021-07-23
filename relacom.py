@@ -229,7 +229,7 @@ class Social(commands.Cog):
                     await self.update_relationship("PET_NICK", "egg", user["USER_ID"])
                 await ctx.send("CONGRATULATIONS. YOU HAVE RECEIVED AN EGG!!! View with <>pet")
         else:
-            await ctx.send("Please create an account first. Use <>help Socials")
+            await ctx.send("Please create an account first. Use <>help Social")
             return
 
     # Pet

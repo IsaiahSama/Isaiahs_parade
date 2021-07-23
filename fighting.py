@@ -287,10 +287,15 @@ class Fight(commands.Cog):
         self.inquest.append(user.tag)
     
         await ctx.send(embed=embed)
-        if q6 and tier == 6 or q6 and user.reborn >= 1:
-            await self.fight(ctx, None, False, True, True)
-        else:
-            await self.fight(ctx, None, False, True)
+        try:
+            if q6 and tier == 6 or q6 and user.reborn >= 1:
+                await self.fight(ctx, None, False, True, True)
+            else:
+                await self.fight(ctx, None, False, True)
+        except Exception as err:
+            await ctx.send(err)
+            self.inquest.remove(user.tag)
+            raise err
 
     
     @commands.command(hidden=True)

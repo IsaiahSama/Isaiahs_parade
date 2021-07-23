@@ -489,7 +489,7 @@ class Fighter:
         self.armour2 = armour2
         self.curbuff = curbuff
         self.bdur = bdur
-        self.inventory = [int(num) for num in inventory.split(", ")] if inventory else []
+        self.inventory = [int(num) for num in inventory.split(", ")] if isinstance(inventory, list) or inventory else []
         self.reborn = reborn
 
     def rtz(self):
