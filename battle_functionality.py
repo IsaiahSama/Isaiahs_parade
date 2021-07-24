@@ -366,6 +366,9 @@ class TrainingHandler:
         return player
 
     async def handle_crit(self, bot, ctx, player):
+        if player.crit_chance > 70:
+            await ctx.send("You can't get any more crit right now.")
+            return player
         points = 0
 
         embed = Embed(
