@@ -1315,7 +1315,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             await ctx.send("Join us first with <>createprofile")
             return
         
-        if user.fightable() == "True":
+        if user.fightable():
             user.canfight = "False"
             await ctx.send(f"{ctx.author.display_name} can no longer be fought")
             if ctx.guild.id == 739229902921793637:
