@@ -43,6 +43,7 @@ class Database:
         """Function which accepts a db connection and a fighter object, and inserts it into the database"""
 
         entry = list(fighter.__dict__.values())
+        entry[-2] = [str(num) for num in entry[-2]]
         entry[-2] = ", ".join(entry[-2])
 
         await db.execute("INSERT OR REPLACE INTO FightTable (NAME, ID, LEVEL, CURXP, HEALTH, MINDMG, MAXDMG, WINS, LOSSES, PCOIN, CRITCHANCE, HEALCHANCE, ABILITY, PASSIVE, WEAPON, ARMOUR, XPTHRESH, TYPEOBJ, CANFIGHT, INTEAM, WEAPON2, ARMOUR2, CURBUFF, BDUR, INVENTORY, REBORN) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", tuple(entry))
