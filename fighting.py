@@ -3510,6 +3510,13 @@ Stat names are the names that you see in the above embed, with the exception of 
         async with connect(DB_NAME) as db:
             [await fightdb.insert_or_replace(db, user) for user in self.users]
             [await teamdb.insert_or_replace(db, team) for team in self.teamlist]
+
+    @commands.command()
+    @commands.is_owner()
+    async def recreate_team_table(self):
+        async with connect(DB_NAME) as db:
+            await db.execute("DROP TABLE IF EXISTS TeamTable")
+            await teamdb.setup()
         
         
 def setup(bot):
