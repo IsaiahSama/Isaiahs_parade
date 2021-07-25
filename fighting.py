@@ -1843,7 +1843,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             if target.invitation:
                 await ctx.send(f"{target.name} already has an invitation. They'll have to deny their current one before you can invite them.")
                 return
-                
+
             target.invitation = userteam.teamid
             await ctx.send("Your invitation has been sent")
 
@@ -3497,6 +3497,7 @@ Stat names are the names that you see in the above embed, with the exception of 
 
         async with connect(DB_NAME) as db:
             [await fightdb.insert_or_replace(db, user) for user in self.users]
+            [await teamdb.insert_or_replace(db, team) for team in self.teamlist]
         
         await ctx.send("Restarting bot")
 
@@ -3508,6 +3509,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         await asyncio.sleep(2)
         async with connect(DB_NAME) as db:
             [await fightdb.insert_or_replace(db, user) for user in self.users]
+            [await teamdb.insert_or_replace(db, team) for team in self.teamlist]
         
         
 def setup(bot):
