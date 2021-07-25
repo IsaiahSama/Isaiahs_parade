@@ -9,7 +9,7 @@ def generate_id() -> str:
 
 
 class Team:
-    def __init__(self, name, guildid, ownerid, leaderid, teamid, teammates) -> None:
+    def __init__(self, name, guildid, ownerid, leaderid, teamid=None, teammates=None) -> None:
         self.name = name 
         self.guildid = guildid
         self.ownerid = ownerid
