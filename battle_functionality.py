@@ -277,7 +277,7 @@ class TrainingHandler:
             return
 
         embed = Embed(
-            title=f"{ctx.author.display_name}'s Regen Training Session",
+            title=f"{ctx.author.display_name}'s Heal Chance Training Session",
             description="I will provide a range of numbers from 1 to 10. I will then give you a number that I want. Tell me 1 by 1, the 3 numbers in the range 1 to 10, that add up to the number I want. You may only use a number once. You have 10 seconds per attempt",
             color=randint(0, 0xffffff)
         )
@@ -321,7 +321,7 @@ class TrainingHandler:
         
         player.healchance += points
         player.curxp += points
-        msg = f"{ctx.author.mention}'s Gained + {points} health and Exp Points"
+        msg = f"{ctx.author.mention}'s Gained + {points} % heal chance and Exp Points"
         if sum(user_answers) == total:
             points = 3
             player.curxp += (points * 3) + 5
