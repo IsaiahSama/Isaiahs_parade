@@ -30,6 +30,7 @@ class Database:
             ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
             NAME TEXT, 
             GUILD_ID INTEGER,
+            OWNER_ID INTEGER,
             LEADER_ID INTEGER,
             TEAM_ID INTEGER,
             TEAMMATES TEXT);""")
