@@ -3094,7 +3094,7 @@ Stat names are the names that you see in the above embed, with the exception of 
 
     # Adventure
     async def prepadv(self, ctx, squad):
-        if len(squad.inadv) > 1:
+        if len(squad['IN_ADVENTURE']) > 1:
             await self.teammsg(squad, "Member requirement has been met. Setting out for adventure now")
             squad.pending = False
             await self.startadv(squad)
@@ -3109,13 +3109,13 @@ Stat names are the names that you see in the above embed, with the exception of 
         await asyncio.sleep(timetocomplete * 60)
         suceeded = randint(1, 10)
         end = 4
-        for person in squad.inadv:
+        for person in squad['IN_ADVENTURE']:
             end += 1
         if end > 9:
             end = 9
         if suceeded >= 1 and suceeded <= end:
             await self.teammsg(squad, "Congratulationsss, You have passed. You will now receive your rewards")
-            for person in squad.inadv:
+            for person in squad['IN_ADVENTURE']:
                 real_user = self.bot.get_user(person)
                 player = await self.getmember(real_user)
                 xptoget, cashtoget = await self.advreward(player)
@@ -3128,7 +3128,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         self.inadventure.remove(squad)
 
     async def teammsg(self, team, msg):
-        for user in team.inadv:
+        for user in team['IN_ADVENTURE']:
             target = self.bot.get_user(user)
             await target.send(f"{msg}")
             
