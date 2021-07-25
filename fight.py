@@ -1024,12 +1024,11 @@ class FightMe(Fighter):
 
     def instantize(self):
         """Function which replaces ids with the objects for abilities and weapons"""
-        if self.ability != 0:
+        if self.ability:
             value = [x for x in allabilities if x.tag == self.ability]
             self.ability = value[0]
         
-
-        if self.passive != 0:
+        if self.passive:
             value = [x for x in allpassives if x.tag == self.passive]
             self.passive = value[0]
 
