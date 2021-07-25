@@ -31,7 +31,7 @@ class Database:
             GUILD_ID INTEGER,
             OWNER_ID INTEGER,
             LEADER_ID INTEGER,
-            TEAM_ID INTEGER PRIMARY KEY,
+            TEAM_ID TEXT PRIMARY KEY,
             TEAMMATES TEXT);""")
 
         await db.commit()
