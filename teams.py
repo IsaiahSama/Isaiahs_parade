@@ -27,12 +27,11 @@ class Database:
         """Function which accepts a database connection, and sets up the Team Database"""
 
         await db.execute("""CREATE TABLE IF NOT EXISTS TeamTable(
-            ID INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
             NAME TEXT, 
             GUILD_ID INTEGER,
             OWNER_ID INTEGER,
             LEADER_ID INTEGER,
-            TEAM_ID INTEGER,
+            TEAM_ID INTEGER PRIMARY KEY,
             TEAMMATES TEXT);""")
 
         await db.commit()
@@ -50,7 +49,7 @@ class Database:
             entry[-1] = [str(tag) for tag in entry[-1]]
             entry[-1] = ", ".join(entry[-1])
 
-        await db.execute("INSERT OR REPLACE INTO TeamTable (NAME, GUILD_ID, LEADER_ID, TEAM_ID, TEAMMATES) VALUES (?, ?, ?, ?, ?)", tuple(entry))
+        await db.execute("INSERT OR REPLACE INTO TeamTable (NAME, GUILD_ID, OWNER_ID, LEADER_ID, TEAM_ID, TEAMMATES) VALUES (?, ?, ?, ?, ?,?)", tuple(entry))
 
         await db.commit()
 

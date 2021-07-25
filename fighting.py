@@ -52,6 +52,7 @@ class Fight(commands.Cog):
             self.users = await fightdb.query_all_fighters(db)
             self.teamlist = await teamdb.query_all_teams(db)
 
+        if not self.teamlist: self.teamlist = []
         await self.setup_fighters()
         await self.setup_teams()
 
@@ -3513,10 +3514,12 @@ Stat names are the names that you see in the above embed, with the exception of 
 
     @commands.command()
     @commands.is_owner()
-    async def recreate_team_table(self):
+    async def recreate_team_table(self, ctx):
         async with connect(DB_NAME) as db:
             await db.execute("DROP TABLE IF EXISTS TeamTable")
-            await teamdb.setup()
+            await ctx.send("Dropped the table")
+            await teamdb.setup(db)
+            await ctx.send("Recreated the table")
         
         
 def setup(bot):
