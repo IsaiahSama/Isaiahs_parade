@@ -198,13 +198,13 @@ class Fight(commands.Cog):
             profileEmbed.add_field(name="Weapon:", value=f"{sword.name}")
             profileEmbed.add_field(name="Armour:", value=f"{shield.name}")
             if target.hasActive():
-                profileEmbed.add_field(name=f"Ability:", value=f"{target.getabilpassname(target.ability)}")
+                profileEmbed.add_field(name=f"Ability:", value=f"{target.get_ability_or_passive_name(target.ability)}")
             else:
                 profileEmbed.add_field(name="Ability:", value=f"None... Yet")
 
             if target.hasPassive():
 
-                profileEmbed.add_field(name=f"Passive:", value=f"{target.getabilpassname(target.passive)}")
+                profileEmbed.add_field(name=f"Passive:", value=f"{target.get_ability_or_passive_name(target.passive)}")
             else:
                 profileEmbed.add_field(name="Passive:", value=f"None... Yet")
             
@@ -426,7 +426,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         if isbot: return
         if user.hasPassive() and not arg:
             passconfirm = discord.Embed(
-                title=f"Passive Change. Your passive is {user.getabilpassname(user.passive)}",
+                title=f"Passive Change. Your passive is {user.get_ability_or_passive_name(user.passive)}",
                 description="This will allow you to choose your passive. It will cost you dearly... 15 000 Parade Coins to be exact",
                 color=randint(0, 0xffffff)
             )
@@ -521,12 +521,12 @@ Stat names are the names that you see in the above embed, with the exception of 
         if not user.hasActive():
             yes = random.choice(abilities)
             await ctx.send(f"CONGRATULATIONS... Your new ability is {yes.name}")
-            user.ability = yes.name
+            user.ability = yes.tag
             return
 
         if user.hasActive() and not arg:
             accheck = discord.Embed(
-                title=f"Your ability is {user.getabilpassname(user.ability)}",
+                title=f"Your ability is {user.get_ability_or_passive_name(user.ability)}",
                 description="Going any further with this command will cost you 25 000 Parade Coins and will allow you to choose your ability",
                 color=randint(0, 0xffffff)
             )
@@ -3507,14 +3507,11 @@ Stat names are the names that you see in the above embed, with the exception of 
             [await fightdb.insert_or_replace(db, user) for user in self.users]
             [await teamdb.insert_or_replace(db, team) for team in self.teamlist]
 
-    @commands.command()
-    @commands.is_owner()
-    async def recreate_team_table(self, ctx):
-        async with connect(DB_NAME) as db:
-            await db.execute("DROP TABLE IF EXISTS TeamTable")
-            await ctx.send("Dropped the table")
-            await teamdb.setup(db)
-            await ctx.send("Recreated the table")
+    # @commands.command()
+    # @commands.is_owner()
+    # async def fix_broken_abilities(self, ctx):
+    #     async with connect(DB_NAME) as db:
+    #         victims = await db.execute("SELECT * FROM ")
         
         
 def setup(bot):

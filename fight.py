@@ -241,12 +241,12 @@ allpassives = [haohaki, balancepride, nklo, bproc]
 for thing in passives:
     allpassives.append(thing)
 
-passingabil = []
+passives_and_abilities = []
 for thing in allabilities:
-    passingabil.append(thing)
+    passives_and_abilities.append(thing)
 
 for thing in allpassives:
-    passingabil.append(thing)
+    passives_and_abilities.append(thing)
 
 
 # Weapons
@@ -803,13 +803,23 @@ class Fighter:
             print("Something went wrong with the tiers")
             return 0
 
-    def getabilpass(self, tag):
-        toreturn = [x for x in passingabil if tag == x.tag]
-        return toreturn[0]
+    def get_ability_or_passive(self, tag):
+        """Function which accepts an id of an ability or passive, and returns the match"""
+        toreturn = None
+        for passive_or_ability in passives_and_abilities:
+            if passive_or_ability.tag == tag: toreturn = passive_or_ability; break
+        
+        return toreturn
 
-    def getabilpassname(self, tag):
-        toreturn = [x.name for x in passingabil if tag == x.tag]
-        return toreturn[0]
+    def get_ability_or_passive_name(self, tag:int):
+        """Function which accepts an id of an ability or passive, and returns the name"""
+        toreturn = None
+        for passive_or_ability in passives_and_abilities:
+            if passive_or_ability.tag == tag: toreturn = passive_or_ability; break
+
+        if toreturn:
+            return toreturn.name
+        return toreturn
 
 def buffing(tobuff):
     # Solar flare
