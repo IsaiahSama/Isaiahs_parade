@@ -1662,7 +1662,6 @@ Stat names are the names that you see in the above embed, with the exception of 
 
     
     @commands.command(brief="Registers a team", help="Use this to form allies with your fellow paraders. Cooldown: 5 minutes", usage="team_name")
-    @commands.cooldown(1, 300, commands.BucketType.user)
     async def register(self, ctx, *, teamname):
         user = await self.getmember(ctx.author)
         if user:
@@ -1693,7 +1692,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                     await ctx.send("Making your team now")
                     new_team = Team(teamname, ctx.guild.id, ctx.author.id, user.tag)
                     self.teamlist.append(new_team)
-                    user.inteam = True
+                    user.inteam = "True"
                     await ctx.send("Completed. View it with <>myteam")
                     async with connect(DB_NAME) as db:
                         await teamdb.insert_or_replace(db, new_team)
@@ -1715,7 +1714,6 @@ Stat names are the names that you see in the above embed, with the exception of 
         if user:
             await self.doublecheck(user)
             if user.is_teammate():
-                
                 userteam = [x for x in self.teamlist if ctx.author.id in x.teammates or ctx.author.id == x.leaderid]
                 userteam = userteam[0]
                 teamguild = self.bot.get_guild(userteam.guildid)
@@ -1820,6 +1818,8 @@ Stat names are the names that you see in the above embed, with the exception of 
             await self.denied(ctx.channel, ctx.author)
             return
 
+    veri_emojis = ["✅", "❌"]
+
     @commands.command(brief="Invite someone to your team", help="Invite a member to your team. Can only be done by team leaders", usage="@user")
     async def invite(self, ctx, member: discord.Member):
         user, target = await self.getmember(ctx.author), await self.getmember(member)
@@ -1841,48 +1841,37 @@ Stat names are the names that you see in the above embed, with the exception of 
             
             userteam = userteam[0]
 
-            if target.invitation:
-                await ctx.send(f"{target.name} already has an invitation. They'll have to deny their current one before you can invite them.")
-                return
+            try:
+                invitation = await member.send(f"You have been invited to {userteam.name} by {user.name}. React below to accept or decline")
+            except Exception:
+                invitation = await ctx.send(f"{member.mention} have been invited to {userteam.name} by {user.name}. React below to accept or decline")
 
-            target.invitation = userteam.teamid
             await ctx.send("Your invitation has been sent")
 
-            await member.send(f"You have been invited to {userteam.name} by {user.name}. Do <>accept to accept or <>deny to deny")
-        else:
-            await ctx.send("Either you or the person you mentioned do not have a profile. Make one with <>createprofile")
+            [await invitation.add_reaction(emoji) for emoji in self.veri_emojis]
 
-    @commands.command(brief="Accept a team invitation", help="Use this to accept an invitation to a team", usage="team_name_that_invited_you")
-    async def accept(self, ctx):
-        user = await self.getmember(ctx.author)
-        if user:
-            if user.invitation:
-                targetguild = [x for x in self.teamlist if user.invitation == x.teamid]
+            def check(reaction, user):
+                return str(reaction.emoji) in self.veri_emojis and user == member
+            
+            reaction, _ = await self.bot.wait_for("reaction_add", check=check)
+            emoji = str(reaction.emoji)
+
+            if emoji == self.veri_emojis[0]:
+                targetguild = [x for x in self.teamlist if ctx.author.id == x.leaderid]
                 targetguild = targetguild[0]
-                targetguild.teammates.append(user.tag)
-                user.inteam = True
+                targetguild.teammates.append(target.tag)
+                user.inteam = "True"
                 await ctx.send(f"Joined {targetguild.name}")
                 leader = self.bot.get_user(targetguild.leaderid)
                 await leader.send(f"{ctx.author.name} has joined your team")
-                user.invitation = None
+                await invitation.channel.send("Successfully joined team")
 
             else:
-                await ctx.send("You have no current invitation")
-        else:
-            await ctx.send("No. Do <>createprofile")
+                await invitation.channel.send("You have rejected your invitation")
+                await invitation.delete()
 
-    @commands.command(brief="Deny a team invitation", help="Use this to decline a team invitation", usage="team_name_that_invited_you")
-    async def deny(self, ctx):
-        user = await self.getmember(ctx.author)
-        if user:
-            if user.invitation:
-                user.invitation = None
-                await ctx.send("You have rejected your invitation")
-
-            else:
-                await ctx.send("You have no current invitation")
         else:
-            await ctx.send("No. Do <>createprofile")
+            await ctx.send("Either you or the person you mentioned do not have a profile. Make one with <>createprofile")
 
     @commands.command(brief="Use this to leave your current team", help="Leaves the team that you are currently in. If a leader is the only one remaining and leaves, then the team will be deleted immediately")
     async def leaveteam(self, ctx):
@@ -1910,7 +1899,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                     userteam.teammates.remove(user.tag)
                     await ctx.send(f"Successfully left {userteam.name}")
 
-                user.inteam = False
+                user.inteam = "False"
         else:
             await self.denied(ctx.channel, ctx.author)
             return
@@ -1932,7 +1921,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                     
                     else:
                         userteam.teammates.remove(user2.tag)
-                        user2.inteam = False
+                        user2.inteam = "False"
                         await ctx.send(f"Successfully removed {member.name} from {userteam.name}")
                         return
             else:
@@ -2325,9 +2314,9 @@ Stat names are the names that you see in the above embed, with the exception of 
     async def doublecheck(self, user):
         userteam = [x for x in self.teamlist if user.tag in x.teammates or user.tag == x.leaderid]
         if userteam:
-            user.inteam = True
+            user.inteam = "True"
         else:
-            user.inteam = False
+            user.inteam = "False"
 
 
     async def startRaid(self, guild=None, channel=None, user=None):
