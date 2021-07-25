@@ -21,7 +21,7 @@ class Team:
 class Database:
 
     def __init__(self) -> None:
-        self.setup() 
+        pass
 
     async def setup(self, db:Connection):
         """Function which accepts a database connection, and sets up the Team Database"""
