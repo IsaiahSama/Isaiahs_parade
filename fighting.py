@@ -1840,15 +1840,19 @@ Stat names are the names that you see in the above embed, with the exception of 
             
             userteam = userteam[0]
 
+            if target.invitation:
+                await ctx.send(f"{target.name} already has an invitation. They'll have to deny their current one before you can invite them.")
+                return
+                
             target.invitation = userteam.teamid
             await ctx.send("Your invitation has been sent")
 
-            await member.send(f"You have been invited to {userteam.name} by {user.name}. Do <>accept {userteam.name} to accept")
+            await member.send(f"You have been invited to {userteam.name} by {user.name}. Do <>accept to accept or <>deny to deny")
         else:
             await ctx.send("Either you or the person you mentioned do not have a profile. Make one with <>createprofile")
 
     @commands.command(brief="Accept a team invitation", help="Use this to accept an invitation to a team", usage="team_name_that_invited_you")
-    async def accept(self, ctx, *, teamname):
+    async def accept(self, ctx):
         user = await self.getmember(ctx.author)
         if user:
             if user.invitation:
@@ -1867,7 +1871,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             await ctx.send("No. Do <>createprofile")
 
     @commands.command(brief="Deny a team invitation", help="Use this to decline a team invitation", usage="team_name_that_invited_you")
-    async def deny(self, ctx, *, teamname):
+    async def deny(self, ctx):
         user = await self.getmember(ctx.author)
         if user:
             if user.invitation:
