@@ -265,8 +265,9 @@ class TrainingHandler:
 
         player.curxp += points * 3
         player.maxdmg += points 
+        player.mindmg += points
 
-        await ctx.send(f"Increased {ctx.author.mention}'s max damage by {points} and gained {points * 3} exp points")
+        await ctx.send(f"Increased {ctx.author.mention}'s damage by {points} and gained {points * 3} exp points")
         return player
 
     async def handle_regen(self, bot, ctx, player):
