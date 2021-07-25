@@ -9,7 +9,7 @@ from fight import FightMe, Fighter, questpro, enemy, FightingBeast, abilities, a
 from items import Item, potlist, allpotlist
 import math
 import jobs
-from teams import Team
+from teams import Team, teamdb
 from battle_functionality import train_emojis, TrainingHandler
 from main import DB_NAME
 
@@ -48,13 +48,15 @@ class Fight(commands.Cog):
         
         async with connect(DB_NAME) as db:
             await fightdb.setup(db)
+            await teamdb.setup(db)
             self.users = await fightdb.query_all_fighters(db)
+            self.teamlist = await teamdb.query_all_teams(db)
 
         await self.setup_fighters()
+        await self.setup_teams()
 
-        # self.teamlist = await Saving().loaddata("teamdata")
-        # if not self.teamlist: self.teamlist = []
         self.update_fighters.start()
+        self.update_teams.start()
         print("Let's begin.")
 
     modlist = [347513030516539393, 527111518479712256, 493839592835907594, 315619611724742656, 302071862769221635]
@@ -1688,11 +1690,12 @@ Stat names are the names that you see in the above embed, with the exception of 
                 
                 if not exists:
                     await ctx.send("Making your team now")
-                    nteam = Team(teamname, ctx.guild.id, ctx.author.id, user.tag, )
-                    self.teamlist.append(nteam)
+                    new_team = Team(teamname, ctx.guild.id, ctx.author.id, user.tag)
+                    self.teamlist.append(new_team)
                     user.inteam = True
                     await ctx.send("Completed. View it with <>myteam")
-                    await self.updateteam()
+                    async with connect(DB_NAME) as db:
+                        await teamdb.insert_or_replace(db, new_team)
                     return
                 else:
                     await ctx.send("There is already a team with this name. Please select a new one")
@@ -1857,7 +1860,6 @@ Stat names are the names that you see in the above embed, with the exception of 
                 leader = self.bot.get_user(targetguild.leaderid)
                 await leader.send(f"{ctx.author.name} has joined your team")
                 user.invitation = None
-                await self.updateteam()
 
             else:
                 await ctx.send("You have no current invitation")
@@ -1901,13 +1903,9 @@ Stat names are the names that you see in the above embed, with the exception of 
 
                 else:
                     userteam.teammates.remove(user.tag)
-                    user.inteam = False
                     await ctx.send(f"Successfully left {userteam.name}")
 
                 user.inteam = False
-                await self.updateteam()
-
-
         else:
             await self.denied(ctx.channel, ctx.author)
             return
@@ -1931,7 +1929,6 @@ Stat names are the names that you see in the above embed, with the exception of 
                         userteam.teammates.remove(user2.tag)
                         user2.inteam = False
                         await ctx.send(f"Successfully removed {member.name} from {userteam.name}")
-                        await self.updateteam()
                         return
             else:
                 await ctx.send("You or the person you mentioned is not in a team")
@@ -3165,6 +3162,11 @@ Stat names are the names that you see in the above embed, with the exception of 
         async with connect(DB_NAME) as db:
             [await fightdb.insert_or_replace(db, user) for user in self.users]
         
+    @tasks.loop(minutes=5)
+    async def update_teams(self):
+        if not self.teamlist: return 
+        async with connect(DB_NAME) as db:
+            [await teamdb.insert_or_replace(db, team) for team in self.teamlist]
 
     # async def updateteam(self):
     #     if not self.teamlist: return
@@ -3281,6 +3283,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         person = FightMe(*tuple(account.__dict__.values()))
         person.instantize()
         return person
+
         
 
     async def getmain(self, arg):
@@ -3468,6 +3471,10 @@ Stat names are the names that you see in the above embed, with the exception of 
     async def setup_fighters(self):
         """Function which turns all tuples from the db into Fighter instances"""
         self.users = [Fighter(*user) for user in self.users]
+
+    async def setup_teams(self):
+        """Function which turns all tuples from the db into Team class Instances"""
+        self.teamlist = [Team(*team) for team in self.teamlist]
 
 
     @commands.command(hidden=True)

@@ -52,3 +52,5 @@ class Database:
         await db.execute("INSERT OR REPLACE INTO TeamTable (NAME, GUILD_ID, LEADER_ID, TEAM_ID, TEAMMATES) VALUES (?, ?, ?, ?, ?)", tuple(entry))
 
         await db.commit()
+
+teamdb = Database()
