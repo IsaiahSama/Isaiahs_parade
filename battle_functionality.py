@@ -269,11 +269,15 @@ class TrainingHandler:
         await ctx.send(f"Increased {ctx.author.mention}'s max damage by {points} and gained {points * 3} exp points")
         return player
 
-    async def handle_defense(self, bot, ctx, player):
+    async def handle_regen(self, bot, ctx, player):
         points = 0
 
+        if player.healchance > 50:
+            await ctx.send("Your heal chance is already maxed.")
+            return
+
         embed = Embed(
-            title=f"{ctx.author.display_name}'s Defense Training Session",
+            title=f"{ctx.author.display_name}'s Regen Training Session",
             description="I will provide a range of numbers from 1 to 10. I will then give you a number that I want. Tell me 1 by 1, the 3 numbers in the range 1 to 10, that add up to the number I want. You may only use a number once. You have 10 seconds per attempt",
             color=randint(0, 0xffffff)
         )
@@ -315,7 +319,7 @@ class TrainingHandler:
         await message.edit(embed=embed)
 
         
-        player.health += points
+        player.healchance += points
         player.curxp += points
         msg = f"{ctx.author.mention}'s Gained + {points} health and Exp Points"
         if sum(user_answers) == total:

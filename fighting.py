@@ -651,7 +651,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             await ctx.send(f"Removed Parader role from {ctx.author.name}. Do this command again to get it back")
 
     @commands.command()
-    @commands.cooldown(1, 60, commands.BucketType.member)
+    @commands.cooldown(1, 180, commands.BucketType.member)
     async def train(self, ctx):
         player = await self.getmember(ctx.author)
         if not player:
@@ -660,7 +660,7 @@ Stat names are the names that you see in the above embed, with the exception of 
 
         train_embed = discord.Embed(
             title="Training",
-            description=f"What do you want to train?\n💢: `Damage`\n🛡️: `Defense`\n💙: `Health`\n💥: `Crit_Chance`",
+            description=f"What do you want to train?\n💢: `Damage`\n💓: `Heal Chance`\n💙: `Health`\n💥: `Crit_Chance`",
             color=randint(0, 0xffffff)
         )
 
@@ -687,8 +687,8 @@ Stat names are the names that you see in the above embed, with the exception of 
 
         if choice == "Damage":
             player = await trainHandler.handle_damage(self.bot, ctx, player)
-        elif choice == "Defense":
-            player = await trainHandler.handle_defense(self.bot, ctx, player)
+        elif choice == "Heal Chance":
+            player = await trainHandler.handle_regen(self.bot, ctx, player)
         elif choice == "Health":
             player = await trainHandler.handle_health(self.bot, ctx, player)
         else:

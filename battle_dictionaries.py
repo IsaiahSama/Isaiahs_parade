@@ -82,9 +82,9 @@ all_battle_emojis = {
 
 train_emojis = {
     "💢": "Damage",
-    "🛡️": "Defense",
+    "💓": "Heal Chance",
     "💙": "Health",
-    "💥": "Crit_chance"
+    "💥": "Crit Chance"
 }
 
 # Class Dictionaries
