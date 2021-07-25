@@ -219,11 +219,15 @@ class TrainingHandler:
     def __init__(self) -> None:
         pass
 
-    async def handle_damage(self, bot, ctx, player):
+    async def handle_regen(self, bot, ctx, player):
         points = 0
 
+        if player.healchance > 50:
+            await ctx.send("Your heal chance is already maxed.")
+            return
+
         embed = Embed(
-            title="{ctx.author.display_name}'s Damage Training",
+            title=f"{ctx.author.display_name}'s Regen Training",
             description=f"I will give you a scrambled world... Decipher it",
             color=randint(0, 0xffffff)
         )
@@ -243,7 +247,7 @@ class TrainingHandler:
             shuffle(shuffled_word)
             to_find = ''.join(shuffled_word)
 
-            embed.title = f"{ctx.author.display_name}'s Damage Training. Part {i}/4"
+            embed.title = f"{ctx.author.display_name}'s Regen Training. Part {i}/4"
             embed.description = f"Unscramble {to_find}. You have 10 seconds"
 
             await message.edit(embed=embed)
@@ -264,21 +268,16 @@ class TrainingHandler:
             await sleep(2)
 
         player.curxp += points * 3
-        player.maxdmg += points 
-        player.mindmg += points
+        player.healchance += points 
 
-        await ctx.send(f"Increased {ctx.author.mention}'s damage by {points} and gained {points * 3} exp points")
+        await ctx.send(f"Increased {ctx.author.mention}'s chance to heal by {points} and gained {points * 3} exp points")
         return player
 
-    async def handle_regen(self, bot, ctx, player):
+    async def handle_damage(self, bot, ctx, player):
         points = 0
 
-        if player.healchance > 50:
-            await ctx.send("Your heal chance is already maxed.")
-            return
-
         embed = Embed(
-            title=f"{ctx.author.display_name}'s Heal Chance Training Session",
+            title=f"{ctx.author.display_name}'s Damage Training Session",
             description="I will provide a range of numbers from 1 to 10. I will then give you a number that I want. Tell me 1 by 1, the 3 numbers in the range 1 to 10, that add up to the number I want. You may only use a number once. You have 10 seconds per attempt",
             color=randint(0, 0xffffff)
         )
@@ -320,9 +319,10 @@ class TrainingHandler:
         await message.edit(embed=embed)
 
         
-        player.healchance += points
+        player.maxdmg += points
+        player.mindmg += points
         player.curxp += points
-        msg = f"{ctx.author.mention}'s Gained + {points} % heal chance and Exp Points"
+        msg = f"{ctx.author.mention}'s Gained + {points} damage and Exp Points"
         if sum(user_answers) == total:
             points = 3
             player.curxp += (points * 3) + 5
