@@ -1974,6 +1974,8 @@ Stat names are the names that you see in the above embed, with the exception of 
     async def use(self, ctx, itag=None, confirm=False):
         try:
             itag = int(itag)
+        except TypeError:
+            pass
         except ValueError:
             await ctx.send("You must tell me the ID of the item you wish to use")
             return
