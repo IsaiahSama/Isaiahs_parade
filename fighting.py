@@ -3096,7 +3096,7 @@ Stat names are the names that you see in the above embed, with the exception of 
     async def prepadv(self, ctx, squad):
         if len(squad['IN_ADVENTURE']) > 1:
             await self.teammsg(squad, "Member requirement has been met. Setting out for adventure now")
-            squad.pending = False
+            squad["PENDING"] = False
             await self.startadv(squad)
         else:
             await ctx.send("Not enough Members to start an adventure")
@@ -3130,7 +3130,9 @@ Stat names are the names that you see in the above embed, with the exception of 
     async def teammsg(self, team, msg):
         for user in team['IN_ADVENTURE']:
             target = self.bot.get_user(user)
-            await target.send(f"{msg}")
+            try:
+            	await target.send(f"{msg}")
+            except:continue
             
 
     async def advreward(self, toreward):
