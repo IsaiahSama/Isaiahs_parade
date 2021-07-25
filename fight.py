@@ -368,7 +368,7 @@ class Armour:
 
     def getpair(self):
         if not self.pairs: return False
-        return [pair for pair in weaponlist if self.pairs == pair.tag]
+        return [pair for pair in weaponlist if self.pairs == pair.tag][0]
 
     def isreborn(self):
         if self.reborn > 0:
