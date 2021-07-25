@@ -2946,17 +2946,17 @@ Stat names are the names that you see in the above embed, with the exception of 
             x.addcoin(x.level * 50)
 
         if x.getTier() == 1:
-            x.addcoin(20 * x.level)
+            x.addcoin(10 * x.level)
         elif x.getTier() == 2:
-            x.addcoin(50 * x.level)
+            x.addcoin(25 * x.level)
         elif x.getTier() == 3:
-            x.addcoin(70 * x.level)
+            x.addcoin(35 * x.level)
         elif x.getTier() == 4:
-            x.addcoin(120 * x.level)
+            x.addcoin(60 * x.level)
         elif x.getTier() == 5:
-            x.addcoin(150 * x.level)
+            x.addcoin(75 * x.level)
         else:
-            x.addcoin(300 * x.level)
+            x.addcoin(150 * x.level)
 
     async def lost(self, arg):
         if arg in enemy:
