@@ -26,6 +26,7 @@ hpot = Item("Health Potion", 101, "A basic health potion which increases your he
 600, "Increases health by 30", 2, 1, 30, 0, 0, 0, 0, "pot")
 lblet = Item("Lucky Bracelet", 102, "A bracelet which increases your crit chance by 10% for 2 fights",
 650, "Increases Crit Chance by 10%", 2, 1, 0, 0, 0, 0, 10, "item")
+exp_boost = Item("Gavin's Tea", 103, "Delicious tea, which rewards you with 1000 exp points.", 1000, "Grants experience", 1, 1)
 mpot = Item("Mixa Pot", 201, "A potion carefully brewed increasing your power and health by 50 for 2 fights",
 1100, "Increases health and power by 50", 2, 2, 50, 50, 0, 0, 0, "pot")
 sring = Item("Special Ring", 202, "A ring which increases your min and max damage by 30 for 3 fights",
@@ -47,7 +48,7 @@ ksc = Item("Kevin's Secret Candy", 999, "A rare item said to increase your level
 0, "Increases level by 5", 1, 2, untype="pot")
 
 
-potlist = [ppot, hpot, lblet, 
+potlist = [ppot, hpot, lblet, exp_boost,
 mpot, sring, mcloak,
 gpapple, 
 fsash, boe,

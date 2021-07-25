@@ -2006,6 +2006,8 @@ Stat names are the names that you see in the above embed, with the exception of 
                     for _ in range(6):
                         await self.didlevel(user, True)
                     await ctx.send("The secret candy has increased your levels by 5")
+                elif itag == 103:
+                    user.curxp += 1000
                 else:
                     user.curbuff = itemtouse.tag
                     user.bdur = itemtouse.duration
@@ -2077,7 +2079,7 @@ Stat names are the names that you see in the above embed, with the exception of 
 
             if level in range(0, 600):
                 base = 50
-                for _x in range(level):
+                for lev in range(level):
                     tlist.append(base)
                     base += 30
 
