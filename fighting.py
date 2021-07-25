@@ -419,7 +419,11 @@ Stat names are the names that you see in the above embed, with the exception of 
             return
 
         if not user.hasPassive():
-            pash = random.choice(passives)
+            if not user.reborn:
+                options = [passive for passive in passives if not passive.reborn]
+            else:
+                options = passives
+            pash = random.choice(options)
             await ctx.send(f"Congratulations, your passive ability is {pash.name}. Check with <>profile")
             user.passive = pash.tag
             return
@@ -519,9 +523,13 @@ Stat names are the names that you see in the above embed, with the exception of 
             return
 
         if not user.hasActive():
-            yes = random.choice(abilities)
-            await ctx.send(f"CONGRATULATIONS... Your new ability is {yes.name}")
-            user.ability = yes.tag
+            if not user.reborn:
+                options = [ability for ability in abilities if not ability.reborn]
+            else:
+                options = abilities
+            ability = random.choice(options)
+            await ctx.send(f"CONGRATULATIONS... Your new ability is {ability.name}")
+            user.ability = ability.tag
             return
 
         if user.hasActive() and not arg:
