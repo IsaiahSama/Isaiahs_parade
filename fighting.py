@@ -518,8 +518,8 @@ Stat names are the names that you see in the above embed, with the exception of 
             await self.denied(ctx.channel, ctx.author)
             return
 
-        if user.level < 60:
-            await ctx.send("You are too weak for an active ability. Come back when you are level 60")
+        if user.level < 100:
+            await ctx.send("You are too weak for an active ability. Come back when you are level 100")
             return
 
         if not user.hasActive():
