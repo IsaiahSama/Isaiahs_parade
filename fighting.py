@@ -1,20 +1,19 @@
 import discord
+from discord import utils
 from discord.ext import commands, tasks
 from aiosqlite import connect
 import asyncio
 import random
 from random import randint
-from images import hugs, punches, kisses, slaps, knock, poses, flexes
 from fight import FightMe, Fighter, questpro, enemy, FightingBeast, abilities, allabilities, passives, allpassives, raidingmonster, weaponlist, armourlist, gear, lilgear, allarmour, allweapons, BeastFight, fightdb
 from items import Item, potlist, allpotlist
 import math
 import jobs
-from teams import Team, ToAdv
+from teams import Team
 from battle_functionality import train_emojis, TrainingHandler
+from main import DB_NAME
 
 emojiz = ["🤔", "🤫", "🤨", "🤯", "😎", "😓", "🤡", "💣", "🧛", "🧟‍♂️", "🏋️‍♂️", "⛹", "🏂"]
-db_name = "iparadedb.sqlite3"
-
 
 # Evolution of Fighter class
 
@@ -47,7 +46,7 @@ class Fight(commands.Cog):
         await self.bot.wait_until_ready()
         self.homeguild = self.bot.get_guild(739229902921793637)
         
-        async with connect(db_name) as db:
+        async with connect(DB_NAME) as db:
             await fightdb.setup(db)
             self.users = await fightdb.query_all_fighters(db)
 
@@ -233,7 +232,7 @@ class Fight(commands.Cog):
             role = role[0]
             await ctx.author.add_roles(role)
         
-        async with connect(db_name) as db:
+        async with connect(DB_NAME) as db:
             await fightdb.insert_or_replace(db, acc)
 
     @commands.command(aliases=["q6"], brief="A quest for those who have reborn or are tier 6", help="A bonus quest for those who are Tier 6 or reborn. Cooldown: 2 uses, 5 minutes")
@@ -1678,14 +1677,18 @@ Stat names are the names that you see in the above embed, with the exception of 
                     return
 
                 guild_teams = [x for x in self.teamlist if x.guildid == ctx.guild.id]
-                if guild_teams == 25:
-                    await ctx.send("Your guild already has the max number of teams")
+                if len(guild_teams) == 25:
+                    await ctx.send("Your guild already has the max number of teams, use <>teams to view all ")
                     return
-                curteams = [x for x in guild_teams if x.name.lower() == teamname.lower()]
+                exists = None
+                for team in guild_teams:
+                    if team.name.lower() == teamname.lower():
+                        exists = team
+                        break
                 
-                if not curteams:
+                if not exists:
                     await ctx.send("Making your team now")
-                    nteam = Team(teamname, ctx.guild.id, user.tag, f"*{user.tag}5")
+                    nteam = Team(teamname, ctx.guild.id, ctx.author.id, user.tag, )
                     self.teamlist.append(nteam)
                     user.inteam = True
                     await ctx.send("Completed. View it with <>myteam")
@@ -1767,18 +1770,18 @@ Stat names are the names that you see in the above embed, with the exception of 
             if user.is_teammate():
                 userteam = [x for x in self.teamlist if user.tag in x.teammates or user.tag == x.leaderid]
                 userteam = userteam[0]
-                canjoin = [x for x in self.inadventure if x.teamid == userteam.teamid]
+                canjoin = [x for x in self.inadventure if x["TEAM_ID"] == userteam.teamid]
                 if len(userteam.teammates) < 1:
                     await ctx.send("You need at least 1 other teammate in order to start an adventure")
                     return
                 
                 if canjoin:
                     canjoin = canjoin[0]
-                    if user.tag in canjoin.inadv:
+                    if user.tag in canjoin["IN_ADVENTURE"]:
                         await ctx.send("You are already part of this adventure")
                         return
 
-                    canjoin.inadv.append(user.tag)
+                    canjoin["IN_ADVENTURE"].append(user.tag)
                     await ctx.send("Joined the adventure. Waiting for it to begin")
                     leader = self.bot.get_user(userteam.leaderid)
                     await leader.send(f"{ctx.author.name} has joined the adventure")
@@ -1787,15 +1790,18 @@ Stat names are the names that you see in the above embed, with the exception of 
                     if user.tag == userteam.leaderid:
                         await ctx.send("Inviting your members")
                         for mate in userteam.teammates:
-                            target = self.bot.get_all_members()
-                            target = [member for member in target if member.id == mate]
-                            target = target[0]
+                            target = utils.get(self.bot.get_all_members(), id=mate)
+                            if not target: userteam.teammates.remove(target);continue
                             if target.status == discord.Status.offline:
                                 continue
                             await target.send(f"{user.name} is preparing to go on an adventure. Join with <>adventure")
                         
-                        pendingadv = ToAdv(userteam.teamid, True)
-                        pendingadv.inadv.append(user.tag)
+                        pendingadv = {
+                            "TEAM_ID": userteam.teamid,
+                            "PENDING": True,
+                            "IN_ADVENTURE": [user.tag]
+                        }
+
                         self.inadventure.append(pendingadv)
                         await ctx.send("You have 5 minutes before it begins. Make sure you have at least 1 other member by then")
                         await asyncio.sleep(60 * 5)
@@ -3115,12 +3121,12 @@ Stat names are the names that you see in the above embed, with the exception of 
         if suceeded >= 1 and suceeded <= end:
             await self.teammsg(squad, "Congratulationsss, You have passed. You will now receive your rewards")
             for person in squad.inadv:
-                nperson = self.bot.get_user(person)
-                uperson = await self.getmember(nperson)
-                xptoget, cashtoget = await self.advreward(uperson)
-                uperson.curxp += xptoget
-                uperson.pcoin += cashtoget
-                await nperson.send(f"You have received {xptoget} xp and {cashtoget} parade coins")
+                real_user = self.bot.get_user(person)
+                player = await self.getmember(real_user)
+                xptoget, cashtoget = await self.advreward(player)
+                player.curxp += xptoget
+                player.pcoin += cashtoget
+                await real_user.send(f"You have received {xptoget} xp and {cashtoget} parade coins")
         else:
             await self.teammsg(squad, "You have failed the adventure")
 
@@ -3133,8 +3139,8 @@ Stat names are the names that you see in the above embed, with the exception of 
             
 
     async def advreward(self, toreward):
-        rewardxp = (toreward.xpthresh / 5)
-        rewardcash = (toreward.pcoin / 10)
+        rewardxp = (toreward.xpthresh // 5)
+        rewardcash = (toreward.pcoin // 10)
         return rewardxp, rewardcash
 
     # Isaiah
@@ -3156,7 +3162,7 @@ Stat names are the names that you see in the above embed, with the exception of 
     @tasks.loop(minutes=5)
     async def update_fighters(self):
         if not self.users: return
-        async with connect(db_name) as db:
+        async with connect(DB_NAME) as db:
             [await fightdb.insert_or_replace(db, user) for user in self.users]
         
 
@@ -3478,7 +3484,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             counter += 1
             await asyncio.sleep(15)
 
-        async with connect(db_name) as db:
+        async with connect(DB_NAME) as db:
             [await fightdb.insert_or_replace(db, user) for user in self.users]
         
         await ctx.send("Restarting bot")
@@ -3489,7 +3495,7 @@ Stat names are the names that you see in the above embed, with the exception of 
     @commands.Cog.listener()
     async def on_disconnect(self):
         await asyncio.sleep(2)
-        async with connect(db_name) as db:
+        async with connect(DB_NAME) as db:
             [await fightdb.insert_or_replace(db, user) for user in self.users]
         
         
