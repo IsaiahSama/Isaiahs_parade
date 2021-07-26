@@ -2679,7 +2679,7 @@ Stat names are the names that you see in the above embed, with the exception of 
 
             if self.raidbeast.hasPassive():
                 if self.raidbeast.passive.tag == 7008:
-                    power -= 50
+                    power *= 0.85
                     raidbed.add_field(inline=False,name=f"{self.raidbeast.passive.usename}", value=f"{self.raidbeast.passive.effect}")
 
                 if self.raidbeast.passive.tag == 7001:
@@ -2827,7 +2827,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             if target.passive.tag == 7001:
                 power = await self.candodge(target, self.raidbeast, power, raidbed)
             if target.passive.tag == 7008:
-                power -= 50
+                power *= 0.85
                 raidbed.add_field(inline=False,name=f"{target.passive.usename}", value=f"{target.passive.effect}")
 
             if target.passive.tag == 9101:

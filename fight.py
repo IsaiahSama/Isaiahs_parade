@@ -167,8 +167,8 @@ sboost = Passive("Speed Boost", 7006, "Goes First and deals 1.2x dmg on first hi
 
 critblock = Passive("Critical Guard", 7007, "All critical hits against you deal x0.75 instead of x1.5. 2 in 3 chance of occuring", "Critical Guard","Reduces your critical damage to only 0.75x the original", 0.75,0,0,0,0)
 
-chubz = Passive("Chubby", 7008, "large size acts as a shock absorber, and enemy attacks do -50 damage", "Absorbs 50 damage", "Feel my chubzzz",
-1, -50, 0, 0, 0)
+chubz = Passive("Chubby", 7008, "large size acts as a shock absorber, and enemy attacks do 85% damage", "Absorbs 85% damage", "Feel my chubzzz",
+1, 0.85, 0, 0, 0)
 
 nlove = Passive("Nightmare Lover", 7009, "Feeds off of the memories of your nightmares and heals itself. Increases it's max damage by 5 each time",
 "Lover of Nightmares", "gets energies from nightmares within", 1, 0, 10, 5, 5, 0)
