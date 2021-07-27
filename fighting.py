@@ -3181,6 +3181,8 @@ Stat names are the names that you see in the above embed, with the exception of 
             await asyncio.sleep(5)
             await self.upgradebot(ctx)
             await self.upgradegear(ctx)
+            await self.passive(ctx)
+            await self.active(ctx)
             await asyncio.sleep(6 * 60)
 
 
