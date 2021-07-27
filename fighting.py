@@ -95,7 +95,7 @@ class Fight(commands.Cog):
 
         if user1 == user2:
             user1.takecoin(arg)
-            user2.addcoin(1/2 * arg)
+            user2.addcoin(3/4 * arg)
             await ctx.send("Successful... But it seems you dropped and lost some in the process")
 
         if len(str(arg)) > (user2.getTier() + 1):
