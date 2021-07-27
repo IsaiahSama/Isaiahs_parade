@@ -98,7 +98,7 @@ class Fight(commands.Cog):
             user2.addcoin(1/2 * arg)
             await ctx.send("Successful... But it seems you dropped and lost some in the process")
 
-        if arg > (user2.getTier() * 1000):
+        if len(str(arg)) > (user2.getTier() + 1):
             await ctx.send("You are trying to give too much money for that person's tier :face_with_monocle:")
             return
 
