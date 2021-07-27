@@ -1087,6 +1087,10 @@ Stat names are the names that you see in the above embed, with the exception of 
                     num = random.choice([1, 2, 3, 0, 0, 6])
                     power = await self.dicing(attacker, defender, power, battlebed, num)
 
+            if defender.hasPassive():
+                if defender.passive.tag == 7008:
+                    power *= 0.85
+                    battlebed.add_field(name=defender.passive.usename, value=defender.passive.effect)
 
             defender.attack(power)
 
