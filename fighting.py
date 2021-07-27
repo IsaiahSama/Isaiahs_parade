@@ -592,6 +592,9 @@ Stat names are the names that you see in the above embed, with the exception of 
         channel = self.homeguild.get_channel(740764507655110666)
 
         user = await self.getmember(ctx.author)
+        if not user:
+            await self.denied(ctx.channel, ctx.author)
+            return
         for raider in self.raiders:
             if raider.tag == user.tag:
                 await ctx.send("You are already in the raid")
@@ -2504,15 +2507,11 @@ Stat names are the names that you see in the above embed, with the exception of 
         if not user or user.getTier() < 6:
             rbeast = random.choice(raidingmonster)
         
-        elif user.getTier() == 6:
+        else: 
             strong = [beast for beast in raidingmonster if beast.level >= 800]
             rbeast = random.choice(strong)
-        else: return
         
-        rbeast = FightingBeast(rbeast.name, rbeast.health, rbeast.mindmg, rbeast.maxdmg, 
-        rbeast.mincoin, rbeast.maxcoin, rbeast.entrymessage, rbeast.minxp, rbeast.critchance, rbeast.healchance,
-        rbeast.ability, rbeast.passive, rbeast.attackmsg, rbeast.weapon, rbeast.armour, rbeast.level, rbeast.tier,
-        rbeast.reborn, rbeast.typeobj)
+        rbeast = FightingBeast(*tuple(rbeast.__dict__.values())[:-1])
         
         self.raidbeast = rbeast
         self.raidbeast.slag = 0
@@ -3287,7 +3286,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         
         return power
 
-    async def fightuser(self, account:Fighter):
+    async def fightuser(self, account:Fighter) -> FightMe:
         """Function which accepts a Fighter class, and converts it to a FightMe class."""
         person = FightMe(*tuple(account.__dict__.values()))
         person.instantize()
