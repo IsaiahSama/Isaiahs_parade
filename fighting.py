@@ -2355,7 +2355,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         else:
             await channel.send(f"Attention {currole.name}. A Raid Boss is on it's way to you. Join the raid with <>raid. We have 3 minutes until it starts")
 
-        await asyncio.sleep(150)
+        # await asyncio.sleep(150)
         await channel.send("We have info on the beast. 30 seconds remain")
         if channel != channel2:
             currole2 = discord.utils.get(guild2.roles, name="Raider")
@@ -2525,7 +2525,10 @@ Stat names are the names that you see in the above embed, with the exception of 
         else: 
             strong = [beast for beast in raidingmonster if beast.level >= 800]
             rbeast = random.choice(strong)
-        rbeast = FightingBeast(*tuple(rbeast.__dict__.values()))
+
+        rbeast_dict = rbeast.__dict__
+        del rbeast_dict["maxxp"]
+        rbeast = FightingBeast(*tuple(rbeast_dict.values()))
         
         self.raidbeast = rbeast
         self.raidbeast.slag = 0
