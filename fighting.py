@@ -2406,7 +2406,11 @@ Stat names are the names that you see in the above embed, with the exception of 
         if channel != channel2:
             await channel2.send(f"{self.raidbeast.entrymessage}")
 
-        await self.battlestart(channel)
+        try:
+            await self.battlestart(channel)
+        except Exception:
+            await self.resetraid()
+            raise Exception
         await self.resetraid()
 
     async def resetraid(self):
@@ -2415,6 +2419,12 @@ Stat names are the names that you see in the above embed, with the exception of 
         self.raiders = []
         self.raidbeast = None
         self.winner = None
+
+    @commands.command()
+    @commands.is_owner()
+    async def rreset(self, ctx):
+        await self.resetraid()
+        await ctx.send("Reset raids")
 
     
     async def battlestart(self, channel):
