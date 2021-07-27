@@ -2527,7 +2527,10 @@ Stat names are the names that you see in the above embed, with the exception of 
             rbeast = random.choice(strong)
 
         rbeast_dict = rbeast.__dict__
-        del rbeast_dict["maxxp"]
+        try:
+            del rbeast_dict["maxxp"]
+        except KeyError:
+            pass
         rbeast = FightingBeast(*tuple(rbeast_dict.values()))
         
         self.raidbeast = rbeast
