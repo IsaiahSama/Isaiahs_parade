@@ -2389,6 +2389,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                 if player.weapon.name == "Plague Doctors Scepter":
                     player.weapon.damage = math.floor(player.maxdmg * 0.5)
 
+            print(self.raidbeast.weapon)
             if self.raidbeast.weapon.name == "Plague Doctors Scepter":
                 self.raidbeast.weapon.damage = math.floor(self.raidbeast.maxdmg * 0.5)
             
@@ -2525,7 +2526,10 @@ Stat names are the names that you see in the above embed, with the exception of 
             strong = [beast for beast in raidingmonster if beast.level >= 800]
             rbeast = random.choice(strong)
         
-        rbeast = FightingBeast(*tuple(rbeast.__dict__.values())[:-1])
+        rbeast = FightingBeast(rbeast.name, rbeast.health, rbeast.mindmg, rbeast.maxdmg, 
+        rbeast.mincoin, rbeast.maxcoin, rbeast.entrymessage, rbeast.minxp, rbeast.critchance, rbeast.healchance,
+        rbeast.ability, rbeast.passive, rbeast.attackmsg, rbeast.weapon, rbeast.armour, rbeast.level, rbeast.tier,
+        rbeast.reborn, rbeast.typeobj)
         
         self.raidbeast = rbeast
         self.raidbeast.slag = 0
