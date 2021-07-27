@@ -2409,9 +2409,9 @@ Stat names are the names that you see in the above embed, with the exception of 
 
         try:
             await self.battlestart(channel)
-        except Exception:
+        except Exception as err:
             await self.resetraid()
-            raise Exception
+            raise err
         await self.resetraid()
 
     async def resetraid(self):
@@ -2434,7 +2434,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                 person.ability.reset()
         # Checking for Armour Weapon Pairs
             if person.armour.getpair():
-                if person.weapon.name == person.armour.pairs.name:
+                if person.weapon.name == person.armour.pairs:
                     msg = person.buff()
                     await channel.send(f"Set Bonus {msg}")
                     await asyncio.sleep(2)
@@ -2456,7 +2456,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             self.raidbeast.ability.reset()
 
         if self.raidbeast.armour.getpair():
-            if self.raidbeast.weapon.name == self.raidbeast.armour.pairs.name:
+            if self.raidbeast.weapon.name == self.raidbeast.armour.pairs:
                 msg = self.raidbeast.buff()
                 await channel.send(f"Set Bonus {msg}")
                 await asyncio.sleep(2)
@@ -2525,11 +2525,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         else: 
             strong = [beast for beast in raidingmonster if beast.level >= 800]
             rbeast = random.choice(strong)
-        
-        rbeast = FightingBeast(rbeast.name, rbeast.health, rbeast.mindmg, rbeast.maxdmg, 
-        rbeast.mincoin, rbeast.maxcoin, rbeast.entrymessage, rbeast.minxp, rbeast.critchance, rbeast.healchance,
-        rbeast.ability, rbeast.passive, rbeast.attackmsg, rbeast.weapon, rbeast.armour, rbeast.level, rbeast.tier,
-        rbeast.reborn, rbeast.typeobj)
+        rbeast = FightingBeast(*tuple(rbeast.__dict__.values()))
         
         self.raidbeast = rbeast
         self.raidbeast.slag = 0
@@ -2580,7 +2576,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                 if player.passive.tag == 7010:
                     if player.armour.name == "Haki":
                         if player.armour.getpair():
-                            if player.weapon.name == player.armour.pairs.name:
+                            if player.weapon.name == player.armour.pairs:
                                 power = await self.cantruehaki(self.raidbeast, player, power, raidbed)
                         
                     elif player.weapon.name == "Conqueror Haki":
@@ -2814,7 +2810,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             if self.raidbeast.passive.tag == 7010:
                 if self.raidbeast.armour.name == "Haki":
                     if self.raidbeast.armour.getpair():
-                        if self.raidbeast.weapon.name == self.raidbeast.armour.pairs.name:
+                        if self.raidbeast.weapon.name == self.raidbeast.armour.pairs:
                             power = await self.cantruehaki(target, self.raidbeast, power, raidbed)
                         
                 elif self.raidbeast.weapon.name == "Conqueror Haki":
