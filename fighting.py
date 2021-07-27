@@ -2864,7 +2864,8 @@ Stat names are the names that you see in the above embed, with the exception of 
         target.attack(power)
         if target.health <= 0:
             await channel.send(f"{target.name} has been slain")
-            self.raiders.remove(target)
+            self.raiders.remove(target)	
+            continue
 
         if target.hasPassive():
             if target.passive.tag == 7002:
