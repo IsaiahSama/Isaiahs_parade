@@ -899,8 +899,9 @@ def buffing(tobuff):
     # Vibe Master
     elif tobuff.armour.tag == 2505:
         tobuff.critchance += 100
-        tobuff.weapon.damage += 30
-        msg = "Increased crit chance by 100. Increased weapon damage by 30"
+        tobuff.weapon.damage += 100
+        tobuff.health += 300
+        msg = "Increased crit chance by 100. Increased weapon damage by 100, and health by 300"
 
     # Vampiric Cloak
     elif tobuff.armour.tag == 2501:
