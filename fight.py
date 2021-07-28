@@ -417,7 +417,7 @@ hshield = Armour("Hero's Shield", 2503, "The shield of the legendary Herorian of
 blastgear = Armour("Blasting", 2504, "Said to increase your power... Explosively. Gains set bonus with Tier 2 Buh-bomb", 700, 400, 1300000, 0, 1204, 5 )
 vmaster = Armour("Vibe Master", 2505, "An upgrade to the previous Wooden Armour. Gains set bonus with The Vibe Check", 700, 250, 1100000 , 8, 1401, 5)
 loincloth = Armour("Loincloth", 2506, "Who knows where this came from. With Deathly Axe, increases effectiveness of Deadly Grasp",
-500, 500, 1200000, 3, 1504, 6)
+500, 500, 1200000, 3, 1504, 5)
 susanoo1 = Armour("Imperfect Susanoo", 2507, "Named after the shinto god of storms. It hurts. Loses 2%hp each turn Gains set bonus with Energy Mace", 900, 400,
 1400000, -2, 1505, 5)
 
@@ -987,7 +987,8 @@ def buffing(tobuff):
     # Loincloth
     elif tobuff.armour.tag == 2506:
         tobuff.ability = deadlygrasp
-        msg = "Grants you the ability of deadly grasp and increases it's power."
+        tobuff.weapon.damage += 150
+        msg = "Grants you the ability of deadly grasp and increases it's power. Increases damage of axe by 150"
 
     # Parade Creators outift
     elif tobuff.armour.tag == 4601:
