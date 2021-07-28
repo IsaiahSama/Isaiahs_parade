@@ -1517,7 +1517,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         req = None
         amount = 0
         if arg.split(" ")[-1].isnumeric():
-            amount = arg[-1]
+            amount = int(arg[-1])
             arg = ' '.join(arg.split(" ")[:-1])
 
         
