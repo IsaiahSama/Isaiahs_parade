@@ -1508,14 +1508,14 @@ Stat names are the names that you see in the above embed, with the exception of 
     async def buy(self, ctx, *, arg=None):
         if not arg:
             await ctx.send("You did not tell me what you wanted to buy")
-
+            return
         user = await self.getmember(ctx.author)
         if not user:
             await self.denied(ctx.channel, ctx.author)
             return
 
         req = None
-        amount = 0
+        amount = 1
         if arg.split(" ")[-1].isnumeric():
             amount = int(arg[-1])
             arg = ' '.join(arg.split(" ")[:-1])
