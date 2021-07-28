@@ -1516,10 +1516,12 @@ Stat names are the names that you see in the above embed, with the exception of 
 
         req = None
         amount = 1
-        if arg.split(" ")[-1].isnumeric():
+        arg = arg.split(" ")
+        if arg[-1].isnumeric():
             amount = int(arg[-1])
-            arg = ' '.join(arg.split(" ")[:-1])
-
+            arg = ' '.join(arg[:-1])
+        else:
+            arg = ' '.join(arg)
         
         for item in lilgear:
             if item.name.lower() == arg.lower():
