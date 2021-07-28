@@ -1515,6 +1515,11 @@ Stat names are the names that you see in the above embed, with the exception of 
             return
 
         req = None
+        amount = 0
+        if arg.split(" ")[-1].isnumeric():
+            amount = arg[-1]
+            arg = ' '.join(arg.split(" ")[:-1])
+
         
         for item in lilgear:
             if item.name.lower() == arg.lower():
@@ -1531,11 +1536,16 @@ Stat names are the names that you see in the above embed, with the exception of 
             await ctx.send(f"Sorry, I don't have any {arg} in stock") 
             return
         
-        
-        canget = await self.canbuy(user, req)
-        
+        if req.typeobj.lower() == "item":
+            if amount > (25 - len(user.inventory)):
+                await ctx.send("That's far more than you can hold.")
+                return
+        else:
+            amount = 1
 
-        await ctx.send(canget)
+        for _ in range(amount):
+            canget = await self.canbuy(user, req)
+            await ctx.send(canget)
 
     # Job
     @commands.command(aliases=["j"], brief="Get a Job.", help="Don't want to fight and risk it all in a battle? Then get a Job. Cooldown: 2 uses every minute")
