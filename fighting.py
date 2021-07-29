@@ -3459,7 +3459,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             title=f'Tier {tier} job:',
             color=randint(0, 0xffffff)
         )
-        jobdesc = random.choice(eval(f"jobs.jtier{tier}"))
+        
         if tier == 1:
             reward = randint(30, 70)
             loss = randint(5, 15)
@@ -3481,12 +3481,14 @@ Stat names are the names that you see in the above embed, with the exception of 
             loss = randint(3600, 4000)
 
         elif tier == 6:
-            await channel.send("You no longer take jobs")
+            await channel.send("You no longer take jobs, but you do get twice as many quests and raids")
             return
             
         else:
             await channel.send("An unknown error occured.")
             return
+        
+        jobdesc = random.choice(eval(f"jobs.jtier{tier}"))
 
         yes = await self.didpass()
         await self.result(user, jobbed, yes, reward, loss)
