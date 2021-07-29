@@ -927,7 +927,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                 if attacker.passive.tag == 7010:
                     if attacker.armour.tag == 2602:
                         if attacker.armour.getpair():
-                            if attacker.weapon.tag == attacker.armour.Pairs:
+                            if attacker.weapon.tag == attacker.armour.pairs:
                                 power = await self.cantruehaki(defender, attacker, power, battlebed)
                         
                     elif attacker.weapon.tag == 1602:
