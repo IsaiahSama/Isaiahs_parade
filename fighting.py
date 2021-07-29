@@ -1547,7 +1547,10 @@ Stat names are the names that you see in the above embed, with the exception of 
 
         for _ in range(amount):
             canget = await self.canbuy(user, req)
-            await ctx.send(canget)
+        
+        if "bought" in canget:
+            canget += f" ({amount})"
+        await ctx.send(canget)
 
     # Job
     @commands.command(aliases=["j"], brief="Get a Job.", help="Don't want to fight and risk it all in a battle? Then get a Job. Cooldown: 2 uses every minute")
