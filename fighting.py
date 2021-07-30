@@ -728,7 +728,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             account = await self.getmember(ctx.author)
         
         if not account: await ctx.send("You need to create your own user profile with <>createprofile first"); return
-
+        user1 = await self.getmember(ctx.author)
         if not isquest:
             victim = await self.getmember(member)
             if not victim: await ctx.send(f"{member} does not have a fight profile. Let them make one with <>createprofile"); return
