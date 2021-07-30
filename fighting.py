@@ -1800,6 +1800,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         if user:
             await self.doublecheck(user)
             if user.is_teammate():
+                if user.getTier() == 1: await ctx.send("Sorry, you're too weak to go on adventures. At least reach Tier 2");return
                 userteam = [x for x in self.teamlist if user.tag in x.teammates or user.tag == x.leaderid]
                 userteam = userteam[0]
                 canjoin = [x for x in self.inadventure if x["TEAM_ID"] == userteam.teamid]
