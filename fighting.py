@@ -376,16 +376,17 @@ Stat names are the names that you see in the above embed, with the exception of 
     async def mypassive(self, ctx):
         user = await self.getmember(ctx.author)
         if user:
+            user = await self.fightuser(user)
+            passive = user.passive
             if user.hasPassive():
                 embed = discord.Embed(
                     title="Passive",
                     description=f"Showing Passive for {user.name}",
                     color=randint(0, 0xffffff)
                 )
-                abil = [x for x in allpassives if x.tag == user.passive]
-                if abil:
-                    abil = abil[0]
-                    embed.add_field(name=abil.name, value=abil.description)
+
+                if passive:
+                    embed.add_field(name=passive.name, value=passive.description)
                     await ctx.send(embed=embed)
 
                 else:
@@ -477,15 +478,15 @@ Stat names are the names that you see in the above embed, with the exception of 
         user = await self.getmember(ctx.author)
         if user:
             user = await self.fightuser(user)
+            abil = user.ability
             if user.hasActive():
                 embed = discord.Embed(
                     title="Ability",
                     description=f"Showing Ability for {user.name}",
                     color=randint(0, 0xffffff)
                 )
-                abil = [x for x in allabilities if x.tag == user.ability]
+
                 if abil:
-                    abil = abil[0]
                     embed.add_field(name=abil.name, value=abil.description)
                     await ctx.send(embed=embed)
 
