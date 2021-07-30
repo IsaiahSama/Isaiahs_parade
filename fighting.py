@@ -3476,13 +3476,12 @@ Stat names are the names that you see in the above embed, with the exception of 
             reward = randint(10000, 15000)
             loss = randint(1000, 1450)
 
-        elif tier == 5:
+        elif tier in [5, 6]:
             reward = randint(30000, 40000)
             loss = randint(3600, 4000)
-
-        elif tier == 6:
-            await channel.send("You no longer take jobs, but you do get twice as many quests and raids")
-            return
+            if tier == 6:
+                await channel.send("No jobs exist for your level, so you're forced to take one from Tier 5. You do get twice as many quests and raids however. (<>quest6, <>paraid6)")
+                tier = 5
             
         else:
             await channel.send("An unknown error occured.")
