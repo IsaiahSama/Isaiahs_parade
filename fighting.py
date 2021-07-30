@@ -476,6 +476,7 @@ Stat names are the names that you see in the above embed, with the exception of 
     async def myability(self, ctx):
         user = await self.getmember(ctx.author)
         if user:
+            user = await self.fightuser(user)
             if user.hasActive():
                 embed = discord.Embed(
                     title="Ability",
