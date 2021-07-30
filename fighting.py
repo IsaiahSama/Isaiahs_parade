@@ -3146,7 +3146,7 @@ Stat names are the names that you see in the above embed, with the exception of 
 
     # Adventure
     async def prepadv(self, ctx, squad):
-        if squad['IN_ADVENTURE][0].getTier() == 6 or len(squad['IN_ADVENTURE']) > 1:
+        if squad['IN_ADVENTURE'][0].getTier() == 6 or len(squad['IN_ADVENTURE']) > 1:
             await self.teammsg(squad, "Member requirement has been met. Setting out for adventure now")
             squad["PENDING"] = False
             await self.startadv(squad)
