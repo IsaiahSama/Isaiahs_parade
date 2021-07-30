@@ -1805,8 +1805,8 @@ Stat names are the names that you see in the above embed, with the exception of 
                 userteam = [x for x in self.teamlist if user.tag in x.teammates or user.tag == x.leaderid]
                 userteam = userteam[0]
                 canjoin = [x for x in self.inadventure if x["TEAM_ID"] == userteam.teamid]
-                if len(userteam.teammates) < 1:
-                    await ctx.send("You need at least 1 other teammate in order to start an adventure")
+                if not user.getTier() == 6 or len(userteam.teammates) < 1:
+                    await ctx.send("You need at least 1 other teammate in order to start an adventure or be at tier 6")
                     return
                 
                 if canjoin:
@@ -3146,7 +3146,7 @@ Stat names are the names that you see in the above embed, with the exception of 
 
     # Adventure
     async def prepadv(self, ctx, squad):
-        if len(squad['IN_ADVENTURE']) > 1:
+        if squad['IN_ADVENTURE][0].getTier() == 6 or len(squad['IN_ADVENTURE']) > 1:
             await self.teammsg(squad, "Member requirement has been met. Setting out for adventure now")
             squad["PENDING"] = False
             await self.startadv(squad)
