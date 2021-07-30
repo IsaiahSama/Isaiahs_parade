@@ -728,8 +728,6 @@ Stat names are the names that you see in the above embed, with the exception of 
             account = await self.getmember(ctx.author)
         
         if not account: await ctx.send("You need to create your own user profile with <>createprofile first"); return
-        
-        user1 = await self.fightuser(account)
 
         if not isquest:
             victim = await self.getmember(member)
@@ -796,6 +794,7 @@ Stat names are the names that you see in the above embed, with the exception of 
 
             botmsg = await ctx.send(embed=questembed)
             
+        user1 = await self.fightuser(account)
 
         if user1.weapon.tag == 3601:
             user1.weapon.damage = math.floor(user1.maxdmg * 0.5)
@@ -2405,7 +2404,6 @@ Stat names are the names that you see in the above embed, with the exception of 
                 if player.weapon.name == "Plague Doctors Scepter":
                     player.weapon.damage = math.floor(player.maxdmg * 0.5)
 
-            print(self.raidbeast.weapon)
             if self.raidbeast.weapon.name == "Plague Doctors Scepter":
                 self.raidbeast.weapon.damage = math.floor(self.raidbeast.maxdmg * 0.5)
             
