@@ -2324,9 +2324,17 @@ Stat names are the names that you see in the above embed, with the exception of 
                     await ctx.send("Well Biggums. Let's get Bigger")
                     target.weapon2 = 3605
                     target.armour2 = 4605
-                    target.ability = "Mass increase"
-                    target.passive = "Belly Protection"       
-
+                    target.ability = 6004
+                    target.passive = 8002 
+        elif target.tag == 315619611724742656:
+            if not target.hasreborn() and target.getTier() != 6 :
+                await ctx.send("Reach Tier 6 for your God Gear")
+            else:
+                if not target.weapon == 3601 and not target.weapon2 == 3601:
+                    await ctx.send("Oh... The True Plague Doctor has finally awoken.")
+                    target.weapon2 = 3601
+                    target.armour2 = 4602
+                    target.ability = 6001
 
     async def buffuse(self, user):
         item = await self.getbuff(user.curbuff)
