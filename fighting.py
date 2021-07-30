@@ -269,6 +269,7 @@ class Fight(commands.Cog):
             return
 
         tier = user.getTier()
+	
 
         embed = discord.Embed(
             title=f"Time for Quest. Tier {tier}",
