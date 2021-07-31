@@ -33,9 +33,10 @@ class Special(commands.Cog):
         for server in self.bot.guilds:
             async with connect(DB_NAME) as db:
                 channel_id = await paraderoomdb.get_parade_room_id(db, server.id)
-            if not channel_id: continue
             channel = server.get_channel(channel_id)
-            if not channel: continue
+            if not channel: 
+                channel = list(filter(lambda chan: "parade" in chan.name, server.text_channels))
+                if not channel:continue
             
             await channel.send(f"Notification: {text}")
 
