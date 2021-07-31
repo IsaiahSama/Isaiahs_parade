@@ -1422,7 +1422,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         thing.add_field(name=f"Armour: {shield.name}", value=f"Health up: +{shield.hpup}, Power Up: +{shield.pup}")
         if shield.hasPair():
             fuser = await self.fightuser(user)
-            thing.add_field(name=f"{shield.name} pairs well with {get_weapon_by_id(shield.pairs)}", value=f"{fuser.buff()}", inline=False)
+            thing.add_field(name=f"{shield.name} pairs well with {get_weapon_by_id(shield.pairs).name}", value=f"{fuser.buff()}", inline=False)
             
 
         await ctx.send(embed=thing)
