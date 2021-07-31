@@ -2039,7 +2039,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         if user:
             _, _, s2, ss2 = user.getallgear()
             if user.hasreborn():
-                if [s2.tierz == 6, ss2.tierz == 6] and user.getTier() < (6 - user.reborn):
+                if (s2.tierz == 6 or ss2.tierz == 6) and user.getTier() < (6 - user.reborn):
                     await ctx.send(f"You have not yet reached the ability to wield god gear. You must be Tier {6 - user.reborn}")
                     return
                 
