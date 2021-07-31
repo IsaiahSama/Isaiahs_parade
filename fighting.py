@@ -1219,7 +1219,12 @@ Stat names are the names that you see in the above embed, with the exception of 
             else:
                 await ctx.send(f"{lvl}")
             rnum = randint(0, 100)
-            if rnum in [5, 45, 68]:
+            if "kevin" in self.current_event.lower():
+                k = 10
+            else:
+                k = 3
+            chances = sample(range(100), k=k)
+            if rnum in chances:
                 umain = await self.getmain(attacker)
                 if len(umain.inventory) < 25:
                     umain.inventory.append(999)
@@ -1249,7 +1254,9 @@ Stat names are the names that you see in the above embed, with the exception of 
                     coin *= 1.5
                     await ctx.send(f"{buffitem.name}: {buffitem.effect}")
 
-            # coin *= 2
+            if "pot o' gold" == self.current_event.lower():
+                await ctx.send("Ouu, Loot. Extra cash.")
+                coin *= 1.5
 
             attacker.addcoin(round(coin))
             await ctx.send(f"{attacker.name}: You have received {coin} Parade Coins for defeating {defender.name}")
@@ -2475,6 +2482,8 @@ Stat names are the names that you see in the above embed, with the exception of 
             self.raidon = False
             self.raiding = True
             for player in self.raiders:
+                if self.current_event.lower() == "hero's blessing":
+                    player.max_dmg *= 1.5
                 if player.hasActive():
                     player.ability.reset()
 
@@ -2482,6 +2491,8 @@ Stat names are the names that you see in the above embed, with the exception of 
                 if player.weapon.name == "Plague Doctors Scepter":
                     player.weapon.damage = math.floor(player.maxdmg * 0.5)
 
+            if self.current_event.lower() == "hero's blessing":
+                await channel.send("Our heroes have been blessed. All heroes will now be 50% stronger than before")
             if self.raidbeast.weapon.name == "Plague Doctors Scepter":
                 self.raidbeast.weapon.damage = math.floor(self.raidbeast.maxdmg * 0.5)
             
