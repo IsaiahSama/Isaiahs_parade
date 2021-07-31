@@ -3430,7 +3430,7 @@ Stat names are the names that you see in the above embed, with the exception of 
 
     # Event
 
-    current_event = None
+    current_event = ""
     events = {
         "Double Exp": "The time is now. You will now earn double exp for the duration of this event",
         "Visit to Kevin's": "While in Kevin's yard, You now have a 10% chance to find one of his secret candies from one of the nearby enemies.",
@@ -3454,6 +3454,9 @@ Stat names are the names that you see in the above embed, with the exception of 
                 event = choice(tuple(self.events.items()))
                 self.current_event = event[0]
                 await self.notify(f"The {event[0]} event has begun. {event[1]}")
+                await asyncio.sleep(60 * 60)
+                await self.notify(f"The {event[0]} even has ended.")
+                self.current_event = ""
             
     async def notify(self, message):
         """Function which accepts a string as an argument, goes through all the bots guilds, and sends a message in the parade room server"""
