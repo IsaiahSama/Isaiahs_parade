@@ -3213,7 +3213,8 @@ Stat names are the names that you see in the above embed, with the exception of 
         await ctx.send("<>quest")
         await ctx.send(embed=embed)
         self.inquest.append(member.id)
-        await self.fight(ctx, member, True, True)
+        ctx.author = member
+        await self.fight(ctx, None, True, True)
 
 
     async def rembed(self, embed, channel):
@@ -3468,7 +3469,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             else:
                 async with connect(DB_NAME) as db:
                     channel_id = await paraderoomdb.get_parade_room_id(db, server.id)
-                channel = server.get_text_channel(channel_id)
+                channel = server.get_channel(channel_id)
                 if not channel: continue
             await channel.send(message)
 
