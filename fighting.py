@@ -1806,7 +1806,6 @@ Stat names are the names that you see in the above embed, with the exception of 
                 userteam = await self.get_team_by_user_id(user.tag)
                 userteam = userteam[0]
                 canjoin = [x for x in self.inadventure if x["TEAM_ID"] == userteam.teamid]
-                await ctx.send(f"{userteam.name} members are {userteam.teammates}, so {len(userteam.teammates)} in total.")
                 if len(userteam.teammates) < 1:
                     if (user.getTier() != 6):
                         await ctx.send("You need at least 1 other teammate in order to start an adventure or be at tier 6")
