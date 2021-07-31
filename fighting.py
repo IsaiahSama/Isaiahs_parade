@@ -3455,7 +3455,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                 await self.startRaid()
 
         if not self.current_event:
-            chance = randint(0, 100)
+            chance = randint(0, 1000)
             if chance in sample(range(100), k=5):
                 event = choice(tuple(self.events.items()))
                 self.current_event = event[0]
