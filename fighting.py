@@ -3004,11 +3004,17 @@ Stat names are the names that you see in the above embed, with the exception of 
         else:
             exp = loser.xpthresh / 3
         
+        message = ""
+        irl = await self.getirl(winner)
+
         if winner.hasbuff():
             if winner.curbuff == 402:
                 exp += 0.20 * exp
+                message += f"{irl.mention} has gained an increased 20% exp points from defeating {loser.name}. "
 
-        # exp *= 2
+        if self.current_event.lower() == "double exp":
+            exp *= 2
+            message += "The double exp event has rewarded you with DOUBLE exp. "
         
         winner.curxp += math.floor(exp)
         
@@ -3018,13 +3024,9 @@ Stat names are the names that you see in the above embed, with the exception of 
 
         if levelup:
             return True
-        if winner.hasbuff():
-            if winner.curbuff == 402:
-                irl = await self.getirl(winner)
-                return f"{irl.mention} has gained an increased {exp} exp points from defeating {loser.name}"
 
-        irl = await self.getirl(winner)
-        return f"{irl.mention} has gained {exp} exp points from defeating {loser.name}"    
+        message += f"{irl.mention} has gained a total of {exp} exp points from defeating {loser.name}. "    
+        return message
 
     async def getirl(self, user):
         everyone = self.bot.get_all_members()
@@ -3439,7 +3441,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             chance = randint(0, 100)
             if chance in sample(range(100), k=5):
                 event = choice(tuple(self.events.items()))
-                self.current_event = {event[0]: event[1]}
+                self.current_event = event[0]
                 await self.notify(f"The {event[0]} event has begun. {event[1]}")
             
     async def notify(self, message):
