@@ -345,6 +345,12 @@ allweapons = [pds, parblade, uth, diowep, bhammer]
 for weapon in weaponlist:
     allweapons.append(weapon)
 
+def get_weapon_by_id(tag):
+    target = None
+    for weapon in allweapons:
+        if weapon.tag == tag: target = tag
+    return target
+
 # Armour
 @dataclass
 class Armour:
