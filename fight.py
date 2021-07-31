@@ -1060,7 +1060,7 @@ class FightMe(Fighter):
         tarm = self.armour.__dict__
         for k,v in tarm.items():
             if type(v) == int:
-                if k in ["tag", "cost", "tierz"]: continue
+                if k in ["tag", "cost", "tierz", "pairs"]: continue
                 tarm[k] = math.ceil(v + (v * toinc))
             else: continue
 
