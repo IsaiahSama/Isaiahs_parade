@@ -1926,8 +1926,10 @@ Stat names are the names that you see in the above embed, with the exception of 
 
         del temp
         the_team.teammates.append(ctx.author.id)
+        the_team.teammates.remove(member.id)
         the_team.leaderid = member.id
         await ctx.send("Ownership has been transferred")
+        await member.send(f"You are now the leader of {the_team.name}")
 
 
     @commands.command(brief="Use this to leave your current team", help="Leaves the team that you are currently in. If a leader is the only one remaining and leaves, then the team will be deleted immediately")
