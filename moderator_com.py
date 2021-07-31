@@ -56,6 +56,8 @@ class Moderator(commands.Cog):
             if not channel_id:
                 channel = await guild.create_text_channel("parade-room")
                 await paraderoomdb.add_or_update_parade_room(db, guild.id, channel.id)
+            else:
+                channel = guild.get_channel(channel_id)
 
         role = discord.utils.get(guild.roles, name="Parader")
         if not role:
