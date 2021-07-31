@@ -1803,12 +1803,14 @@ Stat names are the names that you see in the above embed, with the exception of 
             await self.doublecheck(user)
             if user.is_teammate():
                 if user.getTier() == 1: await ctx.send("Sorry, you're too weak to go on adventures. At least reach Tier 2");return
-                userteam = [x for x in self.teamlist if user.tag in x.teammates or user.tag == x.leaderid]
+                userteam = await self.get_team_by_user_id(user.tag)
                 userteam = userteam[0]
                 canjoin = [x for x in self.inadventure if x["TEAM_ID"] == userteam.teamid]
-                if not user.getTier() == 6 or len(userteam.teammates) < 1:
-                    await ctx.send("You need at least 1 other teammate in order to start an adventure or be at tier 6")
-                    return
+                await ctx.send(f"{userteam.name} members are {userteam.teammates}, so {len(userteam.teammates)} in total.")
+                if len(userteam.teammates) < 1:
+                    if (user.getTier() != 6):
+                        await ctx.send("You need at least 1 other teammate in order to start an adventure or be at tier 6")
+                        return
                 
                 if canjoin:
                     canjoin = canjoin[0]
@@ -1858,6 +1860,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         user, target = await self.getmember(ctx.author), await self.getmember(member)
 
         if user and target:
+            await self.doublecheck(user)
             if target.is_teammate():
                 await ctx.send("The person you wish to invite is already in a team")
                 return
@@ -1866,37 +1869,32 @@ Stat names are the names that you see in the above embed, with the exception of 
                 await self.tdeny(ctx)
                 return
 
-            userteam = [x for x in self.teamlist if ctx.author.id == x.leaderid]
+            team = await self.get_team_by_owner_id(ctx.author.id)
 
-            if not userteam:
+            if not team:
                 await ctx.send("Only the leader can invite a member to the team")
                 return
             
-            userteam = userteam[0]
+            team = team[0]
 
             try:
-                invitation = await member.send(f"You have been invited to {userteam.name} by {user.name}. React below to accept or decline")
+                invitation = await member.send(f"You have been invited to {team.name} by {user.name}. React below to accept or decline")
             except Exception:
-                invitation = await ctx.send(f"{member.mention} have been invited to {userteam.name} by {user.name}. React below to accept or decline")
+                invitation = await ctx.send(f"{member.mention} have been invited to {team.name} by {user.name}. React below to accept or decline")
 
             await ctx.send("Your invitation has been sent")
 
             [await invitation.add_reaction(emoji) for emoji in self.veri_emojis]
-
-            def check(reaction, user):
-                return str(reaction.emoji) in self.veri_emojis and user == member
             
-            reaction, _ = await self.bot.wait_for("reaction_add", check=check)
+            reaction, _ = await self.bot.wait_for("reaction_add", check=lambda reaction, user: str(reaction.emoji) in self.veri_emojis and user == member)
             emoji = str(reaction.emoji)
 
             if emoji == self.veri_emojis[0]:
-                targetguild = [x for x in self.teamlist if ctx.author.id == x.leaderid]
-                targetguild = targetguild[0]
-                targetguild.teammates.append(target.tag)
-                user.inteam = "True"
-                await ctx.send(f"Joined {targetguild.name}")
-                leader = self.bot.get_user(targetguild.leaderid)
-                await leader.send(f"{ctx.author.name} has joined your team")
+                team.teammates.append(target.tag)
+                target.inteam = "True"
+                await ctx.send(f"Joined {team.name}")
+                leader = self.bot.get_user(team.leaderid)
+                await leader.send(f"{member.name} has joined your team")
                 await invitation.channel.send("Successfully joined team")
 
             else:
@@ -2357,11 +2355,12 @@ Stat names are the names that you see in the above embed, with the exception of 
             Do <>teams to see available ones and ask to be invited, or do <>register {teamname} to make your own")
 
     async def doublecheck(self, user):
-        userteam = [x for x in self.teamlist if user.tag in x.teammates or user.tag == x.leaderid]
+        userteam = await self.get_team_by_user_id(user.tag)
         if userteam:
             user.inteam = "True"
         else:
             user.inteam = "False"
+        return None
 
 
     async def startRaid(self, guild=None, channel=None, user=None):
@@ -3532,6 +3531,12 @@ Stat names are the names that you see in the above embed, with the exception of 
     async def setup_teams(self):
         """Function which turns all tuples from the db into Team class Instances"""
         self.teamlist = [Team(*team) for team in self.teamlist]
+
+    async def get_team_by_owner_id(self, tag):
+        return list(filter(lambda x: x.leaderid == tag, self.teamlist))
+
+    async def get_team_by_user_id(self, tag):
+        return list(filter(lambda x: tag in x.teammates or tag == x.leaderid, self.teamlist))
 
 
     @commands.command(hidden=True)

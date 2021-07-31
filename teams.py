@@ -52,7 +52,6 @@ class Database:
 
         
         entry = list(team.__dict__.values())
-        print(entry)
         if isinstance(entry[-1], list):
             if not entry[-1]: entry[-1] = ""
             else:
