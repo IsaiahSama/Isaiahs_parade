@@ -267,7 +267,7 @@ class TrainingHandler:
 
             await sleep(2)
 
-        player.curxp += points * 3
+        player.curxp += (points * 3)  * (player.getTier() * (int("1" + ("0" * player.getTier())) / 10))
         player.healchance += points 
 
         await ctx.send(f"Increased {ctx.author.mention}'s chance to heal by {points} and gained {points * 3} exp points")
@@ -325,7 +325,7 @@ class TrainingHandler:
         msg = f"{ctx.author.mention}'s Gained + {points} damage and Exp Points"
         if sum(user_answers) == total:
             points = 3
-            player.curxp += (points * 3) + 5
+            player.curxp += (points * 3) + 5 * (player.getTier() * (int("1" + ("0" * player.getTier())) / 10))
             msg += f"\nFor getting the correct answer. You have gained an extra {(points * 3) + 5} EXP points"
     
         await ctx.send(msg)
@@ -363,7 +363,7 @@ class TrainingHandler:
         
         if points >= 5:
             player.health += points // 2
-            player.curxp += points * 2
+            player.curxp += points * 2 * (player.getTier() * (int("1" + ("0" * player.getTier())) / 10))
             await ctx.send(f"{ctx.author.mention} gained {points //2} HP and {points * 2} EXP points")
         else:
             await ctx.send(f"{ctx.author.mention} has failed")
@@ -419,7 +419,7 @@ class TrainingHandler:
         
         if points >= 3:
             player.critchance += points
-            player.curxp += points * 3
+            player.curxp += (points * 3) * (player.getTier() * (int("1" + ("0" * player.getTier())) / 10))
             await ctx.send(f"{ctx.author.mention} has  Passed :). Increased crit_chance by {points}, and gained {points * 3} exp points.")
         else:
             await ctx.send(f"{ctx.author.display_name} has failed  failed 😒")
