@@ -116,14 +116,12 @@ class GroupCall(commands.Cog):
                     if server.id == 739229902921793637:
                         channel = server.get_channel(739235964542648411)
                     else:
-                        channel = discord.utils.get(server.text_channels, name="parade-room")
-                        if channel == None:
-                            await server.create_text_channel("parade-room")
-                            for tchan in server.text_channels:
-                                if tchan.name.lower() == "parade-room":
-                                    await tchan.send("Successfully Created")
-
-                            channel = discord.utils.get(server.text_channels, name="parade-room")
+                        channel = list(filter(lambda channel: "parade" in channel.name, server.text_channels ))
+                        if not channel:
+                            continue
+                        
+                        else:
+                            channel = channel[0]
 
                 await channel.send(f"Server: {ctx.guild} has started a Multi-Server Intercom. Join with <>gjoin")
 
