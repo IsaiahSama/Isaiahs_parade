@@ -1959,6 +1959,7 @@ Stat names are the names that you see in the above embed, with the exception of 
 
         team = owner_team[0]
         team.teammates.append(member.id)
+        team.teammates.remove(owner.tag)
         team.leaderid = owner.tag
         await ctx.send(f"{ctx.author.mention} has reclaimed leadership of {team.name}")
         await member.send(f"Hey {leader.name}, unfortunately, {owner.name} has reclaimed ownership of {team.name}")
