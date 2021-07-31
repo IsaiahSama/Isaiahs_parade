@@ -811,13 +811,13 @@ Stat names are the names that you see in the above embed, with the exception of 
         fighting = True
 
         # Checking for Armour Weapon Pairs
-        if attacker.armour.getpair():
+        if attacker.armour.hasPair():
             if attacker.weapon.tag == attacker.armour.pairs:
                 msg = attacker.buff()
                 await ctx.send(f"Set Bonus {msg}")
                 
 
-        if defender.armour.getpair():
+        if defender.armour.hasPair():
             if defender.weapon.tag == defender.armour.pairs:
                 msg = defender.buff()
                 await ctx.send(f"Set Bonus {msg}")
@@ -928,7 +928,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             if attacker.hasPassive():
                 if attacker.passive.tag == 7010:
                     if attacker.armour.tag == 2602:
-                        if attacker.armour.getpair():
+                        if attacker.armour.hasPair():
                             if attacker.weapon.tag == attacker.armour.pairs:
                                 power = await self.cantruehaki(defender, attacker, power, battlebed)
                         
@@ -943,7 +943,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                     battlebed.add_field(name=f"{attacker.name}: {attacker.passive.usename}", value=f"{attacker.passive.effect} by {tob * 100}%")
 
                 if attacker.passive.name == "Pride of Balance":
-                    if attacker.armour.getpair():
+                    if attacker.armour.hasPair():
                         if attacker.armour.tag == 2603:
                             power = await self.canbalance(defender, attacker, power, battlebed)
 
@@ -970,7 +970,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                     psned.append(defender)
                     psn = True
                 if abiltag == 5004:
-                    if attacker.armour.getpair():
+                    if attacker.armour.hasPair():
                         if attacker.weapon.tag == attacker.armour.pairs:
                             battlebed.add_field(name=f"{attacker.ability.usename}", value="Having armour set increases damage by 1.3 + 70")
                             power *= 1.3
@@ -1420,9 +1420,9 @@ Stat names are the names that you see in the above embed, with the exception of 
         thing.add_field(name=f"Weapon: {sword.name}", value=f"Damage: +{sword.damage}, Critchance: +{sword.critplus}%, Lifesteal: +{sword.lifesteal}",
         inline=False)
         thing.add_field(name=f"Armour: {shield.name}", value=f"Health up: +{shield.hpup}, Power Up: +{shield.pup}")
-        if shield.getpair():
+        if shield.hasPair():
             fuser = await self.fightuser(user)
-            thing.add_field(name=f"{shield.name} pairs well with {shield.getpair().name}", value=f"{fuser.buff()}", inline=False)
+            thing.add_field(name=f"{shield.name} pairs well with {shield.hasPair().name}", value=f"{fuser.buff()}", inline=False)
             
 
         await ctx.send(embed=thing)
@@ -2457,7 +2457,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             if person.hasActive():
                 person.ability.reset()
         # Checking for Armour Weapon Pairs
-            if person.armour.getpair():
+            if person.armour.hasPair():
                 if person.weapon.name == person.armour.pairs:
                     msg = person.buff()
                     await channel.send(f"Set Bonus {msg}")
@@ -2479,7 +2479,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         if self.raidbeast.hasActive():
             self.raidbeast.ability.reset()
 
-        if self.raidbeast.armour.getpair():
+        if self.raidbeast.armour.hasPair():
             if self.raidbeast.weapon.name == self.raidbeast.armour.pairs:
                 msg = self.raidbeast.buff()
                 await channel.send(f"Set Bonus {msg}")
@@ -2605,7 +2605,7 @@ Stat names are the names that you see in the above embed, with the exception of 
 
                 if player.passive.tag == 7010:
                     if player.armour.name == "Haki":
-                        if player.armour.getpair():
+                        if player.armour.hasPair():
                             if player.weapon.name == player.armour.pairs:
                                 power = await self.cantruehaki(self.raidbeast, player, power, raidbed)
                         
@@ -2616,7 +2616,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                         pass
 
                 if player.passive.name == "Pride of Balance":
-                    if player.armour.getpair():
+                    if player.armour.hasPair():
                         if player.armour.name == "Yang":
                             power = await self.canbalance(self.raidbeast, player, power, raidbed)
 
@@ -2839,7 +2839,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             
             if self.raidbeast.passive.tag == 7010:
                 if self.raidbeast.armour.name == "Haki":
-                    if self.raidbeast.armour.getpair():
+                    if self.raidbeast.armour.hasPair():
                         if self.raidbeast.weapon.name == self.raidbeast.armour.pairs:
                             power = await self.cantruehaki(target, self.raidbeast, power, raidbed)
                         
@@ -2850,7 +2850,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                     pass
 
                 if self.raidbeast.passive.name == "Pride of Balance":
-                    if self.raidbeast.armour.getpair():
+                    if self.raidbeast.armour.hasPair():
                         if self.raidbeast.armour.name == "Yang":
                             power = await self.canbalance(target, self.raidbeast, power, raidbed)
 

@@ -366,9 +366,8 @@ class Armour:
         else:
             return True
 
-    def getpair(self):
-        if not self.pairs: return False
-        return list(filter(lambda weapon: self.pairs == weapon.tag, allweapons))[0]
+    def hasPair(self):
+        return self.pairs
 
     def isreborn(self):
         if self.reborn > 0:
