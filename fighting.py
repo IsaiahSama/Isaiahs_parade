@@ -3099,7 +3099,12 @@ Stat names are the names that you see in the above embed, with the exception of 
                     if vanillian.tier == 6: yes.append(vanillian)
 
                 elif user.getTier() < 6:
-                    if vanillian.tier >= 4: yes.append(vanillian)
+                    reborn = user.reborn
+                    if reborn > 6:
+                        reborn = 6
+                    if vanillian.tier >= reborn: 
+                        if vanillian.tier >= user.getTier():
+                            yes.append(vanillian)
                 else:
                     if vanillian.tier >= 5: yes.append(vanillian)
 
