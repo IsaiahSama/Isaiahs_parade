@@ -1903,6 +1903,33 @@ Stat names are the names that you see in the above embed, with the exception of 
         else:
             await ctx.send("Either you or the person you mentioned do not have a profile. Make one with <>createprofile")
 
+    @commands.command(brief="Use this to transfer leadership of your team", help="Transfers your team leadership to the person you mention, assuming that they are in your team")
+    async def promote(self, ctx, member:discord.Member):
+        promoter, promotee = await self.getmember(ctx.author), await self.getmember(member)
+        if not all([promoter, promotee]):
+            await self.denied(ctx.channel, ctx.author)
+            return
+
+        if not all([promoter.is_teammate(), promotee.is_teammate()]):
+            await self.tdeny(ctx)
+            return 
+
+        the_team = await self.get_team_by_owner_id(promoter.tag)
+        if not the_team:
+            await ctx.send(f"Could not find any teams that {ctx.author.name} owns.")
+            return
+
+        temp = await self.get_team_by_user_id(promotee.tag)
+        if temp.teamid != the_team.teamid:
+            await ctx.send(f"{member.mention} is not a part of {ctx.author.mention}'s team, so leadership cannot be given to them.")
+            return
+
+        del temp
+        the_team.teammates.append(ctx.author.id)
+        the_team.leaderid = member.id
+        await ctx.send("Ownership has been transferred")
+
+
     @commands.command(brief="Use this to leave your current team", help="Leaves the team that you are currently in. If a leader is the only one remaining and leaves, then the team will be deleted immediately")
     async def leaveteam(self, ctx):
         user = await self.getmember(ctx.author)
