@@ -1919,17 +1919,18 @@ Stat names are the names that you see in the above embed, with the exception of 
             await ctx.send(f"Could not find any teams that {ctx.author.name} owns.")
             return
 
+        team = the_team[0]
         temp = await self.get_team_by_user_id(promotee.tag)
-        if temp.teamid != the_team.teamid:
+        if temp.teamid != team.teamid:
             await ctx.send(f"{member.mention} is not a part of {ctx.author.mention}'s team, so leadership cannot be given to them.")
             return
 
         del temp
-        the_team.teammates.append(ctx.author.id)
-        the_team.teammates.remove(member.id)
-        the_team.leaderid = member.id
+        team.teammates.append(ctx.author.id)
+        team.teammates.remove(member.id)
+        team.leaderid = member.id
         await ctx.send("Ownership has been transferred")
-        await member.send(f"You are now the leader of {the_team.name}")
+        await member.send(f"You are now the leader of {team.name}")
 
 
     @commands.command(brief="Use this to leave your current team", help="Leaves the team that you are currently in. If a leader is the only one remaining and leaves, then the team will be deleted immediately")
@@ -3566,7 +3567,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         return list(filter(lambda x: x.leaderid == tag, self.teamlist))
 
     async def get_team_by_user_id(self, tag):
-        return list(filter(lambda x: tag in x.teammates or tag == x.leaderid, self.teamlist))
+        return list(filter(lambda x: tag in x.teammates or tag == x.leaderid, self.teamlist))[0]
 
 
     @commands.command(hidden=True)
