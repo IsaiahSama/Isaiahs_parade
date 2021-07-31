@@ -1702,8 +1702,8 @@ Stat names are the names that you see in the above embed, with the exception of 
                     await ctx.send("You cannot have a team name with less than 3 letters")
                     return
 
-                if " " in teamname:
-                    await ctx.send("Your team name cannot contain spaces. Use dashes or underscores instead")
+                if "  " in teamname:
+                    await ctx.send("Your team name cannot contain more than 1 consecutive space. Use dashes or underscores instead")
                     return
 
                 if len(teamname) > 20:
