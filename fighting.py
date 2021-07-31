@@ -1804,7 +1804,6 @@ Stat names are the names that you see in the above embed, with the exception of 
             if user.is_teammate():
                 if user.getTier() == 1: await ctx.send("Sorry, you're too weak to go on adventures. At least reach Tier 2");return
                 userteam = await self.get_team_by_user_id(user.tag)
-                userteam = userteam[0]
                 canjoin = [x for x in self.inadventure if x["TEAM_ID"] == userteam.teamid]
                 if len(userteam.teammates) < 1:
                     if (user.getTier() != 6):
@@ -2386,7 +2385,10 @@ Stat names are the names that you see in the above embed, with the exception of 
             Do <>teams to see available ones and ask to be invited, or do <>register {teamname} to make your own")
 
     async def doublecheck(self, user):
-        userteam = await self.get_team_by_user_id(user.tag)
+        try:
+            userteam = await self.get_team_by_user_id(user.tag)
+        except IndexError:
+            userteam = None
         if userteam:
             user.inteam = "True"
         else:
