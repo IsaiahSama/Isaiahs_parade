@@ -2483,7 +2483,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             self.raiding = True
             for player in self.raiders:
                 if self.current_event.lower() == "hero's blessing":
-                    player.max_dmg *= 1.5
+                    player.maxdmg *= 1.5
                 if player.hasActive():
                     player.ability.reset()
 
