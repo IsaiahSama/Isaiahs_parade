@@ -1916,6 +1916,8 @@ Stat names are the names that you see in the above embed, with the exception of 
                 if user.tag == userteam.leaderid:
                     if len(userteam.teammates) == 0:
                         self.teamlist.remove(userteam)
+                        async with connect(DB_NAME) as db:
+                            teamdb.delete_by_team_id(db, userteam.teamid)
                         await ctx.send("As you are the leader leaving with no one else. Your team has been deleted")
                         
                     else:

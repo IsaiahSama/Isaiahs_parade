@@ -62,4 +62,8 @@ class Database:
 
         await db.commit()
 
+    async def delete_by_team_id(self, db:Connection, team_id:str):
+        await db.execute("DELETE FROM TeamTable WHERE TEAM_ID = (?)", (team_id, ))
+        await db.commit()
+
 teamdb = Database()
