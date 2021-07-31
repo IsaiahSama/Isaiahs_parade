@@ -1867,7 +1867,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                 await self.tdeny(ctx)
                 return
 
-            team = await self.get_team_by_owner_id(ctx.author.id)
+            team = await self.get_team_by_leader_id(ctx.author.id)
 
             if not team:
                 await ctx.send("Only the leader can invite a member to the team")
@@ -1913,7 +1913,7 @@ Stat names are the names that you see in the above embed, with the exception of 
             await self.tdeny(ctx)
             return 
 
-        the_team = await self.get_team_by_owner_id(promoter.tag)
+        the_team = await self.get_team_by_leader_id(promoter.tag)
         if not the_team:
             await ctx.send(f"Could not find any teams that {ctx.author.name} owns.")
             return
@@ -1930,6 +1930,37 @@ Stat names are the names that you see in the above embed, with the exception of 
         team.leaderid = member.id
         await ctx.send("Ownership has been transferred")
         await member.send(f"You are now the leader of {team.name}")
+    
+    @commands.command(brief="Use this to return leadership of your team to you", help="If you have given leadership of your team to someone else, and you are still a part of that team, then you can use this to regain your leadership")
+    async def demote(self, ctx, member: discord.Member):
+        owner, leader = await self.getmember(ctx.author), await self.getmember(member)
+        if not all([owner, leader]):
+            await self.denied(ctx.channel, ctx.author)
+            return
+
+        if not all([owner.is_teammate(), leader.is_teammate()]):
+            await self.tdeny(ctx)
+            return 
+        
+        owner_team = await self.get_team_by_owner_id(owner.tag)
+        if not owner_team:
+            await ctx.send(f"{ctx.author.mention}, sorry... but you don't even own any teams.")
+            return
+
+        leader_team = await self.get_team_by_leader_id(leader.tag)
+        if not leader_team:
+            await ctx.send(f"Sorry {ctx.author.mention}, but {member.name} isn't even leading any teams")
+            return
+
+        if owner_team[0] != leader_team[0]:
+            await ctx.send(f":x: {ctx.author.mention}. That won't work. The team that {member.name} is leading, is not yours.")
+            return
+
+        team = owner_team[0]
+        team.teammates.append(member.id)
+        team.leaderid = owner.tag
+        await ctx.send(f"{ctx.author.mention} has reclaimed leadership of {team.name}")
+        await member.send(f"Hey {leader.name}, unfortunately, {owner.name} has reclaimed ownership of {team.name}")
 
 
     @commands.command(brief="Use this to leave your current team", help="Leaves the team that you are currently in. If a leader is the only one remaining and leaves, then the team will be deleted immediately")
@@ -3372,8 +3403,6 @@ Stat names are the names that you see in the above embed, with the exception of 
         person.instantize()
         return person
 
-        
-
     async def getmain(self, arg):
         for user in self.users:
             if user.tag == arg.tag:
@@ -3565,8 +3594,11 @@ Stat names are the names that you see in the above embed, with the exception of 
         """Function which turns all tuples from the db into Team class Instances"""
         self.teamlist = [Team(*team) for team in self.teamlist]
 
-    async def get_team_by_owner_id(self, tag):
+    async def get_team_by_leader_id(self, tag):
         return list(filter(lambda x: x.leaderid == tag, self.teamlist))
+
+    async def get_team_by_owner_id(self, tag):
+        return list(filter(lambda team: team.ownerid == tag, self.teamlist))
 
     async def get_team_by_user_id(self, tag):
         return list(filter(lambda x: tag in x.teammates or tag == x.leaderid, self.teamlist))[0]
