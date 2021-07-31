@@ -1,25 +1,61 @@
+from aiosqlite import Connection, connect
 import discord
 from discord import utils, Embed
 from discord.ext import commands
 import asyncio
 from random import randint, choice
-import typing
+from typing import Union, Optional
 import math
 import traceback
 from copy import copy
 from tips import tips
+from main import DB_NAME
+
+class Database:
+    def __init__(self) -> None:
+        pass
+
+    async def setup(self, db:Connection):
+        await db.execute("""CREATE TABLE IF NOT EXISTS ParadeRoomTable(
+            GUILD_ID INTEGER PRIMARY KEY UNIQUE,
+            CHANNEL_ID INTEGER);""")
+
+        await db.commit()
+    
+    async def add_or_update_parade_room(self, db:Connection, guild_id: int, channel_id:int):
+        """Function which accepts a database connection, a guild id, and the channel id, of the channel to check for bot messages."""
+
+        await db.execute("INSERT OR REPLACE INTO ParadeRoomTable (GUILD_ID, CHANNEL_ID) VALUES (?, ?)", (guild_id, channel_id))
+        await db.commit()
+
+    async def get_parade_room_id(self, db:Connection, guild_id:int) -> Union[int, None]:
+        """Function which accepts a database connection and a guild id, queries the database, and returns the id of the channel, or None."""
+        cursor = await db.execute("SELECT CHANNEL_ID FROM ParadeRoomTable WHERE GUILD_ID = ?", (guild_id, ))
+        row = await cursor.fetchone()
+        if not row:
+            return False
+        return row[0]
+
+paraderoomdb = Database()
 
 class Moderator(commands.Cog):
     """Commands for all moderators"""
     def __init__(self, bot):
         self.bot = bot
+        bot.loop.create_task(self.async_init())
+
+    async def async_init(self):
+        await self.bot.wait_until_ready()
+        async with connect(DB_NAME) as db:
+            await paraderoomdb.setup(db)
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
-        channel = discord.utils.get(guild.text_channels, name="parade-room")
-        if not channel:
-            await guild.create_text_channel("parade-room")
-            channel = discord.utils.get(guild.text_channels, name="parade-room")
+        async with connect(DB_NAME) as db:
+            channel_id = await paraderoomdb.get_parade_room_id(db, guild.id)
+            if not channel_id:
+                channel = await guild.create_text_channel("parade-room")
+                await paraderoomdb.add_or_update_parade_room(db, guild.id, channel.id)
 
         role = discord.utils.get(guild.roles, name="Parader")
         if not role:
@@ -47,6 +83,7 @@ class Moderator(commands.Cog):
         joinbed.add_field(name="Main Server", value="Feel free to join my main server. Get the link with <>parade")
         joinbed.add_field(name="Positioning", value="As someone created to Moderate, be sure to give me a role high enough in order for you to use me to my full potential")
         joinbed.add_field(name="Extra", value="I have automatically setup a role called shushed, which is assigned when the <>mute command is used. For setting this role up for newly created channels, use <>silentnow")
+        joinbed.add_field(name="The Parade Room", value="The parade-room is a room that I have created where I will put notifications and the like, and where you can use my features without disturbing others :). If you wish to change it, simply do <>paraderoom in the channel you want to be recognised as the new room.")
         
         await channel.send(embed=joinbed)
 
@@ -143,7 +180,7 @@ class Moderator(commands.Cog):
 
     @commands.command(help='Used to delete x number of messages containing the specified text', brief="Deletes messages containing text that you specify.", usage="amount_to_delete text-to-delete")
     @commands.has_permissions(manage_messages=True)
-    async def wipehas(self, ctx, amount: typing.Optional[int] = 100, *, args):
+    async def wipehas(self, ctx, amount: Optional[int] = 100, *, args):
         
         def check(m):
             return args.lower() in m.content.lower()
@@ -154,7 +191,7 @@ class Moderator(commands.Cog):
 
     @commands.command(brief="Deletes messages ending with the text specified", help="Deletes x number of messages ending with the text you specify.", usage="amount text-to-delete")
     @commands.has_permissions(manage_messages=True)
-    async def wipeendswith(self, ctx, amount: typing.Optional[int] = 100, *, args):
+    async def wipeendswith(self, ctx, amount: Optional[int] = 100, *, args):
        
         def check(m):
             return m.content.lower().endswith(args.lower())
@@ -165,7 +202,7 @@ class Moderator(commands.Cog):
 
     @commands.command(brief="Deletes messages starting with the text specified", help="Deletes x number of messages starting with the text you specify.", usage="amount text-to-delete")
     @commands.has_permissions(manage_messages=True)
-    async def wipestartswith(self, ctx, amount: typing.Optional[int] = 100, *, args):
+    async def wipestartswith(self, ctx, amount: Optional[int] = 100, *, args):
         
         def check(m):
             return m.content.lower().startswith(args.lower())
