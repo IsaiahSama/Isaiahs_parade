@@ -1684,9 +1684,10 @@ Stat names are the names that you see in the above embed, with the exception of 
                 color=randint(0, 0xffffff)
             )
 
-            for item in serverteams:
-                leader = self.bot.get_user(item.leaderid)
-                teambed.add_field(name=f"{item.name}", value=f"Lead by {leader.name}", inline=False)
+            for team in serverteams:
+                leader = self.bot.get_user(team.leaderid)
+                owner = self.bot.get_user(team.ownerid)
+                teambed.add_field(name=f"{team.name}", value=f"Created and owned by {owner.name}, Lead by {leader.name}", inline=False)
 
             await ctx.send(embed=teambed) 
         else:
@@ -1746,20 +1747,20 @@ Stat names are the names that you see in the above embed, with the exception of 
         if user:
             await self.doublecheck(user)
             if user.is_teammate():
-                userteam = [x for x in self.teamlist if ctx.author.id in x.teammates or ctx.author.id == x.leaderid]
-                userteam = userteam[0]
+                userteam = await self.get_team_by_user_id(user.tag)
                 teamguild = self.bot.get_guild(userteam.guildid)
                 teambed = discord.Embed(
                     title=userteam.name,
                     description=f"Showing team {userteam.name} of {teamguild.name}",
                     color=randint(0, 0xffffff)
                 )
-                tleader = self.bot.get_user(userteam.leaderid)
+                tleader = self.bot.get_user(userteam.leaderid) or "Unknown User"
                 teambed.set_thumbnail(url=tleader.avatar_url)
                 tleader = await self.getmember(tleader)
                 teambed.add_field(name="Lead by", value=f"{tleader.name}, Tier {tleader.getTier()}")
                 teambed.add_field(name="Member Count", value=len(userteam.teammates))
-                names = [self.bot.get_user(x).name for x in userteam.teammates]
+                teambed.add_field(name="Owner:", value=self.bot.get_user(userteam.ownerid).name or "Unknown User")
+                names = list(map(lambda id: self.bot.get_user(id).name, userteam.teammates))
                 if names:
                     teambed.add_field(name="Members", value=', '.join(names), inline=False)
 
