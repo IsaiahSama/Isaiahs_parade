@@ -90,6 +90,7 @@ class Moderator(commands.Cog):
         await channel.send(embed=joinbed)
 
     @commands.command(brief="Sets the current channel to be the new parade room", help="This command tells Isaiah's Parade to treat this channel as the current parade room, and will be where notifications are sent.")
+    @commands.has_guild_permissions(administrator=True)
     async def paraderoom(self, ctx):
         async with connect(DB_NAME) as db:
             await paraderoomdb.add_or_update_parade_room(db, ctx.guild.id, ctx.channel.id)
