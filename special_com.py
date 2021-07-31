@@ -4,6 +4,7 @@ import asyncio
 import random
 from random import randint
 import json, time, os
+from moderator_com import DB_NAME, connect, paraderoomdb
 
 
 class Special(commands.Cog):
@@ -30,14 +31,11 @@ class Special(commands.Cog):
     @commands.is_owner()
     async def notif(self, ctx, *, text):
         for server in self.bot.guilds:
-            channel = discord.utils.get(server.text_channels, name="parade-room")
-            if channel == None:
-                await server.create_text_channel("parade-room")
-                for tchan in server.text_channels:
-                    if tchan.name.lower() == "parade-room":
-                        await tchan.send("Successfully Created")
-
-                channel = discord.utils.get(server.text_channels, name="parade-room")  
+            async with connect(DB_NAME) as db:
+                channel_id = await paraderoomdb.get_parade_room_id(db, server.id)
+            if not channel_id: continue
+            channel = server.get_channel(channel_id)
+            if not channel: continue
             
             await channel.send(f"Notification: {text}")
 
@@ -143,20 +141,16 @@ class Special(commands.Cog):
         for server in self.bot.guilds:
             if server.id == 469273564034498580:
                 channel = server.get_channel(691991741896720474)
-                await channel.send(f"Today's fact is: {fact}")
 
-            if server.id == 739229902921793637:
+            elif server.id == 739229902921793637:
                 channel = server.get_channel(739266507090952282)
-                await channel.send(f"Today's fact is: {fact}")
             
-            channel = discord.utils.get(server.text_channels, name="parade-room")
-            if channel == None:
-                await server.create_text_channel("parade-room")
-                for tchan in server.text_channels:
-                    if tchan.name.lower() == "parade-room":
-                        await tchan.send("Successfully Created")
-
-                channel = discord.utils.get(server.text_channels, name="parade-room")                  
+            else:
+                async with connect(DB_NAME) as db:
+                    channel_id = await paraderoomdb.get_parade_room_id(db, server.id)
+                
+                channel = server.get_channel(channel_id)
+                if not channel: continue
                         
             await channel.send(f"Today's fact is: {fact}")
 
