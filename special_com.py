@@ -37,6 +37,7 @@ class Special(commands.Cog):
             if not channel: 
                 channel = list(filter(lambda chan: "parade" in chan.name, server.text_channels))
                 if not channel:continue
+                channel = channel[0]
             
             await channel.send(f"Notification: {text}")
 
