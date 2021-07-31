@@ -3459,7 +3459,7 @@ Stat names are the names that you see in the above embed, with the exception of 
         """Function which accepts a string as an argument, goes through all the bots guilds, and sends a message in the parade room server"""
         for server in self.bot.guilds:
             if server == self.homeguild:
-                channel = server.get_text_channel(741004595672776744)
+                channel = server.get_channel(741004595672776744)
                 role = server.get_role(740585613077774357)
                 message += role.mention
             else:
