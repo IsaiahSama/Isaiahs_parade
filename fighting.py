@@ -4,7 +4,7 @@ from discord.ext import commands, tasks
 from aiosqlite import connect
 import asyncio
 import random
-from random import randint
+from random import choice, randint, sample
 from fight import FightMe, Fighter, questpro, enemy, FightingBeast, abilities, allabilities, passives, allpassives, raidingmonster, weaponlist, armourlist, gear, lilgear, allarmour, allweapons, BeastFight, fightdb, get_weapon_by_id
 from items import Item, potlist, allpotlist
 import math
@@ -12,6 +12,8 @@ import jobs
 from teams import Team, teamdb
 from battle_functionality import train_emojis, TrainingHandler
 from main import DB_NAME
+from moderator_com import paraderoomdb
+
 
 emojiz = ["🤔", "🤫", "🤨", "🤯", "😎", "😓", "🤡", "💣", "🧛", "🧟‍♂️", "🏋️‍♂️", "⛹", "🏂"]
 
@@ -3414,6 +3416,14 @@ Stat names are the names that you see in the above embed, with the exception of 
 
 
     # Event
+
+    current_event = None
+    events = {
+        "Double Exp": "The time is now. You will now earn double exp for the duration of this event",
+        "Visit to Kevin's": "While in Kevin's yard, You now have a 10% chance to find one of his secret candies from one of the nearby enemies.",
+        "Pot o' gold": "What's this? Monsters have found pots of gold? Defeating them will surely provide more cash than before.",
+        "Hero's Blessing": "The goddess above has blessed all heroes. Will now do 1.5x damage in raids."}
+
     @commands.Cog.listener()
     async def on_message(self, message):
         if message.author == self.bot.user:
@@ -3424,7 +3434,27 @@ Stat names are the names that you see in the above embed, with the exception of 
             if potraid >= 20 and potraid <= 40:
                 self.raidon = True
                 await self.startRaid()
-        
+
+        if not self.current_event:
+            chance = randint(0, 100)
+            if chance in sample(range(100), k=5):
+                event = choice(tuple(self.events.items()))
+                self.current_event = {event[0]: event[1]}
+                await self.notify(f"The {event[0]} event has begun. {event[1]}")
+            
+    async def notify(self, message):
+        """Function which accepts a string as an argument, goes through all the bots guilds, and sends a message in the parade room server"""
+        for server in self.bot.guilds:
+            if server == self.homeguild:
+                channel = server.get_text_channel(741004595672776744)
+                role = server.get_role(740585613077774357)
+                message += role.mention
+            else:
+                async with connect(DB_NAME) as db:
+                    channel_id = await paraderoomdb.get_parade_room_id(db, server.id)
+                channel = server.get_text_channel(channel_id)
+                if not channel: continue
+            await channel.send(message)
 
     async def loadarmour(self, ctx, user):
         armourbed = discord.Embed(
