@@ -348,7 +348,7 @@ for weapon in weaponlist:
 def get_weapon_by_id(tag):
     target = None
     for weapon in allweapons:
-        if weapon.tag == tag: target = tag
+        if weapon.tag == tag: target = weapon; break
     return target
 
 # Armour
