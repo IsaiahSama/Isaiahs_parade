@@ -1330,7 +1330,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                     channel = self.bot.get_channel(740764507655110666)
                     await channel.send(f"Attention {rmention.mention}: {ctx.author.name} from {ctx.guild.name} has started a raid. Come let us raid their raid. We only have 3 minutes")
                 
-                await ctx.channel.send(f"{ctx.author.name} has started a raid.")
+                await self.notify(f"{ctx.author.name} of {ctx.guild.name} has started a raid. Join with <>raid.")
                 await self.startRaid(ctx.guild, ctx.channel, user)
             else:
                 await ctx.send("You must be at least level 40 to start a raid")
@@ -2217,6 +2217,18 @@ Stat names are the names that you see in the above embed, with the exception of 
         else:
             await ctx.send("This command cannot be used outside of The Parade. Get the link with <>parade")
     
+    @commands.command(help="Toggles your Eventist role. This is the role that will be used to notify you of events.", brief="Toggles your eventist role.")
+    async def eventist(self, ctx):
+        if ctx.guild == self.homeguild:
+            eventist = discord.utils.get(ctx.guild.roles, name="Eventist")
+            if eventist in ctx.author.roles:
+                await ctx.author.remove_roles(eventist)
+                await ctx.send("You will no longer be notified of events")
+            else:
+                await ctx.author.add_roles(eventist)
+                await ctx.send("You will now be notified of events.")
+        else:
+            await ctx.send("This command cannot be used outside of The Parade. Get the link with <>parade")
     channeling = []
 
     @commands.command(brief="Channel for power", help="For those who are reborn 5. Channel for an hour with increased effects. Cooldown: 2 hours")
@@ -2584,7 +2596,6 @@ Stat names are the names that you see in the above embed, with the exception of 
             if not self.raiding:
                 break
 
-            
         if self.winner == "players":
             channel2 = self.homeguild.get_channel(740764507655110666)
             if channel == channel2:
@@ -2604,7 +2615,8 @@ Stat names are the names that you see in the above embed, with the exception of 
                     if buffitem.tag == 501:
                         coin *= 1.5
                         await channel.send(f"{buffitem.name}: {buffitem.effect}")
-                # coin *= 2
+                if "pot o' gold" == self.current_event.lower():
+                    coin *= 1.5
                 player.addcoin(coin)
                 if value:
                     await channel.send(f"{player.name} has leveled up")
@@ -2616,7 +2628,8 @@ Stat names are the names that you see in the above embed, with the exception of 
                 showoff.append(raider.name)
 
             showoff = ", ".join(showoff)
-            await channel.send(f"Rewards are finished being distributed. The surviving players were {showoff}. Thank you my brave heroes")
+            
+            await self.notify(f"Rewards are finished being distributed. The surviving players were {showoff}. Thank you my brave heroes")
             if channel != channel2:
                 await channel2.send(f"Rewards are finished being distributed. The surviving players were {showoff}. Thank you my brave heroes")
         else:
@@ -3458,21 +3471,23 @@ Stat names are the names that you see in the above embed, with the exception of 
 
         if not self.current_event:
             chance = randint(0, 1000)
+            # Events channel
+            channel = self.homeguild.get_channel(871290447262253056)
+            event_role = self.homeguild.get_role(871284188656074752)
             if chance in sample(range(100), k=5):
                 event = choice(tuple(self.events.items()))
                 self.current_event = event[0]
-                await self.notify(f"The {event[0]} event has begun. {event[1]}")
+                await channel.send(f"Hey {event_role.mention}. The {event[0]} event has begun. {event[1]}")
                 await asyncio.sleep(60 * 60)
-                await self.notify(f"The {event[0]} even has ended.")
+                await channel.send(f"The {event[0]} even has ended.")
                 self.current_event = ""
             
     async def notify(self, message):
         """Function which accepts a string as an argument, goes through all the bots guilds, and sends a message in the parade room server"""
         for server in self.bot.guilds:
             if server == self.homeguild:
-                channel = server.get_channel(741004595672776744)
-                role = server.get_role(740585613077774357)
-                message += role.mention
+                # Announcements channel
+                continue
             else:
                 async with connect(DB_NAME) as db:
                     channel_id = await paraderoomdb.get_parade_room_id(db, server.id)

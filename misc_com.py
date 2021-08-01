@@ -18,14 +18,20 @@ class Misc(commands.Cog):
     """Misc commands for Misc uses"""
     def __init__(self, bot):
         self.bot = bot
-
+        bot.loop.create_task(self.async_init())
+    
+    async def async_init(self):
+        await self.bot.wait_until_ready()
+        self.mod_guild = self.bot.get_guild(722201014127820850)
+        self.channel = self.mod_guild.get_channel(871280220831875134)
+        self.big_channel = self.mod_guild.get_channel(871283420590915584)
 
     delmsg = []
     @commands.Cog.listener()
     async def on_message_delete(self, message):
         if message.author.bot: return
         istnce = delemsg(message.channel, message)
-        print(f"{message.author}: {message.content}")
+        await self.channel.send(f"{message.author} in {message.guild.name} | {message.channel.name   }: {message.content}")
         test = [dmsg for dmsg in self.delmsg if dmsg.chan == message.channel]
         if test: self.delmsg.remove(test[0])
         self.delmsg.append(istnce)
@@ -33,6 +39,11 @@ class Misc(commands.Cog):
         try:
             self.delmsg.remove(istnce)
         except ValueError: pass
+    
+    @commands.Cog.listener()
+    async def on_bulk_message_delete(self, messages):
+        for message in messages:
+            await self.big_channel.send(f"{message.author} in {message.guild.name} | {message.channel.name}: {message.content}")
 
     @commands.command(brief="Shows a message which has been deleted.", help="Shows a message that has been deleted within the last 2 minutes")
     async def nohide(self, ctx):
