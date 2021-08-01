@@ -2629,9 +2629,9 @@ Stat names are the names that you see in the above embed, with the exception of 
 
             showoff = ", ".join(showoff)
             
-            await self.notify(f"Rewards are finished being distributed. The surviving players were {showoff}. Thank you my brave heroes")
+            await channel.send(f"Rewards are finished being distributed. The surviving players were {showoff}. Thank you my brave heroes")
             if channel != channel2:
-                await channel2.send(f"Rewards are finished being distributed. The surviving players were {showoff}. Thank you my brave heroes")
+                await self.notify(f"Rewards are finished being distributed. The surviving players were {showoff}. Thank you my brave heroes")
         else:
             await channel.send(f"Unfortunately, {self.raidbeast.name} wiped the floor with the young heroes.")
 
