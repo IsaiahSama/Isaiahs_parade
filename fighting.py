@@ -1072,7 +1072,7 @@ Stat names are the names that you see in the above embed, with the exception of 
                         pass
 
                 if attacker.passive.tag == 9102:
-                    value = attacker.maxdmg - attacker.mindmg
+                    value = (attacker.maxdmg - attacker.mindmg) // 2
                     if value > 6000: value = 6000
                     power += value
                     battlebed.add_field(name=attacker.passive.usename, value=f"{attacker.passive.effect} {value}")
