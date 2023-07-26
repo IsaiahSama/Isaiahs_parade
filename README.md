@@ -1,4 +1,4 @@
-# Isaiah's Parade, a multi-purpose Discord bot
+# Isaiah's Parade, a multi-purpose Discord bot (Legacy)
 
 ## Description
 Isaiah's Parade is a multi-purpose discord bot that focuses on providing features for both mods and regular server members. With a wide array of commands available, members can manage, and enjoy themselves with the unique features. Very little of Isaiah's Parade can be found elsewhere, as I strived to make this bot personally generalized, with a custom touch every where you look. This bot is still in continous development from fixing up few features and expanding it to make everything more efficient and user friendly.
